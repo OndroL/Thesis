@@ -6,6 +6,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+/** Add DB restrictions for NULL */
 @AllArgsConstructor
 @Setter
 @Getter
@@ -26,4 +27,3 @@ public class MenaBean {
     @Column
     private int zaokrouhlenikarta;
 }
-
