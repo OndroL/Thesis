@@ -6,7 +6,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-
 @AllArgsConstructor
 @Setter
 @Getter
@@ -27,3 +26,4 @@ public class MenaBean {
     @Column
     private int zaokrouhlenikarta;
 }
+

@@ -4,6 +4,28 @@
              xsi:schemaLocation="https://jakarta.ee/xml/ns/persistence https://jakarta.ee/xml/ns/persistence/persistence_3_2.xsd"
              version="3.2">
   <persistence-unit name="default">
+    <!-- Specify Hibernate as the JPA provider -->
+    <provider>org.hibernate.jpa.HibernatePersistenceProvider</provider>
 
+    <properties>
+      <!-- JDBC Connection Configuration -->
+      <property name="jakarta.persistence.jdbc.driver" value="org.postgresql.Driver"/>
+      <property name="jakarta.persistence.jdbc.url" value="jdbc:postgresql://localhost:5432/Test" />
+      <property name="jakarta.persistence.jdbc.user" value="postgres" />
+      <property name="jakarta.persistence.jdbc.password" value="postgres" />
+
+      <!-- Hibernate Configuration -->
+      <property name="hibernate.dialect" value="org.hibernate.dialect.PostgreSQLDialect" />
+
+      <!-- Schema Management (Change 'update' as needed to validate) -->
+      <property name="hibernate.hbm2ddl.auto" value="validate" />
+
+      <!-- SQL Logging -->
+      <property name="hibernate.show_sql" value="true" />
+      <property name="hibernate.format_sql" value="true" />
+
+      <!-- Connection Pool (Optional) -->
+      <property name="hibernate.connection.pool_size" value="10" />
+    </properties>
   </persistence-unit>
 </persistence>
