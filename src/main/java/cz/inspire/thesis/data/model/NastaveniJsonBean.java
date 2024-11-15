@@ -9,7 +9,10 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-/** Add DB restrictions for NULL */
+/** Add DB restrictions for NULL
+ * Rename Entities - e.g. remove Bean from name
+ * */
+
 @AllArgsConstructor
 @Setter
 @Getter
