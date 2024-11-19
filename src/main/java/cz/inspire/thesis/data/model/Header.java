@@ -5,28 +5,21 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-
 /** Add DB restrictions for NULL
- * Rename Entities - e.g. remove Bean from name
  * */
+
 
 @AllArgsConstructor
 @Setter
 @Getter
 @NoArgsConstructor
 @Entity
-@Table(name="mena")
-public class MenaBean {
+@Table(name="noteheader")
+public class Header {
     @Id
     private String id;
     @Column
-    private String kod;
+    private int field;
     @Column
-    private String vycetka;
-    @Column
-    private int kodnum;
-    @Column
-    private int zaokrouhlenihotovost;
-    @Column
-    private int zaokrouhlenikarta;
+    private int location;
 }

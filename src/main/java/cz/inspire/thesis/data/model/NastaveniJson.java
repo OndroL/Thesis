@@ -10,7 +10,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 /** Add DB restrictions for NULL
- * Rename Entities - e.g. remove Bean from name
  * */
 
 @AllArgsConstructor
@@ -19,7 +18,7 @@ import lombok.Setter;
 @NoArgsConstructor
 @Entity
 @Table(name="nastaveni_json")
-public class NastaveniJsonBean {
+public class NastaveniJson {
     @Id
     private String key;
     @Column

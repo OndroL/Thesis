@@ -5,9 +5,8 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import java.io.Serializable;
+
 /** Add DB restrictions for NULL
- * Rename Entities - e.g. remove Bean from name
  * */
 
 @AllArgsConstructor
@@ -15,10 +14,18 @@ import java.io.Serializable;
 @Getter
 @NoArgsConstructor
 @Entity
-@Table(name="nastaveni")
-public class NastaveniBean {
+@Table(name="mena")
+public class Mena {
     @Id
-    private String key;
+    private String id;
     @Column
-    private Serializable value;
+    private String kod;
+    @Column
+    private String vycetka;
+    @Column
+    private int kodnum;
+    @Column
+    private int zaokrouhlenihotovost;
+    @Column
+    private int zaokrouhlenikarta;
 }
