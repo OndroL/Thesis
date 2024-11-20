@@ -15,12 +15,20 @@ public class EntityManagerProducer {
 
     @Produces
     public EntityManager createEntityManager() {
+        if (emf == null) {
+            throw new IllegalStateException("EntityManagerFactory is not initialized!");
+        }
         return emf.createEntityManager();
     }
 
-    public void closeEntityManager(@Disposes EntityManager em) {
+    public void close(@Disposes EntityManager em) {
         if (em.isOpen()) {
             em.close();
         }
+    }
+
+    // Setter for testing
+    public void setEntityManagerFactory(EntityManagerFactory emf) {
+        this.emf = emf;
     }
 }
