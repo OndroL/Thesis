@@ -7,6 +7,10 @@
     <!-- Specify Hibernate as the JPA provider -->
     <provider>org.hibernate.jpa.HibernatePersistenceProvider</provider>
 
+    <!-- Entity Classes -->
+    <class>cz.inspire.thesis.data.model.Header</class>
+    <!-- Add other entities if applicable -->
+
     <properties>
       <!-- JDBC Connection Configuration -->
       <property name="jakarta.persistence.jdbc.driver" value="org.postgresql.Driver"/>
@@ -17,7 +21,7 @@
       <!-- Hibernate Configuration -->
       <property name="hibernate.dialect" value="org.hibernate.dialect.PostgreSQLDialect" />
 
-      <!-- Schema Management (Change 'update' as needed to validate) -->
+      <!-- Schema Management (Change 'validate' as needed) -->
       <property name="hibernate.hbm2ddl.auto" value="validate" />
 
       <!-- SQL Logging -->

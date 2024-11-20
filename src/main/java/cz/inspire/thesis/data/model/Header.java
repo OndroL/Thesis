@@ -1,5 +1,6 @@
 package cz.inspire.thesis.data.model;
 
+import jakarta.enterprise.context.Dependent;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -12,6 +13,7 @@ import lombok.Setter;
 @AllArgsConstructor
 @Setter
 @Getter
+@Dependent
 @NoArgsConstructor
 @Entity
 @Table(name="noteheader")
