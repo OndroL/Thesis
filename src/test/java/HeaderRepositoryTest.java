@@ -2,8 +2,7 @@ package cz.inspire.thesis.data.repository;
 
 import cz.inspire.thesis.data.EntityManagerProducer;
 import cz.inspire.thesis.data.model.Header;
-import jakarta.persistence.EntityManagerFactory;
-import jakarta.persistence.Persistence;
+import jakarta.persistence.*;
 import org.apache.deltaspike.cdise.api.CdiContainer;
 import org.apache.deltaspike.cdise.api.CdiContainerLoader;
 import org.apache.deltaspike.core.api.provider.BeanProvider;
