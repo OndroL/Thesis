@@ -3,7 +3,10 @@ package cz.inspire.thesis.data;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.enterprise.inject.Disposes;
 import jakarta.enterprise.inject.Produces;
-import jakarta.persistence.*;
+import jakarta.persistence.EntityManagerFactory;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceUnit;
+
 
 @ApplicationScoped
 public class EntityManagerProducer {
