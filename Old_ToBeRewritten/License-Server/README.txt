@@ -1,0 +1,1 @@
+findAll se 4 parametry vymazat
