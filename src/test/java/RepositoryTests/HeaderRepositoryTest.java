@@ -1,7 +1,8 @@
-package cz.inspire.thesis.data.repository;
+package RepositoryTests;
 
 import cz.inspire.thesis.data.EntityManagerProducer;
 import cz.inspire.thesis.data.model.Header;
+import cz.inspire.thesis.data.repository.HeaderRepository;
 import jakarta.persistence.*;
 import org.apache.deltaspike.cdise.api.CdiContainer;
 import org.apache.deltaspike.cdise.api.CdiContainerLoader;

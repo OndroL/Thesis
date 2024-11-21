@@ -14,7 +14,7 @@ public class Main {
             HeaderService headerService = container.select(HeaderService.class).get();
 
             // Use the HeaderService
-            headerService.save(1, 1);
+            headerService.ejbCreate("1", 1,1);
             System.out.println(headerService.findValidAtributes());
         } catch (Exception e) {
             e.printStackTrace();

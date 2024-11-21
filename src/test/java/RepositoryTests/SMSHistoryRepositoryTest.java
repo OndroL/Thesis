@@ -1,8 +1,9 @@
-package cz.inspire.thesis.data.repository;
+package RepositoryTests;
 
 import cz.inspire.thesis.data.EntityManagerProducer;
 import cz.inspire.thesis.data.model.SMSHistory;
 
+import cz.inspire.thesis.data.repository.SMSHistoryRepository;
 import jakarta.persistence.EntityManagerFactory;
 import jakarta.persistence.Persistence;
 import org.apache.deltaspike.cdise.api.CdiContainer;

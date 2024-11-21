@@ -21,7 +21,8 @@
       <!-- Hibernate Configuration -->
       <property name="hibernate.dialect" value="org.hibernate.dialect.PostgreSQLDialect" />
 
-      <!-- Schema Management (Change 'validate' as needed) -->
+      <!-- Schema Management (Using 'validate' to test correct conversion from Beans to JPA) -->
+
       <property name="hibernate.hbm2ddl.auto" value="validate" />
 
       <!-- SQL Logging -->
