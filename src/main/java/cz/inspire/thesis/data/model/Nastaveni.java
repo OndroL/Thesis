@@ -6,8 +6,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import java.io.Serializable;
-/** Add DB restrictions for NULL
- * */
 
 @AllArgsConstructor
 @Setter

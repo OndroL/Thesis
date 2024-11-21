@@ -6,9 +6,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-/** Add DB restrictions for NULL
- * */
-
 @AllArgsConstructor
 @Setter
 @Getter
