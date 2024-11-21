@@ -11,7 +11,7 @@ import java.util.List;
 /// TODO : REMOVE comments
 
 /**
- * This is only a concept of how Service layer could look like
+ * This is only a concept of how Service layer could look like based on Bean implementation
  * names and return types of functions can and should change
  * -- but it all depend on what other layers of App expect
  * TODO: Add CRUD operations ?
@@ -44,7 +44,7 @@ public class HeaderService {
     /**
      *  For example, most common approach is this :
      *
-     *  public Header save(int field, int location) {
+     *  public Header createHeader(int field, int location) {
      *         Header header = new Header();
      *         header.setField(field);
      *         header.setLocation(location);

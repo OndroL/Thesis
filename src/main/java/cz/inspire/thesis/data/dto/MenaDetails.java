@@ -20,5 +20,4 @@ public class MenaDetails {
     private int zaokrouhleniHotovost;
     private int zaokrouhleniKarta;
     private List<BigDecimal> vycetkaList;
-
 }

@@ -14,7 +14,7 @@ import java.util.List;
 /// TODO : REMOVE comments
 
 /**
- * This is only a concept of how Service layer could look like
+ * This is only a concept of how Service layer could look like based on Bean implementation
  * names and return types of functions can and should change
  * -- but it all depend on what other layers of App expect
  * TODO: Add CRUD operations ?
@@ -28,7 +28,11 @@ public class MenaService {
 
     private static final String VYCETKA_DELIM = ";";
 
-
+    /**
+     * Here is a difference from Bean implementation
+     * In Bean implementation this is part of Bean so it has direct access to class hence getDetails()
+     * But it being implemented in Service layer, it needs reference to entity
+     */
     public MenaDetails getDetails(MenaEntity menaEntity) {
         MenaDetails details = new MenaDetails();
         details.setId(menaEntity.getId());
