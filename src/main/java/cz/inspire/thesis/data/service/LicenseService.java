@@ -75,11 +75,11 @@ public class LicenseService {
 
     public String ejbCreate(LicenseDetails details) throws CreateException {
         try {
-            if (details.getId() == null) {
-                details.setId(LicenseUtil.generateGUID());
-            }
-
             LicenseEntity entity = new LicenseEntity();
+
+            if (details.getId() == null) {
+                details.setId(LicenseUtil.generateGUID(entity));
+            }
             entity.setId(details.getId());
             entity.setCreateddate(new Date());
             setDetails(entity, details);
