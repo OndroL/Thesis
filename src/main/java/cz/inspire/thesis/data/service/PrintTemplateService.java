@@ -38,12 +38,6 @@ public class PrintTemplateService {
         }
     }
 
-    /**
-     * Retrieves details of a PrintTemplateEntity.
-     *
-     * @param entity The PrintTemplateEntity
-     * @return The details object
-     */
     public PrintTemplateDetails getDetails(PrintTemplateEntity entity) {
         PrintTemplateDetails details = new PrintTemplateDetails();
         details.setId(entity.getId());

@@ -15,6 +15,6 @@ public interface SequenceRepository extends EntityRepository<SequenceEntity,Stri
     @Query("SELECT p FROM Sklad_Seq p WHERE (p.sklad = ?1) AND (p.sekvence = ?2)")
     List<SequenceEntity> findBySkladType(String skladId, int type);
 
-    @Query("SELECT p FROM Seq WHERE p.type = ?1 LIMIT ?3 OFFSET ?2")
+    @Query("SELECT p FROM SequenceEntity WHERE p.type = ?1 LIMIT ?3 OFFSET ?2")
     List<SequenceEntity> findByType(int type, int offset, int limit);
 }

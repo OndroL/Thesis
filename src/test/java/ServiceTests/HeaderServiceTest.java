@@ -1,7 +1,8 @@
-package cz.inspire.thesis.data.service;
+package ServiceTests;
 
 import cz.inspire.thesis.data.model.HeaderEntity;
 import cz.inspire.thesis.data.repository.HeaderRepository;
+import cz.inspire.thesis.data.service.HeaderService;
 import cz.inspire.thesis.exceptions.CreateException;
 import jakarta.inject.Inject;
 import jakarta.persistence.EntityManagerFactory;

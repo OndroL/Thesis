@@ -1,8 +1,9 @@
-package cz.inspire.thesis.data.service;
+package ServiceTests;
 
 import cz.inspire.thesis.data.dto.MenaDetails;
 import cz.inspire.thesis.data.model.MenaEntity;
 import cz.inspire.thesis.data.repository.MenaRepository;
+import cz.inspire.thesis.data.service.MenaService;
 import cz.inspire.thesis.exceptions.CreateException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

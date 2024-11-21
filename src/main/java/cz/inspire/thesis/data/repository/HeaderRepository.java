@@ -10,7 +10,7 @@ import java.util.List;
 @Repository
 public interface HeaderRepository extends EntityRepository<HeaderEntity, String> {
 
-    @Query("SELECT h FROM Header h WHERE h.location >= 0 ORDER BY h.location")
+    @Query("SELECT h FROM HeaderEntity h WHERE h.location >= 0 ORDER BY h.location")
     List<HeaderEntity> findValidAtributes();
 
 }

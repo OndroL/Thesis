@@ -71,6 +71,11 @@ public class SMSHistoryService {
                 .collect(Collectors.toList());
     }
 
+    /**
+     * This is only my speculation how the Collection from original bean is working.
+     * Probably I'm wrong
+     */
+
     private byte[] serializeCollection(List<String> collection) {
         if (collection == null || collection.isEmpty()) {
             return null;
