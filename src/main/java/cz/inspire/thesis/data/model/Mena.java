@@ -22,10 +22,10 @@ public class Mena {
     private String kod;
     @Column
     private String vycetka;
-    @Column
+    @Column(nullable = false)
     private int kodnum;
-    @Column
+    @Column(nullable = false)
     private int zaokrouhlenihotovost;
-    @Column
+    @Column(nullable = false)
     private int zaokrouhlenikarta;
 }
