@@ -1,7 +1,7 @@
 package RepositoryTests;
 
 import cz.inspire.thesis.data.EntityManagerProducer;
-import cz.inspire.thesis.data.model.Mena;
+import cz.inspire.thesis.data.model.MenaEntity;
 
 import cz.inspire.thesis.data.repository.MenaRepository;
 import jakarta.persistence.EntityManagerFactory;
@@ -42,14 +42,14 @@ public class MenaRepositoryTest {
         assertNotNull("MenaRepository should be initialized!", menaRepository);
 
         // Test saving a Mena entity
-        Mena mena = new Mena("1", "USD", "Dollar", 840, 5, 2);
-        menaRepository.save(mena);
+        MenaEntity menaEntity = new MenaEntity("1", "USD", "Dollar", 840, 5, 2);
+        menaRepository.save(menaEntity);
 
         // Test finding the Mena entity by code
-        List<Mena> foundMenaList = menaRepository.findByCode("USD");
-        assertNotNull("Result list should not be null", foundMenaList);
-        assertEquals(1, foundMenaList.size());
-        assertEquals("Dollar", foundMenaList.get(0).getVycetka());
+        List<MenaEntity> foundMenaEntityList = menaRepository.findByCode("USD");
+        assertNotNull("Result list should not be null", foundMenaEntityList);
+        assertEquals(1, foundMenaEntityList.size());
+        assertEquals("Dollar", foundMenaEntityList.get(0).getVycetka());
     }
 
     @Test
@@ -57,21 +57,21 @@ public class MenaRepositoryTest {
         assertNotNull("MenaRepository should be initialized!", menaRepository);
 
         // Test saving a Mena entity
-        Mena mena = new Mena("1", "USD", "Dollar", 840, 5, 2);
-        menaRepository.save(mena);
+        MenaEntity menaEntity = new MenaEntity("1", "USD", "Dollar", 840, 5, 2);
+        menaRepository.save(menaEntity);
 
         // Test finding the Mena entity by codeNum
-        List<Mena> foundMenaList = menaRepository.findByCodeNum(840);
-        assertNotNull("Result list should not be null", foundMenaList);
-        assertEquals(1, foundMenaList.size());
-        assertEquals("USD", foundMenaList.get(0).getKod());
+        List<MenaEntity> foundMenaEntityList = menaRepository.findByCodeNum(840);
+        assertNotNull("Result list should not be null", foundMenaEntityList);
+        assertEquals(1, foundMenaEntityList.size());
+        assertEquals("USD", foundMenaEntityList.get(0).getKod());
     }
 
     @Test
     public void testFindAll() {
         // Test saving multiple Mena entities
-        menaRepository.save(new Mena("1", "USD", "Dollar", 840, 5, 2));
-        menaRepository.save(new Mena("2", "EUR", "Euro", 978, 2, 2));
+        menaRepository.save(new MenaEntity("1", "USD", "Dollar", 840, 5, 2));
+        menaRepository.save(new MenaEntity("2", "EUR", "Euro", 978, 2, 2));
 
         // Test retrieving all Mena entities
         assertEquals(2, menaRepository.findAll().size());

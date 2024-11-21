@@ -5,17 +5,19 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import java.io.Serializable;
+
 
 @AllArgsConstructor
 @Setter
 @Getter
 @NoArgsConstructor
 @Entity
-@Table(name="nastaveni")
-public class Nastaveni {
+@Table(name="noteheader")
+public class HeaderEntity {
     @Id
-    private String key;
+    private String id;
     @Column
-    private Serializable value;
+    private int field;
+    @Column
+    private int location;
 }

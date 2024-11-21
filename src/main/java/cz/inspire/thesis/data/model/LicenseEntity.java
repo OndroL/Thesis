@@ -17,7 +17,7 @@ import java.util.Date;
 @NoArgsConstructor
 @Entity
 @Table(name="license")
-public class License {
+public class LicenseEntity {
     @Id
     private String id;
     @Column

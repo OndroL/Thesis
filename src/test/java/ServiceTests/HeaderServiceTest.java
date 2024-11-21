@@ -1,6 +1,6 @@
 package cz.inspire.thesis.data.service;
 
-import cz.inspire.thesis.data.model.Header;
+import cz.inspire.thesis.data.model.HeaderEntity;
 import cz.inspire.thesis.data.repository.HeaderRepository;
 import cz.inspire.thesis.exceptions.CreateException;
 import jakarta.inject.Inject;
@@ -46,11 +46,11 @@ public class HeaderServiceTest {
         String id = headerService.ejbCreate("testId", 10, 1);
 
         // Verify that the entity was saved
-        Header savedHeader = headerRepository.findBy(id);
-        assertNotNull(savedHeader, "Header should be saved in the database");
-        assertEquals("testId", savedHeader.getId());
-        assertEquals(10, savedHeader.getField());
-        assertEquals(-5, savedHeader.getLocation());
+        HeaderEntity savedHeaderEntity = headerRepository.findBy(id);
+        assertNotNull(savedHeaderEntity, "Header should be saved in the database");
+        assertEquals("testId", savedHeaderEntity.getId());
+        assertEquals(10, savedHeaderEntity.getField());
+        assertEquals(-5, savedHeaderEntity.getLocation());
     }
 
     @Test
@@ -61,12 +61,12 @@ public class HeaderServiceTest {
         headerService.ejbCreate("id3", 12, 2); // Valid
 
         // Test the service method
-        List<Header> validHeaders = headerService.findValidAtributes();
-        assertNotNull(validHeaders, "Valid attributes list should not be null");
-        assertEquals(2, validHeaders.size(), "Only valid headers should be returned");
+        List<HeaderEntity> validHeaderEntities = headerService.findValidAtributes();
+        assertNotNull(validHeaderEntities, "Valid attributes list should not be null");
+        assertEquals(2, validHeaderEntities.size(), "Only valid headers should be returned");
 
         // Verify contents
-        assertTrue(validHeaders.stream().anyMatch(h -> h.getId().equals("id1")));
-        assertTrue(validHeaders.stream().anyMatch(h -> h.getId().equals("id3")));
+        assertTrue(validHeaderEntities.stream().anyMatch(h -> h.getId().equals("id1")));
+        assertTrue(validHeaderEntities.stream().anyMatch(h -> h.getId().equals("id3")));
     }
 }

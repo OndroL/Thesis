@@ -12,7 +12,7 @@ import lombok.Setter;
 @NoArgsConstructor
 @Entity
 @Table(name="mena")
-public class Mena {
+public class MenaEntity {
     @Id
     private String id;
     @Column

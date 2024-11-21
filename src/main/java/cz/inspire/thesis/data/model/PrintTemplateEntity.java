@@ -10,34 +10,22 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.util.Date;
-
-
-
 @AllArgsConstructor
 @Setter
 @Getter
 @Dependent
 @NoArgsConstructor
 @Entity
-@Table(name="sms_history")
-public class SMSHistory {
+@Table(name="print_template")
+public class PrintTemplateEntity {
     @Id
     private String id;
     @Column
-    private Date date;
+    private String content;
+    @Column(nullable = false)
+    private int type;
     @Column
-    private String message;
-    /**
-     * This can be a problem, need to verify what data are in DB as bytea
-     * in original implementation was used java.util.Collection
-     */
+    private String templatename;
     @Column
-    private byte[] groups;
-    @Column
-    private byte[] recipients;
-    @Column
-    private byte[] morerecipients;
-    @Column
-    private Boolean automatic;
+    private String filename;
 }

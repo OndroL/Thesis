@@ -1,6 +1,6 @@
 package cz.inspire.thesis.data.model;
 
-import jakarta.annotation.Nullable;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
@@ -15,19 +15,10 @@ import lombok.Setter;
 @Getter
 @NoArgsConstructor
 @Entity
-@Table(name="seq")
-public class Sequence {
+@Table(name="nastaveni_json")
+public class NastaveniJsonEntity {
     @Id
-    private String name;
+    private String key;
     @Column
-    private String pattern;
-    @Column(nullable = false)
-    private int minvalue;
-    @Column
-    private String last;
-    @Column
-    private int type;
-    @Column
-    private String stornoseq;
-
+    private String value;
 }

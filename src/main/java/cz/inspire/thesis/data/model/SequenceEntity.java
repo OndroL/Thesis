@@ -15,10 +15,19 @@ import lombok.Setter;
 @Getter
 @NoArgsConstructor
 @Entity
-@Table(name="nastaveni_json")
-public class NastaveniJson {
+@Table(name="seq")
+public class SequenceEntity {
     @Id
-    private String key;
+    private String name;
     @Column
-    private String value;
+    private String pattern;
+    @Column(nullable = false)
+    private int minvalue;
+    @Column
+    private String last;
+    @Column
+    private int type;
+    @Column
+    private String stornoseq;
+
 }

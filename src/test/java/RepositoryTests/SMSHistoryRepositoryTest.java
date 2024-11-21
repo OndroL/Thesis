@@ -1,7 +1,7 @@
 package RepositoryTests;
 
 import cz.inspire.thesis.data.EntityManagerProducer;
-import cz.inspire.thesis.data.model.SMSHistory;
+import cz.inspire.thesis.data.model.SMSHistoryEntity;
 
 import cz.inspire.thesis.data.repository.SMSHistoryRepository;
 import jakarta.persistence.EntityManagerFactory;
@@ -44,11 +44,11 @@ public class SMSHistoryRepositoryTest {
 
         // Test saving an SMSHistory entity
         Date now = new Date();
-        SMSHistory smsHistory = new SMSHistory("1", now, "Test Message", null, null, null, true);
-        smsHistoryRepository.save(smsHistory);
+        SMSHistoryEntity smsHistoryEntity = new SMSHistoryEntity("1", now, "Test Message", null, null, null, true);
+        smsHistoryRepository.save(smsHistoryEntity);
 
         // Test finding by date range
-        List<SMSHistory> foundList = smsHistoryRepository.findByDate(now, now);
+        List<SMSHistoryEntity> foundList = smsHistoryRepository.findByDate(now, now);
         assertNotNull("Result list should not be null", foundList);
         assertEquals(1, foundList.size());
         assertEquals("Test Message", foundList.get(0).getMessage());
@@ -60,11 +60,11 @@ public class SMSHistoryRepositoryTest {
 
         // Test saving an SMSHistory entity
         Date now = new Date();
-        SMSHistory smsHistory = new SMSHistory("1", now, "Test Message Automatic", null, null, null, true);
-        smsHistoryRepository.save(smsHistory);
+        SMSHistoryEntity smsHistoryEntity = new SMSHistoryEntity("1", now, "Test Message Automatic", null, null, null, true);
+        smsHistoryRepository.save(smsHistoryEntity);
 
         // Test finding by date range and automatic flag
-        List<SMSHistory> foundList = smsHistoryRepository.findByDateAutomatic(now, now, true);
+        List<SMSHistoryEntity> foundList = smsHistoryRepository.findByDateAutomatic(now, now, true);
         assertNotNull("Result list should not be null", foundList);
         assertEquals(1, foundList.size());
         assertTrue(foundList.get(0).getAutomatic());
@@ -76,11 +76,11 @@ public class SMSHistoryRepositoryTest {
 
         // Test saving multiple SMSHistory entities
         Date now = new Date();
-        smsHistoryRepository.save(new SMSHistory("1", now, "Message 1", null, null, null, false));
-        smsHistoryRepository.save(new SMSHistory("2", now, "Message 2", null, null, null, true));
+        smsHistoryRepository.save(new SMSHistoryEntity("1", now, "Message 1", null, null, null, false));
+        smsHistoryRepository.save(new SMSHistoryEntity("2", now, "Message 2", null, null, null, true));
 
         // Test retrieving all SMSHistory entities
-        List<SMSHistory> allHistory = smsHistoryRepository.findAll();
+        List<SMSHistoryEntity> allHistory = smsHistoryRepository.findAll();
         assertNotNull("Result list should not be null", allHistory);
         assertEquals(2, allHistory.size());
     }
@@ -93,13 +93,13 @@ public class SMSHistoryRepositoryTest {
         Date to = new Date(from.getTime() + 1000); // 1 second later
 
         // Save entities at boundary dates
-        SMSHistory historyFrom = new SMSHistory("1", from, "Boundary From", null, null, null, false);
-        SMSHistory historyTo = new SMSHistory("2", to, "Boundary To", null, null, null, false);
+        SMSHistoryEntity historyFrom = new SMSHistoryEntity("1", from, "Boundary From", null, null, null, false);
+        SMSHistoryEntity historyTo = new SMSHistoryEntity("2", to, "Boundary To", null, null, null, false);
         smsHistoryRepository.save(historyFrom);
         smsHistoryRepository.save(historyTo);
 
         // Test querying within range
-        List<SMSHistory> result = smsHistoryRepository.findByDate(from, to);
+        List<SMSHistoryEntity> result = smsHistoryRepository.findByDate(from, to);
         assertNotNull("Result list should not be null", result);
         assertEquals(2, result.size());
         assertTrue(result.stream().anyMatch(h -> h.getMessage().equals("Boundary From")));
@@ -114,12 +114,12 @@ public class SMSHistoryRepositoryTest {
         Date later = new Date(now.getTime() + 10000); // 10 seconds after
 
         // Save entities outside and inside the range
-        smsHistoryRepository.save(new SMSHistory("1", earlier, "Outside Earlier", null, null, null, false));
-        smsHistoryRepository.save(new SMSHistory("2", now, "Within Range", null, null, null, false));
-        smsHistoryRepository.save(new SMSHistory("3", later, "Outside Later", null, null, null, false));
+        smsHistoryRepository.save(new SMSHistoryEntity("1", earlier, "Outside Earlier", null, null, null, false));
+        smsHistoryRepository.save(new SMSHistoryEntity("2", now, "Within Range", null, null, null, false));
+        smsHistoryRepository.save(new SMSHistoryEntity("3", later, "Outside Later", null, null, null, false));
 
         // Query for a range that only includes "now"
-        List<SMSHistory> result = smsHistoryRepository.findByDate(now, now);
+        List<SMSHistoryEntity> result = smsHistoryRepository.findByDate(now, now);
         assertNotNull("Result list should not be null", result);
         assertEquals(1, result.size());
         assertEquals("Within Range", result.get(0).getMessage());
@@ -132,11 +132,11 @@ public class SMSHistoryRepositoryTest {
         Date now = new Date();
 
         // Save entities outside the range
-        smsHistoryRepository.save(new SMSHistory("1", new Date(now.getTime() - 10000), "Too Early", null, null, null, false));
-        smsHistoryRepository.save(new SMSHistory("2", new Date(now.getTime() + 10000), "Too Late", null, null, null, false));
+        smsHistoryRepository.save(new SMSHistoryEntity("1", new Date(now.getTime() - 10000), "Too Early", null, null, null, false));
+        smsHistoryRepository.save(new SMSHistoryEntity("2", new Date(now.getTime() + 10000), "Too Late", null, null, null, false));
 
         // Query for a range with no matches
-        List<SMSHistory> result = smsHistoryRepository.findByDate(now, now);
+        List<SMSHistoryEntity> result = smsHistoryRepository.findByDate(now, now);
         assertNotNull("Result list should not be null", result);
         assertTrue("Result list should be empty", result.isEmpty());
     }

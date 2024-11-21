@@ -1,7 +1,7 @@
 package RepositoryTests;
 
 import cz.inspire.thesis.data.EntityManagerProducer;
-import cz.inspire.thesis.data.model.Header;
+import cz.inspire.thesis.data.model.HeaderEntity;
 import cz.inspire.thesis.data.repository.HeaderRepository;
 import jakarta.persistence.*;
 import org.apache.deltaspike.cdise.api.CdiContainer;
@@ -41,9 +41,9 @@ public class HeaderRepositoryTest {
         assertNotNull("HeaderRepository should be initialized!", headerRepository);
 
         // Test saving and querying a header
-        headerRepository.save(new Header("1", 10, 1));
-        List<Header> validHeaders = headerRepository.findValidAtributes();
+        headerRepository.save(new HeaderEntity("1", 10, 1));
+        List<HeaderEntity> validHeaderEntities = headerRepository.findValidAtributes();
 
-        assertEquals(1, validHeaders.size());
+        assertEquals(1, validHeaderEntities.size());
     }
 }
