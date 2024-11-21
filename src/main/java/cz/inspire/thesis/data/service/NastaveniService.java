@@ -20,8 +20,11 @@ public class NastaveniService {
             NastaveniEntity entity = new NastaveniEntity();
             entity.setKey(key);
             entity.setValue(value);
+
             nastaveniRepository.save(entity);
+
             return key;
+
         } catch (Exception e) {
             throw new CreateException("Failed to create Nastaveni entity", e);
         }
@@ -30,6 +33,7 @@ public class NastaveniService {
     public NastaveniDetails getDetails(NastaveniEntity entity) {
         NastaveniDetails details = new NastaveniDetails();
         details.setKey(entity.getKey());
+
         details.setValue(entity.getValue());
         return details;
     }

@@ -3,7 +3,7 @@ package cz.inspire.thesis.data.service;
 import cz.inspire.thesis.data.dto.LicenseDetails;
 import cz.inspire.thesis.data.model.LicenseEntity;
 import cz.inspire.thesis.data.repository.LicenseRepository;
-import cz.inspire.thesis.data.utils.LicenseUtil;
+import cz.inspire.thesis.data.utils.guidGenerator;
 import cz.inspire.thesis.exceptions.CreateException;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
@@ -45,6 +45,7 @@ public class LicenseService {
         details.setHash(entity.getHash());
         details.setCreatedDate(entity.getCreateddate());
         details.setGeneratedDate(entity.getGenerateddate());
+
         return details;
     }
 
@@ -78,14 +79,16 @@ public class LicenseService {
             LicenseEntity entity = new LicenseEntity();
 
             if (details.getId() == null) {
-                details.setId(LicenseUtil.generateGUID(entity));
+                details.setId(guidGenerator.generateGUID(entity));
             }
             entity.setId(details.getId());
             entity.setCreateddate(new Date());
             setDetails(entity, details);
 
             licenseRepository.save(entity);
+
             return entity.getId();
+
         } catch (Exception e) {
             throw new CreateException("Failed to create License entity", e);
         }

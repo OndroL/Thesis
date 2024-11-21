@@ -18,8 +18,11 @@ public class NastaveniJsonService {
             NastaveniJsonEntity entity = new NastaveniJsonEntity();
             entity.setKey(key);
             entity.setValue(value);
+
             nastaveniJsonRepository.save(entity);
+
             return key;
+
         } catch (Exception e) {
             throw new CreateException("Failed to create NastaveniJson entity", e);
         }
@@ -37,6 +40,7 @@ public class NastaveniJsonService {
         NastaveniJsonDetails details = new NastaveniJsonDetails();
         details.setKey(entity.getKey());
         details.setValue(entity.getValue());
+
         return details;
     }
 }

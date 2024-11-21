@@ -54,8 +54,11 @@ public class MenaService {
                     menaDetails.getZaokrouhleniHotovost(),
                     menaDetails.getZaokrouhleniKarta()
             );
+
             menaRepository.save(mena);
+
             return mena.getId();
+
         } catch (Exception e) {
             throw new CreateException("Failed to create MenaEntity", e);
         }

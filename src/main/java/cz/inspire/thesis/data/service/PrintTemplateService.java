@@ -7,7 +7,7 @@ import cz.inspire.thesis.exceptions.CreateException;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 
-import static cz.inspire.thesis.data.utils.PrintTemplateUtil.generateGUID;
+import static cz.inspire.thesis.data.utils.guidGenerator.generateGUID;
 
 @ApplicationScoped
 public class PrintTemplateService {
@@ -30,7 +30,9 @@ public class PrintTemplateService {
             entity.setFilename(details.getFileName());
 
             printTemplateRepository.save(entity);
+
             return entity.getId();
+
         } catch (Exception e) {
             throw new CreateException("Failed to create PrintTemplate entity", e);
         }
@@ -49,6 +51,7 @@ public class PrintTemplateService {
         details.setType(entity.getType());
         details.setTemplateName(entity.getTemplatename());
         details.setFileName(entity.getFilename());
+
         return details;
     }
 }
