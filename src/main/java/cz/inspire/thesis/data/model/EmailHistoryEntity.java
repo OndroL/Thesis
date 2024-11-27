@@ -8,7 +8,9 @@ import lombok.Setter;
 import org.hibernate.annotations.JdbcTypeCode;
 
 import java.sql.Types;
+import java.util.Collection;
 import java.util.Date;
+import java.util.List;
 
 @AllArgsConstructor
 @Setter
@@ -47,8 +49,8 @@ public class EmailHistoryEntity {
     private Boolean html;
     @Lob
     @JdbcTypeCode(Types.VARBINARY)
-    @Column
-    private byte[] attachments;
+    @OneToMany(mappedBy = "email_history", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Collection<GeneratedAttachmentEntity> attachments;
     @Column
     private Boolean sent;
 }

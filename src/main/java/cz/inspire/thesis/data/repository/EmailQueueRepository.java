@@ -1,10 +1,8 @@
 package cz.inspire.thesis.data.repository;
 
 import cz.inspire.thesis.data.model.EmailQueueEntity;
-import jakarta.persistence.SqlResultSetMapping;
 import org.apache.deltaspike.data.api.*;
 
-import java.awt.print.Pageable;
 import java.util.List;
 import java.util.Optional;
 
