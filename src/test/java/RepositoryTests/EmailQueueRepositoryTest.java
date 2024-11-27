@@ -8,6 +8,7 @@ import jakarta.persistence.Persistence;
 import org.apache.deltaspike.cdise.api.CdiContainer;
 import org.apache.deltaspike.cdise.api.CdiContainerLoader;
 import org.apache.deltaspike.core.api.provider.BeanProvider;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -36,6 +37,12 @@ public class EmailQueueRepositoryTest {
 
         // Access EmailQueueRepository from CDI
         emailQueueRepository = BeanProvider.getContextualReference(EmailQueueRepository.class);
+    }
+
+    @After
+    public void tearDown() {
+        // Clean up the database
+        emailQueueRepository.findAll().forEach(emailQueueRepository::remove);
     }
 
     @Test

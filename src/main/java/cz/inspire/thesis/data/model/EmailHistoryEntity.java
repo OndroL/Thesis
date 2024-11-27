@@ -49,8 +49,9 @@ public class EmailHistoryEntity {
     private Boolean html;
     @Lob
     @JdbcTypeCode(Types.VARBINARY)
-    @OneToMany(mappedBy = "email_history", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "email_history", cascade = CascadeType.ALL)
     private Collection<GeneratedAttachmentEntity> attachments;
     @Column
     private Boolean sent;
+
 }
