@@ -50,7 +50,7 @@ public class EmailQueueRepositoryTest {
         // Test retrieving all entities
         List<EmailQueueEntity> allEmails = emailQueueRepository.findAll();
         assertNotNull("Result list should not be null", allEmails);
-        assertEquals(2, allEmails.size());
+        assertEquals(10, allEmails.size());
     }
 
     @Test

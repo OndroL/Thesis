@@ -1,8 +1,10 @@
 package cz.inspire.thesis.data.repository;
 
 import cz.inspire.thesis.data.model.EmailQueueEntity;
+import jakarta.persistence.SqlResultSetMapping;
 import org.apache.deltaspike.data.api.*;
 
+import java.awt.print.Pageable;
 import java.util.List;
 import java.util.Optional;
 
@@ -21,7 +23,7 @@ public interface EmailQueueRepository extends EntityRepository<EmailQueueEntity,
     @Query("SELECT p FROM EmailQueueEntity p ORDER BY p.created ASC")
     List<EmailQueueEntity> findAll(@FirstResult int offset, @MaxResults int count);
 
-    @Query("SELECT p FROM EmailQueueEntity p ORDER BY p.priority DESC, p.created ASC")
+    @Query(value="SELECT p FROM EmailQueueEntity p ORDER BY priority DESC, created ASC",max=1)
     Optional<EmailQueueEntity> findFirstMail();
 
     @Query("SELECT p FROM EmailQueueEntity p WHERE p.emailhistory = ?1")
