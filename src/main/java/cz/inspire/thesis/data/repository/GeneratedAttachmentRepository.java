@@ -17,4 +17,6 @@ public interface GeneratedAttachmentRepository extends EntityRepository<Generate
 
     @Query("SELECT p FROM GeneratedAttachmentEntity p WHERE (p.email_history = ?1) AND (p.email = ?2) AND (p.print_template = ?3)))")
     List<GeneratedAttachmentEntity> findByEmailAndHistoryAndTemplate(String historyId, String email, String templateId);
+
+
 }

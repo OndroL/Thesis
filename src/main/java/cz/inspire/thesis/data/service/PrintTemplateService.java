@@ -7,6 +7,8 @@ import cz.inspire.thesis.exceptions.CreateException;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 
+import java.util.Optional;
+
 import static cz.inspire.thesis.data.utils.guidGenerator.generateGUID;
 
 @ApplicationScoped
@@ -47,5 +49,10 @@ public class PrintTemplateService {
         details.setFileName(entity.getFilename());
 
         return details;
+    }
+
+
+    public Optional<PrintTemplateEntity> findById(String templateId) {
+        return printTemplateRepository.findById(templateId);
     }
 }

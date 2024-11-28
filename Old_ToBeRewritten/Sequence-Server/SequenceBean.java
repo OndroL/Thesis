@@ -129,7 +129,10 @@ public abstract class SequenceBean extends BaseEntityBean implements EntityBean 
      */
     public abstract int getType();
     public abstract void setType(int type);
+
     
+    // Entity relations ----------------------------------------------------------------------------
+
     /**
      * @ejb.interface-method
      *    view-type="local"
@@ -149,9 +152,9 @@ public abstract class SequenceBean extends BaseEntityBean implements EntityBean 
      */
     public abstract LocalSequence getStornoSeq();
     public abstract void setStornoSeq(LocalSequence sequence);
-    
-    // Entity relations ----------------------------------------------------------------------------
-    
+
+
+
     // Business methods ----------------------------------------------------------------------------
 
     /**

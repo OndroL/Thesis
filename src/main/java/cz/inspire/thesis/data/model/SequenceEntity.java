@@ -1,10 +1,7 @@
 package cz.inspire.thesis.data.model;
 
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -27,7 +24,11 @@ public class SequenceEntity {
     private String last;
     @Column
     private int type;
-    @Column
-    private String stornoseq;
+    /**
+     * This is only placeholder, maybe a correct one for sklad_seq
+     */
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @JoinColumn(name = "sklad_seq", referencedColumnName = "sklad")
+    private SkladSequenceEntity stornoSeq;
 
 }

@@ -10,6 +10,8 @@ import jakarta.inject.Inject;
 import java.util.List;
 import java.util.Optional;
 
+import static cz.inspire.thesis.data.utils.guidGenerator.generateGUID;
+
 @ApplicationScoped
 public class EmailQueueService {
 
@@ -18,10 +20,10 @@ public class EmailQueueService {
 
     public String ejbCreate(EmailQueueDetails details) throws CreateException {
         try {
-            if (details.getId() == null) {
-                details.setId(generateGUID());
-            }
             EmailQueueEntity entity = new EmailQueueEntity();
+            if (details.getId() == null) {
+                details.setId(generateGUID(entity));
+            }
             entity.setId(details.getId());
             entity.setCreated(details.getCreated());
             entity.setEmailhistory(details.getEmailHistory());
@@ -75,9 +77,5 @@ public class EmailQueueService {
         return emailQueueRepository.findByDependentHistory(historyId).stream()
                 .map(this::getDetails)
                 .toList();
-    }
-
-    private String generateGUID() {
-        return java.util.UUID.randomUUID().toString();
     }
 }

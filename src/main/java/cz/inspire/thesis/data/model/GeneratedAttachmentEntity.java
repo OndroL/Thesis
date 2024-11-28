@@ -27,6 +27,6 @@ public class GeneratedAttachmentEntity {
     private EmailHistoryEntity  email_history;
 
     @ManyToOne
-    @JoinColumn(name = "print_template", referencedColumnName = "id", nullable = true)
+    @JoinColumn(name = "print_template", referencedColumnName = "id")
     private PrintTemplateEntity printTemplate;
 }
