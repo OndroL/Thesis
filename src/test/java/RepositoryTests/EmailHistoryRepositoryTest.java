@@ -51,8 +51,8 @@ public class EmailHistoryRepositoryTest {
 
         // Save entities
         Date now = new Date();
-        emailHistoryRepository.save(new EmailHistoryEntity("1", now, "Text1", "Subject1", null, null, null, true, true, null, true));
-        emailHistoryRepository.save(new EmailHistoryEntity("2", now, "Text2", "Subject2", null, null, null, true, false, null, true));
+        emailHistoryRepository.save(new EmailHistoryEntity("1", now, "Text1", "Subject1", null, null, null, true, true, null, true, null));
+        emailHistoryRepository.save(new EmailHistoryEntity("2", now, "Text2", "Subject2", null, null, null, true, false, null, true, null));
 
         // Test retrieving all entities
         List<EmailHistoryEntity> allHistories = emailHistoryRepository.findAll();
@@ -67,7 +67,7 @@ public class EmailHistoryRepositoryTest {
         // Save multiple entities
         for (int i = 0; i < 10; i++) {
             emailHistoryRepository.save(new EmailHistoryEntity(
-                    String.valueOf(i), new Date(), "Text" + i, "Subject" + i, null, null, null, true, true, null, true));
+                    String.valueOf(i), new Date(), "Text" + i, "Subject" + i, null, null, null, true, true, null, true, null));
         }
 
         // Test retrieving entities with pagination
@@ -86,9 +86,9 @@ public class EmailHistoryRepositoryTest {
         Date earlier = new Date(now.getTime() - 86400000L); // 1 day earlier
         Date later = new Date(now.getTime() + 86400000L); // 1 day later
 
-        emailHistoryRepository.save(new EmailHistoryEntity("1", earlier, "Text1", "Subject1", null, null, null, true, true, null, true));
-        emailHistoryRepository.save(new EmailHistoryEntity("2", now, "Text2", "Subject2", null, null, null, true, true, null, true));
-        emailHistoryRepository.save(new EmailHistoryEntity("3", later, "Text3", "Subject3", null, null, null, true, true, null, true));
+        emailHistoryRepository.save(new EmailHistoryEntity("1", earlier, "Text1", "Subject1", null, null, null, true, true, null, true, null));
+        emailHistoryRepository.save(new EmailHistoryEntity("2", now, "Text2", "Subject2", null, null, null, true, true, null, true, null));
+        emailHistoryRepository.save(new EmailHistoryEntity("3", later, "Text3", "Subject3", null, null, null, true, true, null, true, null));
 
         // Test finding by date range
         List<EmailHistoryEntity> results = emailHistoryRepository.findByDate(earlier, later, 0, 3);
@@ -103,7 +103,7 @@ public class EmailHistoryRepositoryTest {
         // Save multiple entities
         for (int i = 0; i < 10; i++) {
             emailHistoryRepository.save(new EmailHistoryEntity(
-                    String.valueOf(i), new Date(), "Text" + i, "Subject" + i, null, null, null, true, true, null, true));
+                    String.valueOf(i), new Date(), "Text" + i, "Subject" + i, null, null, null, true, true, null, true, null));
         }
 
         // Test finding by date range with pagination
