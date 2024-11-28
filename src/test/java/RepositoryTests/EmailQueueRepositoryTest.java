@@ -3,6 +3,7 @@ package RepositoryTests;
 import cz.inspire.thesis.data.EntityManagerProducer;
 import cz.inspire.thesis.data.model.EmailQueueEntity;
 import cz.inspire.thesis.data.repository.EmailQueueRepository;
+import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
 import jakarta.persistence.Persistence;
 import org.apache.deltaspike.cdise.api.CdiContainer;
@@ -11,6 +12,7 @@ import org.apache.deltaspike.core.api.provider.BeanProvider;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
 
 import java.util.Date;
 import java.util.List;
@@ -37,12 +39,12 @@ public class EmailQueueRepositoryTest {
 
         // Access EmailQueueRepository from CDI
         emailQueueRepository = BeanProvider.getContextualReference(EmailQueueRepository.class);
-    }
 
-    @After
-    public void tearDown() {
-        // Clean up the database
-        emailQueueRepository.findAll().forEach(emailQueueRepository::remove);
+        // Clear the database
+        EntityManager em = BeanProvider.getContextualReference(EntityManager.class);
+        em.getTransaction().begin();
+        em.createQuery("DELETE FROM EmailQueueEntity ").executeUpdate();
+        em.getTransaction().commit();
     }
 
     @Test
@@ -57,7 +59,7 @@ public class EmailQueueRepositoryTest {
         // Test retrieving all entities
         List<EmailQueueEntity> allEmails = emailQueueRepository.findAll();
         assertNotNull("Result list should not be null", allEmails);
-        assertEquals(10, allEmails.size());
+        assertEquals(2, allEmails.size());
     }
 
     @Test

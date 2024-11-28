@@ -10,9 +10,6 @@ import jakarta.inject.Inject;
 import java.util.List;
 import java.util.Optional;
 
-/**
- * Service layer for managing EmailQueue entities.
- */
 @ApplicationScoped
 public class EmailQueueService {
 

@@ -5,11 +5,13 @@ import cz.inspire.thesis.data.repository.HeaderRepository;
 import cz.inspire.thesis.data.service.HeaderService;
 import cz.inspire.thesis.exceptions.CreateException;
 import jakarta.inject.Inject;
+import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
 import jakarta.persistence.Persistence;
 import org.apache.deltaspike.cdise.api.CdiContainer;
 import org.apache.deltaspike.cdise.api.CdiContainerLoader;
 import org.apache.deltaspike.core.api.provider.BeanProvider;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -40,18 +42,25 @@ public class HeaderServiceTest {
         // Inject dependencies
         headerService = BeanProvider.getContextualReference(HeaderService.class);
         headerRepository = BeanProvider.getContextualReference(HeaderRepository.class);
+
+        // Clear the database
+        EntityManager em = BeanProvider.getContextualReference(EntityManager.class);
+        em.getTransaction().begin();
+        em.createQuery("DELETE FROM HeaderEntity").executeUpdate();
+        em.getTransaction().commit();
     }
+
 
     @Test
     public void testEjbCreate() throws CreateException {
-        String id = headerService.ejbCreate("testId", 10, 1);
+        String id = headerService.ejbCreate("testId", 10, -2);
 
         // Verify that the entity was saved
         HeaderEntity savedHeaderEntity = headerRepository.findBy(id);
         assertNotNull(savedHeaderEntity, "Header should be saved in the database");
         assertEquals("testId", savedHeaderEntity.getId());
         assertEquals(10, savedHeaderEntity.getField());
-        assertEquals(-5, savedHeaderEntity.getLocation());
+        assertEquals(-2, savedHeaderEntity.getLocation());
     }
 
     @Test

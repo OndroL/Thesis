@@ -34,7 +34,14 @@ public class HeaderRepositoryTest {
 
         // Access HeaderRepository from CDI
         headerRepository = BeanProvider.getContextualReference(HeaderRepository.class);
+
+        // Clear the database
+        EntityManager em = BeanProvider.getContextualReference(EntityManager.class);
+        em.getTransaction().begin();
+        em.createQuery("DELETE FROM HeaderEntity").executeUpdate();
+        em.getTransaction().commit();
     }
+
 
     @Test
     public void testFindValidAttributes() {

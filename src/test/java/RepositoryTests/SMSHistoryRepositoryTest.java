@@ -4,13 +4,16 @@ import cz.inspire.thesis.data.EntityManagerProducer;
 import cz.inspire.thesis.data.model.SMSHistoryEntity;
 
 import cz.inspire.thesis.data.repository.SMSHistoryRepository;
+import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
 import jakarta.persistence.Persistence;
 import org.apache.deltaspike.cdise.api.CdiContainer;
 import org.apache.deltaspike.cdise.api.CdiContainerLoader;
 import org.apache.deltaspike.core.api.provider.BeanProvider;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
 
 import java.util.Date;
 import java.util.List;
@@ -36,6 +39,12 @@ public class SMSHistoryRepositoryTest {
 
         // Access SMSHistoryRepository from CDI
         smsHistoryRepository = BeanProvider.getContextualReference(SMSHistoryRepository.class);
+
+        // Clear the database
+        EntityManager em = BeanProvider.getContextualReference(EntityManager.class);
+        em.getTransaction().begin();
+        em.createQuery("DELETE FROM SMSHistoryEntity").executeUpdate();
+        em.getTransaction().commit();
     }
 
     @Test
@@ -76,13 +85,23 @@ public class SMSHistoryRepositoryTest {
 
         // Test saving multiple SMSHistory entities
         Date now = new Date();
-        smsHistoryRepository.save(new SMSHistoryEntity("1", now, "Message 1", null, null, null, false));
-        smsHistoryRepository.save(new SMSHistoryEntity("2", now, "Message 2", null, null, null, true));
+        Date earlier = new Date(now.getTime() - 10000); // 10 seconds before
+        Date later = new Date(now.getTime() + 10000);
+
+        smsHistoryRepository.save(new SMSHistoryEntity("1", earlier, "Outside Earlier", null, null, null, false));
+        smsHistoryRepository.save(new SMSHistoryEntity("2", now, "Within Range", null, null, null, false));
+        smsHistoryRepository.save(new SMSHistoryEntity("3", later, "Outside Later", null, null, null, false));;
 
         // Test retrieving all SMSHistory entities
         List<SMSHistoryEntity> allHistory = smsHistoryRepository.findAll();
         assertNotNull("Result list should not be null", allHistory);
-        assertEquals(2, allHistory.size());
+        assertEquals(3, allHistory.size());
+
+        // Clear the database
+        EntityManager em = BeanProvider.getContextualReference(EntityManager.class);
+        em.getTransaction().begin();
+        em.createQuery("DELETE FROM SMSHistoryEntity").executeUpdate();
+        em.getTransaction().commit();
     }
 
     @Test

@@ -4,13 +4,16 @@ import cz.inspire.thesis.data.EntityManagerProducer;
 import cz.inspire.thesis.data.model.MenaEntity;
 
 import cz.inspire.thesis.data.repository.MenaRepository;
+import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
 import jakarta.persistence.Persistence;
 import org.apache.deltaspike.cdise.api.CdiContainer;
 import org.apache.deltaspike.cdise.api.CdiContainerLoader;
 import org.apache.deltaspike.core.api.provider.BeanProvider;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
 
 import java.util.List;
 
@@ -35,7 +38,14 @@ public class MenaRepositoryTest {
 
         // Access MenaRepository from CDI
         menaRepository = BeanProvider.getContextualReference(MenaRepository.class);
+
+        // Clear the database
+        EntityManager em = BeanProvider.getContextualReference(EntityManager.class);
+        em.getTransaction().begin();
+        em.createQuery("DELETE FROM MenaEntity").executeUpdate();
+        em.getTransaction().commit();
     }
+
 
     @Test
     public void testFindByCode() {

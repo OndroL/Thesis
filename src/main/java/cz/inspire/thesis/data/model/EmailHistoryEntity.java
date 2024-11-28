@@ -10,7 +10,6 @@ import org.hibernate.annotations.JdbcTypeCode;
 import java.sql.Types;
 import java.util.Collection;
 import java.util.Date;
-import java.util.List;
 
 @AllArgsConstructor
 @Setter

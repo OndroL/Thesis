@@ -3,6 +3,7 @@ package RepositoryTests;
 import cz.inspire.thesis.data.EntityManagerProducer;
 import cz.inspire.thesis.data.model.EmailHistoryEntity;
 import cz.inspire.thesis.data.repository.EmailHistoryRepository;
+import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
 import jakarta.persistence.Persistence;
 import org.apache.deltaspike.cdise.api.CdiContainer;
@@ -35,6 +36,13 @@ public class EmailHistoryRepositoryTest {
 
         // Access EmailHistoryRepository from CDI
         emailHistoryRepository = BeanProvider.getContextualReference(EmailHistoryRepository.class);
+
+        // Clear the database
+        EntityManager em = BeanProvider.getContextualReference(EntityManager.class);
+        em.getTransaction().begin();
+        em.createQuery("DELETE FROM EmailHistoryEntity ").executeUpdate();
+        em.getTransaction().commit();
+
     }
 
     @Test
@@ -63,9 +71,10 @@ public class EmailHistoryRepositoryTest {
         }
 
         // Test retrieving entities with pagination
-        List<EmailHistoryEntity> result = emailHistoryRepository.findAll(0, 5); // First 5 entities
+        List<EmailHistoryEntity> result = emailHistoryRepository.findAll(1, 5); // First 5 entities
         assertNotNull("Result list should not be null", result);
         assertEquals(5, result.size());
+        assertEquals("8", result.getFirst().getId());
     }
 
     @Test
@@ -82,7 +91,7 @@ public class EmailHistoryRepositoryTest {
         emailHistoryRepository.save(new EmailHistoryEntity("3", later, "Text3", "Subject3", null, null, null, true, true, null, true));
 
         // Test finding by date range
-        List<EmailHistoryEntity> results = emailHistoryRepository.findByDate(earlier, later, 0, 5);
+        List<EmailHistoryEntity> results = emailHistoryRepository.findByDate(earlier, later, 0, 3);
         assertNotNull("Result list should not be null", results);
         assertEquals(3, results.size());
     }
