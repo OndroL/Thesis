@@ -19,10 +19,10 @@ public class MenaEntity {
     private String kod;
     @Column
     private String vycetka;
-    @Column(nullable = false)
+    @Column
     private int kodnum;
-    @Column(nullable = false)
+    @Column
     private int zaokrouhlenihotovost;
-    @Column(nullable = false)
+    @Column
     private int zaokrouhlenikarta;
 }

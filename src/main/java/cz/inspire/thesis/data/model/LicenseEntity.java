@@ -25,39 +25,41 @@ public class LicenseEntity {
     @Column
     private Boolean valid;
     @Column
-    private Boolean centeronline;
+    private Boolean centerOnline;
     @Column
-    private Date validfrom;
+    private Date validFrom;
     @Column
-    private Boolean validfromset;
+    private Boolean validFromSet;
     @Column
-    private Date validto;
+    private Date validTo;
     @Column
-    private int activitylimit;
+    private Boolean validToSet;
     @Column
-    private int sportcenterlimit;
+    private Integer activityLimit;
     @Column
-    private int sportcustomerslimit;
+    private Integer sportCenterLimit;
     @Column
-    private int userslimit;
+    private Integer sportCustomersLimit;
     @Column
-    private int customergroupslimit;
+    private Integer usersLimit;
     @Column
-    private int pokladnalimit;
+    private Integer customerGroupsLimit;
     @Column
-    private int skladlimit;
+    private Integer pokladnaLimit;
     @Column
-    private int maxclients;
+    private Integer skladLimit;
     @Column
-    private Boolean ovladaniquido;
+    private Integer maxClients;
+    @Column
+    private Boolean ovladaniQuido;
     @Column
     private Long modules;
     @Column
     private String hash;
     @Column
-    private Date createddate;
+    private Date createdDate;
     @Column
-    private Date generateddate;
+    private Date generatedDate;
     @Column
-    private int centerid;
+    private int centerId;
 }

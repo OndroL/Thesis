@@ -22,7 +22,7 @@ public class PrintTemplateEntity {
     private String id;
     @Column
     private String content;
-    @Column(nullable = false)
+    @Column
     private int type;
     @Column
     private String templatename;

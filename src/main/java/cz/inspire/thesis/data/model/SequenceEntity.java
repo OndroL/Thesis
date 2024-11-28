@@ -18,7 +18,7 @@ public class SequenceEntity {
     private String name;
     @Column
     private String pattern;
-    @Column(nullable = false)
+    @Column
     private int minvalue;
     @Column
     private String last;

@@ -11,6 +11,11 @@ import java.sql.Types;
 import java.util.Collection;
 import java.util.Date;
 
+/**
+ * TODO : Add Equals ! ! !
+ */
+
+
 @AllArgsConstructor
 @Setter
 @Getter
@@ -46,11 +51,30 @@ public class EmailHistoryEntity {
     private Boolean automatic;
     @Column
     private Boolean html;
+    /**
+     * This Column should be map
+     * public abstract void setAttachments(java.util.Map attachments);
+     */
     @Lob
     @JdbcTypeCode(Types.VARBINARY)
     @OneToMany(mappedBy = "email_history", cascade = CascadeType.ALL)
     private Collection<GeneratedAttachmentEntity> attachments;
     @Column
     private Boolean sent;
+
+    /**
+     * Here should also be relation to GeneratedAttachment
+     *      * @ejb.interface-method
+     *      *    view-type="local"
+     *      * @ejb.relation
+     *      *    name="generated_attachment-email_history"
+     *      *    role-name="email-ma-generovane-prilohy"
+     *      * @ejb.value-object match="*"
+     *      *    aggregate="java.util.List<GeneratedAttachmentDetails>"
+     *      *    aggregate-name="GeneratedAttachments"
+     *      *
+     * public abstract java.util.Collection getGeneratedAttachments();
+     * public abstract void setGeneratedAttachments(java.util.Collection generatedAttachments);
+     */
 
 }
