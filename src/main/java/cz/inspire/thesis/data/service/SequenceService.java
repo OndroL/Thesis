@@ -41,6 +41,10 @@ public class SequenceService {
 
     public void ejbPostCreate(SequenceDetails details, SequenceEntity entity) throws CreateException {
         if (details.getStornoSeqName() != null) {
+            /**
+             * This was here before
+             * Optional<SkladSequenceEntity> stornoSeq = sequenceRepository.findById(details.getStornoSeqName());
+             */
             Optional<SkladSequenceEntity> stornoSeq = sequenceRepository.findById(details.getStornoSeqName());
             if (stornoSeq.isPresent()) {
                 entity.setStornoSeq(stornoSeq.get());
