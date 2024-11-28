@@ -27,10 +27,6 @@ public class SMSHistoryEntity {
     private Date date;
     @Column
     private String message;
-    /**
-     * This can be a problem, need to verify what data are in DB as bytea
-     * in original implementation was used java.util.Collection
-     */
     @Lob
     @JdbcTypeCode(Types.VARBINARY)
     @Column
@@ -42,7 +38,7 @@ public class SMSHistoryEntity {
     @Lob
     @JdbcTypeCode(Types.VARBINARY)
     @Column
-    private byte[] morerecipients;
+    private byte[] moreRecipients;
     @Column
     private Boolean automatic;
 }

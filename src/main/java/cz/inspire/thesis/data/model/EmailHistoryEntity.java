@@ -31,10 +31,6 @@ public class EmailHistoryEntity {
     private String text;
     @Column
     private String subject;
-    /**
-     * This can be a problem, need to verify what data are in DB as bytea
-     * in original implementation was used java.util.Collection
-     */
     @Lob
     @JdbcTypeCode(Types.VARBINARY)
     @Column
@@ -51,10 +47,6 @@ public class EmailHistoryEntity {
     private Boolean automatic;
     @Column
     private Boolean html;
-    /**
-     * This Column should be map
-     * public abstract void setAttachments(java.util.Map attachments);
-     */
     @Lob
     @JdbcTypeCode(Types.VARBINARY)
     @OneToMany(mappedBy = "email_history", cascade = CascadeType.ALL)
@@ -76,5 +68,4 @@ public class EmailHistoryEntity {
      * public abstract java.util.Collection getGeneratedAttachments();
      * public abstract void setGeneratedAttachments(java.util.Collection generatedAttachments);
      */
-
 }

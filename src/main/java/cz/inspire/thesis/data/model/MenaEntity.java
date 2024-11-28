@@ -22,7 +22,7 @@ public class MenaEntity {
     @Column
     private int kodnum;
     @Column
-    private int zaokrouhlenihotovost;
+    private int zaokrouhleniHotovost;
     @Column
-    private int zaokrouhlenikarta;
+    private int zaokrouhleniKarta;
 }

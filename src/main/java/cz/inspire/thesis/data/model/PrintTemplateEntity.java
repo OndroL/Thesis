@@ -25,7 +25,7 @@ public class PrintTemplateEntity {
     @Column
     private int type;
     @Column
-    private String templatename;
+    private String templateName;
     @Column
     private String filename;
 }
