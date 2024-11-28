@@ -24,11 +24,7 @@ public class SequenceEntity {
     private String last;
     @Column
     private int type;
-    /**
-     * This is only placeholder, maybe a correct one for sklad_seq
-     */
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    @JoinColumn(name = "sklad_seq", referencedColumnName = "sklad")
-    private SkladSequenceEntity stornoSeq;
-
+    @OneToOne
+    @JoinColumn(name = "storno_seq", referencedColumnName = "name")
+    private SequenceEntity stornoSeq;
 }
