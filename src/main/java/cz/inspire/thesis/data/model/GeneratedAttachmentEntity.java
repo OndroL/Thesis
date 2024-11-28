@@ -22,10 +22,9 @@ public class GeneratedAttachmentEntity {
     @Column
     private byte[] attributes;
 
-
-    @ManyToOne(cascade = CascadeType.REMOVE)
+    @ManyToOne(cascade = CascadeType.REMOVE, fetch = FetchType.LAZY)
     @JoinColumn(name = "email_history", referencedColumnName = "id", nullable = false)
-    private EmailHistoryEntity  emailHistory;
+    private EmailHistoryEntity emailHistory;
 
     @ManyToOne
     @JoinColumn(name = "print_template", referencedColumnName = "id")

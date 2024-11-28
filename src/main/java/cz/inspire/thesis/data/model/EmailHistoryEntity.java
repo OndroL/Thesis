@@ -10,6 +10,7 @@ import org.hibernate.annotations.JdbcTypeCode;
 import java.sql.Types;
 import java.util.Collection;
 import java.util.Date;
+import java.util.List;
 
 /**
  * TODO : Add Equals ! ! !
@@ -49,12 +50,14 @@ public class EmailHistoryEntity {
     private Boolean html;
     @Lob
     @JdbcTypeCode(Types.VARBINARY)
-    @OneToMany(mappedBy = "email_history", cascade = CascadeType.ALL)
-    private Collection<GeneratedAttachmentEntity> attachments;
+    private byte[] attachments;
     @Column
     private Boolean sent;
 
-    /**
+    @OneToMany(mappedBy = "emailHistory", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    private List<GeneratedAttachmentEntity> generatedAttachments;
+
+    /*
      * Here should also be relation to GeneratedAttachment
      *      * @ejb.interface-method
      *      *    view-type="local"

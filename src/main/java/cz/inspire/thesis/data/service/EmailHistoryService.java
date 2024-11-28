@@ -9,7 +9,6 @@ import cz.inspire.thesis.exceptions.CreateException;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 
-import java.util.Iterator;
 
 import static cz.inspire.thesis.data.utils.CollectionsHelper.deserializeCollection;
 import static cz.inspire.thesis.data.utils.CollectionsHelper.serializeCollection;
