@@ -22,7 +22,7 @@ public class SequenceEntity {
     @Column
     private String pattern;
     @Column
-    private int minvalue;
+    private int minValue;
     @Column
     private String last;
     @Column

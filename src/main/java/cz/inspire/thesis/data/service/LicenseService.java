@@ -21,7 +21,7 @@ public class LicenseService {
 
     /**
      * Here is a difference from Bean implementation
-     * In Bean implementation this is part of Bean so it has direct access to class hence getDetails()
+     * In Bean implementation this is part of Bean, so it has direct access to class hence getDetails()
      * But it being implemented in Service layer, it needs reference to entity
      */
     public LicenseDetails getDetails(LicenseEntity entity) {

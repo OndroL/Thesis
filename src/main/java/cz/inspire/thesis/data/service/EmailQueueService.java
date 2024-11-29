@@ -26,11 +26,11 @@ public class EmailQueueService {
             }
             entity.setId(details.getId());
             entity.setCreated(details.getCreated());
-            entity.setEmailhistory(details.getEmailHistory());
+            entity.setEmailHistory(details.getEmailHistory());
             entity.setRecipient(details.getRecipient());
             entity.setPriority(details.getPriority());
-            entity.setRemoveemailhistory(details.isRemoveEmailHistory());
-            entity.setDependentemailhistory(details.getDependentEmailHistory());
+            entity.setRemoveEmailHistory(details.isRemoveEmailHistory());
+            entity.setDependentEmailHistory(details.getDependentEmailHistory());
             emailQueueRepository.save(entity);
             return entity.getId();
         } catch (Exception e) {
@@ -43,11 +43,11 @@ public class EmailQueueService {
         EmailQueueDetails details = new EmailQueueDetails();
         details.setId(entity.getId());
         details.setCreated(entity.getCreated());
-        details.setEmailHistory(entity.getEmailhistory());
+        details.setEmailHistory(entity.getEmailHistory());
         details.setRecipient(entity.getRecipient());
         details.setPriority(entity.getPriority());
-        details.setRemoveEmailHistory(entity.isRemoveemailhistory());
-        details.setDependentEmailHistory(entity.getDependentemailhistory());
+        details.setRemoveEmailHistory(entity.isRemoveEmailHistory());
+        details.setDependentEmailHistory(entity.getDependentEmailHistory());
         return details;
     }
 

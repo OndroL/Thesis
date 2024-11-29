@@ -22,15 +22,15 @@ public class EmailQueueEntity {
     @Column
     private Date created;
     @Column
-    private String emailhistory;
+    private String emailHistory;
     @Column
     private String recipient;
-    @Column(nullable = false, columnDefinition = "integer DEFAULT 0")
-    private int priority;
-    @Column(nullable = false, columnDefinition = "BOOLEAN DEFAULT false")
-    private boolean removeemailhistory;
     @Column
-    private String dependentemailhistory;
+    private int priority;
+    @Column
+    private boolean removeEmailHistory;
+    @Column
+    private String dependentEmailHistory;
 
     @Override
     public final boolean equals(Object o) {

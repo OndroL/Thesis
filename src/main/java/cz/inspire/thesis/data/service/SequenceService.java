@@ -44,7 +44,7 @@ public class SequenceService {
 
     public void setDetails(SequenceEntity entity, SequenceDetails details) {
         entity.setPattern(details.getPattern());
-        entity.setMinvalue(details.getMinValue());
+        entity.setMinValue(details.getMinValue());
         entity.setLast(details.getLast());
         entity.setType(details.getType());
     }
@@ -53,7 +53,7 @@ public class SequenceService {
         SequenceDetails details = new SequenceDetails();
         details.setName(entity.getName());
         details.setPattern(entity.getPattern());
-        details.setMinValue(entity.getMinvalue());
+        details.setMinValue(entity.getMinValue());
         details.setLast(entity.getLast());
         details.setType(entity.getType());
         if (entity.getStornoSeq() != null) {

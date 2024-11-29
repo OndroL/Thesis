@@ -24,9 +24,9 @@ public interface EmailQueueRepository extends EntityRepository<EmailQueueEntity,
     @Query(value="SELECT p FROM EmailQueueEntity p ORDER BY priority DESC, created ASC",max=1)
     Optional<EmailQueueEntity> findFirstMail();
 
-    @Query("SELECT p FROM EmailQueueEntity p WHERE p.emailhistory = ?1")
+    @Query("SELECT p FROM EmailQueueEntity p WHERE p.emailHistory = ?1")
     List<EmailQueueEntity> findByHistory(String historyId);
 
-    @Query("SELECT p FROM EmailQueueEntity p WHERE p.dependentemailhistory = ?1")
+    @Query("SELECT p FROM EmailQueueEntity p WHERE p.dependentEmailHistory = ?1")
     List<EmailQueueEntity> findByDependentHistory(String historyId);
 }

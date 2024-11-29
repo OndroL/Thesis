@@ -67,7 +67,7 @@ public class SequenceRepositoryTest {
         SequenceEntity baseSequence = new SequenceEntity();
         baseSequence.setName("base-sequence");
         baseSequence.setPattern("BASE");
-        baseSequence.setMinvalue(1);
+        baseSequence.setMinValue(1);
         baseSequence.setLast("001");
         baseSequence.setType(1);
         sequenceRepository.save(baseSequence);
@@ -76,7 +76,7 @@ public class SequenceRepositoryTest {
         SequenceEntity stornoSequence = new SequenceEntity();
         stornoSequence.setName("storno-sequence");
         stornoSequence.setPattern("STORNO");
-        stornoSequence.setMinvalue(10);
+        stornoSequence.setMinValue(10);
         stornoSequence.setLast("010");
         stornoSequence.setType(2);
         stornoSequence.setStornoSeq(baseSequence);
@@ -100,7 +100,7 @@ public class SequenceRepositoryTest {
         SequenceEntity seq1 = new SequenceEntity();
         seq1.setName("A-sequence");
         seq1.setPattern("PATTERN-A");
-        seq1.setMinvalue(1);
+        seq1.setMinValue(1);
         seq1.setLast("001");
         seq1.setType(1);
         sequenceRepository.save(seq1);
@@ -108,7 +108,7 @@ public class SequenceRepositoryTest {
         SequenceEntity seq2 = new SequenceEntity();
         seq2.setName("B-sequence");
         seq2.setPattern("PATTERN-B");
-        seq2.setMinvalue(10);
+        seq2.setMinValue(10);
         seq2.setLast("010");
         seq2.setType(2);
         sequenceRepository.save(seq2);
@@ -116,7 +116,7 @@ public class SequenceRepositoryTest {
         SequenceEntity seq3 = new SequenceEntity();
         seq3.setName("C-sequence");
         seq3.setPattern("PATTERN-C");
-        seq3.setMinvalue(20);
+        seq3.setMinValue(20);
         seq3.setLast("020");
         seq3.setType(3);
         sequenceRepository.save(seq3);
