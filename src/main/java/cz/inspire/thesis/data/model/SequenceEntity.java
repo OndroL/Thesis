@@ -25,6 +25,6 @@ public class SequenceEntity {
     @Column
     private int type;
     @OneToOne
-    @JoinColumn(name = "storno_seq", referencedColumnName = "name")
+    @JoinColumn(name = "stornoseq", referencedColumnName = "name")
     private SequenceEntity stornoSeq;
 }

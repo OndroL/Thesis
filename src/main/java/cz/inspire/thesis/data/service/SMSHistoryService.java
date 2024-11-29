@@ -25,7 +25,7 @@ public class SMSHistoryService {
         details.setDate(entity.getDate());
         details.setGroups(deserializeCollection(entity.getGroups()));
         details.setRecipients(deserializeCollection(entity.getRecipients()));
-        details.setMoreRecipients(deserializeCollection(entity.getMorerecipients()));
+        details.setMoreRecipients(deserializeCollection(entity.getMoreRecipients()));
         details.setMessage(entity.getMessage());
         details.setAutomatic(entity.getAutomatic());
 
@@ -43,7 +43,7 @@ public class SMSHistoryService {
             entity.setDate(details.getDate());
             entity.setGroups(serializeCollection(details.getGroups()));
             entity.setRecipients(serializeCollection(details.getRecipients()));
-            entity.setMorerecipients(serializeCollection(details.getMoreRecipients()));
+            entity.setMoreRecipients(serializeCollection(details.getMoreRecipients()));
             entity.setMessage(details.getMessage());
             entity.setAutomatic(details.getAutomatic());
 

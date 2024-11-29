@@ -49,7 +49,7 @@ public class GeneratedAttachmentRepositoryTest {
     }
 
     private EmailHistoryEntity createEmailHistory(String id) {
-        EmailHistoryEntity emailHistory = new EmailHistoryEntity(id, new java.util.Date(), "Body", "Subject", null, null, null, true, true, null, true);
+        EmailHistoryEntity emailHistory = new EmailHistoryEntity(id, new java.util.Date(), "Body", "Subject", null, null, null, true, true, null, true, null);
         entityManager.getTransaction().begin();
         entityManager.persist(emailHistory);
         entityManager.getTransaction().commit();

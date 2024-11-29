@@ -39,8 +39,8 @@ public class MenaService {
         details.setKod(menaEntity.getKod());
         details.setKodNum(menaEntity.getKodnum());
         details.setVycetkaList(parseVycetkaList(menaEntity.getVycetka()));
-        details.setZaokrouhleniHotovost(menaEntity.getZaokrouhlenihotovost());
-        details.setZaokrouhleniKarta(menaEntity.getZaokrouhlenikarta());
+        details.setZaokrouhleniHotovost(menaEntity.getZaokrouhleniHotovost());
+        details.setZaokrouhleniKarta(menaEntity.getZaokrouhleniKarta());
         return details;
     }
 

@@ -28,7 +28,7 @@ public class PrintTemplateService {
             entity.setId(details.getId());
             entity.setContent(details.getContent());
             entity.setType(details.getType());
-            entity.setTemplatename(details.getTemplateName());
+            entity.setTemplateName(details.getTemplateName());
             entity.setFilename(details.getFileName());
 
             printTemplateRepository.save(entity);
@@ -45,7 +45,7 @@ public class PrintTemplateService {
         details.setId(entity.getId());
         details.setContent(entity.getContent());
         details.setType(entity.getType());
-        details.setTemplateName(entity.getTemplatename());
+        details.setTemplateName(entity.getTemplateName());
         details.setFileName(entity.getFilename());
 
         return details;

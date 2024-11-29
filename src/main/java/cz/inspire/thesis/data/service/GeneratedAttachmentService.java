@@ -34,7 +34,7 @@ public class GeneratedAttachmentService {
             entity.setId(details.getId());
             entity.setEmail(details.getEmail());
             entity.setAttributes(serializeAttributes(details.getAttributes()));
-            entity.setEmail_history(emailHistory);
+            entity.setEmailHistory(emailHistory);
 
             generatedAttachmentRepository.save(entity);
 
@@ -51,7 +51,7 @@ public class GeneratedAttachmentService {
     public void ejbPostCreate(GeneratedAttachmentDetails details, EmailHistoryEntity emailHistory, GeneratedAttachmentEntity entity) throws CreateException {
         try {
             // Set EmailHistory (already set in ejbCreate)
-            entity.setEmail_history(emailHistory);
+            entity.setEmailHistory(emailHistory);
 
             // Set PrintTemplate if provided
             String templateId = details.getPrintTemplateId();
@@ -80,8 +80,8 @@ public class GeneratedAttachmentService {
             details.setPrintTemplateId(entity.getPrintTemplate().getId());
         }
 
-        if (entity.getEmail_history() != null) {
-            details.setEmailHistoryId(entity.getEmail_history().getId());
+        if (entity.getEmailHistory() != null) {
+            details.setEmailHistoryId(entity.getEmailHistory().getId());
         }
 
         return details;
