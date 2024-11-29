@@ -56,19 +56,4 @@ public class EmailHistoryEntity {
 
     @OneToMany(mappedBy = "emailHistory", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private List<GeneratedAttachmentEntity> generatedAttachments;
-
-    /*
-     * Here should also be relation to GeneratedAttachment
-     *      * @ejb.interface-method
-     *      *    view-type="local"
-     *      * @ejb.relation
-     *      *    name="generated_attachment-email_history"
-     *      *    role-name="email-ma-generovane-prilohy"
-     *      * @ejb.value-object match="*"
-     *      *    aggregate="java.util.List<GeneratedAttachmentDetails>"
-     *      *    aggregate-name="GeneratedAttachments"
-     *      *
-     * public abstract java.util.Collection getGeneratedAttachments();
-     * public abstract void setGeneratedAttachments(java.util.Collection generatedAttachments);
-     */
 }
