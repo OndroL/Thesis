@@ -13,11 +13,8 @@ import java.util.Optional;
  */
 @Repository
 public interface SequenceRepository extends EntityRepository<SequenceEntity,String> {
-    /**
-     * This query waiting for conversion of Sklad_SEQ to be properly tested and implemented
-     */
-    @Query
-    Optional<SequenceEntity>findById(String id);
+    @Query("SELECT s FROM SequenceEntity s ORDER BY s.name")
+    List<SequenceEntity> findAll();
     @Query("SELECT s FROM SequenceEntity s WHERE s.type = ?1 ORDER BY s.name")
     List<SequenceEntity> findByType(int type);
 
@@ -29,4 +26,9 @@ public interface SequenceRepository extends EntityRepository<SequenceEntity,Stri
             "(SELECT ps.sekvence FROM PokladnaUcetSequenceEntity ps WHERE ps.pokladna = ?1 AND ps.type = ?2)")
     List<SequenceEntity> findByPokladnaType(String pokladnaId, int type);
 
+    /**
+     * This query is here only for test purposes of stornoSeq relationship
+     */
+    @Query("SELECT s FROM SequenceEntity s WHERE s.name = ?1")
+    Optional<SequenceEntity> findById(String id);
 }

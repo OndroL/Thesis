@@ -91,4 +91,46 @@ public class SequenceRepositoryTest {
         assertEquals("base-sequence", result.getStornoSeq().getName());
         assertEquals("BASE", result.getStornoSeq().getPattern());
     }
+
+    @Test
+    public void testFindAll() {
+        assertNotNull("SequenceRepository should be initialized!", sequenceRepository);
+
+        // Insert multiple SequenceEntity records
+        SequenceEntity seq1 = new SequenceEntity();
+        seq1.setName("A-sequence");
+        seq1.setPattern("PATTERN-A");
+        seq1.setMinvalue(1);
+        seq1.setLast("001");
+        seq1.setType(1);
+        sequenceRepository.save(seq1);
+
+        SequenceEntity seq2 = new SequenceEntity();
+        seq2.setName("B-sequence");
+        seq2.setPattern("PATTERN-B");
+        seq2.setMinvalue(10);
+        seq2.setLast("010");
+        seq2.setType(2);
+        sequenceRepository.save(seq2);
+
+        SequenceEntity seq3 = new SequenceEntity();
+        seq3.setName("C-sequence");
+        seq3.setPattern("PATTERN-C");
+        seq3.setMinvalue(20);
+        seq3.setLast("020");
+        seq3.setType(3);
+        sequenceRepository.save(seq3);
+
+        // Use the findAll method to retrieve all records
+        List<SequenceEntity> allSequences = sequenceRepository.findAll();
+
+        // Assertions
+        assertNotNull("findAll should not return null!", allSequences);
+        assertEquals("findAll should return 3 records!", 3, allSequences.size());
+
+        // Verify order by name
+        assertEquals("A-sequence", allSequences.get(0).getName());
+        assertEquals("B-sequence", allSequences.get(1).getName());
+        assertEquals("C-sequence", allSequences.get(2).getName());
+    }
 }
