@@ -5,6 +5,7 @@ import org.apache.deltaspike.data.api.*;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface EmailHistoryRepository extends EntityRepository<EmailHistoryEntity,String> {
@@ -16,4 +17,7 @@ public interface EmailHistoryRepository extends EntityRepository<EmailHistoryEnt
 
     @Query("SELECT p FROM EmailHistoryEntity p WHERE (p.date >= ?1) AND (p.date <= ?2) AND (p.sent = true) ORDER BY p.date DESC")
     List<EmailHistoryEntity> findByDate(Date dateFrom, Date dateTo, @FirstResult int offset, @MaxResults int count);
+
+    @Query("SELECT p FROM EmailHistoryEntity p WHERE p.id = ?1")
+    Optional<EmailHistoryEntity> findById(String emailHistoryId);
 }
