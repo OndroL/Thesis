@@ -17,7 +17,7 @@ import lombok.Setter;
 @Table(name="sport_loc")
 public class SportLocEntity {
     @Id
-    private String Id;
+    private String id;
     @Column
     private String jazyk;
     @Column
