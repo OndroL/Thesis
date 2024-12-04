@@ -6,6 +6,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.List;
+
 
 @AllArgsConstructor
 @Setter
@@ -20,5 +22,18 @@ public class SportKategorieEntity {
     private String multiSportFacilityId;
     @Column
     private String multiSportServiceUUID;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "nadrazena_kategorie", referencedColumnName = "id")
+    private SportKategorieEntity nadrazenaKategorie;
+
+    @OneToMany(mappedBy = "nadrazenaKategorie", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<SportKategorieEntity> podrazeneKategorie;
+
+    @OneToMany(mappedBy = "sportKategorie", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<SportKategorieLocEntity> localeData;
+
+    @OneToMany(mappedBy = "sportKategorie", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<SportEntity> cinnosti;
 
 }
