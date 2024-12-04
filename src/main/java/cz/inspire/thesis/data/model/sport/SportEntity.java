@@ -1,15 +1,13 @@
 package cz.inspire.thesis.data.model.sport;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.awt.Color;
+import java.util.List;
 
 @AllArgsConstructor
 @Setter
@@ -54,7 +52,6 @@ public class SportEntity {
     private Boolean zobrazitText;
     /**
      * Setter in old bean look's like this -> public abstract void setViditelnyWeb(boolean uctovatZalohu);
-     * Maybe it's only a mistake
      */
     @Column
     private Boolean viditelnyWeb;
@@ -68,4 +65,10 @@ public class SportEntity {
     private Integer minutyPredVyhodnocenimKapacity;
     @Column
     private Integer maximalniPocetOsobNaZakaznika;
+
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
+    @JoinColumn(name = "sport")
+    private List<SportLocEntity> localeData;
+
+
 }
