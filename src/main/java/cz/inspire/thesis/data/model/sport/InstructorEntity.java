@@ -8,6 +8,7 @@ import lombok.Setter;
 import org.hibernate.annotations.JdbcTypeCode;
 
 import java.sql.Types;
+import java.util.List;
 
 @AllArgsConstructor
 @Setter
@@ -51,5 +52,8 @@ public class InstructorEntity {
     private Boolean googleCalendarNotification;
     @Column
     private int googleCalendarNotificationBefore;
+
+    @OneToMany(mappedBy = "instructor", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<SportInstructorEntity> sportInstructors;
 
 }

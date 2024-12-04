@@ -93,4 +93,10 @@ public class SportEntity {
     @JoinColumn(name = "activity_id", referencedColumnName = "id")
     private ActivityEntity activity;
 
+    @OneToMany(mappedBy = "sport", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<SportInstructorEntity> sportInstructors;
+
+    /**
+     * Object relationship missing and yet to be implemented
+     */
 }
