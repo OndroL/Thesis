@@ -30,4 +30,7 @@ public class ActivityEntity {
 
     @ManyToMany(mappedBy = "activities")
     private Set<InstructorEntity> instructors;
+
+    @OneToMany(mappedBy = "activity", cascade = CascadeType.ALL, orphanRemoval = false)
+    private Set<SportEntity> sports;
 }
