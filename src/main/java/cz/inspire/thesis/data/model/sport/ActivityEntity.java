@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.util.Collection;
+import java.util.Set;
 
 @AllArgsConstructor
 @Setter
@@ -26,8 +27,7 @@ public class ActivityEntity {
     private int index;
     @Column
     private String iconId;
-    @OneToMany(mappedBy = "activity", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private Collection<SportEntity> sports;
 
-
+    @ManyToMany(mappedBy = "activities")
+    private Set<InstructorEntity> instructors;
 }

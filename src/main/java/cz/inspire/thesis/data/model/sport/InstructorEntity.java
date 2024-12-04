@@ -9,6 +9,7 @@ import org.hibernate.annotations.JdbcTypeCode;
 
 import java.sql.Types;
 import java.util.List;
+import java.util.Set;
 
 @AllArgsConstructor
 @Setter
@@ -56,4 +57,11 @@ public class InstructorEntity {
     @OneToMany(mappedBy = "instructor", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<SportInstructorEntity> sportInstructors;
 
+    @ManyToMany
+    @JoinTable(
+            name = "instructor_activity",
+            joinColumns = @JoinColumn(name = "instructor_id"),
+            inverseJoinColumns = @JoinColumn(name = "activity_id")
+    )
+    private Set<ActivityEntity> activities;
 }
