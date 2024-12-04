@@ -85,5 +85,12 @@ public class SportEntity {
     @OneToMany(mappedBy = "nadrazenySport", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<SportEntity> podrazeneSporty;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "navazujici_sport", referencedColumnName = "id")
+    private SportEntity navazujiciSport;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "activity_id", referencedColumnName = "id")
+    private ActivityEntity activity;
 
 }
