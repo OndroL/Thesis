@@ -20,7 +20,7 @@ public class SportInstructorEntity {
     @Column
     private String oldSportId;
     @Column
-    private Boolean delete;
+    private Boolean deleted;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "sport_id")

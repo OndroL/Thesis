@@ -25,6 +25,6 @@ public class ObjektLocEntity {
     private String zkracenyNazev;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "objekt_id", nullable = false)
+    @JoinColumn(name = "objekt")
     private ObjektEntity objekt;
 }

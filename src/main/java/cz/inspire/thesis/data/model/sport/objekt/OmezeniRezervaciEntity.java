@@ -5,8 +5,10 @@ import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.JdbcTypeCode;
 
 import java.io.Serializable;
+import java.sql.Types;
 
 @Data
 @AllArgsConstructor
@@ -15,10 +17,10 @@ import java.io.Serializable;
 @Table(name = "omezeni_rezervaci")
 public class OmezeniRezervaciEntity implements Serializable {
     @Id
-    @Column(name = "objekt_id", nullable = false)
     private String objektId;
     @Lob
-    @Column(name = "omezeni", nullable = false)
+    @JdbcTypeCode(Types.VARBINARY)
+    @Column
     private OtviraciDoba omezeni;
 }
 

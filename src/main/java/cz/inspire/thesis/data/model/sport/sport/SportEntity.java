@@ -24,7 +24,7 @@ public class SportEntity {
     @Id
     private String id;
     @Column
-    private String type;
+    private int typ;
     @Column
     private String zboziId;
     @Column

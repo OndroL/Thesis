@@ -6,7 +6,9 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.JdbcTypeCode;
 
+import java.sql.Types;
 import java.util.Date;
 
 @AllArgsConstructor
@@ -19,16 +21,8 @@ public class OtviraciDobaObjektuEntity {
     @EmbeddedId
     private OtviraciDobaObjektuPK id;
 
-    @MapsId("objektId")
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "objekt_id")
-    private ObjektEntity objekt;
-
-    @MapsId("platnostOd")
-    @Column(name = "platnost_od")
-    private Date platnostOd;
-
     @Lob
-    @Column(name = "otviraci_doba")
+    @JdbcTypeCode(Types.VARBINARY)
+    @Column
     private OtviraciDoba otviraciDoba;
 }

@@ -29,9 +29,8 @@ public class OvladacObjektuEntity {
     private int delkaSepnutiPoKonci;
     @Column
     private int zapnutiPredZacatkem;
-    @Lob
-    @JdbcTypeCode(Types.VARBINARY)
-    @Column
+    //This means that, attribute cislaZapojeniList is not persisted in DB as it is in Bean
+    @Transient
     private List<Integer> cislaZapojeniList;
     @Column
     private String objektId;

@@ -20,10 +20,10 @@ public class ObjektSportEntity {
     private int index;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "sport_id", referencedColumnName = "id", nullable = false)
+    @JoinColumn(name = "sport", referencedColumnName = "id", nullable = false)
     private SportEntity sport;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "objekt_id", referencedColumnName = "id", nullable = false)
+    @JoinColumn(name = "objekt", referencedColumnName = "id", nullable = false)
     private ObjektEntity objekt;
 }

@@ -95,20 +95,17 @@ public class ObjektEntity {
     @OneToMany(mappedBy = "objekt", cascade = CascadeType.ALL, orphanRemoval = true)
     private Collection<ObjektSportEntity> objektSports;
 
-    @OneToMany(mappedBy = "objekt", cascade = CascadeType.ALL, orphanRemoval = true)
-    private Collection<OtviraciDobaObjektuEntity> openingHours;
-
-    @OneToMany(mappedBy = "objekt", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "objektId", cascade = CascadeType.ALL, orphanRemoval = true)
     private Collection<OvladacObjektuEntity> ovladaceObjektu;
 
-    @OneToMany(mappedBy = "objekt", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "objektId", cascade = CascadeType.ALL, orphanRemoval = true)
     private Collection<PodminkaRezervaceEntity> podminkyRezervaci;
 
     @ManyToMany
     @JoinTable(
             name = "nadobjekt_objekt",
-            joinColumns = @JoinColumn(name = "objekt_id"),
-            inverseJoinColumns = @JoinColumn(name = "nadobjekt_id")
+            joinColumns = @JoinColumn(name = "objekt"),
+            inverseJoinColumns = @JoinColumn(name = "nadobjekt")
     )
     private Set<ObjektEntity> nadobjekty;
 

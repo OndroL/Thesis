@@ -7,8 +7,6 @@
     <!-- Specify Hibernate as the JPA provider -->
     <provider>org.hibernate.jpa.HibernatePersistenceProvider</provider>
 
-    <!-- Entity Classes -->
-    <class>cz.inspire.thesis.data.model.HeaderEntity</class>
     <!-- Add other entities if applicable -->
 
     <properties>
@@ -29,6 +27,8 @@
       <property name="hibernate.show_sql" value="true" />
       <property name="hibernate.format_sql" value="true" />
       <property name="use_sql_comments" value="true" />
+      <property name="hibernate.use_sql_comments" value="true" />
+      <property name="hibernate.generate_statistics" value="true" />
 
       <!-- Connection Pool (Optional) -->
       <property name="hibernate.connection.pool_size" value="10" />
