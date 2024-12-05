@@ -1,13 +1,14 @@
-package cz.inspire.thesis.data.model.sport;
+package cz.inspire.thesis.data.model.sport.objekt;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.JdbcTypeCode;
 
+import java.sql.Types;
 import java.util.Collection;
-import java.util.List;
 import java.util.Set;
 
 @AllArgsConstructor
@@ -19,94 +20,68 @@ import java.util.Set;
 public class ObjektEntity {
     @Id
     private String id;
-
     @Column
     private int kapacita;
-
     @Column
     private int casovaJednotka;
-
     @Column
     private int typRezervace;
-
     @Column
     private boolean primyVstup;
-
     @Column
     private Integer minDelkaRezervace;
-
     @Column
     private Integer maxDelkaRezervace;
-
     @Column
     private Integer volnoPredRezervaci;
-
     @Column
     private Integer volnoPoRezervaci;
-
     @Column
     private Integer zarovnatZacatekRezervace;
-
     @Column
     private Integer delkaRezervaceNasobkem;
-
     @Column
     private Boolean vicestavovy;
-
     @Column
     private Integer stav;
-
+    @Lob
+    @JdbcTypeCode(Types.VARBINARY)
     @Column
     private Integer[] reservationStart;
-
+    @Lob
+    @JdbcTypeCode(Types.VARBINARY)
     @Column
     private Integer[] reservationFinish;
-
     @Column
     private boolean odcitatProcedury;
-
     @Column
     private boolean rezervaceNaTokeny;
-
     @Column
     private boolean rucniUzavreniVstupu;
-
     @Column
     private boolean upraveniCasuVstupu;
-
     @Column
     private boolean pozastavitVstup;
-
     @Column
     private boolean showProgress;
-
     @Column
     private boolean checkTokensCount;
-
     @Column
     private boolean selectInstructor;
-
     @Column
     private boolean showInstructorName;
-
     @Column
     private boolean showSportName;
-
     @Column
     private Integer vytvoreniRezervacePredZacatkem;
-
     @Column
     private Integer editaceRezervacePredZacatkem;
-
     @Column
     private Integer zruseniRezervacePredZacatkem;
-
     @Column
     private String googleCalendarId;
-
     @Column
     private boolean googleCalendarNotification;
-
     @Column
     private int googleCalendarNotificationBefore;
 
@@ -124,10 +99,10 @@ public class ObjektEntity {
     private Collection<OtviraciDobaObjektuEntity> openingHours;
 
     @OneToMany(mappedBy = "objekt", cascade = CascadeType.ALL, orphanRemoval = true)
-    private Collection<ControllerEntity> ovladaceObjektu;
+    private Collection<OvladacObjektuEntity> ovladaceObjektu;
 
     @OneToMany(mappedBy = "objekt", cascade = CascadeType.ALL, orphanRemoval = true)
-    private Collection<ReservationConditionEntity> podminkyRezervaci;
+    private Collection<PodminkaRezervaceEntity> podminkyRezervaci;
 
     @ManyToMany
     @JoinTable(
@@ -139,5 +114,4 @@ public class ObjektEntity {
 
     @ManyToMany(mappedBy = "nadobjekty")
     private Set<ObjektEntity> podobjekty;
-
 }

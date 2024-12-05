@@ -1,4 +1,4 @@
-package cz.inspire.thesis.data.model.sport;
+package cz.inspire.thesis.data.model.sport.objekt;
 
 import cz.inspire.thesis.data.utils.OtviraciDoba;
 import jakarta.persistence.*;
@@ -16,7 +16,6 @@ import java.util.Date;
 @Entity
 @Table(name = "otviraci_doba")
 public class OtviraciDobaObjektuEntity {
-
     @EmbeddedId
     private OtviraciDobaObjektuPK id;
 

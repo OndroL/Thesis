@@ -1,4 +1,4 @@
-package cz.inspire.thesis.data.model.sport;
+package cz.inspire.thesis.data.model.sport.sport;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;

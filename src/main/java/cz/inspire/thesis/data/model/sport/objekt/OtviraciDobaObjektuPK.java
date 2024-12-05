@@ -1,4 +1,4 @@
-package cz.inspire.thesis.data.model.sport;
+package cz.inspire.thesis.data.model.sport.objekt;
 
 import jakarta.persistence.Embeddable;
 import lombok.AllArgsConstructor;
@@ -17,7 +17,6 @@ import java.util.Date;
 @EqualsAndHashCode
 @Embeddable
 public class OtviraciDobaObjektuPK implements Serializable {
-
     private String objektId;
     private Date platnostOd;
 }

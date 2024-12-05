@@ -1,12 +1,17 @@
-package cz.inspire.thesis.data.model.sport;
+package cz.inspire.thesis.data.model.sport.sport;
 
+import cz.inspire.thesis.data.model.sport.activity.ActivityEntity;
+import cz.inspire.thesis.data.model.sport.objekt.ObjektSportEntity;
+import cz.inspire.thesis.data.utils.SazbaStorna;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.JdbcTypeCode;
 
 import java.awt.Color;
+import java.sql.Types;
 import java.util.List;
 
 @AllArgsConstructor
@@ -34,6 +39,8 @@ public class SportEntity {
     private Boolean uctovatZalohu;
     @Column
     private int podSportyCount;
+    @Lob
+    @JdbcTypeCode(Types.VARBINARY)
     @Column
     private List<SazbaStorna> sazbyStorna;
     @Column
@@ -96,7 +103,6 @@ public class SportEntity {
     @OneToMany(mappedBy = "sport", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<SportInstructorEntity> sportInstructors;
 
-    /**
-     * Object relationship missing and yet to be implemented
-     */
+    @OneToMany(mappedBy = "sport", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<ObjektSportEntity> objekty;
 }

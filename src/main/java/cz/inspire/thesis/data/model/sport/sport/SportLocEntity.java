@@ -1,4 +1,4 @@
-package cz.inspire.thesis.data.model.sport;
+package cz.inspire.thesis.data.model.sport.sport;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -9,23 +9,20 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.util.Date;
-
 @AllArgsConstructor
 @Setter
 @Getter
 @NoArgsConstructor
 @Entity
-@Table(name="activity_favourite")
-public class ActivityFavouriteEntity {
+@Table(name="sport_loc")
+public class SportLocEntity {
     @Id
     private String id;
     @Column
-    private String zakaznikId;
+    private String jazyk;
     @Column
-    private String activityId;
+    private String nazev;
     @Column
-    private int pocet;
-    @Column
-    private Date datumPosledniZmeny;
+    private String popis;
+
 }

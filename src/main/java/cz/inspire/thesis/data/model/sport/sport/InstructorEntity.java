@@ -1,5 +1,6 @@
-package cz.inspire.thesis.data.model.sport;
+package cz.inspire.thesis.data.model.sport.sport;
 
+import cz.inspire.thesis.data.model.sport.activity.ActivityEntity;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;

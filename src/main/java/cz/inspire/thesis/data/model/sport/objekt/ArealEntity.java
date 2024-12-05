@@ -1,4 +1,4 @@
-package cz.inspire.thesis.data.model.sport;
+package cz.inspire.thesis.data.model.sport.objekt;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -15,10 +15,8 @@ import java.util.List;
 @Entity
 @Table(name = "areal")
 public class ArealEntity {
-
     @Id
     private String id;
-
     @Column
     private Integer pocetNavazujucichRez;
 

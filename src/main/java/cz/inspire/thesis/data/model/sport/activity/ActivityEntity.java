@@ -1,13 +1,14 @@
-package cz.inspire.thesis.data.model.sport;
+package cz.inspire.thesis.data.model.sport.activity;
 
 
+import cz.inspire.thesis.data.model.sport.sport.InstructorEntity;
+import cz.inspire.thesis.data.model.sport.sport.SportEntity;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.util.Collection;
 import java.util.Set;
 
 @AllArgsConstructor

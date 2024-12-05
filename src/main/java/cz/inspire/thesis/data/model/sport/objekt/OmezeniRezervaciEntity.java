@@ -1,4 +1,4 @@
-package cz.inspire.thesis.data.model.sport;
+package cz.inspire.thesis.data.model.sport.objekt;
 
 import cz.inspire.thesis.data.utils.OtviraciDoba;
 import jakarta.persistence.*;
@@ -14,11 +14,9 @@ import java.io.Serializable;
 @Entity
 @Table(name = "omezeni_rezervaci")
 public class OmezeniRezervaciEntity implements Serializable {
-
     @Id
     @Column(name = "objekt_id", nullable = false)
     private String objektId;
-
     @Lob
     @Column(name = "omezeni", nullable = false)
     private OtviraciDoba omezeni;

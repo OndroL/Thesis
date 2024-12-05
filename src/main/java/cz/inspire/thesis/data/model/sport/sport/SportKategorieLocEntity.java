@@ -1,4 +1,4 @@
-package cz.inspire.thesis.data.model.sport;
+package cz.inspire.thesis.data.model.sport.sport;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -11,24 +11,18 @@ import lombok.Setter;
 @Getter
 @NoArgsConstructor
 @Entity
-@Table(name = "objekt_loc")
-public class ObjektLocEntity {
+@Table(name="sport_kategorie_loc")
+public class SportKategorieLocEntity {
     @Id
     private String id;
-
     @Column
     private String jazyk;
-
     @Column
     private String nazev;
-
     @Column
     private String popis;
 
-    @Column
-    private String zkracenyNazev;
-
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "objekt_id", nullable = false)
-    private ObjektEntity objekt;
+    @JoinColumn(name = "sportKategorie", nullable = false)
+    private SportKategorieEntity sportKategorie;
 }

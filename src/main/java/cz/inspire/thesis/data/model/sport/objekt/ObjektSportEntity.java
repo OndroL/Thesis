@@ -1,5 +1,6 @@
-package cz.inspire.thesis.data.model.sport;
+package cz.inspire.thesis.data.model.sport.objekt;
 
+import cz.inspire.thesis.data.model.sport.sport.SportEntity;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -13,10 +14,8 @@ import lombok.Setter;
 @Entity
 @Table(name = "objekt_sport")
 public class ObjektSportEntity {
-
     @Id
     private String id;
-
     @Column(nullable = false)
     private int index;
 

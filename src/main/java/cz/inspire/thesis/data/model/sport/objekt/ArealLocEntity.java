@@ -1,9 +1,6 @@
-package cz.inspire.thesis.data.model.sport;
+package cz.inspire.thesis.data.model.sport.objekt;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -14,8 +11,8 @@ import lombok.Setter;
 @Getter
 @NoArgsConstructor
 @Entity
-@Table(name="sport_loc")
-public class SportLocEntity {
+@Table(name = "areal_loc")
+public class ArealLocEntity {
     @Id
     private String id;
     @Column
@@ -25,4 +22,7 @@ public class SportLocEntity {
     @Column
     private String popis;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "areal", nullable = false)
+    private ArealEntity areal;
 }

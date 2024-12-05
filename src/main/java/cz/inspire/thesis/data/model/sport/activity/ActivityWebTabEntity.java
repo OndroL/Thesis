@@ -1,4 +1,4 @@
-package cz.inspire.thesis.data.model.sport;
+package cz.inspire.thesis.data.model.sport.activity;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
