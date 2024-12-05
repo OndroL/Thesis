@@ -4,6 +4,7 @@ import cz.inspire.thesis.data.EntityManagerProducer;
 import cz.inspire.thesis.data.model.sport.activity.ActivityEntity;
 import cz.inspire.thesis.data.model.sport.sport.InstructorEntity;
 import cz.inspire.thesis.data.repository.sport.activity.ActivityRepository;
+import cz.inspire.thesis.data.repository.sport.sport.InstructorRepository;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
 import jakarta.persistence.Persistence;
@@ -11,9 +12,9 @@ import org.apache.deltaspike.cdise.api.CdiContainer;
 import org.apache.deltaspike.cdise.api.CdiContainerLoader;
 import org.apache.deltaspike.core.api.provider.BeanProvider;
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
@@ -22,14 +23,7 @@ import static org.junit.Assert.*;
 public class ActivityRepositoryTest {
 
     private ActivityRepository activityRepository;
-
-    @BeforeClass
-    public static void setupLogger() {
-        System.setProperty("org.slf4j.simpleLogger.defaultLogLevel", "DEBUG");
-        System.setProperty("org.slf4j.simpleLogger.log.org.hibernate.SQL", "DEBUG");
-        System.setProperty("org.slf4j.simpleLogger.log.org.hibernate.type.descriptor.sql.BasicBinder", "TRACE");
-        System.setProperty("org.slf4j.simpleLogger.log.org.hibernate.engine.jdbc.spi.SqlExceptionHelper", "DEBUG");
-    }
+    private InstructorRepository instructorRepository;
 
     @Before
     public void setUp() {
@@ -44,13 +38,15 @@ public class ActivityRepositoryTest {
         EntityManagerProducer producer = BeanProvider.getContextualReference(EntityManagerProducer.class);
         producer.setEntityManagerFactory(emf);
 
-        // Access ActivityRepository from CDI
+        // Access repositories from CDI
         activityRepository = BeanProvider.getContextualReference(ActivityRepository.class);
+        instructorRepository = BeanProvider.getContextualReference(InstructorRepository.class);
 
         // Clear the database
         EntityManager em = BeanProvider.getContextualReference(EntityManager.class);
         em.getTransaction().begin();
         em.createQuery("DELETE FROM ActivityEntity").executeUpdate();
+        em.createQuery("DELETE FROM InstructorEntity").executeUpdate();
         em.getTransaction().commit();
     }
 
@@ -86,15 +82,26 @@ public class ActivityRepositoryTest {
     @Test
     public void testFindAllByInstructor() {
         assertNotNull("ActivityRepository should be initialized!", activityRepository);
+        assertNotNull("InstructorRepository should be initialized!", instructorRepository);
 
-        // Create instructor and link activities
-        InstructorEntity instructor = new InstructorEntity();
-        instructor.setId("instructor1");
-        ActivityEntity activity1 = new ActivityEntity("1", "Activity1", null, 1, null, Set.of(instructor), null);
-        ActivityEntity activity2 = new ActivityEntity("2", "Activity2", null, 2, null, Set.of(instructor), null);
+        // Create and save instructor
+        InstructorEntity instructor = new InstructorEntity("instructor1", "John", "Doe", 1, "john.doe@example.com", "+1", "123456789", null, null, null, "Info", "Red", null, false, null, false, 10, new ArrayList<>(), null);
+
+        // Save instructor
+        instructorRepository.save(instructor);
+
+        // Link activities to instructor and save
+        ActivityEntity activity1 = new ActivityEntity("1", "Activity1", null, 1, null, null, null);
+        ActivityEntity activity2 = new ActivityEntity("2", "Activity2", null, 2, null, null, null);
+
+        // Maintain bidirectional relationship
+        activity1.setInstructors(Set.of(instructor));
+        activity2.setInstructors(Set.of(instructor));
+        instructor.setActivities(Set.of(activity1, activity2));
 
         activityRepository.save(activity1);
         activityRepository.save(activity2);
+        instructorRepository.save(instructor);
 
         // Test retrieving activities by instructor ID
         List<ActivityEntity> activities = activityRepository.findAllByInstructor("instructor1", 0, 5);
@@ -118,19 +125,29 @@ public class ActivityRepositoryTest {
     @Test
     public void testCountActivitiesByInstructor() {
         assertNotNull("ActivityRepository should be initialized!", activityRepository);
+        assertNotNull("InstructorRepository should be initialized!", instructorRepository);
 
-        // Create instructor and link activities
-        InstructorEntity instructor = new InstructorEntity();
-        instructor.setId("instructor1");
-        ActivityEntity activity1 = new ActivityEntity("1", "Activity1", null, 1, null, Set.of(instructor), null);
-        ActivityEntity activity2 = new ActivityEntity("2", "Activity2", null, 2, null, Set.of(instructor), null);
+        // Create and save instructor
+        InstructorEntity instructor = new InstructorEntity("instructor1", "John", "Doe", 1, "john.doe@example.com", "+1", "123456789", null, null, null, "Info", "Red", null, false, null, false, 10, new ArrayList<>(), null);
+
+        // Save instructor
+        instructorRepository.save(instructor);
+
+        // Link activities to instructor and save
+        ActivityEntity activity1 = new ActivityEntity("1", "Activity1", null, 1, null, null, null);
+        ActivityEntity activity2 = new ActivityEntity("2", "Activity2", null, 2, null, null, null);
+
+        // Maintain bidirectional relationship
+        activity1.setInstructors(Set.of(instructor));
+        activity2.setInstructors(Set.of(instructor));
+        instructor.setActivities(Set.of(activity1, activity2));
 
         activityRepository.save(activity1);
         activityRepository.save(activity2);
+        instructorRepository.save(instructor);
 
         // Test counting activities by instructor ID
         Long count = activityRepository.countActivitiesByInstructor("instructor1");
         assertEquals(2L, (long) count);
     }
 }
-
