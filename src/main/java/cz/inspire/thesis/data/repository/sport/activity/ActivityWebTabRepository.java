@@ -8,6 +8,10 @@ import java.util.List;
 @Repository
 public interface ActivityWebTabRepository extends EntityRepository<ActivityWebTabEntity, String> {
 
+    /**
+     * This declaration of query is not necessary here, if it was deleted calling findAll() on this repo
+     * would have the same result ... Only kept for consistency with old bean
+     */
     @Query("SELECT aw FROM ActivityWebTabEntity aw")
     List<ActivityWebTabEntity> findAll();
 
