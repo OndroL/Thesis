@@ -4,6 +4,10 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+
+/**
+ * Generated to for testing purposes of Sport Entity ...
+ */
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
