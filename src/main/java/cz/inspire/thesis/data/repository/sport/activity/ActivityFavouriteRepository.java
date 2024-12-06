@@ -4,6 +4,7 @@ import cz.inspire.thesis.data.model.sport.activity.ActivityFavouriteEntity;
 import org.apache.deltaspike.data.api.*;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface ActivityFavouriteRepository extends EntityRepository<ActivityFavouriteEntity, String> {
@@ -19,5 +20,5 @@ public interface ActivityFavouriteRepository extends EntityRepository<ActivityFa
         SELECT af FROM ActivityFavouriteEntity af
         WHERE af.zakaznikId = ?1 AND af.activityId = ?2
     """)
-    ActivityFavouriteEntity findByZakaznikAktivita(String zakaznikId, String activityId);
+    Optional<ActivityFavouriteEntity> findByZakaznikAktivita(String zakaznikId, String activityId);
 }
