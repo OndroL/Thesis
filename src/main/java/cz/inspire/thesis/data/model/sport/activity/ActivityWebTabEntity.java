@@ -23,7 +23,7 @@ public class ActivityWebTabEntity {
     @Column
     private String activityId;
     @Column
-    private String ObjectId;
+    private String objectId;
     @Column
     private int tabIndex;
 }
