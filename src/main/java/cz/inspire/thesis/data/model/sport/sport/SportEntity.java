@@ -78,7 +78,7 @@ public class SportEntity {
     private List<SportLocEntity> localeData;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "sport_kategorie", referencedColumnName = "id", nullable = false)
+    @JoinColumn(name = "sport_kategorie", referencedColumnName = "id")
     private SportKategorieEntity sportKategorie;
 
     /**
