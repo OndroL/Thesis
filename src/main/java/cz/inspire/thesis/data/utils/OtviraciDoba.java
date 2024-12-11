@@ -18,7 +18,7 @@ public class OtviraciDoba implements Serializable {
     /**
      * Represents a time range with a start and end time.
      */
-    public static class TimeRange {
+    public static class TimeRange implements Serializable {
         private LocalTime open;
         private LocalTime close;
 
