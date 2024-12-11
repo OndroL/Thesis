@@ -86,7 +86,7 @@ public class ObjektEntity {
     private int googleCalendarNotificationBefore;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "areal", nullable = false)
+    @JoinColumn(name = "areal")
     private ArealEntity areal;
 
     @OneToMany(mappedBy = "objekt", cascade = CascadeType.ALL, orphanRemoval = true)

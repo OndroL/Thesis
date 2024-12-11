@@ -17,7 +17,6 @@ import org.apache.deltaspike.core.api.provider.BeanProvider;
 import org.junit.Before;
 import org.junit.Test;
 
-import java.awt.*;
 import java.util.List;
 
 import static org.junit.Assert.*;
@@ -51,6 +50,7 @@ public class ObjektRepositoryTest {
         em.createQuery("DELETE FROM ArealEntity ").executeUpdate();
         em.createQuery("DELETE FROM ObjektLocEntity ").executeUpdate();
         em.createQuery("DELETE FROM ArealLocEntity ").executeUpdate();
+        em.createQuery("DELETE FROM SportInstructorEntity ").executeUpdate();
         em.createQuery("DELETE FROM SportEntity ").executeUpdate();
         em.createQuery("DELETE FROM ObjektSportEntity ").executeUpdate();
         em.getTransaction().commit();
@@ -407,54 +407,68 @@ public class ObjektRepositoryTest {
         assertEquals("obj9", page2False.get(1).getId());  // The last object should be obj7
     }
 
-//    @Test
-//    public void testFindBySport() {
-//        // Create and save a SportEntity
-//        SportEntity sport = new SportEntity("sport1", 1, "zbozi1", "sklad1", 10, true, 20, false, 0,
-//                null, 30, 60, true, 2, Color.RED, Color.BLUE, true, true, 5, 10, 1, 30, 100, null,
-//                null, null, null, null, null, null);
-//
-//        sportRepository.save(sport);  // Assuming sportRepository is available for saving SportEntity
-//
-//        // Create and save ArealEntity
-//        ArealEntity areal = new ArealEntity("areal1", 5, null, null, null, null);
-//        arealRepository.save(areal);
-//
-//        // Create and save multiple ObjektEntities
-//        for (int i = 1; i <= 5; i++) {
-//            ObjektEntity obj = new ObjektEntity(
-//                    "obj" + i, 100 + i, 15, 1, i % 2 == 0, 30, 120, 10, 20, 5, 15, true, 2,
-//                    null, null, true, false, false, true, false, true, true, true,
-//                    false, true, 5, 10, 15, "calendarId" + i, true, 30, areal,
-//                    null, null, null, null, null, null
-//            );
-//
-//            // Save the ObjektEntity
-//            repository.save(obj);
-//
-//            // Create and save ObjektLocEntity for each ObjektEntity
-//            String jazyk = (i % 2 == 0) ? "en" : "cz";  // Alternate between "en" and "cz"
-//            ObjektLocEntity loc = new ObjektLocEntity(
-//                    "loc" + i, jazyk, "Objekt " + i + " Name", "Objekt " + i + " Description", "Short Name " + i, obj
-//            );
-//            objektLocRepository.save(loc);
-//
-//            // Create and save ObjektSportEntity for each ObjektEntity linked to the created SportEntity
-//            ObjektSportEntity objSport = new ObjektSportEntity(
-//                    "objSport" + i, i, sport, obj
-//            );
-//            objektSportRepository.save(objSport);  // Assuming objektSportRepository is available for saving ObjektSportEntity
-//        }
-//
-//        // Perform the query to find ObjektEntity by sport id and language 'en'
-//        List<ObjektEntity> objects = repository.findBySport("sport1", "en");
-//
-//        // Verify the results
-//        assertNotNull(objects);
-//        assertEquals(3, objects.size());  // Should return 3 objects (obj2, obj4)
-//        assertEquals("obj2", objects.get(0).getId());  // The first object should be obj2
-//        assertEquals("obj4", objects.get(2).getId());  // The last object should be obj4
-//    }
+    @Test
+    public void testFindBySport() {
+        EntityManager em = BeanProvider.getContextualReference(EntityManager.class);
+        em.getTransaction().begin();
+
+        // Create SportEntity
+        SportEntity sport = new SportEntity(
+                "sport1", 1, "zbozi1", "sklad1", 100, true, 60, true, 0,
+                null, 30, 120, true, 15, null, null, true, true, 10,
+                90, 1, 5, 20, null, null, null, null, null, null, null, null
+        );
+        em.persist(sport);
+
+        // Create ObjektEntity instances
+        ObjektEntity objekt1 = new ObjektEntity(
+                "obj1", 101, 15, 1, true, 30, 120, 10, 20, 5, 15, true, 2,
+                null, null, true, false, false, true, false, true, true, true,
+                false, true, 5, 10, 15, "calendarId1", true, 30, null,
+                null, null, null, null, null, null
+        );
+        em.persist(objekt1);
+
+        ObjektEntity objekt2 = new ObjektEntity(
+                "obj2", 102, 15, 1, false, 30, 120, 10, 20, 5, 15, true, 2,
+                null, null, true, false, false, true, false, true, true, true,
+                false, true, 5, 10, 15, "calendarId2", true, 30, null,
+                null, null, null, null, null, null
+        );
+        em.persist(objekt2);
+
+        ObjektSportPK key1 = new ObjektSportPK("objSport1", 1);
+        ObjektSportEntity objektSport1 = new ObjektSportEntity(key1, sport, objekt1);
+        em.persist(objektSport1);
+
+        ObjektSportPK key2 = new ObjektSportPK("objSport2", 2);
+        ObjektSportEntity objektSport2 = new ObjektSportEntity(key2, sport, objekt2);
+        em.persist(objektSport2);
+
+        // Link ObjektSportEntity back to ObjektEntity
+        objekt1.setObjektSports(List.of(objektSport1));
+        objekt2.setObjektSports(List.of(objektSport2));
+
+        // Create and persist ObjektLocEntity for each ObjektEntity
+        ObjektLocEntity loc1 = new ObjektLocEntity(
+                "loc1", "en", "Objekt One Name", "Objekt 1 Description", "Short Name 1", objekt1
+        );
+        em.persist(loc1);
+
+        ObjektLocEntity loc2 = new ObjektLocEntity(
+                "loc2", "en", "Objekt Two Name", "Objekt 2 Description", "Short Name 2", objekt2
+        );
+        em.persist(loc2);
+
+        em.getTransaction().commit();
+
+        // Query by sport
+        List<ObjektEntity> objects = repository.findBySport("sport1", "en");
+        assertNotNull(objects);
+        assertEquals(2, objects.size());
+        assertTrue(objects.stream().anyMatch(o -> o.getId().equals("obj1")));
+        assertTrue(objects.stream().anyMatch(o -> o.getId().equals("obj2")));
+    }
 
 
 

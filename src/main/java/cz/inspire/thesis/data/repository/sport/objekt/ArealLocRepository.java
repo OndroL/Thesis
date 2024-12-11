@@ -7,8 +7,4 @@ import java.util.List;
 
 @Repository
 public interface ArealLocRepository extends EntityRepository<ArealLocEntity, String> {
-    /**
-     * Only for testing purposes
-     */
-    List<ArealLocEntity> findByArealAndJazyk(String arealId, String jazyk);
 }

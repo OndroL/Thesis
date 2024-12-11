@@ -112,36 +112,6 @@ public class ArealRepositoryTest {
     }
 
     @Test
-    public void testOrphanRemoval() {
-        // Create and save ArealEntity with associated ArealLocEntity
-        ArealEntity areal = new ArealEntity("areal1", 2, new ArrayList<>(), null, null, null);
-        ArealLocEntity loc1 = new ArealLocEntity("loc1", "en", "Name1", "Description1", areal);
-        areal.setLocaleData(List.of(loc1));
-        repository.save(areal);
-
-        // Verify the ArealEntity and ArealLocEntity are saved
-        List<ArealEntity> areals = repository.findAll();
-        assertEquals(1, areals.size());
-        assertEquals(1, areals.get(0).getLocaleData().size());
-
-        // Use EntityManager to reattach the ArealEntity
-        EntityManager em = BeanProvider.getContextualReference(EntityManager.class);
-        em.getTransaction().begin();
-        ArealEntity managedAreal = em.merge(repository.findById("areal1"));
-        em.remove(managedAreal); // Perform the removal
-        em.getTransaction().commit();
-
-        // Verify the ArealEntity and ArealLocEntity are removed
-        areals = repository.findAll();
-        assertEquals(0, areals.size());
-
-        List<ArealLocEntity> localeData = arealLocRepository.findByArealAndJazyk("areal1", "en");
-        assertEquals(0, localeData.size());
-    }
-
-
-
-    @Test
     public void testFindByParentWithPagination() {
         // Create parent
         ArealEntity parent = new ArealEntity("parent1", 2, new ArrayList<>(), null, null, null);

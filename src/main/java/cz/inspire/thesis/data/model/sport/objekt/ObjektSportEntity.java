@@ -14,10 +14,8 @@ import lombok.Setter;
 @Entity
 @Table(name = "objekt_sport")
 public class ObjektSportEntity {
-    @Id
-    private String id;
-    @Column(nullable = false)
-    private int index;
+    @EmbeddedId
+    private ObjektSportPK id;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "sport", referencedColumnName = "id", nullable = false)
