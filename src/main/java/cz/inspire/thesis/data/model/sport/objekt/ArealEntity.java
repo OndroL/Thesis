@@ -20,7 +20,8 @@ public class ArealEntity {
     @Column
     private Integer pocetNavazujucichRez;
 
-    @OneToMany(mappedBy = "areal", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
+    @JoinColumn(name = "areal")
     private List<ArealLocEntity> localeData;
 
     @ManyToOne(fetch = FetchType.LAZY)

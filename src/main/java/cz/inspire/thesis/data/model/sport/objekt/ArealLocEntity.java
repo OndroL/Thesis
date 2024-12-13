@@ -21,8 +21,4 @@ public class ArealLocEntity {
     private String nazev;
     @Column
     private String popis;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "areal", nullable = false)
-    private ArealEntity areal;
 }

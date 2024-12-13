@@ -34,6 +34,7 @@ public class ObjektSportRepositoryTest {
 
         EntityManager em = BeanProvider.getContextualReference(EntityManager.class);
         em.getTransaction().begin();
+        em.createQuery("DELETE FROM SportInstructorEntity ").executeUpdate();
         em.createQuery("DELETE FROM ObjektSportEntity").executeUpdate();
         em.createQuery("DELETE FROM ObjektEntity").executeUpdate();
         em.createQuery("DELETE FROM SportEntity").executeUpdate();

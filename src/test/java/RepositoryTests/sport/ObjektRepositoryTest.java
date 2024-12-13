@@ -106,17 +106,17 @@ public class ObjektRepositoryTest {
                 null, null, null, null, null, null
         );
 
-        // Save both ObjektEntities
-        repository.save(obj1);
-        repository.save(obj2);
 
         // Create ObjektLocEntity for obj1 and obj2
-        ObjektLocEntity loc1 = new ObjektLocEntity("loc1", "en", "Objekt 1 Name", "Objekt 1 Description", "Short Name 1", obj1);
-        ObjektLocEntity loc2 = new ObjektLocEntity("loc2", "en", "Objekt 2 Name", "Objekt 2 Description", "Short Name 2", obj2);
+        ObjektLocEntity loc1 = new ObjektLocEntity("loc1", "en", "Objekt 1 Name", "Objekt 1 Description", "Short Name 1");
+        ObjektLocEntity loc2 = new ObjektLocEntity("loc2", "en", "Objekt 2 Name", "Objekt 2 Description", "Short Name 2");
 
-        // Save ObjektLocEntities
-        objektLocRepository.save(loc1);
-        objektLocRepository.save(loc2);
+        obj1.setLocaleData(List.of(loc1));
+        repository.save(obj1);
+
+        obj2.setLocaleData(List.of(loc2));
+        repository.save(obj2);
+
 
         // Find objects by Areal and language 'en'
         List<ObjektEntity> objects = repository.findByAreal("areal1", "en");
@@ -151,17 +151,17 @@ public class ObjektRepositoryTest {
                 null, null, null, null, null, null
         );
 
-        // Save both ObjektEntities
-        repository.save(obj1);
-        repository.save(obj2);
-
         // Create ObjektLocEntity for obj1 and obj2
-        ObjektLocEntity loc1 = new ObjektLocEntity("loc1", "en", "Objekt 1 Name", "Objekt 1 Description", "Short Name 1", obj1);
-        ObjektLocEntity loc2 = new ObjektLocEntity("loc2", "en", "Objekt 2 Name", "Objekt 2 Description", "Short Name 2", obj2);
+        ObjektLocEntity loc1 = new ObjektLocEntity("loc1", "en", "Objekt 1 Name", "Objekt 1 Description", "Short Name 1");
+        ObjektLocEntity loc2 = new ObjektLocEntity("loc2", "en", "Objekt 2 Name", "Objekt 2 Description", "Short Name 2");
 
         // Save ObjektLocEntities
-        objektLocRepository.save(loc1);
-        objektLocRepository.save(loc2);
+        obj1.setLocaleData(List.of(loc1));
+        repository.save(obj1);
+
+        obj2.setLocaleData(List.of(loc2));
+        repository.save(obj2);
+
 
         // Find objects with primyVstup set to true and language 'en'
         List<ObjektEntity> objects = repository.findByPrimyVstup("en", true);
@@ -186,14 +186,12 @@ public class ObjektRepositoryTest {
                 null, null, null, null, null, null
         );
 
-        // Save ObjektEntity
-        repository.save(obj1);
 
         // Create ObjektLocEntity for obj1 with language "en"
-        ObjektLocEntity loc1 = new ObjektLocEntity("loc1", "en", "Objekt 1 Name", "Objekt 1 Description", "Short Name 1", obj1);
+        ObjektLocEntity loc1 = new ObjektLocEntity("loc1", "en", "Objekt 1 Name", "Objekt 1 Description", "Short Name 1");
 
-        // Save ObjektLocEntity
-        objektLocRepository.save(loc1);
+        obj1.setLocaleData(List.of(loc1));
+        repository.save(obj1);
 
         // Find objects by typRezervace and language 'en'
         List<ObjektEntity> objects = repository.findByTypRezervace(1, "en");
@@ -209,7 +207,7 @@ public class ObjektRepositoryTest {
     public void testFindBaseByAreal() {
         // Create and save ArealEntity first
         ArealEntity areal = new ArealEntity("areal1", 5, null, null, null, null);
-        ArealLocEntity loc1 = new ArealLocEntity("loc1", "en", "Name1", "Description1", areal);
+        ArealLocEntity loc1 = new ArealLocEntity("loc1", "en", "Name1", "Description1");
         areal.setLocaleData(List.of(loc1));
         arealRepository.save(areal);
 
@@ -222,7 +220,7 @@ public class ObjektRepositoryTest {
         );
 
         // Create ObjektLocEntity and set it as localeData in ObjektEntity
-        ObjektLocEntity loc2 = new ObjektLocEntity("loc2", "en", "Objekt Name", "Objekt Description", "Short Name", baseObj);
+        ObjektLocEntity loc2 = new ObjektLocEntity("loc2", "en", "Objekt Name", "Objekt Description", "Short Name");
         baseObj.setLocaleData(List.of(loc2));
 
         // Save ObjektEntity and ObjektLocEntity
@@ -251,16 +249,15 @@ public class ObjektRepositoryTest {
                     null, null, null, null, null, null
             );
 
-            // Save the ObjektEntity
-            repository.save(obj);
-
             String lexicographicalName = getLexicographicalName(i);
 
             // Create and save the corresponding ObjektLocEntity with language 'en'
             ObjektLocEntity loc = new ObjektLocEntity(
-                    "loc" + i, "en", lexicographicalName + " Name", "Objekt " + i + " Description", "Short Name " + i, obj
+                    "loc" + i, "en", lexicographicalName + " Name", "Objekt " + i + " Description", "Short Name " + i
             );
-            objektLocRepository.save(loc);
+            obj.setLocaleData(List.of(loc));
+            repository.save(obj);
+
         }
 
         // Perform pagination queries
@@ -303,7 +300,7 @@ public class ObjektRepositoryTest {
         ArealEntity areal = new ArealEntity("areal1", 5, null, null, null, null);
         arealRepository.save(areal);
 
-        // Create and save multiple ObjektEntities
+        // Create and save multiple ObjektEntities with linked ObjektLocEntities
         for (int i = 1; i <= 10; i++) {
             ObjektEntity obj = new ObjektEntity(
                     "obj" + i, 100 + i, 15, 1, i % 2 == 0, 30, 120, 10, 20, 5, 15, true, 2,
@@ -312,16 +309,16 @@ public class ObjektRepositoryTest {
                     null, null, null, null, null, null
             );
 
-            // Save the ObjektEntity
-            repository.save(obj);
-
+            // Create ObjektLocEntity and associate with ObjektEntity
             String lexicographicalName = getLexicographicalName(i);
-
-            // Create and save ObjektLocEntity for each ObjektEntity
             ObjektLocEntity loc = new ObjektLocEntity(
-                    "loc" + i, "en", "Objekt " + lexicographicalName + " Name", "Objekt " + i + " Description", "Short Name " + i, obj
+                    "loc" + i, "en", "Objekt " + lexicographicalName + " Name", "Objekt " + i + " Description", "Short Name " + i
             );
-            objektLocRepository.save(loc);
+
+            obj.setLocaleData(List.of(loc));
+
+            // Save ObjektEntity, which cascades and saves ObjektLocEntity
+            repository.save(obj);
         }
 
         // Perform pagination queries
@@ -330,21 +327,20 @@ public class ObjektRepositoryTest {
         List<ObjektEntity> page3 = repository.findBaseByAreal("areal1", "en", 10, 5); // Offset 10, MaxResults 5
 
         assertNotNull(page1);
-        assertEquals(5, page1.size());  // Should return 5 objects (obj2, obj4, obj6, obj8, obj10)
-        assertEquals("obj1", page1.get(0).getId());  // The first object should be obj2
+        assertEquals(5, page1.size());
+        assertEquals("obj1", page1.get(0).getId());
         assertEquals("obj3", page1.get(1).getId());
         assertEquals("obj5", page1.get(2).getId());
         assertEquals("obj7", page1.get(3).getId());
-        assertEquals("obj9", page1.get(4).getId());  // The last object in this page should be obj10
+        assertEquals("obj9", page1.get(4).getId());
 
-        // Verify the results for page 2
         assertNotNull(page2);
         assertTrue(page2.isEmpty());  // Should return no objects because there are only 5 objects with primyVstup = FALSE
 
-        // Verify the results for page 3
         assertNotNull(page3);
         assertTrue(page3.isEmpty());  // Should return 0 objects because there are only 5 objects with primyVstup = FALSE
     }
+
 
     @Test
     public void testFindByPrimyVstupPagination() {
@@ -362,16 +358,18 @@ public class ObjektRepositoryTest {
             );
 
             // Save the ObjektEntity
-            repository.save(obj);
+
+
 
             String lexicographicalName = getLexicographicalName(i);
 
             // Create and save ObjektLocEntity for each ObjektEntity
             String jazyk = (i % 2 == 0) ? "en" : "cz";  // Alternate between "en" and "cz"
             ObjektLocEntity loc = new ObjektLocEntity(
-                    "loc" + i, jazyk, "Objekt " + lexicographicalName + " Name", "Objekt " + i + " Description", "Short Name " + i, obj
+                    "loc" + i, jazyk, "Objekt " + lexicographicalName + " Name", "Objekt " + i + " Description", "Short Name " + i
             );
-            objektLocRepository.save(loc);
+            obj.setLocaleData(List.of(loc));
+            repository.save(obj);
         }
 
         // Perform pagination queries for primyVstup = true
@@ -427,7 +425,6 @@ public class ObjektRepositoryTest {
                 false, true, 5, 10, 15, "calendarId1", true, 30, null,
                 null, null, null, null, null, null
         );
-        em.persist(objekt1);
 
         ObjektEntity objekt2 = new ObjektEntity(
                 "obj2", 102, 15, 1, false, 30, 120, 10, 20, 5, 15, true, 2,
@@ -435,8 +432,24 @@ public class ObjektRepositoryTest {
                 false, true, 5, 10, 15, "calendarId2", true, 30, null,
                 null, null, null, null, null, null
         );
+
+        // Create and persist ObjektLocEntity for each ObjektEntity
+        ObjektLocEntity loc1 = new ObjektLocEntity(
+                "loc1", "en", "Objekt One Name", "Objekt 1 Description", "Short Name 1"
+        );
+        ObjektLocEntity loc2 = new ObjektLocEntity(
+                "loc2", "en", "Objekt Two Name", "Objekt 2 Description", "Short Name 2"
+        );
+
+        // Associate ObjektLocEntity with ObjektEntity
+        objekt1.setLocaleData(List.of(loc1));
+        objekt2.setLocaleData(List.of(loc2));
+
+        // Persist ObjektEntity (cascade will save ObjektLocEntity)
+        em.persist(objekt1);
         em.persist(objekt2);
 
+        // Create and persist ObjektSportEntity
         ObjektSportPK key1 = new ObjektSportPK("objSport1", 1);
         ObjektSportEntity objektSport1 = new ObjektSportEntity(key1, sport, objekt1);
         em.persist(objektSport1);
@@ -449,17 +462,6 @@ public class ObjektRepositoryTest {
         objekt1.setObjektSports(List.of(objektSport1));
         objekt2.setObjektSports(List.of(objektSport2));
 
-        // Create and persist ObjektLocEntity for each ObjektEntity
-        ObjektLocEntity loc1 = new ObjektLocEntity(
-                "loc1", "en", "Objekt One Name", "Objekt 1 Description", "Short Name 1", objekt1
-        );
-        em.persist(loc1);
-
-        ObjektLocEntity loc2 = new ObjektLocEntity(
-                "loc2", "en", "Objekt Two Name", "Objekt 2 Description", "Short Name 2", objekt2
-        );
-        em.persist(loc2);
-
         em.getTransaction().commit();
 
         // Query by sport
@@ -469,7 +471,4 @@ public class ObjektRepositoryTest {
         assertTrue(objects.stream().anyMatch(o -> o.getId().equals("obj1")));
         assertTrue(objects.stream().anyMatch(o -> o.getId().equals("obj2")));
     }
-
-
-
 }

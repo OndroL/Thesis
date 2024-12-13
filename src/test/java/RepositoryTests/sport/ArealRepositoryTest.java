@@ -57,8 +57,8 @@ public class ArealRepositoryTest {
     public void testFindAllWithLocaleData() {
         ArealEntity areal = new ArealEntity("areal1", 2, new ArrayList<>(), null, null, null);
 
-        ArealLocEntity loc1 = new ArealLocEntity("loc1", "en", "Name1", "Description1", areal);
-        ArealLocEntity loc2 = new ArealLocEntity("loc2", "cz", "Name2", "Description2", areal);
+        ArealLocEntity loc1 = new ArealLocEntity("loc1", "en", "Name1", "Description1");
+        ArealLocEntity loc2 = new ArealLocEntity("loc2", "cz", "Name2", "Description2");
 
         areal.setLocaleData(List.of(loc1, loc2));
 
@@ -78,8 +78,8 @@ public class ArealRepositoryTest {
         ArealEntity child1 = new ArealEntity("child1", 1, new ArrayList<>(), parent, null, null);
         ArealEntity child2 = new ArealEntity("child2", 1, new ArrayList<>(), parent, null, null);
 
-        ArealLocEntity child1Loc = new ArealLocEntity("locChild1", "en", "Child1 Name", "Child1 Desc", child1);
-        ArealLocEntity child2Loc = new ArealLocEntity("locChild2", "en", "Child2 Name", "Child2 Desc", child2);
+        ArealLocEntity child1Loc = new ArealLocEntity("locChild1", "en", "Child1 Name", "Child1 Desc");
+        ArealLocEntity child2Loc = new ArealLocEntity("locChild2", "en", "Child2 Name", "Child2 Desc");
 
         child1.setLocaleData(List.of(child1Loc));
         child2.setLocaleData(List.of(child2Loc));
@@ -97,8 +97,8 @@ public class ArealRepositoryTest {
         ArealEntity root1 = new ArealEntity("root1", 5, new ArrayList<>(), null, null, null);
         ArealEntity root2 = new ArealEntity("root2", 3, new ArrayList<>(), null, null, null);
 
-        ArealLocEntity loc1 = new ArealLocEntity("locRoot1", "en", "Root1 Name", "Root1 Desc", root1);
-        ArealLocEntity loc2 = new ArealLocEntity("locRoot2", "en", "Root2 Name", "Root2 Desc", root2);
+        ArealLocEntity loc1 = new ArealLocEntity("locRoot1", "en", "Root1 Name", "Root1 Desc");
+        ArealLocEntity loc2 = new ArealLocEntity("locRoot2", "en", "Root2 Name", "Root2 Desc");
 
         root1.setLocaleData(List.of(loc1));
         root2.setLocaleData(List.of(loc2));
@@ -123,9 +123,9 @@ public class ArealRepositoryTest {
         ArealEntity child3 = new ArealEntity("child3", 1, new ArrayList<>(), parent, null, null);
 
         // Add locale data to children
-        ArealLocEntity child1Loc = new ArealLocEntity("locChild1", "en", "Child1 Name", "Child1 Desc", child1);
-        ArealLocEntity child2Loc = new ArealLocEntity("locChild2", "en", "Child2 Name", "Child2 Desc", child2);
-        ArealLocEntity child3Loc = new ArealLocEntity("locChild3", "en", "Child3 Name", "Child3 Desc", child3);
+        ArealLocEntity child1Loc = new ArealLocEntity("locChild1", "en", "Child1 Name", "Child1 Desc");
+        ArealLocEntity child2Loc = new ArealLocEntity("locChild2", "en", "Child2 Name", "Child2 Desc");
+        ArealLocEntity child3Loc = new ArealLocEntity("locChild3", "en", "Child3 Name", "Child3 Desc");
 
         child1.setLocaleData(List.of(child1Loc));
         child2.setLocaleData(List.of(child2Loc));
@@ -154,9 +154,9 @@ public class ArealRepositoryTest {
         ArealEntity root3 = new ArealEntity("root3", 2, new ArrayList<>(), null, null, null);
 
         // Create locale data for roots
-        ArealLocEntity loc1 = new ArealLocEntity("locRoot1", "en", "Root1 Name", "Root1 Desc", root1);
-        ArealLocEntity loc2 = new ArealLocEntity("locRoot2", "en", "Root2 Name", "Root2 Desc", root2);
-        ArealLocEntity loc3 = new ArealLocEntity("locRoot3", "en", "Root3 Name", "Root3 Desc", root3);
+        ArealLocEntity loc1 = new ArealLocEntity("locRoot1", "en", "Root1 Name", "Root1 Desc");
+        ArealLocEntity loc2 = new ArealLocEntity("locRoot2", "en", "Root2 Name", "Root2 Desc");
+        ArealLocEntity loc3 = new ArealLocEntity("locRoot3", "en", "Root3 Name", "Root3 Desc");
 
         root1.setLocaleData(List.of(loc1));
         root2.setLocaleData(List.of(loc2));

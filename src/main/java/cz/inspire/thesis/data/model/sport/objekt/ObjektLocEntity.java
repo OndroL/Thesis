@@ -23,8 +23,4 @@ public class ObjektLocEntity {
     private String popis;
     @Column
     private String zkracenyNazev;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "objekt")
-    private ObjektEntity objekt;
 }
