@@ -1,19 +1,18 @@
 package cz.inspire.thesis.data.service.sport.activity;
 
-import cz.inspire.thesis.data.dto.sport.ActivityDetails;
+import cz.inspire.thesis.data.dto.sport.activity.ActivityDetails;
 import cz.inspire.thesis.data.model.sport.activity.ActivityEntity;
 import cz.inspire.thesis.data.model.sport.sport.InstructorEntity;
+import cz.inspire.thesis.data.dto.sport.sport.InstructorDetails;
 import cz.inspire.thesis.data.repository.sport.activity.ActivityRepository;
+import cz.inspire.thesis.exceptions.ApplicationException;
 import cz.inspire.thesis.exceptions.CreateException;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
-import jakarta.transaction.Transactional;
 
-import java.util.Optional;
+import java.util.Collection;
 import java.util.Set;
 import java.util.stream.Collectors;
-
-import static cz.inspire.thesis.data.utils.guidGenerator.generateGUID;
 
 @ApplicationScoped
 public class ActivityService {
@@ -21,28 +20,22 @@ public class ActivityService {
     @Inject
     private ActivityRepository activityRepository;
 
-    @Inject
-    private InstructorService instructorService;
-
-    @Transactional
-    public String ejbCreate(ActivityDetails activity) throws CreateException {
+    public String ejbCreate(ActivityDetails details) throws CreateException {
         try {
             ActivityEntity entity = new ActivityEntity();
-            String id = activity.getId();
-            if (id == null) {
-                id = generateGUID(entity);
-            }
-            entity.setId(id);
-            entity.setName(activity.getName());
-            entity.setDescription(activity.getDescription());
-            entity.setIndex(activity.getIndex());
-            entity.setIconId(activity.getIconId());
+            entity.setId(details.getId());
+            entity.setName(details.getName());
+            entity.setDescription(details.getDescription());
+            entity.setIndex(details.getIndex());
+            entity.setIconId(details.getIconId());
 
-            if (activity.getInstructors() != null) {
-                Set<InstructorEntity> instructors = activity.getInstructors().stream()
-                        .map(details -> instructorService.findById(details.getId()))
-                        .filter(Optional::isPresent)
-                        .map(Optional::get)
+            if (details.getInstructors() != null) {
+                Set<InstructorEntity> instructors = details.getInstructors().stream()
+                        .map(inst -> {
+                            InstructorEntity instructor = new InstructorEntity();
+                            instructor.setId(inst.getId());
+                            return instructor;
+                        })
                         .collect(Collectors.toSet());
                 entity.setInstructors(instructors);
             }
@@ -50,107 +43,78 @@ public class ActivityService {
             activityRepository.save(entity);
             return entity.getId();
         } catch (Exception e) {
-            throw new CreateException("Activity creation failed: " + e.getMessage());
+            throw new CreateException("Failed to create Activity entity", e);
         }
     }
 
-    @Transactional
-    public void ejbPostCreate(ActivityDetails activity) throws CreateException {
+    public void setDetails(ActivityDetails details) throws ApplicationException {
         try {
-            Optional<ActivityEntity> optionalEntity = activityRepository.findById(activity.getId());
-            if (optionalEntity.isPresent()) {
-                ActivityEntity entity = optionalEntity.get();
+            ActivityEntity entity = activityRepository.findOptionalBy(details.getId())
+                    .orElseThrow(() -> new ApplicationException("Activity entity not found"));
 
-                if (activity.getInstructors() != null) {
-                    Set<InstructorEntity> instructors = activity.getInstructors().stream()
-                            .map(details -> instructorService.findById(details.getId()))
-                            .filter(Optional::isPresent)
-                            .map(Optional::get)
-                            .collect(Collectors.toSet());
-                    entity.setInstructors(instructors);
-                    activityRepository.save(entity);
-                }
-            } else {
-                throw new CreateException("Post-create failed: Activity not found");
-            }
-        } catch (Exception e) {
-            throw new CreateException("Post-create error: " + e.getMessage());
-        }
-    }
+            entity.setName(details.getName());
+            entity.setDescription(details.getDescription());
+            entity.setIndex(details.getIndex());
+            entity.setIconId(details.getIconId());
 
-    public ActivityDetails getDetails(String id) {
-        try {
-            Optional<ActivityEntity> optionalEntity = activityRepository.findById(id);
-            if (optionalEntity.isEmpty()) {
+            if (details.getInstructors() != null) {
+                Set<InstructorEntity> instructors = details.getInstructors().stream()
+                        .map(inst -> {
+                            InstructorEntity instructor = new InstructorEntity();
+                            instructor.setId(inst.getId());
+                            return instructor;
+                        })
+                        .collect(Collectors.toSet());
+                entity.setInstructors(instructors);
             }
 
-            ActivityEntity entity = optionalEntity.get();
-            ActivityDetails details = new ActivityDetails();
-            details.setId(entity.getId());
-            details.setName(entity.getName());
-            details.setDescription(entity.getDescription());
-            details.setIndex(entity.getIndex());
-            details.setIconId(entity.getIconId());
-
-            if (entity.getInstructors() != null) {
-                details.setInstructors(entity.getInstructors().stream()
-                        .map(instructor -> {
-                            ActivityDetails.InstructorDetails instructorDetails = new ActivityDetails.InstructorDetails();
-                            instructorDetails.setId(instructor.getId());
-                            instructorDetails.setFirstName(instructor.getFirstName());
-                            instructorDetails.setLastName(instructor.getLastName());
-                            return instructorDetails;
-                        }).collect(Collectors.toSet()));
-            }
-
-            return details;
+            activityRepository.save(entity);
         } catch (Exception e) {
-            throw new FinderException("Error retrieving details: " + e.getMessage());
+            throw new ApplicationException("Failed to update Activity entity", e);
         }
     }
 
-    @Transactional
-    public void setDetails(ActivityDetails activity) throws EJBException {
-        try {
-            Optional<ActivityEntity> optionalEntity = activityRepository.findById(activity.getId());
-            if (optionalEntity.isPresent()) {
-                ActivityEntity entity = optionalEntity.get();
-                entity.setName(activity.getName());
-                entity.setDescription(activity.getDescription());
-                entity.setIndex(activity.getIndex());
-                entity.setIconId(activity.getIconId());
+    public ActivityDetails getDetails(ActivityEntity entity) {
+        ActivityDetails details = new ActivityDetails();
+        details.setId(entity.getId());
+        details.setName(entity.getName());
+        details.setDescription(entity.getDescription());
+        details.setIndex(entity.getIndex());
+        details.setIconId(entity.getIconId());
 
-                if (activity.getInstructors() != null) {
-                    Set<InstructorEntity> instructors = activity.getInstructors().stream()
-                            .map(details -> instructorService.findById(details.getId()))
-                            .filter(Optional::isPresent)
-                            .map(Optional::get)
-                            .collect(Collectors.toSet());
-                    entity.setInstructors(instructors);
-                }
-
-                activityRepository.save(entity);
-            } else {
-                throw new EJBException("Activity entity not found for setDetails");
-            }
-        } catch (Exception e) {
-            throw new EJBException("Error setting Activity details: " + e.getMessage());
+        if (entity.getInstructors() != null) {
+            Set<InstructorDetails> instructors = entity.getInstructors().stream()
+                    .map(inst -> new InstructorDetails(inst.getId(), inst.getFirstName(), inst.getLastName(), inst.getColor()))
+                    .collect(Collectors.toSet());
+            details.setInstructors(instructors);
         }
+
+        return details;
     }
 
-    public long countActivities() throws FinderException {
-        try {
-            return activityRepository.count();
-        } catch (Exception e) {
-            throw new FinderException("Error counting Activities: " + e.getMessage());
-        }
+    public Collection<ActivityDetails> findAll() {
+        return activityRepository.findAll().stream()
+                .map(this::getDetails)
+                .collect(Collectors.toList());
     }
 
-    public long countActivitiesByInstructor(String instructorId) throws FinderException {
-        try {
-            return activityRepository.countByInstructors_Id(instructorId);
-        } catch (Exception e) {
-            throw new FinderException("Error counting Activities by Instructor: " + e.getMessage());
-        }
+    public Collection<ActivityDetails> findAll(int offset, int count) {
+        return activityRepository.findAll(offset, count).stream()
+                .map(this::getDetails)
+                .collect(Collectors.toList());
+    }
+
+    public Collection<ActivityDetails> findAllByInstructor(String instructorId, int offset, int count) {
+        return activityRepository.findAllByInstructor(instructorId, offset, count).stream()
+                .map(this::getDetails)
+                .collect(Collectors.toList());
+    }
+
+    public Long ejbHomeCountActivities() {
+        return activityRepository.countActivities();
+    }
+
+    public Long ejbHomeCountActivitiesByInstructor(String instructorId) {
+        return activityRepository.countActivitiesByInstructor(instructorId);
     }
 }
