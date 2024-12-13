@@ -81,10 +81,6 @@ public class SportEntity {
     @JoinColumn(name = "sport_kategorie", referencedColumnName = "id")
     private SportKategorieEntity sportKategorie;
 
-    /**
-     * I was checking the DB with data present in it and found that no row has any nadrazenySport
-     * present, so maybe this is dead functionality
-     */
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "nadrazeny_sport", referencedColumnName = "id")
     private SportEntity nadrazenySport;
