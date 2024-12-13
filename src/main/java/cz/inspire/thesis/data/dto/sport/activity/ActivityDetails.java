@@ -1,4 +1,4 @@
-package cz.inspire.thesis.data.dto.sport;
+package cz.inspire.thesis.data.dto.sport.activity;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
