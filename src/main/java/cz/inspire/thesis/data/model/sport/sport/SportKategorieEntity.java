@@ -30,7 +30,8 @@ public class SportKategorieEntity {
     @OneToMany(mappedBy = "nadrazenaKategorie", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<SportKategorieEntity> podrazeneKategorie;
 
-    @OneToMany(mappedBy = "sportKategorie", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
+    @JoinColumn(name = "sportKategorie")
     private List<SportKategorieLocEntity> localeData;
 
     @OneToMany(mappedBy = "sportKategorie", cascade = CascadeType.ALL, orphanRemoval = true)

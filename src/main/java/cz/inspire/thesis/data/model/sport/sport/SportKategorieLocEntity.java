@@ -21,8 +21,4 @@ public class SportKategorieLocEntity {
     private String nazev;
     @Column
     private String popis;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "sportKategorie", nullable = false)
-    private SportKategorieEntity sportKategorie;
 }
