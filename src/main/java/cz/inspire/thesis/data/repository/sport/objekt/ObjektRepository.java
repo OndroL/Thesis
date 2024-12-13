@@ -78,4 +78,7 @@ public interface ObjektRepository extends EntityRepository<ObjektEntity, String>
     """)
     List<ObjektEntity> findByPrimyVstup(String jazyk, @FirstResult int offset, @MaxResults int count, boolean primyVstup);
 
+    @Query("SELECT o.id FROM ObjektEntity o WHERE o.areal.id = ?1")
+    List<String> findObjektIdsOfAreal(String arealId);
+
 }

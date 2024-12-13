@@ -49,6 +49,9 @@ public interface ArealRepository extends EntityRepository<ArealEntity, String> {
     """)
     ArealEntity findIfChild(String childId, String parentId);
 
+    @Query("SELECT a.id FROM ArealEntity a WHERE a.nadrazenyAreal.id = ?1")
+    List<String> findArealIdsByParent(String arealId);
+
     /**
      * Only for testing
      */

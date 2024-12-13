@@ -67,4 +67,44 @@ public interface SportRepository extends EntityRepository<SportEntity, String> {
         ORDER BY loc.nazev
     """)
     List<SportEntity> findCategoryRoot(@FirstResult int offset, @MaxResults int count);
+
+    @Query("""
+        SELECT COUNT(s.id) FROM SportEntity s WHERE s.sportKategorie IS NULL
+    """)
+    Long countCategoryRoot();
+
+    @Query("""
+        SELECT COUNT(s.id) FROM SportEntity s WHERE s.sportKategorie.id = ?1
+    """)
+    Long countAllByCategory(String categoryId);
+
+    @Query("""
+        SELECT COUNT(s.id) FROM SportEntity s
+        JOIN s.localeData loc
+        WHERE s.nadrazenySport IS NOT NULL AND s.nadrazenySport.id = ?1 AND loc.jazyk = ?2
+    """)
+    Long countAllByParentAndLanguage(String parentId, String language);
+
+    @Query("""
+        SELECT s.id FROM SportEntity s
+        JOIN s.localeData loc
+        WHERE s.nadrazenySport IS NOT NULL AND s.nadrazenySport.id = ?1 AND loc.jazyk = ?2
+        ORDER BY loc.nazev
+    """)
+    List<String> getAllIdsByParentAndLanguage(String parentId, String language);
+
+    @Query("""
+        SELECT COUNT(s.id) FROM SportEntity s
+        JOIN s.localeData loc
+        WHERE s.nadrazenySport IS NULL AND loc.jazyk = ?1
+    """)
+    Long countRootByLanguage(String language);
+
+    @Query("""
+        SELECT s.id FROM SportEntity s
+        JOIN s.localeData loc
+        WHERE s.nadrazenySport IS NULL AND loc.jazyk = ?1
+        ORDER BY loc.nazev
+    """)
+    List<String> getRootIdsByLanguage(String language);
 }
