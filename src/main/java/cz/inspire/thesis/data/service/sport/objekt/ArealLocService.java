@@ -58,7 +58,7 @@ public class ArealLocService {
     }
 
     /**
-     * Those two finders are here only for test purposes, they were not in old bean
+     * These two finders are here only for test purposes, they were not in old bean
      */
     public Collection<ArealLocDetails> findAll() {
         return arealLocRepository.findAll().stream()

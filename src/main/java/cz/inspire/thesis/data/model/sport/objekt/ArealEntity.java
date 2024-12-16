@@ -6,7 +6,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.util.List;
+import java.util.Collection;
 
 @AllArgsConstructor
 @Setter
@@ -22,16 +22,16 @@ public class ArealEntity {
 
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
     @JoinColumn(name = "areal")
-    private List<ArealLocEntity> localeData;
+    private Collection<ArealLocEntity> localeData;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "nadrazeny_areal", referencedColumnName = "id")
     private ArealEntity nadrazenyAreal;
 
     @OneToMany(mappedBy = "nadrazenyAreal")
-    private List<ArealEntity> podrazeneArealy;
+    private Collection<ArealEntity> podrazeneArealy;
 
     @OneToMany(mappedBy = "areal")
-    private List<ObjektEntity> objekty;
+    private Collection<ObjektEntity> objekty;
 }
 

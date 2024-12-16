@@ -4,16 +4,28 @@ import cz.inspire.thesis.data.dto.sport.objekt.ArealDetails;
 import cz.inspire.thesis.data.dto.sport.objekt.ArealLocDetails;
 import cz.inspire.thesis.data.model.sport.objekt.ArealEntity;
 import cz.inspire.thesis.data.model.sport.objekt.ArealLocEntity;
+import cz.inspire.thesis.data.model.sport.objekt.ObjektEntity;
 import cz.inspire.thesis.data.repository.sport.objekt.ArealRepository;
 import cz.inspire.thesis.data.repository.sport.objekt.ArealLocRepository;
-import cz.inspire.thesis.exceptions.ApplicationException;
-import cz.inspire.thesis.exceptions.CreateException;
 import jakarta.enterprise.context.ApplicationScoped;
+import org.apache.deltaspike.jpa.api.transaction.Transactional;
 import jakarta.inject.Inject;
 
 import java.util.*;
 import java.util.stream.Collectors;
 
+/**
+ * Those exceptions are created to mimic functionality and implementation of production exceptions
+ * Use your imports
+ * Plus ApplicationException is additional Exception for update, see setDetails
+ */
+import cz.inspire.thesis.exceptions.ApplicationException;
+import cz.inspire.thesis.exceptions.CreateException;
+
+/**
+ * This is import of simple generateGUID functionality created to mimic real functionality
+ * In your implementation use your import of guidGenerator
+ */
 import static cz.inspire.thesis.data.utils.guidGenerator.generateGUID;
 
 @ApplicationScoped
@@ -25,7 +37,8 @@ public class ArealService {
     @Inject
     private ArealLocRepository arealLocRepository;
 
-    public String ejbCreate(ArealDetails details) throws CreateException {
+    @Transactional
+    public String create(ArealDetails details) throws CreateException {
         try {
             ArealEntity entity = new ArealEntity();
             if (details.getId() == null) {
@@ -35,14 +48,15 @@ public class ArealService {
             entity.setPocetNavazujucichRez(details.getPocetNavazujucichRez());
 
             arealRepository.save(entity);
-            ejbPostCreate(details, entity);
+            postCreate(details, entity);
             return entity.getId();
         } catch (Exception e) {
             throw new CreateException("Failed to create Areal entity", e);
         }
     }
 
-    public void ejbPostCreate(ArealDetails details, ArealEntity entity) throws CreateException {
+    @Transactional
+    public void postCreate(ArealDetails details, ArealEntity entity) throws CreateException {
         try {
             Map<String, ArealLocDetails> localeData = details.getLocaleData();
             if (localeData != null) {
@@ -55,7 +69,11 @@ public class ArealService {
                     arealLocRepository.save(locEntity);
                 }
             }
-
+            /**
+             * This functionality of mapping "nadrazenyAreal" is missing in old bean,
+             * but it makes sense to map it while creating new areal, because it is present
+             * in setDetails and if getNadrazenyArealId is present while creating Areal
+             */
             if (details.getNadrazenyArealId() != null) {
                 ArealEntity parentEntity = arealRepository.findOptionalBy(details.getNadrazenyArealId())
                         .orElseThrow(() -> new CreateException("Parent Areal not found"));
@@ -73,7 +91,7 @@ public class ArealService {
         details.setId(entity.getId());
         details.setPocetNavazujucichRez(entity.getPocetNavazujucichRez());
 
-        List<ArealLocEntity> locEntities = entity.getLocaleData();
+        Collection<ArealLocEntity> locEntities = entity.getLocaleData();
         Map<String, ArealLocDetails> locDetails = locEntities.stream()
                 .collect(Collectors.toMap(ArealLocEntity::getJazyk, loc -> new ArealLocDetails(
                         loc.getId(), loc.getJazyk(), loc.getNazev(), loc.getPopis())));
@@ -87,6 +105,7 @@ public class ArealService {
         return details;
     }
 
+    @Transactional
     public void setDetails(ArealDetails details) throws ApplicationException {
         try {
             ArealEntity entity = arealRepository.findOptionalBy(details.getId())
@@ -123,6 +142,33 @@ public class ArealService {
         }
     }
 
+    /**
+     * Calling these two methods from controller will need to be changed
+     * Ideally by giving the methods parameter Id of Areal to be edited by adding
+     */
+    @Transactional
+    public void addObjekt(ObjektEntity objekt, String arealId) throws ApplicationException {
+        ArealEntity entity = arealRepository.findOptionalBy(arealId)
+                .orElseThrow(() -> new ApplicationException("Parent Areal not found"));
+        Collection<ObjektEntity> newObjekty = entity.getObjekty();
+
+        newObjekty.add(objekt);
+        entity.setObjekty(newObjekty);
+
+        arealRepository.save(entity);
+    }
+    @Transactional
+    public void addAreal(ArealEntity areal, String arealId) throws ApplicationException {
+        ArealEntity entity = arealRepository.findOptionalBy(arealId)
+                .orElseThrow(() -> new ApplicationException("Parent Areal not found"));
+        Collection<ArealEntity> newPodrazeneArealy = entity.getPodrazeneArealy();
+
+        newPodrazeneArealy.add(areal);
+        entity.setPodrazeneArealy(newPodrazeneArealy);
+
+        arealRepository.save(entity);
+    }
+
     public Collection<ArealDetails> findAll() {
         return arealRepository.findAll().stream()
                 .map(this::getDetails)
@@ -141,11 +187,7 @@ public class ArealService {
                 .collect(Collectors.toList());
     }
 
-    public Collection<String> ejbHomeGetArealIdsByParent(String arealId) throws ApplicationException {
-        try {
-            return arealRepository.findArealIdsByParent(arealId);
-        } catch (Exception e) {
-            throw new ApplicationException("Failed to retrieve Areal IDs by parent", e);
-        }
+    public Collection<String> getArealIdsByParent(String arealId){
+        return arealRepository.findArealIdsByParent(arealId);
     }
 }
