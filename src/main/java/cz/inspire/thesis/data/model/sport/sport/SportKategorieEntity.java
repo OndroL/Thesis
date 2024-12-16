@@ -27,14 +27,14 @@ public class SportKategorieEntity {
     @JoinColumn(name = "nadrazena_kategorie", referencedColumnName = "id")
     private SportKategorieEntity nadrazenaKategorie;
 
-    @OneToMany(mappedBy = "nadrazenaKategorie", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "nadrazenaKategorie")
     private List<SportKategorieEntity> podrazeneKategorie;
 
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
     @JoinColumn(name = "sportKategorie")
     private List<SportKategorieLocEntity> localeData;
 
-    @OneToMany(mappedBy = "sportKategorie", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "sportKategorie")
     private List<SportEntity> cinnosti;
 
 }

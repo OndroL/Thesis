@@ -85,7 +85,7 @@ public class SportEntity {
     @JoinColumn(name = "nadrazeny_sport", referencedColumnName = "id")
     private SportEntity nadrazenySport;
 
-    @OneToMany(mappedBy = "nadrazenySport", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "nadrazenySport")
     private List<SportEntity> podrazeneSporty;
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -96,9 +96,9 @@ public class SportEntity {
     @JoinColumn(name = "activity_id", referencedColumnName = "id")
     private ActivityEntity activity;
 
-    @OneToMany(mappedBy = "sport", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "sport")
     private List<SportInstructorEntity> sportInstructors;
 
-    @OneToMany(mappedBy = "sport", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "sport")
     private List<ObjektSportEntity> objekty;
 }

@@ -24,7 +24,7 @@ public class PodminkaRezervaceEntity {
     @Column
     private Boolean objektRezervaceObsazen;
 
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @ManyToOne(fetch = FetchType.LAZY, optional = false, cascade = CascadeType.ALL)
     @JoinColumn(name = "objektid", referencedColumnName = "id")
     private ObjektEntity objektId;
 }

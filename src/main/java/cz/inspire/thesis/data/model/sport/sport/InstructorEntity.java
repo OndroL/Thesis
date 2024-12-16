@@ -55,7 +55,7 @@ public class InstructorEntity {
     @Column
     private int googleCalendarNotificationBefore;
 
-    @OneToMany(mappedBy = "instructor", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "instructor")
     private List<SportInstructorEntity> sportInstructors;
 
     @ManyToMany

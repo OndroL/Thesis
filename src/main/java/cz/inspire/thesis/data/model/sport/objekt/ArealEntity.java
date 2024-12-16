@@ -28,10 +28,10 @@ public class ArealEntity {
     @JoinColumn(name = "nadrazeny_areal", referencedColumnName = "id")
     private ArealEntity nadrazenyAreal;
 
-    @OneToMany(mappedBy = "nadrazenyAreal", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "nadrazenyAreal")
     private List<ArealEntity> podrazeneArealy;
 
-    @OneToMany(mappedBy = "areal", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "areal")
     private List<ObjektEntity> objekty;
 }
 

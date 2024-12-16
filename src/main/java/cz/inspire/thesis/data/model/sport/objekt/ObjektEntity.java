@@ -93,13 +93,13 @@ public class ObjektEntity {
     @JoinColumn(name = "objekt")
     private Collection<ObjektLocEntity> localeData;
 
-    @OneToMany(mappedBy = "objekt", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "objekt")
     private Collection<ObjektSportEntity> objektSports;
 
-    @OneToMany(mappedBy = "objektId", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "objektId", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
     private Collection<OvladacObjektuEntity> ovladaceObjektu;
 
-    @OneToMany(mappedBy = "objektId", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "objektId")
     private Collection<PodminkaRezervaceEntity> podminkyRezervaci;
 
     @ManyToMany
