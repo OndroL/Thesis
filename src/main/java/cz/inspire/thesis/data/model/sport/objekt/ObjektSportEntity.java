@@ -17,11 +17,11 @@ public class ObjektSportEntity {
     @EmbeddedId
     private ObjektSportPK id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "sport", referencedColumnName = "id", nullable = false)
     private SportEntity sport;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "objekt", referencedColumnName = "id", nullable = false)
     private ObjektEntity objekt;
 }

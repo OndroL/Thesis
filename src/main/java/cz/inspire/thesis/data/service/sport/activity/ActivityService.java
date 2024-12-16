@@ -29,16 +29,16 @@ public class ActivityService {
             entity.setIndex(details.getIndex());
             entity.setIconId(details.getIconId());
 
-            if (details.getInstructors() != null) {
-                Set<InstructorEntity> instructors = details.getInstructors().stream()
-                        .map(inst -> {
-                            InstructorEntity instructor = new InstructorEntity();
-                            instructor.setId(inst.getId());
-                            return instructor;
-                        })
-                        .collect(Collectors.toSet());
-                entity.setInstructors(instructors);
-            }
+//            if (details.getInstructors() != null) {
+//                Set<InstructorEntity> instructors = details.getInstructors().stream()
+//                        .map(inst -> {
+//                            InstructorEntity instructor = new InstructorEntity();
+//                            instructor.setId(inst.getId());
+//                            return instructor;
+//                        })
+//                        .collect(Collectors.toSet());
+//                entity.setInstructors(instructors);
+//            }
 
             activityRepository.save(entity);
             return entity.getId();
@@ -57,16 +57,16 @@ public class ActivityService {
             entity.setIndex(details.getIndex());
             entity.setIconId(details.getIconId());
 
-            if (details.getInstructors() != null) {
-                Set<InstructorEntity> instructors = details.getInstructors().stream()
-                        .map(inst -> {
-                            InstructorEntity instructor = new InstructorEntity();
-                            instructor.setId(inst.getId());
-                            return instructor;
-                        })
-                        .collect(Collectors.toSet());
-                entity.setInstructors(instructors);
-            }
+//            if (details.getInstructors() != null) {
+//                Set<InstructorEntity> instructors = details.getInstructors().stream()
+//                        .map(inst -> {
+//                            InstructorEntity instructor = new InstructorEntity();
+//                            instructor.setId(inst.getId());
+//                            return instructor;
+//                        })
+//                        .collect(Collectors.toSet());
+//                entity.setInstructors(instructors);
+//            }
 
             activityRepository.save(entity);
         } catch (Exception e) {
@@ -82,12 +82,12 @@ public class ActivityService {
         details.setIndex(entity.getIndex());
         details.setIconId(entity.getIconId());
 
-        if (entity.getInstructors() != null) {
-            Set<InstructorDetails> instructors = entity.getInstructors().stream()
-                    .map(inst -> new InstructorDetails(inst.getId(), inst.getFirstName(), inst.getLastName(), inst.getColor()))
-                    .collect(Collectors.toSet());
-            details.setInstructors(instructors);
-        }
+//        if (entity.getInstructors() != null) {
+//            Set<InstructorDetails> instructors = entity.getInstructors().stream()
+//                    .map(inst -> new InstructorDetails(inst.getId(), inst.getFirstName(), inst.getLastName(), inst.getColor()))
+//                    .collect(Collectors.toSet());
+//            details.setInstructors(instructors);
+//        }
 
         return details;
     }

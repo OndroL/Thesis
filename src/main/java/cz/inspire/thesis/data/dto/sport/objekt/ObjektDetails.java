@@ -1,5 +1,6 @@
 package cz.inspire.thesis.data.dto.sport.objekt;
 
+import cz.inspire.thesis.data.dto.sport.sport.SportDetails;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
