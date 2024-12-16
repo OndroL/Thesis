@@ -144,7 +144,7 @@ public class ArealService {
 
     /**
      * Calling these two methods from controller will need to be changed
-     * Ideally by giving the methods parameter Id of Areal to be edited by adding
+     * Ideally by giving the methods parameter Id of Areal to be edited by adding objekt/areal
      */
     @Transactional
     public void addObjekt(ObjektEntity objekt, String arealId) throws ApplicationException {
