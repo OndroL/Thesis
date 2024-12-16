@@ -3,13 +3,22 @@ package cz.inspire.thesis.data.service.sport.activity;
 import cz.inspire.thesis.data.dto.sport.activity.ActivityWebTabDetails;
 import cz.inspire.thesis.data.model.sport.activity.ActivityWebTabEntity;
 import cz.inspire.thesis.data.repository.sport.activity.ActivityWebTabRepository;
-import cz.inspire.thesis.exceptions.CreateException;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 
 import java.util.Collection;
 import java.util.stream.Collectors;
 
+/**
+ * Those exceptions are created to mimic functionality and implementation of production exceptions
+ * Use your imports
+ */
+import cz.inspire.thesis.exceptions.CreateException;
+
+/**
+ * This is import of simple generateGUID functionality created to mimic real functionality
+ * In your implementation use your import of guidGenerator
+ */
 import static cz.inspire.thesis.data.utils.guidGenerator.generateGUID;
 
 @ApplicationScoped
