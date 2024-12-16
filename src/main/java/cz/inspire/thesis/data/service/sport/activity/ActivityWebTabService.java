@@ -27,7 +27,7 @@ public class ActivityWebTabService {
     @Inject
     private ActivityWebTabRepository activityWebTabRepository;
 
-    public String ejbCreate(ActivityWebTabDetails details) throws CreateException {
+    public String create(ActivityWebTabDetails details) throws CreateException {
         try {
             ActivityWebTabEntity entity = new ActivityWebTabEntity();
             if (details.getId() == null) {

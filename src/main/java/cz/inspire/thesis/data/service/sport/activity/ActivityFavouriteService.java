@@ -31,7 +31,7 @@ public class ActivityFavouriteService {
     private ActivityFavouriteRepository activityFavouriteRepository;
 
     @Transactional
-    public String ejbCreate(ActivityFavouriteDetails details) throws CreateException {
+    public String create(ActivityFavouriteDetails details) throws CreateException {
         try {
             ActivityFavouriteEntity entity = new ActivityFavouriteEntity();
             if (details.getId() == null) {
