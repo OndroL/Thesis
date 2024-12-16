@@ -9,7 +9,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.util.Set;
+import java.util.Collection;
 
 @AllArgsConstructor
 @Setter
@@ -30,8 +30,8 @@ public class ActivityEntity {
     private String iconId;
 
     @ManyToMany(mappedBy = "activities")
-    private Set<InstructorEntity> instructors;
+    private Collection<InstructorEntity> instructors;
 
     @OneToMany(mappedBy = "activity")
-    private Set<SportEntity> sports;
+    private Collection<SportEntity> sports;
 }

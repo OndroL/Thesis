@@ -31,5 +31,11 @@ public class InstructorDetails {
     private Boolean googleCalendarNotification;
     private int googleCalendarNotificationBefore;
     private Set<ActivityDetails> activities;
-    //private Set<SportDetails> sports;
+    private Set<SportDetails> sports;
+
+    /**
+     * Added for ActivityBean getDetails functionality
+     */
+    public InstructorDetails(String id, String firstName, String lastName, String color) {
+    }
 }
