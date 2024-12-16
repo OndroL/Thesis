@@ -3,14 +3,25 @@ package cz.inspire.thesis.data.service.sport.activity;
 import cz.inspire.thesis.data.dto.sport.activity.ActivityFavouriteDetails;
 import cz.inspire.thesis.data.model.sport.activity.ActivityFavouriteEntity;
 import cz.inspire.thesis.data.repository.sport.activity.ActivityFavouriteRepository;
-import cz.inspire.thesis.exceptions.CreateException;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
-
+import org.apache.deltaspike.jpa.api.transaction.Transactional;
 import java.util.Collection;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+/**
+ * Those exceptions are created to mimic functionality and implementation of production exceptions
+ * Use your imports
+ * Plus ApplicationException is additional Exception for update, see setDetails
+ */
+import cz.inspire.thesis.exceptions.ApplicationException;
+import cz.inspire.thesis.exceptions.CreateException;
+
+/**
+ * This is import of simple generateGUID functionality created to mimic real functionality
+ * In your implementation use your import of guidGenerator
+ */
 import static cz.inspire.thesis.data.utils.guidGenerator.generateGUID;
 
 @ApplicationScoped
@@ -19,6 +30,7 @@ public class ActivityFavouriteService {
     @Inject
     private ActivityFavouriteRepository activityFavouriteRepository;
 
+    @Transactional
     public String ejbCreate(ActivityFavouriteDetails details) throws CreateException {
         try {
             ActivityFavouriteEntity entity = new ActivityFavouriteEntity();
@@ -47,6 +59,26 @@ public class ActivityFavouriteService {
                 entity.getPocet(),
                 entity.getDatumPosledniZmeny()
         );
+    }
+
+    /**
+     * Discuss If you want to throw any exceptions while using setDetails.
+     * In old Bean there is none.
+     */
+    @Transactional
+    public void setDetails(ActivityFavouriteDetails details) throws ApplicationException {
+        try {
+            ActivityFavouriteEntity entity = activityFavouriteRepository.findOptionalBy(details.getId())
+                    .orElseThrow(() -> new ApplicationException("ActivityFavourite entity not found"));
+            entity.setZakaznikId(details.getZakaznikId());
+            entity.setActivityId(details.getActivityId());
+            entity.setPocet(details.getPocet());
+            entity.setDatumPosledniZmeny(details.getDatumPosledniZmeny());
+
+            activityFavouriteRepository.save(entity);
+        } catch (Exception e) {
+            throw new ApplicationException("Failed to update ActivityFavourite entity", e);
+        }
     }
 
     public Collection<ActivityFavouriteDetails> findByZakaznik(String zakaznikId, int limit, int offset) {
