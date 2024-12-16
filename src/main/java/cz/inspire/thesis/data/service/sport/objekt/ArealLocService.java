@@ -3,13 +3,23 @@ package cz.inspire.thesis.data.service.sport.objekt;
 import cz.inspire.thesis.data.dto.sport.objekt.ArealLocDetails;
 import cz.inspire.thesis.data.model.sport.objekt.ArealLocEntity;
 import cz.inspire.thesis.data.repository.sport.objekt.ArealLocRepository;
-import cz.inspire.thesis.exceptions.CreateException;
 import jakarta.enterprise.context.ApplicationScoped;
+import org.apache.deltaspike.jpa.api.transaction.Transactional;
 import jakarta.inject.Inject;
 
 import java.util.Collection;
 import java.util.stream.Collectors;
 
+/**
+ * Those exceptions are created to mimic functionality and implementation of production exceptions
+ * Use your imports
+ */
+import cz.inspire.thesis.exceptions.CreateException;
+
+/**
+ * This is import of simple generateGUID functionality created to mimic real functionality
+ * In your implementation use your import of guidGenerator
+ */
 import static cz.inspire.thesis.data.utils.guidGenerator.generateGUID;
 
 @ApplicationScoped
@@ -18,7 +28,8 @@ public class ArealLocService {
     @Inject
     private ArealLocRepository arealLocRepository;
 
-    public String ejbCreate(ArealLocDetails details) throws CreateException {
+    @Transactional
+    public String create(ArealLocDetails details) throws CreateException {
         try {
             ArealLocEntity entity = new ArealLocEntity();
             if (details.getId() == null) {
@@ -46,6 +57,9 @@ public class ArealLocService {
         );
     }
 
+    /**
+     * Those two finders are here only for test purposes, they were not in old bean
+     */
     public Collection<ArealLocDetails> findAll() {
         return arealLocRepository.findAll().stream()
                 .map(this::getDetails)
