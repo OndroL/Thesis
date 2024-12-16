@@ -12,6 +12,7 @@ import cz.inspire.thesis.data.repository.sport.sport.InstructorRepository;
 import cz.inspire.thesis.data.repository.sport.sport.SportInstructorRepository;
 import cz.inspire.thesis.data.repository.sport.sport.SportRepository;
 import jakarta.enterprise.context.ApplicationScoped;
+import org.apache.deltaspike.jpa.api.transaction.Transactional;
 import jakarta.inject.Inject;
 
 import java.util.Collection;
@@ -26,7 +27,6 @@ import java.util.stream.Collectors;
  */
 import cz.inspire.thesis.exceptions.ApplicationException;
 import cz.inspire.thesis.exceptions.CreateException;
-import org.apache.deltaspike.jpa.api.transaction.Transactional;
 
 /**
  * This is import of simple generateGUID functionality created to mimic real functionality
