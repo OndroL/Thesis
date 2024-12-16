@@ -4,6 +4,7 @@ import cz.inspire.thesis.data.dto.sport.activity.ActivityWebTabDetails;
 import cz.inspire.thesis.data.model.sport.activity.ActivityWebTabEntity;
 import cz.inspire.thesis.data.repository.sport.activity.ActivityWebTabRepository;
 import jakarta.enterprise.context.ApplicationScoped;
+import org.apache.deltaspike.jpa.api.transaction.Transactional;
 import jakarta.inject.Inject;
 
 import java.util.Collection;
@@ -27,6 +28,7 @@ public class ActivityWebTabService {
     @Inject
     private ActivityWebTabRepository activityWebTabRepository;
 
+    @Transactional
     public String create(ActivityWebTabDetails details) throws CreateException {
         try {
             ActivityWebTabEntity entity = new ActivityWebTabEntity();
