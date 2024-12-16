@@ -8,6 +8,7 @@ import lombok.Setter;
 
 import java.util.Map;
 import java.util.List;
+import java.util.Set;
 
 @NoArgsConstructor
 @AllArgsConstructor
@@ -47,8 +48,8 @@ public class ObjektDetails {
     private List<SportDetails> sports;
     private List<OvladacObjektuDetails> ovladaceObjektu;
     private List<PodminkaRezervaceDetails> podminkyRezervaci;
-    private List<String> nadobjekty;
-    private List<String> podobjekty;
+    private Set<String> nadobjekty;
+    private Set<String> podobjekty;
     private String googleCalendarId;
     private boolean googleCalendarNotification;
     private int googleCalendarNotificationBefore;

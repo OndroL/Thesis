@@ -9,7 +9,6 @@ import org.hibernate.annotations.JdbcTypeCode;
 
 import java.sql.Types;
 import java.util.Collection;
-import java.util.Set;
 
 @AllArgsConstructor
 @Setter
@@ -108,8 +107,8 @@ public class ObjektEntity {
             joinColumns = @JoinColumn(name = "objekt"),
             inverseJoinColumns = @JoinColumn(name = "nadobjekt")
     )
-    private Set<ObjektEntity> nadobjekty;
+    private Collection<ObjektEntity> nadobjekty;
 
     @ManyToMany(mappedBy = "nadobjekty")
-    private Set<ObjektEntity> podobjekty;
+    private Collection<ObjektEntity> podobjekty;
 }

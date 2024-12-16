@@ -58,6 +58,17 @@ public class PodminkaRezervaceService {
         return details;
     }
 
+    public PodminkaRezervaceDetails getDetailsWithoutObjectId(PodminkaRezervaceEntity entity) {
+        PodminkaRezervaceDetails podminka = new PodminkaRezervaceDetails();
+        podminka.setId(entity.getId());
+        podminka.setName(entity.getName());
+        podminka.setPriorita(entity.getPriorita());
+        podminka.setObjektRezervaceId(entity.getObjektRezervaceId());
+        podminka.setObjektRezervaceObsazen(entity.getObjektRezervaceObsazen());
+        return podminka;
+    }
+
+
     public Collection<PodminkaRezervaceDetails> findAll() {
         return podminkaRezervaceRepository.findAll().stream()
                 .map(this::getDetails)
