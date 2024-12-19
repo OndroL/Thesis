@@ -11,6 +11,7 @@ import cz.inspire.thesis.exceptions.ApplicationException;
 import cz.inspire.thesis.exceptions.CreateException;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
+import org.apache.deltaspike.jpa.api.transaction.Transactional;
 
 import java.util.Collection;
 import java.util.List;
@@ -30,7 +31,8 @@ public class SportInstructorService {
     @Inject
     private InstructorRepository instructorRepository;
 
-    public String ejbCreate(SportInstructorDetails details) throws CreateException {
+    @Transactional
+    public String create(SportInstructorDetails details) throws CreateException {
         try {
             SportInstructorEntity entity = new SportInstructorEntity();
             if (details.getId() == null) {
@@ -44,6 +46,7 @@ public class SportInstructorService {
         }
     }
 
+    @Transactional
     public void setDetails(SportInstructorDetails details) throws ApplicationException {
         try {
             SportInstructorEntity entity = sportInstructorRepository.findOptionalBy(details.getId())
