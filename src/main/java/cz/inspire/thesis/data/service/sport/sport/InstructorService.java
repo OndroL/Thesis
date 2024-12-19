@@ -1,12 +1,12 @@
 package cz.inspire.thesis.data.service.sport.sport;
 
 import cz.inspire.thesis.data.dto.sport.sport.InstructorDetails;
-import cz.inspire.thesis.data.dto.sport.activity.ActivityDetails;
 import cz.inspire.thesis.data.model.sport.sport.InstructorEntity;
 import cz.inspire.thesis.data.repository.sport.sport.InstructorRepository;
 import cz.inspire.thesis.exceptions.CreateException;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
+import org.apache.deltaspike.jpa.api.transaction.Transactional;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -19,7 +19,8 @@ public class InstructorService {
     @Inject
     private InstructorRepository instructorRepository;
 
-    public String ejbCreate(InstructorDetails details) throws CreateException {
+    @Transactional
+    public String create(InstructorDetails details) throws CreateException {
         try {
             InstructorEntity entity = new InstructorEntity();
             if (details.getId() == null) {
@@ -45,14 +46,15 @@ public class InstructorService {
 
             instructorRepository.save(entity);
 
-            ejbPostCreate(details, entity);
+            postCreate(details, entity);
             return entity.getId();
         } catch (Exception e) {
             throw new CreateException("Failed to create Instructor entity", e);
         }
     }
 
-    public void ejbPostCreate(InstructorDetails details, InstructorEntity entity) throws CreateException {
+    @Transactional
+    public void postCreate(InstructorDetails details, InstructorEntity entity) throws CreateException {
         try {
             // Additional logic for post-create, if needed.
         } catch (Exception e) {
