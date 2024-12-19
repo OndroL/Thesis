@@ -22,14 +22,14 @@ public interface PodminkaRezervaceRepository extends EntityRepository<PodminkaRe
 
     @Query("""
         SELECT p FROM PodminkaRezervaceEntity p
-        WHERE p.objektId.id = ?1
+        WHERE p.objekt.id = ?1
         ORDER BY p.priorita
     """)
     List<PodminkaRezervaceEntity> findByObjekt(String objektId, @FirstResult int offset, @MaxResults int count);
 
     @Query("""
         SELECT COUNT(p.id) FROM PodminkaRezervaceEntity p
-        WHERE p.objektId.id = ?1
+        WHERE p.objekt.id = ?1
     """)
     Long countAllByObject(String objektId);
 
@@ -39,7 +39,7 @@ public interface PodminkaRezervaceRepository extends EntityRepository<PodminkaRe
     Long countAll();
 
     @Query("""
-        SELECT DISTINCT p.objektId.id FROM PodminkaRezervaceEntity p
+        SELECT DISTINCT p.objekt.id FROM PodminkaRezervaceEntity p
         WHERE p.objektRezervaceId = ?1
     """)
     List<String> getObjectIdsByReservationConditionObject(String objektRezervaceId);
