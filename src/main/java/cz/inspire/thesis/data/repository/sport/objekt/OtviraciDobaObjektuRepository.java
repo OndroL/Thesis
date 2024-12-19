@@ -49,7 +49,7 @@ public interface OtviraciDobaObjektuRepository extends EntityRepository<Otviraci
         WHERE o.id.objektId = ?1 AND o.id.platnostOd <= ?2
         ORDER BY o.id.platnostOd DESC
     """)
-    List<Date> ejbSelectGetCurrentIdsByObjectAndDay(String objektId, Date day);
+    List<Date> getCurrentIdsByObjectAndDay(String objektId, Date day);
 
 
     @Query("""
