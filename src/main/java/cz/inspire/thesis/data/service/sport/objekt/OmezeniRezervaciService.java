@@ -6,6 +6,7 @@ import cz.inspire.thesis.data.repository.sport.objekt.OmezeniRezervaciRepository
 import cz.inspire.thesis.exceptions.CreateException;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
+import org.apache.deltaspike.jpa.api.transaction.Transactional;
 
 import java.util.Collection;
 import java.util.stream.Collectors;
@@ -17,8 +18,8 @@ public class OmezeniRezervaciService {
 
     @Inject
     private OmezeniRezervaciRepository repository;
-
-    public String ejbCreate(OmezeniRezervaciDetails details) throws CreateException {
+    @Transactional
+    public String create(OmezeniRezervaciDetails details) throws CreateException {
         try {
             OmezeniRezervaciEntity entity = new OmezeniRezervaciEntity();
             if (details.getObjektId() == null) {
