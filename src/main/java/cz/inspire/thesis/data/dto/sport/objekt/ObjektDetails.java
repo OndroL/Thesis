@@ -45,7 +45,7 @@ public class ObjektDetails {
     private Integer zruseniRezervacePredZacatkem;
     private Map<String, ObjektLocDetails> localeData;
     private ArealDetails areal;
-    private List<SportDetails> sports;
+    private List<ObjektSportDetails> objektSport;
     private List<OvladacObjektuDetails> ovladaceObjektu;
     private List<PodminkaRezervaceDetails> podminkyRezervaci;
     private Set<String> nadobjekty;
