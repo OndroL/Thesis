@@ -10,6 +10,7 @@ import cz.inspire.thesis.exceptions.ApplicationException;
 import cz.inspire.thesis.exceptions.CreateException;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
+import org.apache.deltaspike.jpa.api.transaction.Transactional;
 
 import java.util.Collection;
 import java.util.stream.Collectors;
@@ -22,7 +23,8 @@ public class ObjektSportService {
     @Inject
     private ObjektSportRepository objektSportRepository;
 
-    public String ejbCreate(ObjektSportDetails details) throws CreateException {
+    @Transactional
+    public String create(ObjektSportDetails details) throws CreateException {
         try {
             ObjektSportEntity entity = new ObjektSportEntity();
             if (details.getId() == null) {
@@ -47,6 +49,19 @@ public class ObjektSportService {
         }
     }
 
+    @Transactional
+    public void remove(ObjektSportPK id) throws ApplicationException {
+        try {
+            ObjektSportEntity entity = objektSportRepository.findBy(id)
+                    .orElseThrow(() -> new ApplicationException("ObjektSport entity not found with id : " + id));
+
+            objektSportRepository.remove(entity);
+        } catch (Exception e) {
+            throw new ApplicationException("Failed to update ObjektSport entity", e);
+        }
+    }
+
+    @Transactional
     public void setDetails(ObjektSportDetails details) throws ApplicationException {
         try {
             ObjektSportEntity entity = objektSportRepository.findOptionalBy(details.getId())
