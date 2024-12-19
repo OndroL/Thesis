@@ -3,12 +3,15 @@ package cz.inspire.thesis.data.service.sport.objekt;
 import cz.inspire.thesis.data.dto.sport.objekt.OvladacObjektuDetails;
 import cz.inspire.thesis.data.model.sport.objekt.OvladacObjektuEntity;
 import cz.inspire.thesis.data.repository.sport.objekt.OvladacObjektuRepository;
+import cz.inspire.thesis.exceptions.ApplicationException;
 import cz.inspire.thesis.exceptions.CreateException;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
+import org.apache.deltaspike.jpa.api.transaction.Transactional;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import static cz.inspire.thesis.data.utils.guidGenerator.generateGUID;
@@ -19,7 +22,8 @@ public class OvladacObjektuService {
     @Inject
     private OvladacObjektuRepository repository;
 
-    public String ejbCreate(OvladacObjektuDetails details) throws CreateException {
+    @Transactional
+    public String create(OvladacObjektuDetails details) throws CreateException {
         try {
             OvladacObjektuEntity entity = new OvladacObjektuEntity();
             if (details.getId() == null) {
@@ -42,6 +46,41 @@ public class OvladacObjektuService {
         }
     }
 
+    @Transactional
+    public void remove(String id) throws ApplicationException {
+        try {
+            OvladacObjektuEntity entity = repository.findOptionalBy(id)
+                    .orElseThrow(() -> new ApplicationException("OvladacObjektu entity not found with id : " + id));
+
+            repository.remove(entity);
+        } catch (Exception e) {
+            throw new ApplicationException("Failed to remove OvladacObjektu entity", e);
+        }
+    }
+
+    @Transactional
+    public void setDetails(OvladacObjektuDetails details) throws ApplicationException {
+
+        try {
+            OvladacObjektuEntity entity = repository.findOptionalBy(details.getId())
+                    .orElseThrow(() -> new ApplicationException("OvladacObjektu entity not found with id : " + details.getId()));
+            entity.setIdOvladace(details.getIdOvladace());
+            entity.setCislaZapojeni(encodeNumbersToString(details.getCislaZapojeniList()));
+            entity.setAutomat(details.getAutomat());
+            entity.setManual(details.getManual());
+            entity.setDelkaSepnutiPoKonci(details.getDelkaSepnutiPoKonci());
+            entity.setZapnutiPredZacatkem(details.getZapnutiPredZacatkem());
+            // This is kinda redundant
+            // In old Bean -> "setObjektId(getObjektId());"
+            entity.setObjektId(entity.getObjektId());
+
+            repository.save(entity);
+
+        } catch (Exception e) {
+            throw  new ApplicationException("Failed to update OvladacObjektu entity");
+        }
+    }
+
     public OvladacObjektuDetails getDetails(OvladacObjektuEntity entity) {
         return new OvladacObjektuDetails(
                 entity.getId(),
@@ -55,22 +94,24 @@ public class OvladacObjektuService {
         );
     }
 
-    public Collection<OvladacObjektuDetails> findAll() {
-        return repository.findAll().stream()
-                .map(this::getDetails)
-                .collect(Collectors.toList());
+
+
+    public Collection<OvladacObjektuEntity> findAll() {
+        return repository.findAll();
     }
 
-    public Collection<OvladacObjektuDetails> findWithOvladacObjektu(String idOvladace) {
-        return repository.findWithOvladacObjektu(idOvladace).stream()
-                .map(this::getDetails)
-                .collect(Collectors.toList());
+    public Collection<OvladacObjektuEntity> findWithOvladacObjektu(String idOvladace) {
+        return repository.findWithOvladacObjektu(idOvladace);
     }
 
-    public Collection<OvladacObjektuDetails> findByObjekt(String objektId) {
-        return repository.findByObjekt(objektId).stream()
-                .map(this::getDetails)
-                .collect(Collectors.toList());
+
+
+    public Collection<OvladacObjektuEntity> findByObjekt(String objektId) {
+        return repository.findByObjekt(objektId);
+    }
+
+    public Optional<OvladacObjektuEntity> findOptionalBy (String objektId) {
+        return repository.findOptionalBy(objektId);
     }
 
     /** These functions are generated to mimic functionality of
