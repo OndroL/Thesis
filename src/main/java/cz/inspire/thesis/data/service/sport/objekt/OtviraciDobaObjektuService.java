@@ -8,6 +8,7 @@ import cz.inspire.thesis.exceptions.CreateException;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.persistence.EntityNotFoundException;
+import org.apache.deltaspike.jpa.api.transaction.Transactional;
 
 import java.util.Date;
 import java.util.List;
@@ -20,7 +21,8 @@ public class OtviraciDobaObjektuService {
     @Inject
     private OtviraciDobaObjektuRepository repository;
 
-    public String ejbCreate(OtviraciDobaObjektuDetails details) throws CreateException {
+    @Transactional
+    public String create(OtviraciDobaObjektuDetails details) throws CreateException {
         try {
             OtviraciDobaObjektuPK pk = new OtviraciDobaObjektuPK(details.getObjektId(), details.getPlatnostOd());
 
@@ -74,13 +76,12 @@ public class OtviraciDobaObjektuService {
         }
     }
 
-    public List<Date> ejbSelectGetCurrentIdsByObjectAndDay(String objektId, Date day) {
-        // Simulates the behavior of a "select" query in EJB
-        return repository.ejbSelectGetCurrentIdsByObjectAndDay(objektId, day);
+    public List<Date> findCurrentIdsByObjectAndDay(String objektId, Date day) {
+        return repository.getCurrentIdsByObjectAndDay(objektId, day);
     }
 
-    public OtviraciDobaObjektuPK ejbHomeGetCurrentIdsByObjectAndDay(String objektId, Date day) {
-        List<Date> dates = ejbSelectGetCurrentIdsByObjectAndDay(objektId, day);
+    public OtviraciDobaObjektuPK getCurrentIdsByObjectAndDay(String objektId, Date day) {
+        List<Date> dates = findCurrentIdsByObjectAndDay(objektId, day);
         if (dates == null || dates.isEmpty()) {
             return null;
         }
