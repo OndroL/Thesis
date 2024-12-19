@@ -8,7 +8,6 @@ import cz.inspire.thesis.data.dto.sport.sport.SportDetails;
 import cz.inspire.thesis.data.model.sport.objekt.*;
 import cz.inspire.thesis.data.model.sport.sport.SportEntity;
 import cz.inspire.thesis.data.repository.sport.objekt.ObjektRepository;
-import cz.inspire.thesis.data.repository.sport.objekt.OvladacObjektuRepository;
 import cz.inspire.thesis.data.service.sport.sport.SportService;
 import jakarta.enterprise.context.ApplicationScoped;
 import lombok.SneakyThrows;
