@@ -7,6 +7,7 @@ import cz.inspire.thesis.data.repository.sport.sport.SportKategorieLocRepository
 import cz.inspire.thesis.exceptions.CreateException;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
+import org.apache.deltaspike.jpa.api.transaction.Transactional;
 
 import java.util.Collection;
 import java.util.Optional;
@@ -20,7 +21,8 @@ public class SportKategorieLocService {
     @Inject
     private SportKategorieLocRepository sportKategorieLocRepository;
 
-    public String ejbCreate(SportKategorieLocDetails details, SportKategorieEntity sportKategorie) throws CreateException {
+    @Transactional
+    public String create(SportKategorieLocDetails details, SportKategorieEntity sportKategorie) throws CreateException {
         try {
             SportKategorieLocEntity entity = new SportKategorieLocEntity();
             if (details.getId() == null) {

@@ -10,6 +10,7 @@ import cz.inspire.thesis.exceptions.ApplicationException;
 import cz.inspire.thesis.exceptions.CreateException;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
+import org.apache.deltaspike.jpa.api.transaction.Transactional;
 
 import java.util.List;
 import java.util.Map;
@@ -26,7 +27,8 @@ public class SportKategorieService {
     @Inject
     private SportKategorieLocRepository sportKategorieLocRepository;
 
-    public String ejbCreate(SportKategorieDetails details) throws CreateException {
+    @Transactional
+    public String create(SportKategorieDetails details) throws CreateException {
         try {
             SportKategorieEntity entity = new SportKategorieEntity();
             if (details.getId() == null) {
@@ -35,14 +37,15 @@ public class SportKategorieService {
             mapToEntity(entity, details);
 
             sportKategorieRepository.save(entity);
-            ejbPostCreate(details, entity);
+            postCreate(details, entity);
             return entity.getId();
         } catch (Exception e) {
             throw new CreateException("Failed to create SportKategorie", e);
         }
     }
 
-    public void ejbPostCreate(SportKategorieDetails details, SportKategorieEntity entity) throws CreateException {
+    @Transactional
+    public void postCreate(SportKategorieDetails details, SportKategorieEntity entity) throws CreateException {
         try {
             if (details.getLocaleData() != null) {
                 for (SportKategorieLocDetails locDetails : details.getLocaleData().values()) {
@@ -67,6 +70,7 @@ public class SportKategorieService {
         }
     }
 
+    @Transactional
     public void setDetails(SportKategorieDetails details) throws ApplicationException {
         try {
             SportKategorieEntity entity = sportKategorieRepository.findOptionalBy(details.getId())
