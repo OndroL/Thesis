@@ -190,4 +190,8 @@ public class ArealService {
     public Collection<String> getArealIdsByParent(String arealId){
         return arealRepository.findArealIdsByParent(arealId);
     }
+
+    public Optional<ArealEntity> findOptionalBy (String objektId) {
+        return arealRepository.findOptionalBy(objektId);
+    }
 }
