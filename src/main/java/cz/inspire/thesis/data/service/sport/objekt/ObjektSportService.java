@@ -6,8 +6,6 @@ import cz.inspire.thesis.data.model.sport.objekt.ObjektSportPK;
 import cz.inspire.thesis.data.model.sport.sport.SportEntity;
 import cz.inspire.thesis.data.model.sport.objekt.ObjektEntity;
 import cz.inspire.thesis.data.repository.sport.objekt.ObjektSportRepository;
-import cz.inspire.thesis.exceptions.ApplicationException;
-import cz.inspire.thesis.exceptions.CreateException;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import org.apache.deltaspike.jpa.api.transaction.Transactional;
@@ -15,6 +13,18 @@ import org.apache.deltaspike.jpa.api.transaction.Transactional;
 import java.util.Collection;
 import java.util.stream.Collectors;
 
+/**
+ * Those exceptions are created to mimic functionality and implementation of production exceptions
+ * Use your imports
+ * Plus ApplicationException is additional Exception for update, see setDetails
+ */
+import cz.inspire.thesis.exceptions.ApplicationException;
+import cz.inspire.thesis.exceptions.CreateException;
+
+/**
+ * This is import of simple generateGUID functionality created to mimic real functionality
+ * In your implementation use your import of guidGenerator
+ */
 import static cz.inspire.thesis.data.utils.guidGenerator.generateGUID;
 
 @ApplicationScoped

@@ -85,7 +85,7 @@ public class ActivityRepositoryTest {
         assertNotNull("InstructorRepository should be initialized!", instructorRepository);
 
         // Create and save instructor
-        InstructorEntity instructor = new InstructorEntity("instructor1", "John", "Doe", 1, "john.doe@example.com", "+1", "123456789", null, null, null, "Info", "Red", null, false, null, false, 10, new ArrayList<>(), null);
+        InstructorEntity instructor = new InstructorEntity("instructor1", "John", "Doe", 1, "john.doe@example.com", "+1", "123456789", null, null, null, "Info", "Red", null, false, null, false, 10, new ArrayList<>(), null, null);
 
         // Save instructor
         instructorRepository.save(instructor);
@@ -128,7 +128,7 @@ public class ActivityRepositoryTest {
         assertNotNull("InstructorRepository should be initialized!", instructorRepository);
 
         // Create and save instructor
-        InstructorEntity instructor = new InstructorEntity("instructor1", "John", "Doe", 1, "john.doe@example.com", "+1", "123456789", null, null, null, "Info", "Red", null, false, null, false, 10, new ArrayList<>(), null);
+        InstructorEntity instructor = new InstructorEntity("instructor1", "John", "Doe", 1, "john.doe@example.com", "+1", "123456789", null, null, null, "Info", "Red", null, false, null, false, 10, new ArrayList<>(), null, null);
 
         // Save instructor
         instructorRepository.save(instructor);

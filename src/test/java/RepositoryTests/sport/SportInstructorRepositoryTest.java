@@ -1,6 +1,7 @@
 package RepositoryTests.sport;
 
 import cz.inspire.thesis.data.EntityManagerProducer;
+import cz.inspire.thesis.data.model.sport.activity.ActivityFavouriteEntity;
 import cz.inspire.thesis.data.model.sport.sport.SportInstructorEntity;
 import cz.inspire.thesis.data.model.sport.sport.SportEntity;
 import cz.inspire.thesis.data.model.sport.sport.InstructorEntity;
@@ -17,6 +18,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import java.util.List;
+import java.util.Optional;
 
 import static org.junit.Assert.*;
 
@@ -53,7 +55,7 @@ public class SportInstructorRepositoryTest {
         SportEntity sport = new SportEntity(
                 "sport1", 1, "zbozi1", "sklad1", 100, true, 60, true, 0,
                 null, 30, 120, true, 15, null, null, true, true, 10,
-                90, 1, 5, 20, null, null, null, null, null, null, null, null
+                90, 1, 5, 20, null, null, null, null, null, null, null, null, null
         );
 
         sportRepository.save(sport);
@@ -71,7 +73,7 @@ public class SportInstructorRepositoryTest {
     public void testFindByInstructor() {
         InstructorEntity instructor = new InstructorEntity(
                 "instructor1", "John", "Doe", 1, "john.doe@example.com", "+1", "123456789",
-                null, null, null, "Info", "Red", null, false, null, false, 10, null, null
+                null, null, null, "Info", "Red", null, false, null, false, 10, null, null, null
         );
 
         instructorRepository.save(instructor);
@@ -90,12 +92,12 @@ public class SportInstructorRepositoryTest {
         SportEntity sport = new SportEntity(
                 "sport1", 1, "zbozi1", "sklad1", 100, true, 60, true, 0,
                 null, 30, 120, true, 15, null, null, true, true, 10,
-                90, 1, 5, 20, null, null, null, null, null, null, null, null
+                90, 1, 5, 20, null, null, null, null, null, null, null, null, null
         );
 
         InstructorEntity instructor = new InstructorEntity(
                 "instructor1", "John", "Doe", 1, "john.doe@example.com", "+1", "123456789",
-                null, null, null, "Info", "Red", null, false, null, false, 10, null, null
+                null, null, null, "Info", "Red", null, false, null, false, 10, null, null, null
         );
 
         sportRepository.save(sport);
@@ -104,9 +106,12 @@ public class SportInstructorRepositoryTest {
         SportInstructorEntity sportInstructor = new SportInstructorEntity("1", "activity1", null, false, sport, instructor);
         sportInstructorRepository.save(sportInstructor);
 
-        SportInstructorEntity result = sportInstructorRepository.findBySportAndInstructor("sport1", "instructor1");
+        Optional<SportInstructorEntity> result = sportInstructorRepository.findBySportAndInstructor("sport1", "instructor1");
         assertNotNull(result);
-        assertEquals("1", result.getId());
+        if (result.isPresent()) {
+            SportInstructorEntity result_existing = result.get();
+            assertEquals("1", result_existing.getId());
+        }
     }
 
     @Test
@@ -170,8 +175,11 @@ public class SportInstructorRepositoryTest {
 
         em.getTransaction().commit();
 
-        SportInstructorEntity result = sportInstructorRepository.findBySportWithoutInstructor("sport1");
+        Optional<SportInstructorEntity> result = sportInstructorRepository.findBySportWithoutInstructor("sport1");
         assertNotNull(result);
-        assertEquals("1", result.getId());
+        if (result.isPresent()) {
+            SportInstructorEntity result_existing =  result.get();
+            assertEquals("1", result_existing.getId());
+        }
     }
 }

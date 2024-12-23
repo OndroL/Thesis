@@ -1,5 +1,6 @@
 package cz.inspire.thesis.data.model.sport.sport;
 
+import cz.inspire.thesis.data.dto.sport.sport.SportDetails;
 import cz.inspire.thesis.data.model.sport.activity.ActivityEntity;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -9,7 +10,7 @@ import lombok.Setter;
 import org.hibernate.annotations.JdbcTypeCode;
 
 import java.sql.Types;
-import java.util.List;
+import java.util.Collection;
 import java.util.Set;
 
 @AllArgsConstructor
@@ -56,7 +57,7 @@ public class InstructorEntity {
     private int googleCalendarNotificationBefore;
 
     @OneToMany(mappedBy = "instructor")
-    private List<SportInstructorEntity> sportInstructors;
+    private Collection<SportInstructorEntity> sportInstructors;
 
     @ManyToMany
     @JoinTable(
@@ -64,5 +65,8 @@ public class InstructorEntity {
             joinColumns = @JoinColumn(name = "instructor_id"),
             inverseJoinColumns = @JoinColumn(name = "activity_id")
     )
-    private Set<ActivityEntity> activities;
+    private Collection<ActivityEntity> activities;
+
+    @Transient
+    private Set<SportDetails> sportSet;
 }

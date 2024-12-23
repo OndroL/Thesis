@@ -14,6 +14,7 @@ import org.apache.deltaspike.jpa.api.transaction.Transactional;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import static cz.inspire.thesis.data.utils.guidGenerator.generateGUID;
@@ -86,9 +87,12 @@ public class SportKategorieService {
                     locEntity.setJazyk(locDetails.getJazyk());
                     locEntity.setNazev(locDetails.getNazev());
                     locEntity.setPopis(locDetails.getPopis());
-                    sportKategorieLocRepository.save(locEntity);
                 }
             }
+
+            // There is missing functionality in Bean for setting podrazenaKategorie for nadrazenKategorieEntity when creating new Entity with
+            // nadrazenaKategorie ... or is possible dead functionality and tree is not reversible, and entities only have parent not child/s
+            // nadrazenaKategorie.setPodrazenaKategorie(nadrazenaKategorie.getPodrazenzekategorie().add(entity);
 
             if (details.getNadrazenaKategorieId() != null) {
                 SportKategorieEntity nadrazenaKategorie = sportKategorieRepository.findOptionalBy(details.getNadrazenaKategorieId())
@@ -127,22 +131,16 @@ public class SportKategorieService {
         return details;
     }
 
-    public List<SportKategorieDetails> findAll() {
-        return sportKategorieRepository.findAll().stream()
-                .map(this::getDetails)
-                .collect(Collectors.toList());
+    public List<SportKategorieEntity> findAll() {
+        return sportKategorieRepository.findAll();
     }
 
-    public List<SportKategorieDetails> findRoot() {
-        return sportKategorieRepository.findRoot().stream()
-                .map(this::getDetails)
-                .collect(Collectors.toList());
+    public List<SportKategorieEntity> findRoot() {
+        return sportKategorieRepository.findRoot();
     }
 
-    public List<SportKategorieDetails> findAllByNadrazenaKategorie(String nadrazenaKategorieId) {
-        return sportKategorieRepository.findAllByNadrazenaKategorie(nadrazenaKategorieId).stream()
-                .map(this::getDetails)
-                .collect(Collectors.toList());
+    public List<SportKategorieEntity> findAllByNadrazenaKategorie(String nadrazenaKategorieId) {
+        return sportKategorieRepository.findAllByNadrazenaKategorie(nadrazenaKategorieId);
     }
 
     public Long count() {
@@ -155,6 +153,10 @@ public class SportKategorieService {
 
     public Long countByNadrazenaKategorie(String kategorieId) {
         return sportKategorieRepository.countByNadrazenaKategorie(kategorieId);
+    }
+
+    public Optional<SportKategorieEntity> findOptionalBy(String id) {
+        return sportKategorieRepository.findOptionalBy(id);
     }
 
     private void mapToEntity(SportKategorieEntity entity, SportKategorieDetails details) {

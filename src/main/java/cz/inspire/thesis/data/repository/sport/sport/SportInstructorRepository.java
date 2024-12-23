@@ -4,6 +4,7 @@ import cz.inspire.thesis.data.model.sport.sport.SportInstructorEntity;
 import org.apache.deltaspike.data.api.*;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface SportInstructorRepository extends EntityRepository<SportInstructorEntity, String> {
@@ -24,13 +25,13 @@ public interface SportInstructorRepository extends EntityRepository<SportInstruc
         SELECT s FROM SportInstructorEntity s
         WHERE s.sport.id = ?1 AND s.instructor.id = ?2 AND s.deleted = FALSE
     """)
-    SportInstructorEntity findBySportAndInstructor(String sportId, String instructorId);
+    Optional<SportInstructorEntity> findBySportAndInstructor(String sportId, String instructorId);
 
     @Query("""
         SELECT s FROM SportInstructorEntity s
         WHERE s.sport.id = ?1 AND s.instructor IS NULL AND s.deleted = FALSE
     """)
-    SportInstructorEntity findBySportWithoutInstructor(String sportId);
+    Optional<SportInstructorEntity> findBySportWithoutInstructor(String sportId);
 
     @Query("""
         SELECT s FROM SportInstructorEntity s

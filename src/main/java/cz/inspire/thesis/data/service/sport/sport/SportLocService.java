@@ -44,13 +44,11 @@ public class SportLocService {
         return new SportLocDetails(entity.getId(), entity.getJazyk(), entity.getNazev(), entity.getPopis());
     }
 
-    public Collection<SportLocDetails> findAll() {
-        return sportLocRepository.findAll().stream()
-                .map(this::getDetails)
-                .collect(Collectors.toList());
+    public Collection<SportLocEntity> findAll() {
+        return sportLocRepository.findAll();
     }
 
-    public Optional<SportLocDetails> findById(String id) {
-        return sportLocRepository.findOptionalBy(id).map(this::getDetails);
+    public Optional<SportLocEntity> findById(String id) {
+        return sportLocRepository.findOptionalBy(id);
     }
 }

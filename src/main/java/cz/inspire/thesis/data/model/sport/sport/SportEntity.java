@@ -1,5 +1,6 @@
 package cz.inspire.thesis.data.model.sport.sport;
 
+import cz.inspire.thesis.data.dto.sport.sport.InstructorDetails;
 import cz.inspire.thesis.data.model.sport.activity.ActivityEntity;
 import cz.inspire.thesis.data.model.sport.objekt.ObjektSportEntity;
 import cz.inspire.thesis.data.utils.SazbaStorna;
@@ -12,7 +13,9 @@ import org.hibernate.annotations.JdbcTypeCode;
 
 import java.awt.Color;
 import java.sql.Types;
+import java.util.Collection;
 import java.util.List;
+import java.util.Set;
 
 @AllArgsConstructor
 @Setter
@@ -42,7 +45,7 @@ public class SportEntity {
     @Lob
     @JdbcTypeCode(Types.VARBINARY)
     @Column
-    private List<SazbaStorna> sazbyStorna;
+    private Collection<SazbaStorna> sazbyStorna;
     @Column
     private Integer minDelkaRezervace;
     @Column
@@ -75,7 +78,7 @@ public class SportEntity {
 
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
     @JoinColumn(name = "sport")
-    private List<SportLocEntity> localeData;
+    private Collection<SportLocEntity> localeData;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "sport_kategorie", referencedColumnName = "id")
@@ -86,7 +89,7 @@ public class SportEntity {
     private SportEntity nadrazenySport;
 
     @OneToMany(mappedBy = "nadrazenySport")
-    private List<SportEntity> podrazeneSporty;
+    private Collection<SportEntity> podrazeneSporty;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "navazujici_sport", referencedColumnName = "id")
@@ -97,8 +100,11 @@ public class SportEntity {
     private ActivityEntity activity;
 
     @OneToMany(mappedBy = "sport")
-    private List<SportInstructorEntity> sportInstructors;
+    private Collection<SportInstructorEntity> sportInstructors;
 
     @OneToMany(mappedBy = "sport")
-    private List<ObjektSportEntity> objekty;
+    private Collection<ObjektSportEntity> objekty;
+
+    @Transient
+    private Set<InstructorDetails> instructorSet;
 }

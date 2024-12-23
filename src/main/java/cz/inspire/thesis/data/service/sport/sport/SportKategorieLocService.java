@@ -50,13 +50,11 @@ public class SportKategorieLocService {
         );
     }
 
-    public Collection<SportKategorieLocDetails> findAll() {
-        return sportKategorieLocRepository.findAll().stream()
-                .map(this::getDetails)
-                .collect(Collectors.toList());
+    public Collection<SportKategorieLocEntity> findAll() {
+        return sportKategorieLocRepository.findAll();
     }
 
-    public Optional<SportKategorieLocDetails> findById(String id) {
-        return sportKategorieLocRepository.findOptionalBy(id).map(this::getDetails);
+    public Optional<SportKategorieLocEntity> findById(String id) {
+        return sportKategorieLocRepository.findOptionalBy(id);
     }
 }

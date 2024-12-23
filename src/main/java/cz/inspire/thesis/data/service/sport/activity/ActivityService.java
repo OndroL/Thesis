@@ -11,12 +11,14 @@ import cz.inspire.thesis.data.repository.sport.activity.ActivityRepository;
 import cz.inspire.thesis.data.repository.sport.sport.InstructorRepository;
 import cz.inspire.thesis.data.repository.sport.sport.SportInstructorRepository;
 import cz.inspire.thesis.data.repository.sport.sport.SportRepository;
+import cz.inspire.thesis.data.service.sport.sport.SportService;
 import jakarta.enterprise.context.ApplicationScoped;
 import org.apache.deltaspike.jpa.api.transaction.Transactional;
 import jakarta.inject.Inject;
 
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -45,6 +47,9 @@ public class ActivityService {
     private SportInstructorRepository sportInstructorRepository;
     @Inject
     private SportRepository sportRepository;
+
+    @Inject
+    private SportService sportService;
 
     @Transactional
     public String create(ActivityDetails details) throws CreateException {
@@ -163,7 +168,7 @@ public class ActivityService {
                 }
 
                 // Ensure the sport is not left without any instructors if necessary
-                sportEntity.checkSportWithoutInstructor(); // Implement logic for this as needed
+                sportService.checkSportWithoutInstructor(sportEntity);
             }
         } catch (Exception ex) {
             throw new ApplicationException("Failed to update sport-instructor relationships: " + ex.getMessage(), ex);
@@ -212,5 +217,9 @@ public class ActivityService {
 
     public Long countActivitiesByInstructor(String instructorId) {
         return activityRepository.countActivitiesByInstructor(instructorId);
+    }
+
+    public Optional<ActivityEntity> findOptionalBy(String id) {
+        return activityRepository.findOptionalBy(id);
     }
 }

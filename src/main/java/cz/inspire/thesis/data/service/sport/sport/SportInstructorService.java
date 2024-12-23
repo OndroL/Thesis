@@ -15,6 +15,7 @@ import org.apache.deltaspike.jpa.api.transaction.Transactional;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import static cz.inspire.thesis.data.utils.guidGenerator.generateGUID;
@@ -26,10 +27,10 @@ public class SportInstructorService {
     private SportInstructorRepository sportInstructorRepository;
 
     @Inject
-    private SportRepository sportRepository;
+    private SportService sportService;
 
     @Inject
-    private InstructorRepository instructorRepository;
+    private InstructorService instructorService;
 
     @Transactional
     public String create(SportInstructorDetails details) throws CreateException {
@@ -58,6 +59,16 @@ public class SportInstructorService {
         }
     }
 
+    @Transactional
+    public void setDeleted(SportInstructorEntity entity) throws ApplicationException{
+        try {
+            entity.setDeleted(true);
+            sportInstructorRepository.save(entity);
+        } catch (Exception e) {
+            throw new ApplicationException("Failed while trying to set SportInstructor as deleted" + e);
+        }
+    }
+
     public SportInstructorDetails getDetails(SportInstructorEntity entity) {
         SportInstructorDetails details = new SportInstructorDetails();
         details.setId(entity.getId());
@@ -69,22 +80,24 @@ public class SportInstructorService {
         return details;
     }
 
-    public Collection<SportInstructorDetails> findAll() {
-        return sportInstructorRepository.findAll().stream()
-                .map(this::getDetails)
-                .collect(Collectors.toList());
+    public Collection<SportInstructorEntity> findAll() {
+        return sportInstructorRepository.findAll();
     }
 
-    public List<SportInstructorDetails> findBySport(String sportId) {
-        return sportInstructorRepository.findBySport(sportId).stream()
-                .map(this::getDetails)
-                .collect(Collectors.toList());
+    public List<SportInstructorEntity> findBySport(String sportId) {
+        return sportInstructorRepository.findBySport(sportId);
     }
 
-    public List<SportInstructorDetails> findByInstructor(String instructorId) {
-        return sportInstructorRepository.findByInstructor(instructorId).stream()
-                .map(this::getDetails)
-                .collect(Collectors.toList());
+    public List<SportInstructorEntity> findByInstructor(String instructorId) {
+        return sportInstructorRepository.findByInstructor(instructorId);
+    }
+
+    public Optional<SportInstructorEntity> findBySportAndInstructor(String sportId, String instructorId) {
+        return sportInstructorRepository.findBySportAndInstructor(sportId, instructorId);
+    }
+
+    public Optional<SportInstructorEntity> findBySportWithoutInstructor(String sportId) throws ApplicationException {
+        return sportInstructorRepository.findBySportWithoutInstructor(sportId);
     }
 
     public Long countSportInstructors(String sportId) {
@@ -98,8 +111,12 @@ public class SportInstructorService {
 
         // Map Sport
         if (details.getSportId() != null) {
-            SportEntity sport = sportRepository.findOptionalBy(details.getSportId())
+            SportEntity sport = sportService.findOptionalBy(details.getSportId())
                     .orElseThrow(() -> new ApplicationException("Sport entity not found"));
+
+            //This was not present in old Bean
+            entity.setActivityId(sport.getActivity().getId());
+
             entity.setSport(sport);
         } else {
             entity.setSport(null);
@@ -107,7 +124,7 @@ public class SportInstructorService {
 
         // Map Instructor
         if (details.getInstructorId() != null) {
-            InstructorEntity instructor = instructorRepository.findOptionalBy(details.getInstructorId())
+            InstructorEntity instructor = instructorService.findOptionalBy(details.getInstructorId())
                     .orElseThrow(() -> new ApplicationException("Instructor entity not found"));
             entity.setInstructor(instructor);
         } else {
