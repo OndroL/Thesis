@@ -52,8 +52,8 @@ public class InstructorRepositoryTest {
     @Test
     public void testFindAll() {
         // Create and save instructors
-        instructorRepository.save(new InstructorEntity("1", "John", "Doe", 1, "john@example.com", "+1", "123", null, null, null, "Info", "Red", null, false, null, false, 10, null, null));
-        instructorRepository.save(new InstructorEntity("2", "Jane", "Doe", 2, "jane@example.com", "+1", "456", null, null, null, "Info", "Blue", null, false, null, false, 20, null, null));
+        instructorRepository.save(new InstructorEntity("1", "John", "Doe", 1, "john@example.com", "+1", "123", null, null, null, "Info", "Red", null, false, null, false, 10, null, null, null));
+        instructorRepository.save(new InstructorEntity("2", "Jane", "Doe", 2, "jane@example.com", "+1", "456", null, null, null, "Info", "Blue", null, false, null, false, 20, null, null, null));
 
         // Query all instructors
         List<InstructorEntity> instructors = instructorRepository.findAll();
@@ -64,8 +64,8 @@ public class InstructorRepositoryTest {
     @Test
     public void testFindAllWithPaginationAndDeleted() {
         // Create and save instructors
-        instructorRepository.save(new InstructorEntity("1", "John", "Doe", 1, "john@example.com", "+1", "123", null, null, null, "Info", "Red", null, false, null, false, 10, null, null));
-        instructorRepository.save(new InstructorEntity("2", "Jane", "Doe", 2, "jane@example.com", "+1", "456", null, null, null, "Info", "Blue", null, true, null, false, 20, null, null));
+        instructorRepository.save(new InstructorEntity("1", "John", "Doe", 1, "john@example.com", "+1", "123", null, null, null, "Info", "Red", null, false, null, false, 10, null, null, null));
+        instructorRepository.save(new InstructorEntity("2", "Jane", "Doe", 2, "jane@example.com", "+1", "456", null, null, null, "Info", "Blue", null, true, null, false, 20, null, null, null));
 
         // Query instructors with pagination and deleted status
         List<InstructorEntity> instructors = instructorRepository.findAll(0, 2, false);
@@ -80,8 +80,8 @@ public class InstructorRepositoryTest {
         ActivityEntity activity = new ActivityEntity("activity1", "Yoga", null, 1, null, null, null);
         activityRepository.save(activity);
 
-        InstructorEntity instructor1 = new InstructorEntity("1", "John", "Doe", 1, "john@example.com", "+1", "123", null, null, null, "Info", "Red", null, false, null, false, 10, null, null);
-        InstructorEntity instructor2 = new InstructorEntity("2", "Jane", "Doe", 2, "jane@example.com", "+1", "456", null, null, null, "Info", "Blue", null, false, null, false, 20, null, null);
+        InstructorEntity instructor1 = new InstructorEntity("1", "John", "Doe", 1, "john@example.com", "+1", "123", null, null, null, "Info", "Red", null, false, null, false, 10, null, null, null);
+        InstructorEntity instructor2 = new InstructorEntity("2", "Jane", "Doe", 2, "jane@example.com", "+1", "456", null, null, null, "Info", "Blue", null, false, null, false, 20, null, null, null);
 
         // Link activity to instructors
         instructor1.setActivities(Set.of(activity));
@@ -101,8 +101,8 @@ public class InstructorRepositoryTest {
     @Test
     public void testCountInstructors() {
         // Create and save instructors
-        instructorRepository.save(new InstructorEntity("1", "John", "Doe", 1, "john@example.com", "+1", "123", null, null, null, "Info", "Red", null, false, null, false, 10, null, null));
-        instructorRepository.save(new InstructorEntity("2", "Jane", "Doe", 2, "jane@example.com", "+1", "456", null, null, null, "Info", "Blue", null, true, null, false, 20, null, null));
+        instructorRepository.save(new InstructorEntity("1", "John", "Doe", 1, "john@example.com", "+1", "123", null, null, null, "Info", "Red", null, false, null, false, 10, null, null, null));
+        instructorRepository.save(new InstructorEntity("2", "Jane", "Doe", 2, "jane@example.com", "+1", "456", null, null, null, "Info", "Blue", null, true, null, false, 20, null, null, null));
 
         // Count instructors
         Long count = instructorRepository.countInstructors(false);
@@ -115,8 +115,8 @@ public class InstructorRepositoryTest {
         ActivityEntity activity = new ActivityEntity("activity1", "Yoga", null, 1, null, null, null);
         activityRepository.save(activity);
 
-        InstructorEntity instructor1 = new InstructorEntity("1", "John", "Doe", 1, "john@example.com", "+1", "123", null, null, null, "Info", "Red", null, false, null, false, 10, null, null);
-        InstructorEntity instructor2 = new InstructorEntity("2", "Jane", "Doe", 2, "jane@example.com", "+1", "456", null, null, null, "Info", "Blue", null, false, null, false, 20, null, null);
+        InstructorEntity instructor1 = new InstructorEntity("1", "John", "Doe", 1, "john@example.com", "+1", "123", null, null, null, "Info", "Red", null, false, null, false, 10, null, null, null);
+        InstructorEntity instructor2 = new InstructorEntity("2", "Jane", "Doe", 2, "jane@example.com", "+1", "456", null, null, null, "Info", "Blue", null, false, null, false, 20, null, null, null);
 
         // Link activity to instructors
         instructor1.setActivities(Set.of(activity));

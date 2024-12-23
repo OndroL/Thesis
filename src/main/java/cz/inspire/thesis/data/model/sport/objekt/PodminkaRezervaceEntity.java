@@ -25,6 +25,6 @@ public class PodminkaRezervaceEntity {
     private Boolean objektRezervaceObsazen;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "objektid", referencedColumnName = "id")
+    @JoinColumn(name = "objektId", referencedColumnName = "id")
     private ObjektEntity objekt;
 }

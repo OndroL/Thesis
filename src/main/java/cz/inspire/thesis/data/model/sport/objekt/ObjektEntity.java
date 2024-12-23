@@ -98,7 +98,7 @@ public class ObjektEntity {
     @OneToMany(mappedBy = "objektId", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
     private Collection<OvladacObjektuEntity> ovladaceObjektu;
 
-    @OneToMany(mappedBy = "objektId")
+    @OneToMany(mappedBy = "objekt")
     private Collection<PodminkaRezervaceEntity> podminkyRezervaci;
 
     @ManyToMany

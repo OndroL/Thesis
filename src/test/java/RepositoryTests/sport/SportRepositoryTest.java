@@ -70,7 +70,7 @@ public class SportRepositoryTest {
                 id, 1, "zbozi1", "sklad1", 100, true, 60, true, 0,
                 null, 30, 120, true, 15, null, null, true, true, 10,
                 90, 1, 5, 20, List.of(locale), category, parent, null, null,
-                activity, null, null
+                activity, null, null, null
         );
     }
 

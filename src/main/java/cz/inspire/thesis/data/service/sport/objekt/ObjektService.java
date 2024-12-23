@@ -401,79 +401,70 @@ public class ObjektService {
         entity.setZruseniRezervacePredZacatkem(details.getZruseniRezervacePredZacatkem());
     }
 
-    public ObjektDetails getDetails(ObjektEntity entity) throws ApplicationException {
+    public ObjektDetails getDetails(ObjektEntity entity) {
         ObjektDetails details = getDetailsWithoutSports(entity);
-        setSports(getSports(entity), entity, details);
+        details.setObjektSport(entity.getObjektSports().stream().map(objektSportService::getDetails).toList());
+        // I don't really understand the need to call set sports for getting the details
+        // maybe some hidden functionality is of old bean is not clear to me
+        //setSports(getSports(entity), entity, details);
         return details;
     }
 
-    // @SneakyThrow will avoid javac's insistence that you either catch or throw onward any checked exceptions that statements in your method body declare they generate.
-    // It's here because getDatails is using setSports which throws exceptions because it's functionality of setCinnosti is doubled for setDetails and getDetails
-    // I would rewritte this functionality entirely
-    @SneakyThrows
     public Collection<ObjektDetails> findAll() {
         return objektRepository.findAll().stream()
                 .map(this::getDetails)
                 .collect(Collectors.toList());
     }
 
-    @SneakyThrows
     public Collection<ObjektDetails> findByAreal(String arealId, String jazyk) {
         return objektRepository.findByAreal(arealId, jazyk).stream()
                 .map(this::getDetails)
                 .collect(Collectors.toList());
     }
 
-    @SneakyThrows
     public Collection<ObjektDetails> findBaseByAreal(String arealId, String jazyk) {
         return objektRepository.findBaseByAreal(arealId, jazyk).stream()
                 .map(this::getDetails)
                 .collect(Collectors.toList());
     }
 
-    @SneakyThrows
     public Collection<ObjektDetails> findByAreal(String arealId, String jazyk, int offset, int count) {
         return objektRepository.findByAreal(arealId, jazyk, offset, count).stream()
                 .map(this::getDetails)
                 .collect(Collectors.toList());
     }
 
-    @SneakyThrows
     public Collection<ObjektDetails> findByTypRezervace(Integer typRezervace, String jazyk) {
         return objektRepository.findByTypRezervace(typRezervace, jazyk).stream()
                 .map(this::getDetails)
                 .collect(Collectors.toList());
     }
 
-    @SneakyThrows
+
     public Collection<ObjektDetails> findBaseByAreal(String arealId, String jazyk, int offset, int count) {
         return objektRepository.findBaseByAreal(arealId, jazyk, offset, count).stream()
                 .map(this::getDetails)
                 .collect(Collectors.toList());
     }
 
-    @SneakyThrows
     public Collection<ObjektDetails> findBySport(String sportId, String jazyk) {
         return objektRepository.findBySport(sportId, jazyk).stream()
                 .map(this::getDetails)
                 .collect(Collectors.toList());
     }
 
-    @SneakyThrows
     public Collection<ObjektDetails> findByPrimyVstup(String jazyk, boolean primyVstup) {
         return objektRepository.findByPrimyVstup(jazyk, primyVstup).stream()
                 .map(this::getDetails)
                 .collect(Collectors.toList());
     }
 
-    @SneakyThrows
     public Collection<ObjektDetails> findByPrimyVstup(String jazyk, int offset, int count, boolean primyVstup) {
         return objektRepository.findByPrimyVstup(jazyk, offset, count, primyVstup).stream()
                 .map(this::getDetails)
                 .collect(Collectors.toList());
     }
 
-    @SneakyThrows
     public Collection<String> getObjektIdsOfAreal(String arealId) {
         return new ArrayList<>(objektRepository.findObjektIdsOfAreal(arealId));
     }
