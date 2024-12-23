@@ -87,6 +87,9 @@ public class SportInstructorService {
     public List<SportInstructorEntity> findBySport(String sportId) {
         return sportInstructorRepository.findBySport(sportId);
     }
+    public Optional<SportInstructorEntity> findOptionalBy(String id) {
+        return sportInstructorRepository.findOptionalBy(id);
+    }
 
     public List<SportInstructorEntity> findByInstructor(String instructorId) {
         return sportInstructorRepository.findByInstructor(instructorId);

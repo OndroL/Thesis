@@ -25,9 +25,6 @@ public class SportKategorieService {
     @Inject
     private SportKategorieRepository sportKategorieRepository;
 
-    @Inject
-    private SportKategorieLocRepository sportKategorieLocRepository;
-
     @Transactional
     public String create(SportKategorieDetails details) throws CreateException {
         try {
@@ -55,7 +52,6 @@ public class SportKategorieService {
                     locEntity.setJazyk(locDetails.getJazyk());
                     locEntity.setNazev(locDetails.getNazev());
                     locEntity.setPopis(locDetails.getPopis());
-                    sportKategorieLocRepository.save(locEntity);
                 }
             }
 

@@ -11,6 +11,8 @@ import cz.inspire.thesis.data.repository.sport.activity.ActivityRepository;
 import cz.inspire.thesis.data.repository.sport.sport.InstructorRepository;
 import cz.inspire.thesis.data.repository.sport.sport.SportInstructorRepository;
 import cz.inspire.thesis.data.repository.sport.sport.SportRepository;
+import cz.inspire.thesis.data.service.sport.sport.InstructorService;
+import cz.inspire.thesis.data.service.sport.sport.SportInstructorService;
 import cz.inspire.thesis.data.service.sport.sport.SportService;
 import jakarta.enterprise.context.ApplicationScoped;
 import org.apache.deltaspike.jpa.api.transaction.Transactional;
@@ -42,12 +44,9 @@ public class ActivityService {
     @Inject
     private ActivityRepository activityRepository;
     @Inject
-    private InstructorRepository instructorRepository;
+    private InstructorService instructorService;
     @Inject
-    private SportInstructorRepository sportInstructorRepository;
-    @Inject
-    private SportRepository sportRepository;
-
+    private SportInstructorService sportInstructorService;
     @Inject
     private SportService sportService;
 
@@ -79,7 +78,7 @@ public class ActivityService {
             try {
                 Collection<InstructorEntity> instructorSet = new HashSet<InstructorEntity>();
                 for (InstructorDetails instructorDetails : instructors) {
-                    InstructorEntity instructor = instructorRepository.findOptionalBy(instructorDetails.getId())
+                    InstructorEntity instructor = instructorService.findOptionalBy(instructorDetails.getId())
                             .orElseThrow(() -> new ApplicationException("Instructor entity not found for ID: " + instructorDetails.getId()));
                     instructorSet.add(instructor);
                 }
@@ -117,7 +116,7 @@ public class ActivityService {
                 Set<InstructorEntity> instructors = details.getInstructors().stream()
                         .map(instructorDetails -> {
                             try {
-                                return instructorRepository.findOptionalBy(instructorDetails.getId())
+                                return instructorService.findOptionalBy(instructorDetails.getId())
                                         .orElseThrow(() -> new ApplicationException("Instructor not found for ID: " + instructorDetails.getId()));
                             } catch (Exception e) {
                                 throw new RuntimeException(e);
@@ -154,7 +153,7 @@ public class ActivityService {
             // Iterate through the sports associated with the activity
             for (SportDetails sportDetails : activityDetails.getSports()) {
                 // Fetch the corresponding SportEntity
-                SportEntity sportEntity = sportRepository.findOptionalBy(sportDetails.getId())
+                SportEntity sportEntity = sportService.findOptionalBy(sportDetails.getId())
                         .orElseThrow(() -> new ApplicationException("Sport not found for ID: " + sportDetails.getId()));
 
                 // Iterate through sport-instructor mappings
@@ -163,7 +162,7 @@ public class ActivityService {
                             && oldInstructorIds.contains(sportInstructor.getInstructor().getId())) {
                         // Mark sport-instructor entity as deleted
                         sportInstructor.setDeleted(true);
-                        sportInstructorRepository.save(sportInstructor); // Save the updated entity
+                        sportInstructorService.setDetails(sportInstructorService.getDetails(sportInstructor)); // Save the updated entity
                     }
                 }
 

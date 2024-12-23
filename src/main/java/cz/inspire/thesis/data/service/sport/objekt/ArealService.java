@@ -34,8 +34,6 @@ public class ArealService {
     @Inject
     private ArealRepository arealRepository;
 
-    @Inject
-    private ArealLocRepository arealLocRepository;
 
     @Transactional
     public String create(ArealDetails details) throws CreateException {
@@ -66,7 +64,6 @@ public class ArealService {
                     locEntity.setJazyk(locDetails.getJazyk());
                     locEntity.setNazev(locDetails.getNazev());
                     locEntity.setPopis(locDetails.getPopis());
-                    arealLocRepository.save(locEntity);
                 }
             }
             /**

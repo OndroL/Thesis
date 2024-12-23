@@ -30,8 +30,6 @@ public class SportService {
     @Inject
     private SportInstructorService sportInstructorService;
     @Inject
-    private ActivityRepository activityRepository;
-    @Inject
     private ActivityService activityService;
     @Inject
     private SportKategorieService sportKategorieService;
@@ -84,7 +82,7 @@ public class SportService {
 
             // Set linked Activity
             if (details.getActivityId() != null) {
-                ActivityEntity activity = activityRepository.findOptionalBy(details.getActivityId())
+                ActivityEntity activity = activityService.findOptionalBy(details.getActivityId())
                         .orElseThrow(() -> new CreateException("Activity not found"));
                 entity.setActivity(activity);
             }

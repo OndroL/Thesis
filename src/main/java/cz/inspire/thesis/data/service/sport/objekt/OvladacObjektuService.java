@@ -20,7 +20,7 @@ import static cz.inspire.thesis.data.utils.guidGenerator.generateGUID;
 public class OvladacObjektuService {
 
     @Inject
-    private OvladacObjektuRepository repository;
+    private OvladacObjektuRepository ovladacObjektuRepository;
 
     @Transactional
     public String create(OvladacObjektuDetails details) throws CreateException {
@@ -38,7 +38,7 @@ public class OvladacObjektuService {
             entity.setCislaZapojeni(encodeNumbersToString(details.getCislaZapojeniList()));
             entity.setObjektId(details.getObjektId());
 
-            repository.save(entity);
+            ovladacObjektuRepository.save(entity);
 
             return entity.getId();
         } catch (Exception e) {
@@ -49,10 +49,10 @@ public class OvladacObjektuService {
     @Transactional
     public void remove(String id) throws ApplicationException {
         try {
-            OvladacObjektuEntity entity = repository.findOptionalBy(id)
+            OvladacObjektuEntity entity = ovladacObjektuRepository.findOptionalBy(id)
                     .orElseThrow(() -> new ApplicationException("OvladacObjektu entity not found with id : " + id));
 
-            repository.remove(entity);
+            ovladacObjektuRepository.remove(entity);
         } catch (Exception e) {
             throw new ApplicationException("Failed to remove OvladacObjektu entity", e);
         }
@@ -62,7 +62,7 @@ public class OvladacObjektuService {
     public void setDetails(OvladacObjektuDetails details) throws ApplicationException {
 
         try {
-            OvladacObjektuEntity entity = repository.findOptionalBy(details.getId())
+            OvladacObjektuEntity entity = ovladacObjektuRepository.findOptionalBy(details.getId())
                     .orElseThrow(() -> new ApplicationException("OvladacObjektu entity not found with id : " + details.getId()));
             entity.setIdOvladace(details.getIdOvladace());
             entity.setCislaZapojeni(encodeNumbersToString(details.getCislaZapojeniList()));
@@ -74,7 +74,7 @@ public class OvladacObjektuService {
             // In old Bean -> "setObjektId(getObjektId());"
             entity.setObjektId(entity.getObjektId());
 
-            repository.save(entity);
+            ovladacObjektuRepository.save(entity);
 
         } catch (Exception e) {
             throw  new ApplicationException("Failed to update OvladacObjektu entity");
@@ -97,21 +97,21 @@ public class OvladacObjektuService {
 
 
     public Collection<OvladacObjektuEntity> findAll() {
-        return repository.findAll();
+        return ovladacObjektuRepository.findAll();
     }
 
     public Collection<OvladacObjektuEntity> findWithOvladacObjektu(String idOvladace) {
-        return repository.findWithOvladacObjektu(idOvladace);
+        return ovladacObjektuRepository.findWithOvladacObjektu(idOvladace);
     }
 
 
 
     public Collection<OvladacObjektuEntity> findByObjekt(String objektId) {
-        return repository.findByObjekt(objektId);
+        return ovladacObjektuRepository.findByObjekt(objektId);
     }
 
     public Optional<OvladacObjektuEntity> findOptionalBy (String objektId) {
-        return repository.findOptionalBy(objektId);
+        return ovladacObjektuRepository.findOptionalBy(objektId);
     }
 
     /** These functions are generated to mimic functionality of

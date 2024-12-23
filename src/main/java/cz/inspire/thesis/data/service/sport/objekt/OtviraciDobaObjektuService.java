@@ -20,20 +20,17 @@ import java.util.stream.Collectors;
  * Use your imports
  * Plus ApplicationException is additional Exception for update, see setDetails
  */
-import cz.inspire.thesis.exceptions.ApplicationException;
-import cz.inspire.thesis.exceptions.CreateException;
 
 /**
  * This is import of simple generateGUID functionality created to mimic real functionality
  * In your implementation use your import of guidGenerator
  */
-import static cz.inspire.thesis.data.utils.guidGenerator.generateGUID;
 
 @ApplicationScoped
 public class OtviraciDobaObjektuService {
 
     @Inject
-    private OtviraciDobaObjektuRepository repository;
+    private OtviraciDobaObjektuRepository otviraciDobaObjektuRepository;
 
     @Transactional
     public String create(OtviraciDobaObjektuDetails details) throws CreateException {
@@ -45,7 +42,7 @@ public class OtviraciDobaObjektuService {
             entity.setId(pk);
             entity.setOtviraciDoba(details.getOtviraciDoba());
 
-            repository.save(entity);
+            otviraciDobaObjektuRepository.save(entity);
             return null;
         } catch (Exception e) {
             throw new CreateException("Failed to create OtviraciDobaObjektu entity", e);
@@ -53,18 +50,18 @@ public class OtviraciDobaObjektuService {
     }
 
     public OtviraciDobaObjektuDetails findCurrent(String objektId, Date day) {
-        OtviraciDobaObjektuEntity entity = repository.findCurrent(objektId, day);
+        OtviraciDobaObjektuEntity entity = otviraciDobaObjektuRepository.findCurrent(objektId, day);
         return entity != null ? getDetails(entity) : null;
     }
 
     public List<OtviraciDobaObjektuDetails> findByObjekt(String objektId) {
-        return repository.findByObjekt(objektId).stream()
+        return otviraciDobaObjektuRepository.findByObjekt(objektId).stream()
                 .map(this::getDetails)
                 .collect(Collectors.toList());
     }
 
     public List<OtviraciDobaObjektuDetails> findAfter(String objektId, Date day) {
-        return repository.findAfter(objektId, day).stream()
+        return otviraciDobaObjektuRepository.findAfter(objektId, day).stream()
                 .map(this::getDetails)
                 .collect(Collectors.toList());
     }
@@ -79,19 +76,19 @@ public class OtviraciDobaObjektuService {
 
     public void setDetails(OtviraciDobaObjektuDetails details) throws EntityNotFoundException {
         OtviraciDobaObjektuPK pk = new OtviraciDobaObjektuPK(details.getObjektId(), details.getPlatnostOd());
-        Optional<OtviraciDobaObjektuEntity> optionalEntity = repository.findById(pk);
+        Optional<OtviraciDobaObjektuEntity> optionalEntity = otviraciDobaObjektuRepository.findById(pk);
 
         if (optionalEntity.isPresent()) {
             OtviraciDobaObjektuEntity entity = optionalEntity.get();
             entity.setOtviraciDoba(details.getOtviraciDoba());
-            repository.save(entity);
+            otviraciDobaObjektuRepository.save(entity);
         } else {
             throw new EntityNotFoundException("Entity not found for ID: " + pk);
         }
     }
 
     public List<Date> findCurrentIdsByObjectAndDay(String objektId, Date day) {
-        return repository.getCurrentIdsByObjectAndDay(objektId, day);
+        return otviraciDobaObjektuRepository.getCurrentIdsByObjectAndDay(objektId, day);
     }
 
     public OtviraciDobaObjektuPK getCurrentIdsByObjectAndDay(String objektId, Date day) {

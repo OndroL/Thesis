@@ -26,7 +26,7 @@ import static cz.inspire.thesis.data.utils.guidGenerator.generateGUID;
 public class OmezeniRezervaciService {
 
     @Inject
-    private OmezeniRezervaciRepository repository;
+    private OmezeniRezervaciRepository omezeniRezervaciRepository;
     @Transactional
     public String create(OmezeniRezervaciDetails details) throws CreateException {
         try {
@@ -37,7 +37,7 @@ public class OmezeniRezervaciService {
             entity.setObjektId(details.getObjektId());
             entity.setOmezeni(details.getOmezeni());
 
-            repository.save(entity);
+            omezeniRezervaciRepository.save(entity);
 
             return entity.getObjektId();
         } catch (Exception e) {
@@ -53,7 +53,7 @@ public class OmezeniRezervaciService {
     }
 
     public Collection<OmezeniRezervaciDetails> findAll() {
-        return repository.findAll().stream()
+        return omezeniRezervaciRepository.findAll().stream()
                 .map(this::getDetails)
                 .collect(Collectors.toList());
     }
