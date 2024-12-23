@@ -119,7 +119,7 @@ public class SportInstructorRepositoryTest {
         SportEntity sport = new SportEntity(
                 "sport1", 1, "zbozi1", "sklad1", 100, true, 60, true, 0,
                 null, 30, 120, true, 15, null, null, true, true, 10,
-                90, 1, 5, 20, null, null, null, null, null, null, null, null
+                90, 1, 5, 20, null, null, null, null, null, null, null, null, null
         );
         sportRepository.save(sport);
 
@@ -140,7 +140,7 @@ public class SportInstructorRepositoryTest {
         SportEntity sport = new SportEntity(
                 "sport1", 1, "zbozi1", "sklad1", 100, true, 60, true, 0,
                 null, 30, 120, true, 15, null, null, true, true, 10,
-                90, 1, 5, 20, null, null, null, null, null, null, null, null
+                90, 1, 5, 20, null, null, null, null, null, null, null, null, null
         );
         sportRepository.save(sport);
 
@@ -166,7 +166,7 @@ public class SportInstructorRepositoryTest {
         SportEntity sport = new SportEntity(
                 "sport1", 1, "zbozi1", "sklad1", 100, true, 60, true, 0,
                 null, 30, 120, true, 15, null, null, true, true, 10,
-                90, 1, 5, 20, null, null, null, null, null, null, null, null
+                90, 1, 5, 20, null, null, null, null, null, null, null, null, null
         );
         sportRepository.save(sport);
 
