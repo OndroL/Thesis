@@ -5,7 +5,6 @@ import cz.inspire.thesis.data.dto.sport.sport.InstructorDetails;
 import cz.inspire.thesis.data.dto.sport.sport.SportDetails;
 import cz.inspire.thesis.data.dto.sport.sport.SportInstructorDetails;
 import cz.inspire.thesis.data.model.sport.activity.ActivityEntity;
-import cz.inspire.thesis.data.model.sport.objekt.ArealEntity;
 import cz.inspire.thesis.data.model.sport.sport.InstructorEntity;
 import cz.inspire.thesis.data.model.sport.sport.SportEntity;
 import cz.inspire.thesis.data.model.sport.sport.SportInstructorEntity;

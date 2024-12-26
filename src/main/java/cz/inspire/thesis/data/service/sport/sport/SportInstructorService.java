@@ -5,8 +5,6 @@ import cz.inspire.thesis.data.model.sport.sport.SportInstructorEntity;
 import cz.inspire.thesis.data.model.sport.sport.SportEntity;
 import cz.inspire.thesis.data.model.sport.sport.InstructorEntity;
 import cz.inspire.thesis.data.repository.sport.sport.SportInstructorRepository;
-import cz.inspire.thesis.data.repository.sport.sport.SportRepository;
-import cz.inspire.thesis.data.repository.sport.sport.InstructorRepository;
 import cz.inspire.thesis.exceptions.ApplicationException;
 import cz.inspire.thesis.exceptions.CreateException;
 import jakarta.enterprise.context.ApplicationScoped;
@@ -16,7 +14,6 @@ import org.apache.deltaspike.jpa.api.transaction.Transactional;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 import static cz.inspire.thesis.data.utils.guidGenerator.generateGUID;
 

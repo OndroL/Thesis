@@ -11,7 +11,6 @@ import org.apache.deltaspike.jpa.api.transaction.Transactional;
 
 import java.util.Collection;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 import static cz.inspire.thesis.data.utils.guidGenerator.generateGUID;
 

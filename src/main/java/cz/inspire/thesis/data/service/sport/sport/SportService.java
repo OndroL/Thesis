@@ -6,7 +6,6 @@ import cz.inspire.thesis.data.dto.sport.sport.SportInstructorDetails;
 import cz.inspire.thesis.data.dto.sport.sport.SportLocDetails;
 import cz.inspire.thesis.data.model.sport.activity.ActivityEntity;
 import cz.inspire.thesis.data.model.sport.sport.*;
-import cz.inspire.thesis.data.repository.sport.activity.ActivityRepository;
 import cz.inspire.thesis.data.repository.sport.sport.SportRepository;
 import cz.inspire.thesis.data.service.sport.activity.ActivityService;
 import cz.inspire.thesis.data.utils.SazbaStorna;

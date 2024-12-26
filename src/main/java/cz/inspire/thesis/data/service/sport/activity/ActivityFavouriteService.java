@@ -69,7 +69,7 @@ public class ActivityFavouriteService {
     public void setDetails(ActivityFavouriteDetails details) throws ApplicationException {
         try {
             ActivityFavouriteEntity entity = activityFavouriteRepository.findOptionalBy(details.getId())
-                    .orElseThrow(() -> new ApplicationException("ActivityFavourite entity not found"));
+                    .orElseThrow(() -> new ApplicationException("ActivityFavourite entity not found with id : " + details.getId()));
             entity.setZakaznikId(details.getZakaznikId());
             entity.setActivityId(details.getActivityId());
             entity.setPocet(details.getPocet());

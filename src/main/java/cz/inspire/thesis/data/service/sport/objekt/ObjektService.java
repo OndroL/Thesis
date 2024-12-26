@@ -10,7 +10,6 @@ import cz.inspire.thesis.data.model.sport.sport.SportEntity;
 import cz.inspire.thesis.data.repository.sport.objekt.ObjektRepository;
 import cz.inspire.thesis.data.service.sport.sport.SportService;
 import jakarta.enterprise.context.ApplicationScoped;
-import lombok.SneakyThrows;
 import org.apache.deltaspike.jpa.api.transaction.Transactional;
 import jakarta.inject.Inject;
 
@@ -155,7 +154,7 @@ public class ObjektService {
         }
     }
 
-    private void setNadobjekty(ObjektDetails objektDetails, ObjektEntity objektEntity)  {
+    public void setNadobjekty(ObjektDetails objektDetails, ObjektEntity objektEntity)  {
         if (objektDetails.getNadobjekty() != null) {
             Collection<ObjektEntity> nadobjekts = objektDetails.getNadobjekty().stream()
                     .map(nadId -> {
@@ -171,7 +170,7 @@ public class ObjektService {
         }
     }
 
-    private void setPodobjekty(ObjektDetails objektDetails, ObjektEntity objektEntity) {
+    public void setPodobjekty(ObjektDetails objektDetails, ObjektEntity objektEntity) {
         if (objektDetails.getPodobjekty() != null) {
             Collection<ObjektEntity> podobjekts = objektDetails.getPodobjekty().stream()
                     .map(podId -> {
@@ -207,6 +206,9 @@ public class ObjektService {
                     newCondition.setObjekt(objektEntity);
                     newCondition.setObjektRezervaceId(conditionDetails.getObjektRezervaceId());
                     newCondition.setObjektRezervaceObsazen(conditionDetails.getObjektRezervaceObsazen());
+
+                    podminkaRezervaceService.create(podminkaRezervaceService.getDetails(newCondition));
+
                     objektEntity.getPodminkyRezervaci().add(newCondition);
                 }
             }

@@ -6,7 +6,6 @@ import cz.inspire.thesis.data.model.sport.objekt.ArealEntity;
 import cz.inspire.thesis.data.model.sport.objekt.ArealLocEntity;
 import cz.inspire.thesis.data.model.sport.objekt.ObjektEntity;
 import cz.inspire.thesis.data.repository.sport.objekt.ArealRepository;
-import cz.inspire.thesis.data.repository.sport.objekt.ArealLocRepository;
 import jakarta.enterprise.context.ApplicationScoped;
 import org.apache.deltaspike.jpa.api.transaction.Transactional;
 import jakarta.inject.Inject;

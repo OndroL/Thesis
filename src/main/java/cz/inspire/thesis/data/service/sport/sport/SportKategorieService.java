@@ -5,7 +5,6 @@ import cz.inspire.thesis.data.dto.sport.sport.SportKategorieLocDetails;
 import cz.inspire.thesis.data.model.sport.sport.SportKategorieEntity;
 import cz.inspire.thesis.data.model.sport.sport.SportKategorieLocEntity;
 import cz.inspire.thesis.data.repository.sport.sport.SportKategorieRepository;
-import cz.inspire.thesis.data.repository.sport.sport.SportKategorieLocRepository;
 import cz.inspire.thesis.exceptions.ApplicationException;
 import cz.inspire.thesis.exceptions.CreateException;
 import jakarta.enterprise.context.ApplicationScoped;
