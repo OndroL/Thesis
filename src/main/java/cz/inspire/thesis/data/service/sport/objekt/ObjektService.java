@@ -51,7 +51,7 @@ public class ObjektService {
     }
 
     @Transactional
-    public void saveEntity(ObjektEntity entity) throws ApplicationException {
+    public void save(ObjektEntity entity) throws ApplicationException {
         try {
             objektRepository.save(entity);
         } catch (Exception e) {

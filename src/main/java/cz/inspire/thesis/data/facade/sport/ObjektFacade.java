@@ -101,7 +101,7 @@ public class ObjektFacade {
             entity.setGoogleCalendarNotification(details.isGoogleCalendarNotification());
             entity.setGoogleCalendarNotificationBefore(details.getGoogleCalendarNotificationBefore());
 
-            objektService.saveEntity(entity);
+            objektService.save(entity);
         } catch (Exception e) {
             throw new ApplicationException("Failed to update Objekt entity", e);
         }

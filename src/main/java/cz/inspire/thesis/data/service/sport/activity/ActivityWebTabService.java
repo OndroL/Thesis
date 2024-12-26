@@ -8,7 +8,6 @@ import org.apache.deltaspike.jpa.api.transaction.Transactional;
 import jakarta.inject.Inject;
 
 import java.util.Collection;
-import java.util.stream.Collectors;
 
 /**
  * Those exceptions are created to mimic functionality and implementation of production exceptions
@@ -29,7 +28,7 @@ public class ActivityWebTabService {
     private ActivityWebTabRepository activityWebTabRepository;
 
     @Transactional
-    public String create(ActivityWebTabDetails details) throws CreateException {
+    public ActivityWebTabEntity create(ActivityWebTabDetails details) throws CreateException {
         try {
             ActivityWebTabEntity entity = new ActivityWebTabEntity();
             if (details.getId() == null) {
@@ -43,43 +42,25 @@ public class ActivityWebTabService {
 
             activityWebTabRepository.save(entity);
 
-            return entity.getId();
+            return entity;
         } catch (Exception e) {
             throw new CreateException("Failed to create ActivityWebTab entity", e);
         }
     }
 
-    public ActivityWebTabDetails getDetails(ActivityWebTabEntity entity) {
-        return new ActivityWebTabDetails(
-                entity.getId(),
-                entity.getSportId(),
-                entity.getActivityId(),
-                entity.getObjectId(),
-                entity.getTabIndex()
-        );
+    public Collection<ActivityWebTabEntity> findAll() {
+        return activityWebTabRepository.findAll();
     }
 
-    public Collection<ActivityWebTabDetails> findAll() {
-        return activityWebTabRepository.findAll().stream()
-                .map(this::getDetails)
-                .collect(Collectors.toList());
+    public Collection<ActivityWebTabEntity> findBySport(String sportId) {
+        return activityWebTabRepository.findBySport(sportId);
     }
 
-    public Collection<ActivityWebTabDetails> findBySport(String sportId) {
-        return activityWebTabRepository.findBySport(sportId).stream()
-                .map(this::getDetails)
-                .collect(Collectors.toList());
+    public Collection<ActivityWebTabEntity> findByActivity(String activityId) {
+        return activityWebTabRepository.findByActivity(activityId);
     }
 
-    public Collection<ActivityWebTabDetails> findByActivity(String activityId) {
-        return activityWebTabRepository.findByActivity(activityId).stream()
-                .map(this::getDetails)
-                .collect(Collectors.toList());
-    }
-
-    public Collection<ActivityWebTabDetails> findByObject(String objectId) {
-        return activityWebTabRepository.findByObject(objectId).stream()
-                .map(this::getDetails)
-                .collect(Collectors.toList());
+    public Collection<ActivityWebTabEntity> findByObject(String objectId) {
+        return activityWebTabRepository.findByObject(objectId);
     }
 }

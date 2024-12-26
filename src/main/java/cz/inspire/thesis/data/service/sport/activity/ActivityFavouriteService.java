@@ -31,7 +31,7 @@ public class ActivityFavouriteService {
     private ActivityFavouriteRepository activityFavouriteRepository;
 
     @Transactional
-    public String create(ActivityFavouriteDetails details) throws CreateException {
+    public ActivityFavouriteEntity create(ActivityFavouriteDetails details) throws CreateException {
         try {
             ActivityFavouriteEntity entity = new ActivityFavouriteEntity();
             if (details.getId() == null) {
@@ -45,50 +45,34 @@ public class ActivityFavouriteService {
 
             activityFavouriteRepository.save(entity);
 
-            return entity.getId();
+            return entity;
         } catch (Exception e) {
             throw new CreateException("Failed to create ActivityFavourite entity", e);
         }
     }
 
-    public ActivityFavouriteDetails getDetails(ActivityFavouriteEntity entity) {
-        return new ActivityFavouriteDetails(
-                entity.getId(),
-                entity.getZakaznikId(),
-                entity.getActivityId(),
-                entity.getPocet(),
-                entity.getDatumPosledniZmeny()
-        );
-    }
-
-    /**
-     * Discuss If you want to throw any exceptions while using setDetails.
-     * In old Bean there is none.
-     */
     @Transactional
-    public void setDetails(ActivityFavouriteDetails details) throws ApplicationException {
+    public void save(ActivityFavouriteEntity entity) throws ApplicationException {
         try {
-            ActivityFavouriteEntity entity = activityFavouriteRepository.findOptionalBy(details.getId())
-                    .orElseThrow(() -> new ApplicationException("ActivityFavourite entity not found with id : " + details.getId()));
-            entity.setZakaznikId(details.getZakaznikId());
-            entity.setActivityId(details.getActivityId());
-            entity.setPocet(details.getPocet());
-            entity.setDatumPosledniZmeny(details.getDatumPosledniZmeny());
-
-            activityFavouriteRepository.save(entity);
+           activityFavouriteRepository.save(entity);
         } catch (Exception e) {
-            throw new ApplicationException("Failed to update ActivityFavourite entity", e);
+            throw new ApplicationException("Failed to save/update ActivityFavourite entity with id : " + entity.getId(), e);
         }
     }
 
-    public Collection<ActivityFavouriteDetails> findByZakaznik(String zakaznikId, int limit, int offset) {
-        return activityFavouriteRepository.findByZakaznik(zakaznikId, limit, offset).stream()
-                .map(this::getDetails)
-                .collect(Collectors.toList());
+    public Collection<ActivityFavouriteEntity> findByZakaznik(String zakaznikId, int limit, int offset) {
+        return activityFavouriteRepository.findByZakaznik(zakaznikId, limit, offset);
     }
 
-    public Optional<ActivityFavouriteDetails> findByZakaznikAktivita(String zakaznikId, String activityId) {
-        return activityFavouriteRepository.findByZakaznikAktivita(zakaznikId, activityId).map(this::getDetails);
+    public Optional<ActivityFavouriteEntity> findByZakaznikAktivita(String zakaznikId, String activityId) {
+        return activityFavouriteRepository.findByZakaznikAktivita(zakaznikId, activityId);
+    }
+
+    //Additional finder for functionality
+
+    public ActivityFavouriteEntity findById(String id) throws ApplicationException {
+        return activityFavouriteRepository.findOptionalBy(id)
+                .orElseThrow(() -> new ApplicationException("ActivityFavourite entity not found with id : " + id));
     }
 }
 
