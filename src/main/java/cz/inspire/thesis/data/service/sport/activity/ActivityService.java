@@ -2,21 +2,13 @@ package cz.inspire.thesis.data.service.sport.activity;
 
 import cz.inspire.thesis.data.dto.sport.activity.ActivityDetails;
 import cz.inspire.thesis.data.dto.sport.sport.InstructorDetails;
-import cz.inspire.thesis.data.dto.sport.sport.SportDetails;
 import cz.inspire.thesis.data.model.sport.activity.ActivityEntity;
-import cz.inspire.thesis.data.model.sport.sport.InstructorEntity;
-import cz.inspire.thesis.data.model.sport.sport.SportEntity;
-import cz.inspire.thesis.data.model.sport.sport.SportInstructorEntity;
 import cz.inspire.thesis.data.repository.sport.activity.ActivityRepository;
-import cz.inspire.thesis.data.service.sport.sport.InstructorService;
-import cz.inspire.thesis.data.service.sport.sport.SportInstructorService;
-import cz.inspire.thesis.data.service.sport.sport.SportService;
 import jakarta.enterprise.context.ApplicationScoped;
 import org.apache.deltaspike.jpa.api.transaction.Transactional;
 import jakarta.inject.Inject;
 
 import java.util.Collection;
-import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
