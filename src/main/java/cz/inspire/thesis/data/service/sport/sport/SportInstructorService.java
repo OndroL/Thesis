@@ -2,8 +2,6 @@ package cz.inspire.thesis.data.service.sport.sport;
 
 import cz.inspire.thesis.data.dto.sport.sport.SportInstructorDetails;
 import cz.inspire.thesis.data.model.sport.sport.SportInstructorEntity;
-import cz.inspire.thesis.data.model.sport.sport.SportEntity;
-import cz.inspire.thesis.data.model.sport.sport.InstructorEntity;
 import cz.inspire.thesis.data.repository.sport.sport.SportInstructorRepository;
 import cz.inspire.thesis.exceptions.ApplicationException;
 import cz.inspire.thesis.exceptions.CreateException;
@@ -23,36 +21,27 @@ public class SportInstructorService {
     @Inject
     private SportInstructorRepository sportInstructorRepository;
 
-    @Inject
-    private SportService sportService;
-
-    @Inject
-    private InstructorService instructorService;
 
     @Transactional
-    public String create(SportInstructorDetails details) throws CreateException {
+    public SportInstructorEntity create(SportInstructorDetails details) throws CreateException {
         try {
             SportInstructorEntity entity = new SportInstructorEntity();
             if (details.getId() == null) {
                 details.setId(generateGUID(entity));
             }
-            mapToEntity(entity, details);
             sportInstructorRepository.save(entity);
-            return entity.getId();
+            return entity;
         } catch (Exception e) {
             throw new CreateException("Failed to create SportInstructor", e);
         }
     }
 
     @Transactional
-    public void setDetails(SportInstructorDetails details) throws ApplicationException {
+    public void save(SportInstructorEntity entity) throws ApplicationException {
         try {
-            SportInstructorEntity entity = sportInstructorRepository.findOptionalBy(details.getId())
-                    .orElseThrow(() -> new ApplicationException("SportInstructor entity not found"));
-            mapToEntity(entity, details);
             sportInstructorRepository.save(entity);
         } catch (Exception e) {
-            throw new ApplicationException("Failed to update SportInstructor", e);
+            throw new ApplicationException("Failed while trying to save SportInstructorEntity ", e);
         }
     }
 
@@ -66,26 +55,12 @@ public class SportInstructorService {
         }
     }
 
-    public SportInstructorDetails getDetails(SportInstructorEntity entity) {
-        SportInstructorDetails details = new SportInstructorDetails();
-        details.setId(entity.getId());
-        details.setActivityId(entity.getActivityId());
-        details.setOldSportId(entity.getOldSportId());
-        details.setDeleted(entity.getDeleted());
-        details.setSportId(entity.getSport() != null ? entity.getSport().getId() : null);
-        details.setInstructorId(entity.getInstructor() != null ? entity.getInstructor().getId() : null);
-        return details;
-    }
-
     public Collection<SportInstructorEntity> findAll() {
         return sportInstructorRepository.findAll();
     }
 
     public List<SportInstructorEntity> findBySport(String sportId) {
         return sportInstructorRepository.findBySport(sportId);
-    }
-    public Optional<SportInstructorEntity> findOptionalBy(String id) {
-        return sportInstructorRepository.findOptionalBy(id);
     }
 
     public List<SportInstructorEntity> findByInstructor(String instructorId) {
@@ -96,7 +71,7 @@ public class SportInstructorService {
         return sportInstructorRepository.findBySportAndInstructor(sportId, instructorId);
     }
 
-    public Optional<SportInstructorEntity> findBySportWithoutInstructor(String sportId) throws ApplicationException {
+    public Optional<SportInstructorEntity> findBySportWithoutInstructor(String sportId) {
         return sportInstructorRepository.findBySportWithoutInstructor(sportId);
     }
 
@@ -104,31 +79,8 @@ public class SportInstructorService {
         return sportInstructorRepository.countSportInstructors(sportId);
     }
 
-    private void mapToEntity(SportInstructorEntity entity, SportInstructorDetails details) throws ApplicationException {
-        entity.setActivityId(details.getActivityId());
-        entity.setOldSportId(details.getOldSportId());
-        entity.setDeleted(details.getDeleted());
-
-        // Map Sport
-        if (details.getSportId() != null) {
-            SportEntity sport = sportService.findOptionalBy(details.getSportId())
-                    .orElseThrow(() -> new ApplicationException("Sport entity not found"));
-
-            //This was not present in old Bean
-            entity.setActivityId(sport.getActivity().getId());
-
-            entity.setSport(sport);
-        } else {
-            entity.setSport(null);
-        }
-
-        // Map Instructor
-        if (details.getInstructorId() != null) {
-            InstructorEntity instructor = instructorService.findOptionalBy(details.getInstructorId())
-                    .orElseThrow(() -> new ApplicationException("Instructor entity not found"));
-            entity.setInstructor(instructor);
-        } else {
-            entity.setInstructor(null);
-        }
+    public Optional<SportInstructorEntity> findOptionalBy(String id) {
+        return sportInstructorRepository.findOptionalBy(id);
     }
+
 }
