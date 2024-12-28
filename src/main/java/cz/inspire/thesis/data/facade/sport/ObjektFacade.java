@@ -1,9 +1,6 @@
 package cz.inspire.thesis.data.facade.sport;
 
-import cz.inspire.thesis.data.dto.sport.objekt.ObjektDetails;
-import cz.inspire.thesis.data.dto.sport.objekt.ObjektLocDetails;
-import cz.inspire.thesis.data.dto.sport.objekt.OvladacObjektuDetails;
-import cz.inspire.thesis.data.dto.sport.objekt.PodminkaRezervaceDetails;
+import cz.inspire.thesis.data.dto.sport.objekt.*;
 import cz.inspire.thesis.data.dto.sport.sport.SportDetails;
 import cz.inspire.thesis.data.model.sport.objekt.*;
 import cz.inspire.thesis.data.model.sport.sport.SportEntity;
@@ -40,8 +37,7 @@ public class ObjektFacade {
     @Inject
     private ObjektSportService objektSportService;
 
-    public String createObjekt(ObjektDetails objektDetails) throws CreateException {
-
+    public String create(ObjektDetails objektDetails) throws CreateException {
         try {
             ObjektEntity objektEntity = objektService.create(objektDetails);
 
@@ -60,7 +56,40 @@ public class ObjektFacade {
         }
     }
 
-    public void updateObjekt(ObjektDetails details) throws ApplicationException {
+    public String create(ArealDetails details) throws CreateException {
+        try {
+            ArealEntity entity = arealService.create(details);
+
+            Map<String, ArealLocDetails> localeData = details.getLocaleData();
+            if (localeData != null) {
+                for (ArealLocDetails locDetails : localeData.values()) {
+                    ArealLocEntity locEntity = new ArealLocEntity();
+                    locEntity.setId(generateGUID(locEntity));
+                    locEntity.setJazyk(locDetails.getJazyk());
+                    locEntity.setNazev(locDetails.getNazev());
+                    locEntity.setPopis(locDetails.getPopis());
+                }
+            }
+            /**
+             * This functionality of mapping "nadrazenyAreal" is missing in old bean,
+             * but it makes sense to map it while creating new areal, when it is present
+             * in setDetails and if getNadrazenyArealId is existing in DB
+             */
+            if (details.getNadrazenyArealId() != null) {
+                ArealEntity parentEntity = arealService.findById(details.getNadrazenyArealId());
+                entity.setNadrazenyAreal(parentEntity);
+            }
+
+            arealService.save(entity);
+
+            return entity.getId();
+
+        } catch (Exception ex) {
+            throw new CreateException("Failed to complete create operations for Areal: " + ex.getMessage(), ex);
+        }
+    }
+
+    public void setDetails(ObjektDetails details) throws ApplicationException {
         try {
             ObjektEntity entity = objektService.findById(details.getId());
 
@@ -107,6 +136,41 @@ public class ObjektFacade {
         }
     }
 
+    public void setDetails(ArealDetails details) throws ApplicationException {
+        try {
+            ArealEntity entity = arealService.findById(details.getId());
+
+            if (details.getLocaleData() != null) {
+                List<ArealLocEntity> listArealLoc = new ArrayList<>();
+                for (ArealLocDetails locDetails : details.getLocaleData().values()) {
+                    ArealLocEntity locEntity = new ArealLocEntity();
+                    locEntity.setId(generateGUID(locEntity));
+                    locEntity.setJazyk(locDetails.getJazyk());
+                    locEntity.setNazev(locDetails.getNazev());
+                    locEntity.setPopis(locDetails.getPopis());
+                    listArealLoc.add(locEntity);
+                }
+                entity.setLocaleData(listArealLoc);
+            }
+
+            // Update parent areal
+            if (details.getNadrazenyArealId() == null) {
+                entity.setNadrazenyAreal(null);
+            } else {
+                ArealEntity parentEntity = arealService.findOptionalBy(details.getNadrazenyArealId())
+                        .orElseThrow(() -> new ApplicationException("Parent Areal set but not found with id : " + details.getNadrazenyArealId()));
+                entity.setNadrazenyAreal(parentEntity);
+            }
+
+            // Update other fields
+            entity.setPocetNavazujucichRez(details.getPocetNavazujucichRez());
+
+            arealService.save(entity);
+        } catch (Exception e) {
+            throw new ApplicationException("Failed to update Areal entity", e);
+        }
+    }
+
     private void setCinnosti(List<SportDetails> sportList, ObjektEntity objektEntity, ObjektDetails entityDetails) throws ApplicationException {
         try {
             // Add new sports
@@ -136,6 +200,17 @@ public class ObjektFacade {
         } catch (Exception ex) {
             throw new ApplicationException("Failed to set ObjektSports for ObjektEntity with ID: " + objektEntity.getId(), ex);
         }
+    }
+
+    /**
+     * Calling these two methods from controller will need to be changed
+     * Ideally by giving the methods parameter Id of Areal to be edited by adding objekt/areal
+     */
+    public void addObjekt(ObjektEntity objekt, String arealId) throws ApplicationException {
+        arealService.addObjekt(objekt, arealId);
+    }
+    public void addAreal(ArealEntity areal, String arealId) throws ApplicationException {
+        arealService.addAreal(areal, arealId);
     }
 
     private void setOvladaceObjektu(ObjektDetails objektDetails, ObjektEntity objektEntity) {
@@ -254,7 +329,26 @@ public class ObjektFacade {
         details.setObjektSport(entity.getObjektSports().stream().map(objektSportService::getDetails).toList());
         // I don't really understand the need to call set sports for getting the details
         // maybe some hidden functionality is of old bean is not clear to me
-        //setSports(getSports(entity), entity, details);
+        // setSports(getSports(entity), entity, details);
+        return details;
+    }
+
+    public ArealDetails getDetails(ArealEntity entity) {
+        ArealDetails details = new ArealDetails();
+        details.setId(entity.getId());
+        details.setPocetNavazujucichRez(entity.getPocetNavazujucichRez());
+
+        Collection<ArealLocEntity> locEntities = entity.getLocaleData();
+        Map<String, ArealLocDetails> locDetails = locEntities.stream()
+                .collect(Collectors.toMap(ArealLocEntity::getJazyk, loc -> new ArealLocDetails(
+                        loc.getId(), loc.getJazyk(), loc.getNazev(), loc.getPopis())));
+
+        details.setLocaleData(locDetails);
+
+        if (entity.getNadrazenyAreal() != null) {
+            details.setNadrazenyArealId(entity.getNadrazenyAreal().getId());
+        }
+
         return details;
     }
 
@@ -302,7 +396,7 @@ public class ObjektFacade {
         details.setShowSportName(entity.isShowSportName());
 
 
-        details.setAreal(arealService.getDetails(entity.getAreal()));
+        details.setAreal(getDetails(entity.getAreal()));
 
         Map<String, ObjektLocDetails> locData = entity.getLocaleData().stream()
                 .collect(Collectors.toMap(
@@ -394,6 +488,30 @@ public class ObjektFacade {
     public Collection<String> getObjektIdsOfAreal(String arealId) {
         return new ArrayList<>(objektService.getObjektIdsOfAreal(arealId));
     }
+
+    // Also this was renamed from findAll() to findAllAreals()
+    public Collection<ArealDetails> findAllAreals() {
+        return arealService.findAll().stream()
+                .map(this::getDetails)
+                .collect(Collectors.toList());
+    }
+
+    public Collection<ArealDetails> findByParent(String parentId, String jazyk) {
+        return arealService.findByParent(parentId, jazyk).stream()
+                .map(this::getDetails)
+                .collect(Collectors.toList());
+    }
+
+    public Collection<ArealDetails> findRoot(String jazyk) {
+        return arealService.findRoot(jazyk).stream()
+                .map(this::getDetails)
+                .collect(Collectors.toList());
+    }
+
+    public Collection<String> getArealIdsByParent(String arealId){
+        return arealService.getArealIdsByParent(arealId);
+    }
+
 
     /**
      * Here are modernized comparators for Sport and Podminka rezervace from old bean
