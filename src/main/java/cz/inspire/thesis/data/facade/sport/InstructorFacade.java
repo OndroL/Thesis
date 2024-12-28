@@ -14,20 +14,20 @@ import cz.inspire.thesis.data.service.sport.sport.SportInstructorService;
 import cz.inspire.thesis.data.service.sport.sport.SportService;
 import cz.inspire.thesis.exceptions.ApplicationException;
 import cz.inspire.thesis.exceptions.CreateException;
+import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 
 import java.util.*;
 import java.util.stream.Collectors;
 
+@ApplicationScoped
 public class InstructorFacade {
     @Inject
     private InstructorService instructorService;
     @Inject
     private ActivityService activityService;
-
     @Inject
     private SportService sportService;
-
     @Inject
     private SportInstructorService sportInstructorService;
 
@@ -231,7 +231,7 @@ public class InstructorFacade {
                 //add NONE instructor if neccessary
                 SportEntity sport = sportService.findOptionalBy(sportInstructor.getSport().getId())
                         .orElseThrow(() -> new ApplicationException("Sport not found for ID: " + sportInstructor.getSport().getId()));
-                sportService.checkSportWithoutInstructor(sport);
+                sportInstructorService.checkSportWithoutInstructor(sport);
             }
         } catch (Exception ex) {
             throw new ApplicationException("Failed while setting Sport Instructor as deleted " + ex.getMessage());
@@ -270,7 +270,7 @@ public class InstructorFacade {
                 sportInstructorService.setDeleted(sportInstructor);
 
                 // Check if the sport is left without any instructors and handle it
-                sportService.checkSportWithoutInstructor(sportInstructor.getSport());
+                sportInstructorService.checkSportWithoutInstructor(sportInstructor.getSport());
             }
 
             // Determine sports to be added

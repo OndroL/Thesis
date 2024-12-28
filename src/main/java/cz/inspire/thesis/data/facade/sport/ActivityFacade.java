@@ -19,6 +19,7 @@ import cz.inspire.thesis.data.service.sport.sport.SportInstructorService;
 import cz.inspire.thesis.data.service.sport.sport.SportService;
 import cz.inspire.thesis.exceptions.ApplicationException;
 import cz.inspire.thesis.exceptions.CreateException;
+import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 
 import java.util.Collection;
@@ -28,7 +29,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 
-
+@ApplicationScoped
 public class ActivityFacade {
     @Inject
     private ActivityService activityService;
@@ -114,7 +115,7 @@ public class ActivityFacade {
             }
 
             // Save the updated entity
-            activityService.saveEntity(entity);
+            activityService.save(entity);
 
             // Update related sport-instructor entities
             updateSportInstructor(details, oldInstructorIds);
@@ -149,7 +150,7 @@ public class ActivityFacade {
                     instructorSet.add(instructor);
                 }
                 entity.setInstructors(instructorSet);
-                activityService.saveEntity(entity);
+                activityService.save(entity);
             } catch (Exception ex) {
                 throw new ApplicationException("Failed to associate instructors with activity: " + ex.getMessage(), ex);
             }
@@ -185,7 +186,7 @@ public class ActivityFacade {
                 }
 
                 // Ensure the sport is not left without any instructors if necessary
-                sportService.checkSportWithoutInstructor(sportEntity);
+                sportInstructorService.checkSportWithoutInstructor(sportEntity);
             }
         } catch (Exception ex) {
             throw new ApplicationException("Failed to update sport-instructor relationships: " + ex.getMessage(), ex);

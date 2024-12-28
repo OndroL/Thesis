@@ -8,6 +8,7 @@ import cz.inspire.thesis.data.service.sport.objekt.*;
 import cz.inspire.thesis.data.service.sport.sport.SportService;
 import cz.inspire.thesis.exceptions.ApplicationException;
 import cz.inspire.thesis.exceptions.CreateException;
+import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 
 import java.util.*;
@@ -15,6 +16,7 @@ import java.util.stream.Collectors;
 
 import static cz.inspire.thesis.data.utils.guidGenerator.generateGUID;
 
+@ApplicationScoped
 public class ObjektFacade {
     @Inject
     private ObjektService objektService;

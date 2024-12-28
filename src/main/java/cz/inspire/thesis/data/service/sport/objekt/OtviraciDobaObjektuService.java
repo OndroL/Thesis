@@ -4,6 +4,7 @@ import cz.inspire.thesis.data.dto.sport.objekt.OtviraciDobaObjektuDetails;
 import cz.inspire.thesis.data.model.sport.objekt.OtviraciDobaObjektuEntity;
 import cz.inspire.thesis.data.model.sport.objekt.OtviraciDobaObjektuPK;
 import cz.inspire.thesis.data.repository.sport.objekt.OtviraciDobaObjektuRepository;
+import cz.inspire.thesis.exceptions.ApplicationException;
 import cz.inspire.thesis.exceptions.CreateException;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
@@ -33,7 +34,7 @@ public class OtviraciDobaObjektuService {
     private OtviraciDobaObjektuRepository otviraciDobaObjektuRepository;
 
     @Transactional
-    public String create(OtviraciDobaObjektuDetails details) throws CreateException {
+    public OtviraciDobaObjektuEntity create(OtviraciDobaObjektuDetails details) throws CreateException {
         try {
             OtviraciDobaObjektuPK pk = new OtviraciDobaObjektuPK(details.getObjektId(), details.getPlatnostOd());
 
@@ -43,60 +44,39 @@ public class OtviraciDobaObjektuService {
             entity.setOtviraciDoba(details.getOtviraciDoba());
 
             otviraciDobaObjektuRepository.save(entity);
-            return null;
+            return entity;
         } catch (Exception e) {
             throw new CreateException("Failed to create OtviraciDobaObjektu entity", e);
         }
     }
 
-    public OtviraciDobaObjektuDetails findCurrent(String objektId, Date day) {
-        OtviraciDobaObjektuEntity entity = otviraciDobaObjektuRepository.findCurrent(objektId, day);
-        return entity != null ? getDetails(entity) : null;
-    }
-
-    public List<OtviraciDobaObjektuDetails> findByObjekt(String objektId) {
-        return otviraciDobaObjektuRepository.findByObjekt(objektId).stream()
-                .map(this::getDetails)
-                .collect(Collectors.toList());
-    }
-
-    public List<OtviraciDobaObjektuDetails> findAfter(String objektId, Date day) {
-        return otviraciDobaObjektuRepository.findAfter(objektId, day).stream()
-                .map(this::getDetails)
-                .collect(Collectors.toList());
-    }
-
-    private OtviraciDobaObjektuDetails getDetails(OtviraciDobaObjektuEntity entity) {
-        return new OtviraciDobaObjektuDetails(
-                entity.getId().getObjektId(),
-                entity.getId().getPlatnostOd(),
-                entity.getOtviraciDoba()
-        );
-    }
-
-    public void setDetails(OtviraciDobaObjektuDetails details) throws EntityNotFoundException {
-        OtviraciDobaObjektuPK pk = new OtviraciDobaObjektuPK(details.getObjektId(), details.getPlatnostOd());
-        Optional<OtviraciDobaObjektuEntity> optionalEntity = otviraciDobaObjektuRepository.findById(pk);
-
-        if (optionalEntity.isPresent()) {
-            OtviraciDobaObjektuEntity entity = optionalEntity.get();
-            entity.setOtviraciDoba(details.getOtviraciDoba());
+    @Transactional
+    public void save(OtviraciDobaObjektuEntity entity) throws ApplicationException {
+        try {
             otviraciDobaObjektuRepository.save(entity);
-        } else {
-            throw new EntityNotFoundException("Entity not found for ID: " + pk);
+        } catch (Exception e) {
+            throw new ApplicationException("Failed while trying to save OtviraciDobaObjektu Entity ", e);
         }
+    }
+
+    public OtviraciDobaObjektuEntity findCurrent(String objektId, Date day) {
+        return otviraciDobaObjektuRepository.findCurrent(objektId, day);
+    }
+
+    public List<OtviraciDobaObjektuEntity> findByObjekt(String objektId) {
+        return otviraciDobaObjektuRepository.findByObjekt(objektId);
+    }
+
+    public List<OtviraciDobaObjektuEntity> findAfter(String objektId, Date day) {
+        return otviraciDobaObjektuRepository.findAfter(objektId, day);
     }
 
     public List<Date> findCurrentIdsByObjectAndDay(String objektId, Date day) {
         return otviraciDobaObjektuRepository.getCurrentIdsByObjectAndDay(objektId, day);
     }
 
-    public OtviraciDobaObjektuPK getCurrentIdsByObjectAndDay(String objektId, Date day) {
-        List<Date> dates = findCurrentIdsByObjectAndDay(objektId, day);
-        if (dates == null || dates.isEmpty()) {
-            return null;
-        }
-        return new OtviraciDobaObjektuPK(objektId, dates.get(0));
+    public Optional<OtviraciDobaObjektuEntity> findById(OtviraciDobaObjektuPK id) {
+        return otviraciDobaObjektuRepository.findById(id);
     }
 
 }

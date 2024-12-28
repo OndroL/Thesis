@@ -54,7 +54,7 @@ public class ActivityService {
     }
 
     @Transactional
-    public void saveEntity(ActivityEntity entity) throws ApplicationException {
+    public void save(ActivityEntity entity) throws ApplicationException {
         try {
             activityRepository.save(entity);
         } catch (Exception e) {

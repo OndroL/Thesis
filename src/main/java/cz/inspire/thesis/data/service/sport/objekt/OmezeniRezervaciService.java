@@ -3,6 +3,7 @@ package cz.inspire.thesis.data.service.sport.objekt;
 import cz.inspire.thesis.data.dto.sport.objekt.OmezeniRezervaciDetails;
 import cz.inspire.thesis.data.model.sport.objekt.OmezeniRezervaciEntity;
 import cz.inspire.thesis.data.repository.sport.objekt.OmezeniRezervaciRepository;
+import cz.inspire.thesis.exceptions.ApplicationException;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import org.apache.deltaspike.jpa.api.transaction.Transactional;
@@ -28,7 +29,7 @@ public class OmezeniRezervaciService {
     @Inject
     private OmezeniRezervaciRepository omezeniRezervaciRepository;
     @Transactional
-    public String create(OmezeniRezervaciDetails details) throws CreateException {
+    public OmezeniRezervaciEntity create(OmezeniRezervaciDetails details) throws CreateException {
         try {
             OmezeniRezervaciEntity entity = new OmezeniRezervaciEntity();
             if (details.getObjektId() == null) {
@@ -39,9 +40,18 @@ public class OmezeniRezervaciService {
 
             omezeniRezervaciRepository.save(entity);
 
-            return entity.getObjektId();
+            return entity;
         } catch (Exception e) {
             throw new CreateException("Failed to create OmezeniRezervaci entity", e);
+        }
+    }
+
+    @Transactional
+    public void save(OmezeniRezervaciEntity entity) throws ApplicationException {
+        try {
+            omezeniRezervaciRepository.save(entity);
+        } catch (Exception e) {
+            throw new ApplicationException("Failed to save OmezeniRezervaci entity", e);
         }
     }
 
@@ -52,9 +62,7 @@ public class OmezeniRezervaciService {
         );
     }
 
-    public Collection<OmezeniRezervaciDetails> findAll() {
-        return omezeniRezervaciRepository.findAll().stream()
-                .map(this::getDetails)
-                .collect(Collectors.toList());
+    public Collection<OmezeniRezervaciEntity> findAll() {
+        return omezeniRezervaciRepository.findAll();
     }
 }

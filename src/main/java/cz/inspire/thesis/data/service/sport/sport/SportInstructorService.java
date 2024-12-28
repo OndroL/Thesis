@@ -1,6 +1,7 @@
 package cz.inspire.thesis.data.service.sport.sport;
 
 import cz.inspire.thesis.data.dto.sport.sport.SportInstructorDetails;
+import cz.inspire.thesis.data.model.sport.sport.SportEntity;
 import cz.inspire.thesis.data.model.sport.sport.SportInstructorEntity;
 import cz.inspire.thesis.data.repository.sport.sport.SportInstructorRepository;
 import cz.inspire.thesis.exceptions.ApplicationException;
@@ -53,6 +54,27 @@ public class SportInstructorService {
         } catch (Exception e) {
             throw new ApplicationException("Failed while trying to set SportInstructor as deleted" + e);
         }
+    }
+
+    // Moved from SportService here
+
+    public void checkSportWithoutInstructor(SportEntity sport) throws CreateException {
+        try {
+            Long instructorsCount = sportInstructorRepository.countSportInstructors(sport.getId());
+            if (instructorsCount == null || instructorsCount == 0) {
+                //add special instructor representing NONE instructor
+                SportInstructorDetails sid = new SportInstructorDetails();
+                sid.setActivityId(sport.getActivity().getId());
+                sid.setDeleted(false);
+                sid.setInstructorId(null);
+                create(sid);
+            }
+        } catch (CreateException ex) {
+            throw new CreateException("Failed to create SportInstructorEntity without Instructor for sport : " + sport.getId(), ex);
+        }
+//        } catch (ApplicationException ex) {
+//            throw new ApplicationException("Nepodarilo sa zistit pocet instruktorov sportu " + sport.getId(), ex);
+//        }
     }
 
     public Collection<SportInstructorEntity> findAll() {

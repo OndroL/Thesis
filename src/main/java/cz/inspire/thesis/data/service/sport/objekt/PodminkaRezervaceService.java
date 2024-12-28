@@ -11,6 +11,7 @@ import jakarta.inject.Inject;
 import org.apache.deltaspike.jpa.api.transaction.Transactional;
 
 import java.util.Collection;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import static cz.inspire.thesis.data.utils.guidGenerator.generateGUID;
@@ -20,64 +21,37 @@ public class PodminkaRezervaceService {
 
     @Inject
     private PodminkaRezervaceRepository podminkaRezervaceRepository;
-    @Inject
-    private ObjektService objektService;
 
     @Transactional
-    public String create(PodminkaRezervaceDetails details) throws CreateException {
+    public PodminkaRezervaceEntity create(PodminkaRezervaceDetails details) throws CreateException {
         try {
             PodminkaRezervaceEntity entity = new PodminkaRezervaceEntity();
             if (details.getId() == null) {
                 details.setId(generateGUID(entity));
             }
             setEntityAttributes(entity, details);
-            postCreate(entity, details);
 
             podminkaRezervaceRepository.save(entity);
-            return entity.getId();
+            return entity;
         } catch (Exception e) {
             throw new CreateException("Failed to create PodminkaRezervace entity", e);
         }
     }
 
     @Transactional
-    public void postCreate(PodminkaRezervaceEntity entity, PodminkaRezervaceDetails details) throws CreateException {
-        if (details.getObjektId() == null) {
-            throw new CreateException("ObjektId cannot be null to create PodminkaRezervace.");
-        }
+    public void save(PodminkaRezervaceEntity entity) throws ApplicationException {
         try {
-            //entity relation
-            ObjektEntity objekt = objektService.findOptionalBy(details.getObjektId())
-                    .orElseThrow(() -> new CreateException("Couldn't find Objekt for PodminkaRezervace with objekt id: " + details.getObjektId()));
-            entity.setObjekt(objekt);
-        } catch (Exception ex) {
-            throw new CreateException("Couldn't set Objekt for PodminkaRezervace: " + ex);
-        }
-    }
-
-    @Transactional
-    public void setDetails(PodminkaRezervaceDetails details) throws ApplicationException {
-        try {
-            PodminkaRezervaceEntity entity = podminkaRezervaceRepository.findOptionalBy(details.getId())
-                    .orElseThrow(() -> new ApplicationException("PodminkaRezervace entity not found"));
-
-            setEntityAttributes(entity, details);
-
             podminkaRezervaceRepository.save(entity);
         } catch (Exception e) {
-            throw new ApplicationException("Failed to update PodminkaRezervace entity", e);
+            throw new ApplicationException("Failed while saving PodminkaRezervace Entity ", e);
         }
     }
 
-    public PodminkaRezervaceDetails getDetails(PodminkaRezervaceEntity entity) {
-        PodminkaRezervaceDetails details = new PodminkaRezervaceDetails();
-        details.setId(entity.getId());
-        details.setName(entity.getName());
-        details.setPriorita(entity.getPriorita());
-        details.setObjektRezervaceId(entity.getObjektRezervaceId());
-        details.setObjektRezervaceObsazen(entity.getObjektRezervaceObsazen());
-        details.setObjektId(entity.getObjekt() != null ? entity.getObjekt().getId() : null);
-        return details;
+    public void setEntityAttributes(PodminkaRezervaceEntity entity, PodminkaRezervaceDetails details) {
+        entity.setName(details.getName());
+        entity.setPriorita(details.getPriorita());
+        entity.setObjektRezervaceId(details.getObjektRezervaceId());
+        entity.setObjektRezervaceObsazen(details.getObjektRezervaceObsazen());
     }
 
     public PodminkaRezervaceDetails getDetailsWithoutObjectId(PodminkaRezervaceEntity entity) {
@@ -91,10 +65,8 @@ public class PodminkaRezervaceService {
     }
 
 
-    public Collection<PodminkaRezervaceDetails> findAll() {
-        return podminkaRezervaceRepository.findAll().stream()
-                .map(this::getDetails)
-                .collect(Collectors.toList());
+    public Collection<PodminkaRezervaceEntity> findAll() {
+        return podminkaRezervaceRepository.findAll();
     }
 
     public Long countAll() {
@@ -109,10 +81,8 @@ public class PodminkaRezervaceService {
         return podminkaRezervaceRepository.getObjectIdsByReservationConditionObject(objectId);
     }
 
-    private void setEntityAttributes(PodminkaRezervaceEntity entity, PodminkaRezervaceDetails details) {
-        entity.setName(details.getName());
-        entity.setPriorita(details.getPriorita());
-        entity.setObjektRezervaceId(details.getObjektRezervaceId());
-        entity.setObjektRezervaceObsazen(details.getObjektRezervaceObsazen());
+    public Optional<PodminkaRezervaceEntity> findOptionalBy(String id) {
+        return podminkaRezervaceRepository.findOptionalBy(id);
     }
+
 }
