@@ -1,6 +1,7 @@
 package cz.inspire.thesis.data.facade.sport;
 
 import cz.inspire.thesis.data.dto.sport.sport.*;
+import cz.inspire.thesis.data.mapper.SportDetailsMapper;
 import cz.inspire.thesis.data.model.sport.activity.ActivityEntity;
 import cz.inspire.thesis.data.model.sport.sport.*;
 import cz.inspire.thesis.data.service.sport.activity.ActivityService;
@@ -29,7 +30,7 @@ public class SportFacade {
     @Inject
     private SportKategorieService sportKategorieService;
     @Inject
-    private SportLocService sportLocService;
+    private SportDetailsMapper sportDetailsMapper;
 
     public String create(SportDetails details) throws CreateException {
         try {
@@ -259,7 +260,7 @@ public class SportFacade {
 
     private void updateSportInstructor(SportEntity sport) throws ApplicationException, CreateException {
 
-        Set<InstructorDetails> instructors = loadInstructors(sport);
+        Set<InstructorDetails> instructors = sportDetailsMapper.loadInstructors(sport);
         Set<String> oldInstructorIds = new HashSet<String>();
         for (InstructorDetails instructorDetails : instructors) {
             oldInstructorIds.add(instructorDetails.getId());
@@ -309,131 +310,12 @@ public class SportFacade {
         }
     }
 
-    private Set<InstructorDetails> loadInstructors(SportEntity entity) {
-        //        Odfiltrovani smazanych polozek
-        Set<InstructorDetails> instructors = new HashSet<InstructorDetails>();
-        Collection<SportInstructorEntity> sportInstructors = entity.getSportInstructors();
-        for (SportInstructorEntity localSportInstructor : sportInstructors) {
-            if (localSportInstructor.getDeleted()) {
-                continue;
-            }
-            InstructorEntity instructor = localSportInstructor.getInstructor();
-            if (instructor == null) {
-                //add special instructor standing for none instructor
-                InstructorDetails noneInstructor = new InstructorDetails();
-                noneInstructor.setId(ZADNY_INSTRUKTOR_ID);
-                instructors.add(noneInstructor);
-            } else {
-                instructors.add(mapInstructorData(instructor));
-            }
-        }
-        return instructors;
-    }
-
-    private InstructorDetails mapInstructorData(InstructorEntity instructorEntity) {
-        InstructorDetails instructorDetails = new InstructorDetails();
-        instructorDetails.setId(instructorEntity.getId());
-        instructorDetails.setColor(instructorEntity.getColor());
-        instructorDetails.setDeleted(instructorEntity.getDeleted());
-        instructorDetails.setEmail(instructorEntity.getEmail());
-        instructorDetails.setFirstName(instructorEntity.getFirstName());
-        instructorDetails.setLastName(instructorEntity.getLastName());
-        instructorDetails.setPhoneCode(instructorEntity.getPhoneCode());
-        instructorDetails.setPhoneNumber(instructorEntity.getPhoneNumber());
-        instructorDetails.setGoogleCalendarId(instructorEntity.getGoogleCalendarId());
-        instructorDetails.setGoogleCalendarNotification(instructorEntity.getGoogleCalendarNotification());
-        instructorDetails.setGoogleCalendarNotificationBefore(instructorEntity.getGoogleCalendarNotificationBefore());
-//        instructorDetails.setPhoto(instructorEntity.getPhoto());
-        return instructorDetails;
-    }
 
     public void addSport(SportEntity sport) throws ApplicationException{
         sport.getPodrazeneSporty().add(sport);
         sport.setPodSportyCount(sport.getPodSportyCount() + 1);
     }
 
-    public SportDetails getDetails(SportEntity entity) {
-        SportDetails details = new SportDetails();
-        details.setId(entity.getId());
-        details.setTyp(entity.getTyp());
-        details.setZboziId(entity.getZboziId());
-        details.setSkladId(entity.getSkladId());
-        details.setPodSportyCount(entity.getPodSportyCount());
-        details.setSazbaJednotek(entity.getSazbaJednotek());
-        details.setSazbaNaOsobu(entity.getSazbaNaOsobu());
-        details.setSazbaNaCas(entity.getSazbaNaCas());
-        details.setUctovatZalohu(entity.getUctovatZalohu());
-        details.setSazbyStorna((List<SazbaStorna>) entity.getSazbyStorna());
-        details.setMinDelkaRezervace(entity.getMinDelkaRezervace());
-        details.setMaxDelkaRezervace(entity.getMaxDelkaRezervace());
-        details.setObjednavkaZaplniObjekt(entity.getObjednavkaZaplniObjekt());
-        details.setMaximalniPocetOsobNaZakaznika(entity.getMaximalniPocetOsobNaZakaznika());
-        details.setDelkaRezervaceNasobkem(entity.getDelkaRezervaceNasobkem());
-
-        details.setBarvaPopredi(entity.getBarvaPopredi());
-        details.setBarvaPozadi(entity.getBarvaPozadi());
-        details.setZobrazitText(entity.getZobrazitText());
-        details.setViditelnyWeb(entity.getViditelnyWeb());
-
-        details.setNavRezervaceOffset(entity.getNavRezervaceOffset());
-        details.setDelkaHlavniRez(entity.getDelkaHlavniRez());
-
-        details.setMinimalniPocetOsob(entity.getMinimalniPocetOsob());
-        details.setMinutyPredVyhodnocenimKapacity(entity.getMinutyPredVyhodnocenimKapacity());
-
-        if (entity.getSportKategorie() != null) {
-            details.setSportKategorie(getDetails(entity.getSportKategorie()));
-
-        }
-
-        Map<String, SportLocDetails> locData = entity.getLocaleData().stream()
-                .map(sportLocService::getDetails)
-                .collect(Collectors.toMap(SportLocDetails::getJazyk, sportLocDetails -> sportLocDetails));
-
-        // Set the locale data into the SportDetails object
-        details.setLocaleData(locData);
-
-        SportEntity navazujiciSport = entity.getNavazujiciSport();
-        if (navazujiciSport != null){
-            details.setNavazujiciSportId(navazujiciSport.getId());
-        }
-
-        ActivityEntity activity = entity.getActivity();
-        if (activity != null) {
-            details.setActivityId(activity.getId());
-        }
-
-//        Odfiltrovani smazanych polozek
-        Set<InstructorDetails> instructors = loadInstructors(entity);
-        entity.setInstructorSet(instructors);
-        details.setInstructors(instructors);
-
-        return details;
-
-    }
-
-    public SportKategorieDetails getDetails(SportKategorieEntity entity) {
-        SportKategorieDetails details = new SportKategorieDetails();
-        details.setId(entity.getId());
-        details.setMultisportFacilityId(entity.getMultiSportFacilityId());
-        details.setMultisportServiceUUID(entity.getMultiSportServiceUUID());
-
-        if (entity.getNadrazenaKategorie() != null) {
-            details.setNadrazenaKategorieId(entity.getNadrazenaKategorie().getId());
-        }
-
-        Map<String, SportKategorieLocDetails> localeData = entity.getLocaleData().stream()
-                .collect(Collectors.toMap(SportKategorieLocEntity::getJazyk, loc -> {
-                    SportKategorieLocDetails locDetails = new SportKategorieLocDetails();
-                    locDetails.setJazyk(loc.getJazyk());
-                    locDetails.setNazev(loc.getNazev());
-                    locDetails.setPopis(loc.getPopis());
-                    return locDetails;
-                }));
-        details.setLocaleData(localeData);
-
-        return details;
-    }
 
     ////////////////////////
     /////// Queries ///////
@@ -442,50 +324,50 @@ public class SportFacade {
 
     public Collection<SportDetails> findAll() {
         return sportService.findAll().stream()
-                .map(this::getDetails)
+                .map(sportDetailsMapper::getDetails)
                 .collect(Collectors.toList());
     }
 
 
     public Collection<SportDetails> findByParent(String parentId, String jazyk) {
         return sportService.findByParent(parentId, jazyk).stream()
-                .map(this::getDetails)
+                .map(sportDetailsMapper::getDetails)
                 .collect(Collectors.toList());
     }
 
     public Collection<SportDetails> findByParent(String parentId, String jazyk, int offset, int count) {
         return sportService.findByParent(parentId, jazyk, offset, count).stream()
-                .map(this::getDetails)
+                .map(sportDetailsMapper::getDetails)
                 .collect(Collectors.toList());
     }
 
     public Collection<SportDetails> findByCategory(String categoryId, int offset, int count) {
         return sportService.findByCategory(categoryId, offset, count).stream()
-                .map(this::getDetails)
+                .map(sportDetailsMapper::getDetails)
                 .collect(Collectors.toList());
     }
 
     public Collection<SportDetails> findByZbozi(String zboziId, int offset, int count) {
         return sportService.findByZbozi(zboziId, offset, count).stream()
-                .map(this::getDetails)
+                .map(sportDetailsMapper::getDetails)
                 .collect(Collectors.toList());
     }
 
     public Collection<SportDetails> findRoot(String jazyk) {
         return sportService.findRoot(jazyk).stream()
-                .map(this::getDetails)
+                .map(sportDetailsMapper::getDetails)
                 .collect(Collectors.toList());
     }
 
     public Collection<SportDetails> findRoot(String jazyk, int offset, int count) {
         return sportService.findRoot(jazyk, offset, count).stream()
-                .map(this::getDetails)
+                .map(sportDetailsMapper::getDetails)
                 .collect(Collectors.toList());
     }
 
     public Collection<SportDetails> findCategoryRoot(int offset, int count) {
         return sportService.findCategoryRoot(offset, count).stream()
-                .map(this::getDetails)
+                .map(sportDetailsMapper::getDetails)
                 .collect(Collectors.toList());
     }
 
@@ -516,17 +398,17 @@ public class SportFacade {
     // Renamed to from findAll() to findAllKategorie()
     public List<SportKategorieDetails> findAllKategorie() {
         return sportKategorieService.findAll()
-                .stream().map(this::getDetails).toList();
+                .stream().map(sportDetailsMapper::getDetails).toList();
     }
 
     public List<SportKategorieDetails> findRoot() {
         return sportKategorieService.findRoot()
-                .stream().map(this::getDetails).toList();
+                .stream().map(sportDetailsMapper::getDetails).toList();
     }
 
     public List<SportKategorieDetails> findAllByNadrazenaKategorie(String nadrazenaKategorieId) {
         return sportKategorieService.findAllByNadrazenaKategorie(nadrazenaKategorieId)
-                .stream().map(this::getDetails).toList();
+                .stream().map(sportDetailsMapper::getDetails).toList();
     }
 
     public Long count() {

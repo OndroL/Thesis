@@ -79,7 +79,7 @@ public class SportDetailsMapper {
 
     }
 
-    private Set<InstructorDetails> loadInstructors(SportEntity entity) {
+    public Set<InstructorDetails> loadInstructors(SportEntity entity) {
         //        Odfiltrovani smazanych polozek
         Set<InstructorDetails> instructors = new HashSet<InstructorDetails>();
         Collection<SportInstructorEntity> sportInstructors = entity.getSportInstructors();
@@ -100,7 +100,7 @@ public class SportDetailsMapper {
         return instructors;
     }
 
-    private InstructorDetails mapInstructorData(InstructorEntity instructorEntity) {
+    public InstructorDetails mapInstructorData(InstructorEntity instructorEntity) {
         InstructorDetails instructorDetails = new InstructorDetails();
         instructorDetails.setId(instructorEntity.getId());
         instructorDetails.setColor(instructorEntity.getColor());
