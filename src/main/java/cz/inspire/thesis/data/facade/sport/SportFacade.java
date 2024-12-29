@@ -350,9 +350,6 @@ public class SportFacade {
     public void addSport(SportEntity sport) throws ApplicationException{
         sport.getPodrazeneSporty().add(sport);
         sport.setPodSportyCount(sport.getPodSportyCount() + 1);
-
-        // Check if this save was in old bean
-        sportService.save(sport);
     }
 
     public SportDetails getDetails(SportEntity entity) {

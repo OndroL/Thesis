@@ -181,7 +181,13 @@ public class ActivityFacade {
                             && oldInstructorIds.contains(sportInstructor.getInstructor().getId())) {
                         // Mark sport-instructor entity as deleted
                         sportInstructor.setDeleted(true);
+
+                        /* Originally this was done by setDetails, but I had to move that functionality to facade layer
                         sportInstructorService.setDetails(sportInstructorService.getDetails(sportInstructor)); // Save the updated entity
+
+                        So work around is done by directly saving edited entity
+                        */
+                        sportInstructorService.save(sportInstructor);
                     }
                 }
 

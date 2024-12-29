@@ -9,7 +9,6 @@ import jakarta.inject.Inject;
 import org.apache.deltaspike.jpa.api.transaction.Transactional;
 
 import java.util.Collection;
-import java.util.stream.Collectors;
 
 /**
  * Those exceptions are created to mimic functionality and implementation of production exceptions
@@ -53,13 +52,6 @@ public class OmezeniRezervaciService {
         } catch (Exception e) {
             throw new ApplicationException("Failed to save OmezeniRezervaci entity", e);
         }
-    }
-
-    public OmezeniRezervaciDetails getDetails(OmezeniRezervaciEntity entity) {
-        return new OmezeniRezervaciDetails(
-                entity.getObjektId(),
-                entity.getOmezeni()
-        );
     }
 
     public Collection<OmezeniRezervaciEntity> findAll() {

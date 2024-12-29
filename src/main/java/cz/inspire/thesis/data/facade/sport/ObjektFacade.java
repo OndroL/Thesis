@@ -2,6 +2,7 @@ package cz.inspire.thesis.data.facade.sport;
 
 import cz.inspire.thesis.data.dto.sport.objekt.*;
 import cz.inspire.thesis.data.dto.sport.sport.SportDetails;
+import cz.inspire.thesis.data.mapper.SportDetailsMapper;
 import cz.inspire.thesis.data.model.sport.objekt.*;
 import cz.inspire.thesis.data.model.sport.sport.SportEntity;
 import cz.inspire.thesis.data.service.sport.objekt.*;
@@ -38,6 +39,8 @@ public class ObjektFacade {
 
     @Inject
     private ObjektSportService objektSportService;
+    @Inject
+    private SportDetailsMapper sportDetailsMapper;
 
     public String create(ObjektDetails objektDetails) throws CreateException {
         try {
@@ -88,6 +91,45 @@ public class ObjektFacade {
 
         } catch (Exception ex) {
             throw new CreateException("Failed to complete create operations for Areal: " + ex.getMessage(), ex);
+        }
+    }
+
+    public String create(OvladacObjektuDetails details) throws CreateException {
+        try {
+            return ovladacObjektuService.create(details).getId();
+
+        } catch (Exception e) {
+            throw new CreateException("Failed to complete create operations for OvladacObjektu: " + e.getMessage(), e);
+        }
+    }
+
+
+    public String create(ObjektSportDetails details) throws CreateException {
+        try {
+            ObjektSportEntity entity = objektSportService.create(details);
+
+            try {
+                SportEntity sport = sportService.findOptionalBy(details.getSportId())
+                        .orElseThrow(() -> new CreateException("Sport: " + details.getSportId() + " not found"));
+                entity.setSport(sport);
+            } catch (Exception ex) {
+                throw new CreateException("ObjektSport couldn't be created: " + ex);
+            }
+
+            try {
+                ObjektEntity objekt = objektService.findOptionalBy(details.getObjektId())
+                        .orElseThrow(() -> new CreateException("Objekt: " + details.getObjektId() + " not found"));
+                entity.setObjekt(objekt);
+            } catch (Exception ex) {
+                throw new CreateException("ObjektSport couldn't be created: " + ex);
+            }
+
+            objektSportService.save(entity);
+
+            return entity.getId().getId();
+
+        } catch (Exception e) {
+            throw new CreateException("Failed to complete create operations for ObjektSport: " + e.getMessage(), e);
         }
     }
 
@@ -173,6 +215,28 @@ public class ObjektFacade {
         }
     }
 
+    public void setDetails(OvladacObjektuDetails details) throws ApplicationException {
+
+        try {
+            OvladacObjektuEntity entity = ovladacObjektuService.findOptionalBy(details.getId())
+                    .orElseThrow(() -> new ApplicationException("OvladacObjektu entity not found with id : " + details.getId()));
+            entity.setIdOvladace(details.getIdOvladace());
+            entity.setCislaZapojeni(encodeNumbersToString(details.getCislaZapojeniList()));
+            entity.setAutomat(details.getAutomat());
+            entity.setManual(details.getManual());
+            entity.setDelkaSepnutiPoKonci(details.getDelkaSepnutiPoKonci());
+            entity.setZapnutiPredZacatkem(details.getZapnutiPredZacatkem());
+            // This is kinda redundant
+            // In old Bean -> "setObjektId(getObjektId());"
+            entity.setObjektId(entity.getObjektId());
+
+            ovladacObjektuService.save(entity);
+
+        } catch (Exception e) {
+            throw  new ApplicationException("Failed to update OvladacObjektu entity");
+        }
+    }
+
     private void setCinnosti(List<SportDetails> sportList, ObjektEntity objektEntity, ObjektDetails entityDetails) throws ApplicationException {
         try {
             // Add new sports
@@ -190,10 +254,10 @@ public class ObjektFacade {
                     // Just magic, need to save new objektSport Entity into DB, but create from ObjektSportService is expecting DTO
                     // so work around is to call getDetails from service with newly created objektSportEntity
                     // Here cascade persist would make a lot of sense by saving the objektEntity with objektSportEntity in it.
-                    objektSportService.create(objektSportService.getDetails(newSport));
+                    objektSportService.create(getDetails(newSport));
 
                     // Set new ObjektSportEntity to details of ObjektEntity
-                    entityDetails.getObjektSport().add((objektSportService.getDetails(newSport)));
+                    entityDetails.getObjektSport().add((getDetails(newSport)));
 
                     // Set new ObjektSportEntity to ObjektEntity
                     objektEntity.getObjektSports().add(newSport);
@@ -328,7 +392,7 @@ public class ObjektFacade {
 
     public ObjektDetails getDetails(ObjektEntity entity) {
         ObjektDetails details = getDetailsWithoutSports(entity);
-        details.setObjektSport(entity.getObjektSports().stream().map(objektSportService::getDetails).toList());
+        details.setObjektSport(entity.getObjektSports().stream().map(this::getDetails).toList());
         // I don't really understand the need to call set sports for getting the details
         // maybe some hidden functionality is of old bean is not clear to me
         // setSports(getSports(entity), entity, details);
@@ -354,10 +418,11 @@ public class ObjektFacade {
         return details;
     }
 
+
     public List<SportDetails> getSports(ObjektEntity entity) {
         return entity.getObjektSports().stream()
                 .sorted(OBJEKT_SPORT_COMPARATOR)
-                .map(objektSport -> sportService.getDetails(objektSport.getSport()))
+                .map(objektSport -> sportDetailsMapper.getDetails(objektSport.getSport()))
                 .collect(Collectors.toList());
     }
 
@@ -409,7 +474,7 @@ public class ObjektFacade {
         details.setLocaleData(locData);
 
         List<OvladacObjektuDetails> ovladaceDetails = entity.getOvladaceObjektu().stream()
-                .map(ovladacObjektuService::getDetails)
+                .map(this::getDetails)
                 .collect(Collectors.toList());
         details.setOvladaceObjektu(ovladaceDetails);
 
@@ -443,6 +508,28 @@ public class ObjektFacade {
                 })
                 .sorted(PODMINKY_REZERVACI_COMPARATOR)
                 .collect(Collectors.toList());
+    }
+
+    public ObjektSportDetails getDetails(ObjektSportEntity entity) {
+        ObjektSportDetails details = new ObjektSportDetails();
+        details.setId(entity.getId().getId());
+        details.setIndex(entity.getId().getIndex());
+        details.setSportId(entity.getSport().getId());
+        details.setObjektId(entity.getObjekt().getId());
+        return details;
+    }
+
+    public OvladacObjektuDetails getDetails(OvladacObjektuEntity entity) {
+        return new OvladacObjektuDetails(
+                entity.getId(),
+                entity.getIdOvladace(),
+                entity.getManual(),
+                entity.getAutomat(),
+                entity.getDelkaSepnutiPoKonci(),
+                entity.getZapnutiPredZacatkem(),
+                decodeNumbersFromString(entity.getCislaZapojeni()),
+                entity.getObjektId()
+        );
     }
 
     ////////////////////////
@@ -515,6 +602,12 @@ public class ObjektFacade {
     }
 
 
+    public Collection<ObjektSportDetails> findByObjekt(String objektId) {
+        return objektSportService.findByObjekt(objektId).stream()
+                .map(this::getDetails)
+                .collect(Collectors.toList());
+    }
+
     /**
      * Here are modernized comparators for Sport and Podminka rezervace from old bean
      * Modern Java standards allow for cleaner and simpler implementation of comparators,
@@ -526,4 +619,17 @@ public class ObjektFacade {
     private static final Comparator<PodminkaRezervaceDetails> PODMINKY_REZERVACI_COMPARATOR =
             Comparator.comparing(PodminkaRezervaceDetails::getPriorita);
 
+
+    /** These functions are generated to mimic functionality of
+     * OvladacObjektuBaseUtil.encodeNumbersToString()
+     */
+    private String encodeNumbersToString(List<Integer> numbers) {
+        if (numbers == null) return null;
+        return numbers.stream().map(String::valueOf).collect(Collectors.joining(","));
+    }
+
+    private List<Integer> decodeNumbersFromString(String numbers) {
+        if (numbers == null || numbers.isEmpty()) return List.of();
+        return List.of(numbers.split(",")).stream().map(Integer::valueOf).collect(Collectors.toList());
+    }
 }

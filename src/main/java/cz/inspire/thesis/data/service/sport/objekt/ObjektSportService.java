@@ -11,6 +11,7 @@ import jakarta.inject.Inject;
 import org.apache.deltaspike.jpa.api.transaction.Transactional;
 
 import java.util.Collection;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 /**
@@ -34,7 +35,7 @@ public class ObjektSportService {
     private ObjektSportRepository objektSportRepository;
 
     @Transactional
-    public String create(ObjektSportDetails details) throws CreateException {
+    public ObjektSportEntity create(ObjektSportDetails details) throws CreateException {
         try {
             ObjektSportEntity entity = new ObjektSportEntity();
             if (details.getId() == null) {
@@ -43,17 +44,8 @@ public class ObjektSportService {
 
             entity.setId(new ObjektSportPK(details.getId(), details.getIndex()));
 
-            // Set relationships
-            SportEntity sport = new SportEntity();
-            sport.setId(details.getSportId());
-            entity.setSport(sport);
-
-            ObjektEntity objekt = new ObjektEntity();
-            objekt.setId(details.getObjektId());
-            entity.setObjekt(objekt);
-
             objektSportRepository.save(entity);
-            return entity.getId().getId();
+            return entity;
         } catch (Exception e) {
             throw new CreateException("Failed to create ObjektSport entity", e);
         }
@@ -72,39 +64,21 @@ public class ObjektSportService {
     }
 
     @Transactional
-    public void setDetails(ObjektSportDetails details) throws ApplicationException {
+    public void save(ObjektSportEntity entity) throws ApplicationException {
         try {
-            ObjektSportEntity entity = objektSportRepository.findOptionalBy(details.getId())
-                    .orElseThrow(() -> new ApplicationException("ObjektSport entity not found"));
-
-            entity.getId().setIndex(details.getIndex());
-            entity.getSport().setId(details.getSportId());
-            entity.getObjekt().setId(details.getObjektId());
-
             objektSportRepository.save(entity);
         } catch (Exception e) {
-            throw new ApplicationException("Failed to update ObjektSport entity", e);
+            throw new ApplicationException("Failed to save ObjektSport entity", e);
         }
     }
 
-    public ObjektSportDetails getDetails(ObjektSportEntity entity) {
-        ObjektSportDetails details = new ObjektSportDetails();
-        details.setId(entity.getId().getId());
-        details.setIndex(entity.getId().getIndex());
-        details.setSportId(entity.getSport().getId());
-        details.setObjektId(entity.getObjekt().getId());
-        return details;
+
+    public Collection<ObjektSportEntity> findByObjekt(String objektId) {
+        return objektSportRepository.findByObjekt(objektId);
     }
 
-    public Collection<ObjektSportDetails> findAll() {
-        return objektSportRepository.findAll().stream()
-                .map(this::getDetails)
-                .collect(Collectors.toList());
-    }
 
-    public Collection<ObjektSportDetails> findByObjekt(String objektId) {
-        return objektSportRepository.findByObjekt(objektId).stream()
-                .map(this::getDetails)
-                .collect(Collectors.toList());
+    public Collection<ObjektSportEntity> findAll() {
+        return objektSportRepository.findAll();
     }
 }

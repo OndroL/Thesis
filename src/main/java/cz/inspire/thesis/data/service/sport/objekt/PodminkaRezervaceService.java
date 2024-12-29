@@ -47,6 +47,20 @@ public class PodminkaRezervaceService {
         }
     }
 
+
+    // This is duplicate code from facade layer
+    public PodminkaRezervaceDetails getDetails(PodminkaRezervaceEntity entity) {
+        PodminkaRezervaceDetails details = new PodminkaRezervaceDetails();
+        details.setId(entity.getId());
+        details.setName(entity.getName());
+        details.setPriorita(entity.getPriorita());
+        details.setObjektRezervaceId(entity.getObjektRezervaceId());
+        details.setObjektRezervaceObsazen(entity.getObjektRezervaceObsazen());
+        details.setObjektId(entity.getObjekt() != null ? entity.getObjekt().getId() : null);
+        return details;
+    }
+
+
     public void setEntityAttributes(PodminkaRezervaceEntity entity, PodminkaRezervaceDetails details) {
         entity.setName(details.getName());
         entity.setPriorita(details.getPriorita());

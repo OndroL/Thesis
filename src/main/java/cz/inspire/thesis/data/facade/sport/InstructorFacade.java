@@ -253,7 +253,7 @@ public class InstructorFacade {
                     .map(ActivityDetails::getId)
                     .collect(Collectors.toSet());
 
-            // Collect new sport IDs where activity is present in details's activities
+            // Collect new sport IDs where activity is present in details activities
             Set<String> newSportIds = details.getSports().stream()
                     .filter(sportDetails -> activityIds.contains(sportDetails.getActivityId()))
                     .map(SportDetails::getId)

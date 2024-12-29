@@ -23,7 +23,7 @@ public class OvladacObjektuService {
     private OvladacObjektuRepository ovladacObjektuRepository;
 
     @Transactional
-    public String create(OvladacObjektuDetails details) throws CreateException {
+    public OvladacObjektuEntity create(OvladacObjektuDetails details) throws CreateException {
         try {
             OvladacObjektuEntity entity = new OvladacObjektuEntity();
             if (details.getId() == null) {
@@ -40,7 +40,7 @@ public class OvladacObjektuService {
 
             ovladacObjektuRepository.save(entity);
 
-            return entity.getId();
+            return entity;
         } catch (Exception e) {
             throw new CreateException("Failed to create OvladacObjektu entity", e);
         }
@@ -59,45 +59,13 @@ public class OvladacObjektuService {
     }
 
     @Transactional
-    public void setDetails(OvladacObjektuDetails details) throws ApplicationException {
-
+    public void save(OvladacObjektuEntity entity) throws ApplicationException {
         try {
-            OvladacObjektuEntity entity = ovladacObjektuRepository.findOptionalBy(details.getId())
-                    .orElseThrow(() -> new ApplicationException("OvladacObjektu entity not found with id : " + details.getId()));
-            entity.setIdOvladace(details.getIdOvladace());
-            entity.setCislaZapojeni(encodeNumbersToString(details.getCislaZapojeniList()));
-            entity.setAutomat(details.getAutomat());
-            entity.setManual(details.getManual());
-            entity.setDelkaSepnutiPoKonci(details.getDelkaSepnutiPoKonci());
-            entity.setZapnutiPredZacatkem(details.getZapnutiPredZacatkem());
-            // This is kinda redundant
-            // In old Bean -> "setObjektId(getObjektId());"
-            entity.setObjektId(entity.getObjektId());
-
             ovladacObjektuRepository.save(entity);
 
         } catch (Exception e) {
-            throw  new ApplicationException("Failed to update OvladacObjektu entity");
+            throw  new ApplicationException("Failed to save OvladacObjektu entity");
         }
-    }
-
-    public OvladacObjektuDetails getDetails(OvladacObjektuEntity entity) {
-        return new OvladacObjektuDetails(
-                entity.getId(),
-                entity.getIdOvladace(),
-                entity.getManual(),
-                entity.getAutomat(),
-                entity.getDelkaSepnutiPoKonci(),
-                entity.getZapnutiPredZacatkem(),
-                decodeNumbersFromString(entity.getCislaZapojeni()),
-                entity.getObjektId()
-        );
-    }
-
-
-
-    public Collection<OvladacObjektuEntity> findAll() {
-        return ovladacObjektuRepository.findAll();
     }
 
     public Collection<OvladacObjektuEntity> findWithOvladacObjektu(String idOvladace) {
@@ -110,13 +78,17 @@ public class OvladacObjektuService {
         return ovladacObjektuRepository.findByObjekt(objektId);
     }
 
+    public Collection<OvladacObjektuEntity> findAll() {
+        return ovladacObjektuRepository.findAll();
+    }
+
     public Optional<OvladacObjektuEntity> findOptionalBy (String objektId) {
         return ovladacObjektuRepository.findOptionalBy(objektId);
     }
 
     /** These functions are generated to mimic functionality of
      * OvladacObjektuBaseUtil.encodeNumbersToString()
-    */
+     */
     private String encodeNumbersToString(List<Integer> numbers) {
         if (numbers == null) return null;
         return numbers.stream().map(String::valueOf).collect(Collectors.joining(","));

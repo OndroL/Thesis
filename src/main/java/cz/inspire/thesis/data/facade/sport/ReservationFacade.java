@@ -187,7 +187,7 @@ public class ReservationFacade {
         if (dates == null || dates.isEmpty()) {
             return null;
         }
-        return new OtviraciDobaObjektuPK(objektId, dates.get(0));
+        return new OtviraciDobaObjektuPK(objektId, dates.getFirst());
     }
 
 
