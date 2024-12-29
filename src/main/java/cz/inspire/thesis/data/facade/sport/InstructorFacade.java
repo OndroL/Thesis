@@ -55,22 +55,20 @@ public class InstructorFacade {
                 try {
                     for (SportDetails sportDetails : sports) {
                         SportInstructorDetails sid = new SportInstructorDetails();
+
+                        SportEntity sport  = sportService.findOptionalBy(sportDetails.getId())
+                               .orElseThrow(() -> new ApplicationException("Sport in postCreate of Instructor not found for Id: " + sportDetails.getId()));
+
                         sid.setDeleted(false);
-                        sid.setInstructorId(details.getId());
                         sid.setSportId(sportDetails.getId());
+                        sid.setActivityId(sport.getActivity().getId());
 
-//                       Here is how it was done in old Bean, but it makes more sense to check this while creating SportInstructorEntity
-//
-//                       SportEntity sport  = sportService.findOptionalBy(sportDetails.getId())
-//                               .orElseThrow(() -> new ApplicationException("Sport in postCreate of Instructor not found for Id: " + sportDetails.getId()));
-//
-//                       And for some reason in activityId is set for details but in SportInstructor bean it is not set into entity
-//
-//                       sid.setActivityId(sport.getActivity().getId());
-//                       sportInstructorService.create(sid, sport);
-
-                        sportInstructorService.create(sid);
-
+                        /**
+                         * In old Bean there is call to SportInstructorUtil.getLocalHome().create(sid, localSport);
+                         * I do not know what it is doing, but I'm almost sure I can do exactly the same with calling sportInstructor create
+                         * with SportId set
+                         */
+                        create(sid); //call create(SportInstructorDetails details)
                     }
                 } catch (Exception e) {
                     throw new ApplicationException("Relationship wih Sports while creating Instructor couldn't be created: " + e.getMessage(), e);
