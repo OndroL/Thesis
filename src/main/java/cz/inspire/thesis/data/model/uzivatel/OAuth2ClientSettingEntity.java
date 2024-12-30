@@ -15,10 +15,10 @@ public class OAuth2ClientSettingEntity {
     @Id
     private String id;
 
-    @Column(name = "client_id", nullable = false)
+    @Column(name = "client_id")
     private String clientId;
 
-    @Column(name = "client_secret", nullable = false)
+    @Column(name = "client_secret")
     private String clientSecret;
 
     @Column

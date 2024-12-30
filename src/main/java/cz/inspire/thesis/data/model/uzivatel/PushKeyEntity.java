@@ -13,11 +13,11 @@ import lombok.*;
 public class PushKeyEntity {
     @Id
     private String id;
-    @Column(nullable = false)
+    @Column
     private String key;
 
     @ManyToOne
-    @JoinColumn(name = "uzivatel_id", referencedColumnName = "login", nullable = true)
+    @JoinColumn(name = "uzivatel_id", referencedColumnName = "login")
     private UzivatelEntity uzivatel;
 
 }

@@ -13,7 +13,7 @@ import lombok.*;
 public class ExternalClientEntity {
     @Id
     private String id;
-    @Column(nullable = false)
+    @Column
     private String name;
 
     @ManyToOne

@@ -2,7 +2,9 @@ package cz.inspire.thesis.data.model.uzivatel;
 
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.JdbcTypeCode;
 
+import java.sql.Types;
 import java.util.Map;
 import java.util.Collection;
 
@@ -19,6 +21,7 @@ public class SkupinaEntity {
     @Column
     private String nazev;
     @Lob
+    @JdbcTypeCode(Types.VARBINARY)
     @Column
     private Map<String, String> nastaveni;
 
