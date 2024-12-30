@@ -1,9 +1,6 @@
 package cz.inspire.thesis.data.model.push;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.*;
 
 @Entity
@@ -22,6 +19,6 @@ public class PushHistoryEntity {
     private Boolean read;
     @Column
     private Boolean removed;
-    @Column
+    @Column(name = "pushmulticast")
     private String multicastId;
 }

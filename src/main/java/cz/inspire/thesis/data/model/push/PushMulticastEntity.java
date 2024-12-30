@@ -34,6 +34,6 @@ public class PushMulticastEntity {
     private Boolean automatic;
     @Column
     private Boolean sent;
-    @OneToMany(mappedBy = "pushMulticast", cascade = CascadeType.REMOVE, orphanRemoval = true)
+    @OneToMany(mappedBy = "multicastId", cascade = CascadeType.REMOVE, orphanRemoval = true)
     private Collection<PushHistoryEntity> pushHistory;
 }
