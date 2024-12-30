@@ -14,7 +14,7 @@ import java.util.Date;
 @NoArgsConstructor
 @Entity
 @EqualsAndHashCode
-@Table
+@Table(name="push_multicast")
 public class PushMulticastEntity {
     @Id
     private String Id;
