@@ -94,7 +94,7 @@ The database is preconfigured with Docker. Use the `docker-compose.yml` file in 
 
 2. Run the application:
    ```bash
-   java -jar target/thesis-project.jar
+   java -jar target/thesis.jar
    ```
 
 ---
