@@ -17,13 +17,13 @@ public interface UzivatelSessionRepository extends EntityRepository<UzivatelSess
 
     @Query("""
             SELECT a FROM UzivatelSessionEntity a
-            WHERE a.loginTime IN ( SELECT MAX(a.loginTime) FROM UzivatelSessionEntity a WHERE a.uzivatel = ?1)
+            WHERE a.loginTime IN ( SELECT MAX(a.loginTime) FROM UzivatelSessionEntity a WHERE a.uzivatel.login = ?1)
             """)
     Optional<UzivatelSessionEntity> findLast(String login);
 
     @Query("""
             SELECT a FROM UzivatelSessionEntity a
-            WHERE a.loginTime IN ( SELECT MAX(a.loginTime) FROM UzivatelSessionEntity a WHERE a.uzivatel = ?1 AND a.loginType = '3')
+            WHERE a.loginTime IN ( SELECT MAX(a.loginTime) FROM UzivatelSessionEntity a WHERE a.uzivatel.login = ?1 AND a.loginType = 3)
             """)
     Optional<UzivatelSessionEntity> findLastRestLogin(String login);
 
@@ -37,9 +37,16 @@ public interface UzivatelSessionRepository extends EntityRepository<UzivatelSess
     @Query("""
             SELECT a FROM UzivatelSessionEntity a
             JOIN a.uzivatel uz
-            WHERE uz.skupina != 'web' AND ((a.loginTime <= ?2) AND (?1 <= a.logoutTime OR (logoutTime IS NULL))) AND uz.login = ?3
+            WHERE uz.skupina.id != 'web' AND ((a.loginTime <= ?2) AND (?1 <= a.logoutTime OR (logoutTime IS NULL))) AND uz.login = ?3
             """)
     List<UzivatelSessionEntity> findAllInDatesWithLogin(Date from, Date to, String loginName);
+
+    @Query("""
+            SELECT a FROM UzivatelSessionEntity a
+            JOIN a.uzivatel uz
+            WHERE a.logoutTime IS NULL
+            """)
+    List<UzivatelSessionEntity> findLogged();
 
     @Query("""
             SELECT a FROM UzivatelSessionEntity a
