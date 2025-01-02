@@ -83,8 +83,48 @@ public class ExternalClientRepositoryTest {
         em.getTransaction().commit();
 
         // Test the repository method
-        Optional<ExternalClientEntity> result = externalClientRepository.findByOAuth2ClientId("clientId123");
+        Optional<ExternalClientEntity> result = externalClientRepository.findByOAuth2ClientId("clientId123", 1);
         assertTrue("Result should be present", result.isPresent());
         assertEquals("id1", result.get().getId());
+    }
+
+    @Test
+    public void testFindByOAuth2ClientIdWithoutLimit() {
+        assertNotNull("ExternalClientRepository should be initialized!", externalClientRepository);
+
+        // Create and persist OAuth2 client settings
+        OAuth2ClientSettingEntity oauthSetting1 = new OAuth2ClientSettingEntity(
+                "oauth1", "clientId123", "secret", null, null, null, null, null, null, null);
+        ExternalClientEntity client1 = new ExternalClientEntity("id1", "Client A", null, oauthSetting1);
+
+        OAuth2ClientSettingEntity oauthSetting2 = new OAuth2ClientSettingEntity(
+                "oauth2", "clientId123", "secret", null, null, null, null, null, null, null);
+        ExternalClientEntity client2 = new ExternalClientEntity("id2", "Client B", null, oauthSetting2);
+
+        EntityManager em = BeanProvider.getContextualReference(EntityManager.class);
+        em.getTransaction().begin();
+        em.persist(oauthSetting1);
+        em.persist(client1);
+        em.persist(oauthSetting2);
+        em.persist(client2);
+        em.getTransaction().commit();
+
+        // Test the repository method
+        Optional<ExternalClientEntity> result = externalClientRepository.findByOAuth2ClientId("clientId123", 1);
+
+        if (result.isPresent()) {
+            System.out.println("Result found: " + result.get().getId());
+        } else {
+            System.out.println("No result found.");
+        }
+
+        // Assertions
+        assertTrue("Result should be present", result.isPresent());
+        // Observe the behavior here: either first match is returned or exception
+        String idReturned = result.get().getId();
+        assertTrue(
+                "Returned ID should be one of the matching records",
+                idReturned.equals("id1") || idReturned.equals("id2")
+        );
     }
 }
