@@ -13,7 +13,7 @@ public interface UzivatelRepository extends EntityRepository<UzivatelEntity, Str
 
     @Query("""
             SELECT a FROM UzivatelEntity a
-            WHERE a.skupina = ?1
+            WHERE a.skupina.id = ?1
             """)
     List<UzivatelEntity> findBySkupina(String skupinaId);
 
@@ -23,16 +23,18 @@ public interface UzivatelRepository extends EntityRepository<UzivatelEntity, Str
             """)
     List<UzivatelEntity> findByAktivni(Boolean aktivni);
 
+    /// Here "limit 1" is replaced with param @MaxResult as LIMIT is not supported by queries directly,
+    /// which will be set in Service layer to 1, because if it returns multiple Entities it throws Exception
+    /// There is multiple workarounds but this seems most consistent with oldBeans
     @Query("""
             SELECT a FROM UzivatelEntity a
-            WHERE a.auth_key = ?1
-            LIMIT 1
+            WHERE a.authKey = ?1
             """)
-    Optional<UzivatelEntity> findByAuthKey(String authKey);
+    Optional<UzivatelEntity> findByAuthKey(String authKey, @MaxResults int setToOne);
 
     @Query("""
             SELECT a FROM UzivatelEntity a
-            WHERE a.aktivacnitoke = ?1
+            WHERE a.aktivacniToken = ?1
             """)
     Optional<UzivatelEntity> findByAktivacniToken(String aktivacniToken);
 
@@ -44,7 +46,7 @@ public interface UzivatelRepository extends EntityRepository<UzivatelEntity, Str
 
     @Query("""
             SELECT a FROM UzivatelEntity a
-            WHERE a.skupina = ?1
+            WHERE a.skupina.id = ?1
             """)
     List<UzivatelEntity> findBySkupina(String skupinaId, @FirstResult int offset, @MaxResults int count);
 }
