@@ -22,5 +22,5 @@ public class ExternalClientEntity {
 
     @OneToOne(cascade = CascadeType.REMOVE, orphanRemoval = true)
     @JoinColumn(name = "oauth2_setting_id", referencedColumnName = "id")
-    private OAuth2ClientSettingEntity oauth2ClientSetting;
+    private OAuth2ClientSettingEntity oAuth2ClientSetting;
 }
