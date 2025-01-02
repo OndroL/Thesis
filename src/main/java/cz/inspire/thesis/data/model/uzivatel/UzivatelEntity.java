@@ -1,5 +1,6 @@
 package cz.inspire.thesis.data.model.uzivatel;
 
+import cz.inspire.thesis.data.utils.MapToBinaryConverter;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.JdbcTypeCode;
@@ -34,8 +35,9 @@ public class UzivatelEntity {
     private String authKey;
 
     @Lob
-    @JdbcTypeCode(Types.VARBINARY)
     @Column
+    @JdbcTypeCode(Types.VARBINARY)
+    @Convert(converter = MapToBinaryConverter.class)
     private Map<String, String> nastaveni;
 
     @ManyToOne
