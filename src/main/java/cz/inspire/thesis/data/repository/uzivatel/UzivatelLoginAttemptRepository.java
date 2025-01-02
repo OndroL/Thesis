@@ -24,7 +24,7 @@ public interface UzivatelLoginAttemptRepository extends EntityRepository<Uzivate
 
     @Query("""
             SELECT a FROM UzivatelLoginAttemptEntity a
-            WHERE a.login > ?1 AND a.ip = ?2 and a.created > ?3
+            WHERE a.login = ?1 AND a.ip = ?2 and a.created > ?3
             ORDER BY a.created DESC
             """)
     List<UzivatelLoginAttemptEntity> findByLoginAndIpFromRecentTime(String login, String ip, Date referenceTime);
