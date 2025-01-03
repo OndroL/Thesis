@@ -1,6 +1,6 @@
 package cz.inspire.common.repository;
 
-import cz.inspire.common.model.HeaderEntity;
+import cz.inspire.common.entity.HeaderEntity;
 import org.apache.deltaspike.data.api.EntityRepository;
 import org.apache.deltaspike.data.api.Query;
 import org.apache.deltaspike.data.api.Repository;

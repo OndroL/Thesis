@@ -2,7 +2,7 @@ package cz.inspire.common.facade;
 
 import cz.inspire.common.dto.NastaveniJsonDto;
 import cz.inspire.common.mapper.NastaveniJsonMapper;
-import cz.inspire.common.model.NastaveniJsonEntity;
+import cz.inspire.common.entity.NastaveniJsonEntity;
 import cz.inspire.common.service.NastaveniJsonService;
 import jakarta.ejb.CreateException;
 import jakarta.enterprise.context.ApplicationScoped;

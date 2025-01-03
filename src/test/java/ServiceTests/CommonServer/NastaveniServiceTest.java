@@ -1,6 +1,6 @@
 package ServiceTests.CommonServer;
 
-import cz.inspire.common.model.NastaveniEntity;
+import cz.inspire.common.entity.NastaveniEntity;
 import cz.inspire.common.repository.NastaveniRepository;
 import cz.inspire.common.service.NastaveniService;
 import cz.inspire.exception.SystemException;

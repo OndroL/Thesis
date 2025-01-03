@@ -1,6 +1,6 @@
 package cz.inspire.common.mapper;
 
-import cz.inspire.common.model.NastaveniJsonEntity;
+import cz.inspire.common.entity.NastaveniJsonEntity;
 import cz.inspire.common.dto.NastaveniJsonDto;
 import org.mapstruct.Mapper;
 

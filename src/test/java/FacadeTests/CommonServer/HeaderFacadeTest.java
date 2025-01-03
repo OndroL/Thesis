@@ -3,7 +3,7 @@ package FacadeTests.CommonServer;
 import cz.inspire.common.dto.HeaderDto;
 import cz.inspire.common.facade.HeaderFacade;
 import cz.inspire.common.mapper.HeaderMapper;
-import cz.inspire.common.model.HeaderEntity;
+import cz.inspire.common.entity.HeaderEntity;
 import cz.inspire.common.service.HeaderService;
 import jakarta.ejb.CreateException;
 import org.junit.jupiter.api.BeforeEach;

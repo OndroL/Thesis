@@ -3,7 +3,7 @@ package FacadeTests.CommonServer;
 import cz.inspire.common.dto.MenaDto;
 import cz.inspire.common.facade.MenaFacade;
 import cz.inspire.common.mapper.MenaMapper;
-import cz.inspire.common.model.MenaEntity;
+import cz.inspire.common.entity.MenaEntity;
 import cz.inspire.common.service.MenaService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

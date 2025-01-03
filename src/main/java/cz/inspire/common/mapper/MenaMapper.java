@@ -1,7 +1,7 @@
 package cz.inspire.common.mapper;
 
 import cz.inspire.common.dto.MenaDto;
-import cz.inspire.common.model.MenaEntity;
+import cz.inspire.common.entity.MenaEntity;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.mapstruct.Mapper;

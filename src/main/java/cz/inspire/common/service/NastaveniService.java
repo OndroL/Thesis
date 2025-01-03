@@ -1,6 +1,6 @@
 package cz.inspire.common.service;
 
-import cz.inspire.common.model.NastaveniEntity;
+import cz.inspire.common.entity.NastaveniEntity;
 import cz.inspire.common.repository.NastaveniRepository;
 import cz.inspire.exception.SystemException;
 import jakarta.ejb.CreateException;

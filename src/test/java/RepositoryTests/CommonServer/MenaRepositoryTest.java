@@ -1,7 +1,7 @@
 package RepositoryTests.CommonServer;
 
 import cz.inspire.thesis.data.EntityManagerProducer;
-import cz.inspire.common.model.MenaEntity;
+import cz.inspire.common.entity.MenaEntity;
 
 import cz.inspire.common.repository.MenaRepository;
 import jakarta.persistence.EntityManager;

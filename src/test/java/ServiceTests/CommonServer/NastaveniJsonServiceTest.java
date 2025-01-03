@@ -1,6 +1,6 @@
 package ServiceTests.CommonServer;
 
-import cz.inspire.common.model.NastaveniJsonEntity;
+import cz.inspire.common.entity.NastaveniJsonEntity;
 import cz.inspire.common.repository.NastaveniJsonRepository;
 import cz.inspire.common.service.NastaveniJsonService;
 import cz.inspire.exception.SystemException;

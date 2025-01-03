@@ -1,6 +1,6 @@
 package ServiceTests.CommonServer;
 
-import cz.inspire.common.model.MenaEntity;
+import cz.inspire.common.entity.MenaEntity;
 import cz.inspire.common.repository.MenaRepository;
 import cz.inspire.common.service.MenaService;
 import cz.inspire.exception.SystemException;

@@ -1,6 +1,6 @@
 package ServiceTests.CommonServer;
 
-import cz.inspire.common.model.HeaderEntity;
+import cz.inspire.common.entity.HeaderEntity;
 import cz.inspire.common.repository.HeaderRepository;
 import cz.inspire.common.service.HeaderService;
 import cz.inspire.exception.SystemException;

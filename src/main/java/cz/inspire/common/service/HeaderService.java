@@ -1,6 +1,6 @@
 package cz.inspire.common.service;
 
-import cz.inspire.common.model.HeaderEntity;
+import cz.inspire.common.entity.HeaderEntity;
 import cz.inspire.common.repository.HeaderRepository;
 import cz.inspire.exception.SystemException;
 import org.apache.deltaspike.jpa.api.transaction.Transactional;

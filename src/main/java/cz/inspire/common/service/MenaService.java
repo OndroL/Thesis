@@ -1,11 +1,12 @@
 package cz.inspire.common.service;
 
-import cz.inspire.common.model.MenaEntity;
+import cz.inspire.common.entity.MenaEntity;
 import cz.inspire.common.repository.MenaRepository;
 import cz.inspire.exception.SystemException;
 import jakarta.ejb.CreateException;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
+import jakarta.persistence.PersistenceException;
 import org.apache.deltaspike.jpa.api.transaction.Transactional;
 import org.apache.logging.log4j.Logger;
 
@@ -24,7 +25,7 @@ public class MenaService {
     }
 
     @Transactional
-    public void create(MenaEntity entity) throws CreateException {
+    public void create(MenaEntity entity) throws CreateException, PersistenceException {
         try {
             menaRepository.save(entity);
         } catch (Exception e) {

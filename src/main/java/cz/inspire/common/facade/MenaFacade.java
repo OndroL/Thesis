@@ -2,7 +2,7 @@ package cz.inspire.common.facade;
 
 import cz.inspire.common.dto.MenaDto;
 import cz.inspire.common.mapper.MenaMapper;
-import cz.inspire.common.model.MenaEntity;
+import cz.inspire.common.entity.MenaEntity;
 import cz.inspire.common.service.MenaService;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;

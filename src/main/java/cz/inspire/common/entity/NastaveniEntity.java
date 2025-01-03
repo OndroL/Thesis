@@ -1,4 +1,4 @@
-package cz.inspire.common.model;
+package cz.inspire.common.entity;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -7,22 +7,20 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.hibernate.proxy.HibernateProxy;
 
+import java.io.Serializable;
 import java.util.Objects;
-
 
 @AllArgsConstructor
 @Setter
 @Getter
 @NoArgsConstructor
 @Entity
-@Table(name="noteheader")
-public class HeaderEntity {
+@Table(name="nastaveni")
+public class NastaveniEntity {
     @Id
-    private String id;
+    private String key;
     @Column
-    private int field;
-    @Column
-    private int location;
+    private Serializable value;
 
     @Override
     public final boolean equals(Object o) {
@@ -31,8 +29,8 @@ public class HeaderEntity {
         Class<?> oEffectiveClass = o instanceof HibernateProxy ? ((HibernateProxy) o).getHibernateLazyInitializer().getPersistentClass() : o.getClass();
         Class<?> thisEffectiveClass = this instanceof HibernateProxy ? ((HibernateProxy) this).getHibernateLazyInitializer().getPersistentClass() : this.getClass();
         if (thisEffectiveClass != oEffectiveClass) return false;
-        HeaderEntity obj = (HeaderEntity) o;
-        return getId() != null && Objects.equals(getId(), obj.getId());
+        NastaveniEntity obj = (NastaveniEntity) o;
+        return getKey() != null && Objects.equals(getKey(), obj.getKey());
     }
 
     @Override

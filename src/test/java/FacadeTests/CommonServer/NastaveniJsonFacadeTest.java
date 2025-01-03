@@ -3,7 +3,7 @@ package FacadeTests.CommonServer;
 import cz.inspire.common.dto.NastaveniJsonDto;
 import cz.inspire.common.facade.NastaveniJsonFacade;
 import cz.inspire.common.mapper.NastaveniJsonMapper;
-import cz.inspire.common.model.NastaveniJsonEntity;
+import cz.inspire.common.entity.NastaveniJsonEntity;
 import cz.inspire.common.service.NastaveniJsonService;
 import jakarta.ejb.CreateException;
 import org.junit.jupiter.api.BeforeEach;
