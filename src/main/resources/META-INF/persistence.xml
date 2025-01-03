@@ -8,7 +8,7 @@
     <provider>org.hibernate.jpa.HibernatePersistenceProvider</provider>
 
     <!-- Entity Classes -->
-    <class>cz.inspire.thesis.data.model.HeaderEntity</class>
+    <class>cz.inspire.common.entity.HeaderEntity</class>
     <!-- Add other entities if applicable -->
 
     <properties>

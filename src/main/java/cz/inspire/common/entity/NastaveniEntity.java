@@ -1,4 +1,4 @@
-package cz.inspire.thesis.data.model;
+package cz.inspire.common.entity;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;

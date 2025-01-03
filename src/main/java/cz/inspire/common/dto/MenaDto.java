@@ -1,4 +1,4 @@
-package cz.inspire.thesis.data.dto;
+package cz.inspire.common.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -13,7 +13,7 @@ import java.util.List;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class MenaDetails {
+public class MenaDto {
     private String id;
     private String kod;
     private String vycetka;
