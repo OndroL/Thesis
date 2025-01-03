@@ -1,8 +1,8 @@
-package RepositoryTests;
+package RepositoryTests.CommonServer;
 
 import cz.inspire.thesis.data.EntityManagerProducer;
-import cz.inspire.thesis.data.model.HeaderEntity;
-import cz.inspire.thesis.data.repository.HeaderRepository;
+import cz.inspire.common.model.HeaderEntity;
+import cz.inspire.common.repository.HeaderRepository;
 import jakarta.persistence.*;
 import org.apache.deltaspike.cdise.api.CdiContainer;
 import org.apache.deltaspike.cdise.api.CdiContainerLoader;

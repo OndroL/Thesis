@@ -1,17 +1,16 @@
-package cz.inspire.thesis.data.dto;
+package cz.inspire.common.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.io.Serializable;
-
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class NastaveniDetails {
-    private String key;
-    private Serializable value;
+public class HeaderDto {
+    private String id;
+    private int field;
+    private int location;
 }

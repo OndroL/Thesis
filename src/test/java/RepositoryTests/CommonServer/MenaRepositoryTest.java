@@ -1,9 +1,9 @@
-package RepositoryTests;
+package RepositoryTests.CommonServer;
 
 import cz.inspire.thesis.data.EntityManagerProducer;
-import cz.inspire.thesis.data.model.MenaEntity;
+import cz.inspire.common.model.MenaEntity;
 
-import cz.inspire.thesis.data.repository.MenaRepository;
+import cz.inspire.common.repository.MenaRepository;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
 import jakarta.persistence.Persistence;
@@ -57,7 +57,7 @@ public class MenaRepositoryTest {
         List<MenaEntity> foundMenaEntityList = menaRepository.findByCode("USD");
         assertNotNull("Result list should not be null", foundMenaEntityList);
         assertEquals(1, foundMenaEntityList.size());
-        assertEquals("Dollar", foundMenaEntityList.get(0).getVycetka());
+        assertEquals("Dollar", foundMenaEntityList.getFirst().getVycetka());
     }
 
     @Test
@@ -72,7 +72,7 @@ public class MenaRepositoryTest {
         List<MenaEntity> foundMenaEntityList = menaRepository.findByCodeNum(840);
         assertNotNull("Result list should not be null", foundMenaEntityList);
         assertEquals(1, foundMenaEntityList.size());
-        assertEquals("USD", foundMenaEntityList.get(0).getKod());
+        assertEquals("USD", foundMenaEntityList.getFirst().getKod());
     }
 
     @Test

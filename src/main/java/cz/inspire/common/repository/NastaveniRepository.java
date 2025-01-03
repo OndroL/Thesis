@@ -1,6 +1,6 @@
-package cz.inspire.thesis.data.repository;
+package cz.inspire.common.repository;
 
-import cz.inspire.thesis.data.model.NastaveniEntity;
+import cz.inspire.common.model.NastaveniEntity;
 import org.apache.deltaspike.data.api.EntityRepository;
 import org.apache.deltaspike.data.api.Repository;
 

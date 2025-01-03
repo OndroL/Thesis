@@ -1,10 +1,6 @@
-package cz.inspire.thesis.data.model;
+package cz.inspire.common.model;
 
-
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -18,12 +14,20 @@ import java.util.Objects;
 @Getter
 @NoArgsConstructor
 @Entity
-@Table(name="nastaveni_json")
-public class NastaveniJsonEntity {
+@Table(name="mena")
+public class MenaEntity {
     @Id
-    private String key;
+    private String id;
     @Column
-    private String value;
+    private String kod;
+    @Column
+    private String vycetka;
+    @Column
+    private int kodnum;
+    @Column
+    private int zaokrouhleniHotovost;
+    @Column
+    private int zaokrouhleniKarta;
 
     @Override
     public final boolean equals(Object o) {
@@ -32,8 +36,8 @@ public class NastaveniJsonEntity {
         Class<?> oEffectiveClass = o instanceof HibernateProxy ? ((HibernateProxy) o).getHibernateLazyInitializer().getPersistentClass() : o.getClass();
         Class<?> thisEffectiveClass = this instanceof HibernateProxy ? ((HibernateProxy) this).getHibernateLazyInitializer().getPersistentClass() : this.getClass();
         if (thisEffectiveClass != oEffectiveClass) return false;
-        NastaveniJsonEntity obj = (NastaveniJsonEntity) o;
-        return getKey() != null && Objects.equals(getKey(), obj.getKey());
+        MenaEntity obj = (MenaEntity) o;
+        return getId() != null && Objects.equals(getId(), obj.getId());
     }
 
     @Override
