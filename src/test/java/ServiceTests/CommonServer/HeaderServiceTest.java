@@ -38,7 +38,6 @@ public class HeaderServiceTest {
     void testCreate_Success() throws CreateException {
         HeaderEntity entity = new HeaderEntity("1", 42, 7);
 
-        // No exception expected
         headerService.create(entity);
 
         verify(headerRepository, times(1)).save(entity);
@@ -57,7 +56,6 @@ public class HeaderServiceTest {
     void testUpdate_Success() throws SystemException {
         HeaderEntity entity = new HeaderEntity("1", 42, 7);
 
-        // No exception expected
         headerService.update(entity);
 
         verify(headerRepository, times(1)).save(entity);
@@ -77,7 +75,6 @@ public class HeaderServiceTest {
     void testRemove_Success() throws SystemException {
         HeaderEntity entity = new HeaderEntity("1", 42, 7);
 
-        // No exception expected
         headerService.remove(entity);
 
         verify(headerRepository, times(1)).remove(entity);
@@ -87,16 +84,12 @@ public class HeaderServiceTest {
     void testRemove_Failure() {
         HeaderEntity entity = new HeaderEntity("1", 42, 7);
 
-        // Simulate an exception when the repository's remove method is called
         doThrow(RuntimeException.class).when(headerRepository).remove(entity);
 
-        // Call the remove method
         SystemException exception = assertThrows(SystemException.class, () -> headerService.remove(entity));
 
-        // Verify the exception message
         assertEquals("Failed to remove HeaderEntity", exception.getMessage());
 
-        // Verify logger interaction
         verify(logger, times(1)).error(eq("Failed to remove HeaderEntity"), any(RuntimeException.class));
     }
 
@@ -108,7 +101,7 @@ public class HeaderServiceTest {
         );
         when(headerRepository.findValidAtributes()).thenReturn(expectedList);
 
-        List<HeaderEntity> result = headerService.findValidAtributes();
+        List<HeaderEntity> result = headerService.findValidAttributes();
 
         assertNotNull(result);
         assertEquals(2, result.size());

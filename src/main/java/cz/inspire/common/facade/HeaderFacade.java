@@ -27,8 +27,9 @@ public class HeaderFacade {
         }
     }
 
+    // Typo (missing 't' in Attributes) in old bean signature="java.util.Collection findValidAtributes()"
     public Collection<HeaderDto> findValidAtributes() {
-        return headerService.findValidAtributes().stream().map(headerMapper::toDto).toList();
+        return headerService.findValidAttributes().stream().map(headerMapper::toDto).toList();
     }
 
 }

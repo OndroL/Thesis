@@ -36,10 +36,9 @@ public class NastaveniJsonFacadeTest {
         String key = "testKey";
         String value = "testValue";
 
-        // No exception expected
         String result = nastaveniJsonFacade.create(key, value);
 
-        assertNull(result); // As per implementation, the method returns null
+        assertNull(result);
         verify(nastaveniJsonService, times(1)).create(new NastaveniJsonEntity(key, value));
     }
 
@@ -61,10 +60,9 @@ public class NastaveniJsonFacadeTest {
 
         when(nastaveniJsonMapper.toEntity(dto)).thenReturn(entity);
 
-        // No exception expected
         String result = nastaveniJsonFacade.create(dto);
 
-        assertNull(result); // As per implementation, the method returns null
+        assertNull(result);
         verify(nastaveniJsonMapper, times(1)).toEntity(dto);
         verify(nastaveniJsonService, times(1)).create(entity);
     }

@@ -38,7 +38,6 @@ public class MenaServiceTest {
     void testCreate_Success() throws CreateException {
         MenaEntity entity = new MenaEntity("1", "USD", "123,456", 840, 1, 1);
 
-        // No exception expected
         menaService.create(entity);
 
         verify(menaRepository, times(1)).save(entity);
@@ -57,7 +56,6 @@ public class MenaServiceTest {
     void testUpdate_Success() throws SystemException {
         MenaEntity entity = new MenaEntity("1", "USD", "123,456", 840, 1, 1);
 
-        // No exception expected
         menaService.update(entity);
 
         verify(menaRepository, times(1)).save(entity);
@@ -77,7 +75,6 @@ public class MenaServiceTest {
     void testRemove_Success() throws SystemException {
         MenaEntity entity = new MenaEntity("1", "USD", "123,456", 840, 1, 1);
 
-        // No exception expected
         menaService.remove(entity);
 
         verify(menaRepository, times(1)).remove(entity);

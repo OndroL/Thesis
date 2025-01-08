@@ -14,7 +14,7 @@ public class Main {
             // Obtain the HeaderService bean
             HeaderService headerService = container.select(HeaderService.class).get();
 
-            System.out.println(headerService.findValidAtributes());
+            System.out.println(headerService.findValidAttributes());
         } catch (Exception e) {
             e.printStackTrace();
         }

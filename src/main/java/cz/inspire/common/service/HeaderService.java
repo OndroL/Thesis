@@ -16,7 +16,7 @@ public class HeaderService extends BaseService<HeaderEntity, HeaderRepository> {
         super(logger, repository, HeaderEntity.class);
     }
 
-    public List<HeaderEntity> findValidAtributes()
+    public List<HeaderEntity> findValidAttributes()
     {
         return repository.findValidAtributes();
     }

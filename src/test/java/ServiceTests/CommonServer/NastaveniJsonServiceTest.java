@@ -35,7 +35,6 @@ public class NastaveniJsonServiceTest {
     void testCreate_Success() throws CreateException {
         NastaveniJsonEntity entity = new NastaveniJsonEntity("key1", "value1");
 
-        // No exception expected
         nastaveniJsonService.create(entity);
 
         verify(nastaveniJsonRepository, times(1)).save(entity);
@@ -54,7 +53,6 @@ public class NastaveniJsonServiceTest {
     void testUpdate_Success() throws SystemException {
         NastaveniJsonEntity entity = new NastaveniJsonEntity("key1", "value1");
 
-        // No exception expected
         nastaveniJsonService.update(entity);
 
         verify(nastaveniJsonRepository, times(1)).save(entity);
@@ -74,7 +72,6 @@ public class NastaveniJsonServiceTest {
     void testRemove_Success() throws SystemException {
         NastaveniJsonEntity entity = new NastaveniJsonEntity("key1", "value1");
 
-        // No exception expected
         nastaveniJsonService.remove(entity);
 
         verify(nastaveniJsonRepository, times(1)).remove(entity);

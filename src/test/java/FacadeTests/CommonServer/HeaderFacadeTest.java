@@ -85,7 +85,7 @@ public class HeaderFacadeTest {
                 new HeaderDto("2", 24, 9)
         );
 
-        when(headerService.findValidAtributes()).thenReturn(entities);
+        when(headerService.findValidAttributes()).thenReturn(entities);
         when(headerMapper.toDto(entities.get(0))).thenReturn(dtos.get(0));
         when(headerMapper.toDto(entities.get(1))).thenReturn(dtos.get(1));
 
@@ -95,7 +95,7 @@ public class HeaderFacadeTest {
         assertEquals(2, result.size());
         assertTrue(result.containsAll(dtos));
 
-        verify(headerService, times(1)).findValidAtributes();
+        verify(headerService, times(1)).findValidAttributes();
         verify(headerMapper, times(1)).toDto(entities.get(0));
         verify(headerMapper, times(1)).toDto(entities.get(1));
     }

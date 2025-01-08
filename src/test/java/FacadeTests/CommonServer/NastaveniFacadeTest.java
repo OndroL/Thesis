@@ -38,7 +38,6 @@ public class NastaveniFacadeTest {
 
         NastaveniEntity entity = new NastaveniEntity(key, value);
 
-        // No need to stub anything for a successful void method call
         nastaveniFacade.create(key, value);
 
         verify(nastaveniService, times(1)).create(entity);
