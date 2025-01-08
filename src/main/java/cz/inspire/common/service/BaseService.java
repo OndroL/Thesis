@@ -23,7 +23,7 @@ public abstract class BaseService<E, R extends EntityRepository<E, ? extends jav
         try {
             repository.save(entity);
         } catch (Exception e) {
-            logger.error("Failed to create " + entityClass.getSimpleName(), e);
+            logger.error("Failed to create {}", entityClass.getSimpleName(), e);
             throw new CreateException("Failed to create " + entityClass.getSimpleName());
         }
     }
@@ -33,7 +33,7 @@ public abstract class BaseService<E, R extends EntityRepository<E, ? extends jav
         try {
             repository.save(entity);
         } catch (Exception e) {
-            logger.error("Failed to update " + entityClass.getSimpleName(), e);
+            logger.error("Failed to update {}", entityClass.getSimpleName(), e);
             throw new SystemException("Failed to update " + entityClass.getSimpleName(), e);
         }
     }
@@ -43,7 +43,7 @@ public abstract class BaseService<E, R extends EntityRepository<E, ? extends jav
         try {
             repository.remove(entity);
         } catch (Exception e) {
-            logger.error("Failed to remove " + entityClass.getSimpleName(), e);
+            logger.error("Failed to remove {}", entityClass.getSimpleName(), e);
             throw new SystemException("Failed to remove " + entityClass.getSimpleName(), e);
         }
     }
