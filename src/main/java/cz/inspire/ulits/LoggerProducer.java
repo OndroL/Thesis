@@ -5,8 +5,14 @@ import jakarta.enterprise.inject.spi.InjectionPoint;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-public class LoggerProducer {
+/**
+ * The LoggerProducer class provides dynamic injection of Logger instances using CDI. Unlike the old static logger
+ * approach, this enables better testability by allowing loggers to be mocked during unit tests, addressing issues
+ * where logger.error(...) invocations could not be verified. It centralizes logger creation and ensures each class
+ * receives a type-specific Logger.
+ */
 
+public class LoggerProducer {
     @Produces
     public Logger produceLogger(InjectionPoint injectionPoint) {
         return LogManager.getLogger(injectionPoint.getMember().getDeclaringClass());
