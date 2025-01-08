@@ -2,10 +2,11 @@ package cz.inspire.common.service;
 
 import cz.inspire.exception.SystemException;
 import jakarta.ejb.CreateException;
+import org.apache.deltaspike.data.api.EntityRepository;
 import org.apache.deltaspike.jpa.api.transaction.Transactional;
 import org.apache.logging.log4j.Logger;
 
-public abstract class BaseService<E, R> {
+public abstract class BaseService<E, R extends EntityRepository<E, ? extends java. io. Serializable>>{
 
     protected final Logger logger;
     protected final R repository;
@@ -20,7 +21,7 @@ public abstract class BaseService<E, R> {
     @Transactional
     public void create(E entity) throws CreateException {
         try {
-            save(entity);
+            repository.save(entity);
         } catch (Exception e) {
             logger.error("Failed to create " + entityClass.getSimpleName(), e);
             throw new CreateException("Failed to create " + entityClass.getSimpleName());
@@ -30,7 +31,7 @@ public abstract class BaseService<E, R> {
     @Transactional
     public void update(E entity) throws SystemException {
         try {
-            save(entity);
+            repository.save(entity);
         } catch (Exception e) {
             logger.error("Failed to update " + entityClass.getSimpleName(), e);
             throw new SystemException("Failed to update " + entityClass.getSimpleName(), e);
@@ -40,14 +41,10 @@ public abstract class BaseService<E, R> {
     @Transactional
     public void remove(E entity) throws SystemException {
         try {
-            delete(entity);
+            repository.remove(entity);
         } catch (Exception e) {
             logger.error("Failed to remove " + entityClass.getSimpleName(), e);
             throw new SystemException("Failed to remove " + entityClass.getSimpleName(), e);
         }
     }
-
-    protected abstract void save(E entity) throws Exception;
-
-    protected abstract void delete(E entity) throws Exception;
 }

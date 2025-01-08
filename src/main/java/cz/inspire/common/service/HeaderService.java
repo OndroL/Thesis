@@ -16,16 +16,6 @@ public class HeaderService extends BaseService<HeaderEntity, HeaderRepository> {
         super(logger, repository, HeaderEntity.class);
     }
 
-    @Override
-    protected void save(HeaderEntity entity) throws Exception {
-        repository.save(entity);
-    }
-
-    @Override
-    protected void delete(HeaderEntity entity) throws Exception {
-        repository.remove(entity);
-    }
-
     public List<HeaderEntity> findValidAtributes()
     {
         return repository.findValidAtributes();

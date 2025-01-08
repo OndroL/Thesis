@@ -13,14 +13,4 @@ public class NastaveniJsonService extends BaseService<NastaveniJsonEntity, Nasta
     public NastaveniJsonService(Logger logger, NastaveniJsonRepository nastaveniJsonRepository) {
         super(logger, nastaveniJsonRepository, NastaveniJsonEntity.class);
     }
-
-    @Override
-    protected void save(NastaveniJsonEntity entity) throws Exception {
-        repository.save(entity);
-    }
-
-    @Override
-    protected void delete(NastaveniJsonEntity entity) throws Exception {
-        repository.remove(entity);
-    }
 }

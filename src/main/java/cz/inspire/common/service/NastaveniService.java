@@ -15,14 +15,4 @@ public class NastaveniService extends BaseService<NastaveniEntity, NastaveniRepo
         super(logger, nastaveniRepository, NastaveniEntity.class);
     }
 
-    @Override
-    protected void save(NastaveniEntity entity) throws Exception {
-        repository.save(entity);
-    }
-
-    @Override
-    protected void delete(NastaveniEntity entity) throws Exception {
-        repository.remove(entity);
-    }
-
 }

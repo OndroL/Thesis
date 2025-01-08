@@ -16,16 +16,6 @@ public class MenaService extends BaseService<MenaEntity, MenaRepository> {
         super(logger, menaRepository, MenaEntity.class);
     }
 
-    @Override
-    protected void save(MenaEntity entity) throws Exception {
-        repository.save(entity);
-    }
-
-    @Override
-    protected void delete(MenaEntity entity) throws Exception {
-        repository.remove(entity);
-    }
-
     public List<MenaEntity> findAll() {
         return repository.findAll();
     }
