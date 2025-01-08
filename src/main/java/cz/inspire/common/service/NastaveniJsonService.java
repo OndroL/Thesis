@@ -2,53 +2,25 @@ package cz.inspire.common.service;
 
 import cz.inspire.common.entity.NastaveniJsonEntity;
 import cz.inspire.common.repository.NastaveniJsonRepository;
-import cz.inspire.exception.SystemException;
-import jakarta.ejb.CreateException;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
-import org.apache.deltaspike.jpa.api.transaction.Transactional;
 import org.apache.logging.log4j.Logger;
 
 @ApplicationScoped
-public class NastaveniJsonService {
-
-    private final Logger logger;
-    private final NastaveniJsonRepository nastaveniJsonRepository;
+public class NastaveniJsonService extends BaseService<NastaveniJsonEntity, NastaveniJsonRepository> {
 
     @Inject
     public NastaveniJsonService(Logger logger, NastaveniJsonRepository nastaveniJsonRepository) {
-        this.logger = logger;
-        this.nastaveniJsonRepository = nastaveniJsonRepository;
+        super(logger, nastaveniJsonRepository, NastaveniJsonEntity.class);
     }
 
-    @Transactional
-    public void create(NastaveniJsonEntity entity) throws CreateException {
-        try {
-            nastaveniJsonRepository.save(entity);
-
-        } catch (Exception e) {
-            logger.error("Failed to create NastaveniJsonEntity", e);
-            throw new CreateException();
-        }
+    @Override
+    protected void save(NastaveniJsonEntity entity) throws Exception {
+        repository.save(entity);
     }
 
-    @Transactional
-    public void update(NastaveniJsonEntity entity) throws SystemException {
-        try {
-            nastaveniJsonRepository.save(entity);
-        } catch (Exception e) {
-            logger.error("Failed to update NastaveniJsonEntity", e);
-            throw new SystemException("Failed to update NastaveniJsonEntity", e);
-        }
-    }
-
-    @Transactional
-    public void remove(NastaveniJsonEntity entity) throws SystemException {
-        try {
-            nastaveniJsonRepository.remove(entity);
-        } catch (Exception e) {
-            logger.error("Failed to remove NastaveniJsonEntity", e);
-            throw new SystemException("Failed to remove NastaveniJsonEntity", e);
-        }
+    @Override
+    protected void delete(NastaveniJsonEntity entity) throws Exception {
+        repository.remove(entity);
     }
 }

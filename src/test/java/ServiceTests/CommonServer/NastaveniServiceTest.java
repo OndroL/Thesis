@@ -35,9 +35,8 @@ public class NastaveniServiceTest {
     void testCreate_Success() throws CreateException {
         NastaveniEntity entity = new NastaveniEntity("key1", "value1");
 
-        String key = nastaveniService.create(entity);
+        nastaveniService.create(entity);
 
-        assertEquals("key1", key);
         verify(nastaveniRepository, times(1)).save(entity);
     }
 

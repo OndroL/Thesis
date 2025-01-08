@@ -2,59 +2,32 @@ package cz.inspire.common.service;
 
 import cz.inspire.common.entity.HeaderEntity;
 import cz.inspire.common.repository.HeaderRepository;
-import cz.inspire.exception.SystemException;
-import org.apache.deltaspike.jpa.api.transaction.Transactional;
 import org.apache.logging.log4j.Logger;
-import jakarta.ejb.CreateException;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 
 import java.util.List;
 
 @ApplicationScoped
-public class HeaderService {
-
-    private final Logger logger;
-    private final HeaderRepository headerRepository;
+public class HeaderService extends BaseService<HeaderEntity, HeaderRepository> {
 
     @Inject
-    public HeaderService(Logger logger, HeaderRepository headerRepository) {
-        this.logger = logger;
-        this.headerRepository = headerRepository;
+    public HeaderService(Logger logger, HeaderRepository repository) {
+        super(logger, repository, HeaderEntity.class);
     }
 
-    @Transactional
-    public void create(HeaderEntity entity) throws CreateException {
-        try {
-            headerRepository.save(entity);
-        } catch (Exception e) {
-            logger.error("Failed to create HeaderEntity", e);
-            throw new CreateException();
-        }
+    @Override
+    protected void save(HeaderEntity entity) throws Exception {
+        repository.save(entity);
     }
 
-    @Transactional
-    public void update(HeaderEntity entity) throws SystemException {
-        try {
-            headerRepository.save(entity);
-        } catch (Exception e) {
-            logger.error("Failed to update HeaderEntity", e);
-            throw new SystemException("Failed to update HeaderEntity", e);
-        }
-    }
-
-    @Transactional
-    public void remove(HeaderEntity entity) throws SystemException {
-        try {
-            headerRepository.remove(entity);
-        } catch (Exception e) {
-            logger.error("Failed to remove HeaderEntity", e);
-            throw new SystemException("Failed to remove HeaderEntity", e);
-        }
+    @Override
+    protected void delete(HeaderEntity entity) throws Exception {
+        repository.remove(entity);
     }
 
     public List<HeaderEntity> findValidAtributes()
     {
-        return headerRepository.findValidAtributes();
+        return repository.findValidAtributes();
     }
 }

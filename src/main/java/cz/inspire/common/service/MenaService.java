@@ -2,68 +2,40 @@ package cz.inspire.common.service;
 
 import cz.inspire.common.entity.MenaEntity;
 import cz.inspire.common.repository.MenaRepository;
-import cz.inspire.exception.SystemException;
-import jakarta.ejb.CreateException;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
-import jakarta.persistence.PersistenceException;
-import org.apache.deltaspike.jpa.api.transaction.Transactional;
 import org.apache.logging.log4j.Logger;
 
 import java.util.List;
 
 @ApplicationScoped
-public class MenaService {
-
-    private final MenaRepository menaRepository;
-    private final Logger logger;
+public class MenaService extends BaseService<MenaEntity, MenaRepository> {
 
     @Inject
     public MenaService(MenaRepository menaRepository, Logger logger) {
-        this.menaRepository = menaRepository;
-        this.logger = logger;
+        super(logger, menaRepository, MenaEntity.class);
     }
 
-    @Transactional
-    public void create(MenaEntity entity) throws CreateException, PersistenceException {
-        try {
-            menaRepository.save(entity);
-        } catch (Exception e) {
-            logger.error("Failed to create MenaEntity", e);
-            throw new CreateException();
-        }
+    @Override
+    protected void save(MenaEntity entity) throws Exception {
+        repository.save(entity);
     }
 
-    @Transactional
-    public void update(MenaEntity entity) throws SystemException {
-        try {
-            menaRepository.save(entity);
-        } catch (Exception e) {
-            logger.error("Failed to update MenaEntity", e);
-            throw new SystemException("Failed to update MenaEntity", e);
-        }
-    }
-
-    @Transactional
-    public void remove(MenaEntity entity) throws SystemException {
-        try {
-            menaRepository.remove(entity);
-        } catch (Exception e) {
-            logger.error("Failed to remove MenaEntity", e);
-            throw new SystemException("Failed to remove MenaEntity", e);
-        }
+    @Override
+    protected void delete(MenaEntity entity) throws Exception {
+        repository.remove(entity);
     }
 
     public List<MenaEntity> findAll() {
-        return menaRepository.findAll();
+        return repository.findAll();
     }
 
     public List<MenaEntity> findByCode(String code) {
-        return menaRepository.findByCode(code);
+        return repository.findByCode(code);
     }
 
     public List<MenaEntity> findByCodeNum(int codeNum) {
-        return menaRepository.findByCodeNum(codeNum);
+        return repository.findByCodeNum(codeNum);
     }
 
 }
