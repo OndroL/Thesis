@@ -1,0 +1,101 @@
+package cz.inspire.thesis.data.service.sport.objekt;
+
+import cz.inspire.thesis.data.dto.sport.objekt.OvladacObjektuDetails;
+import cz.inspire.thesis.data.model.sport.objekt.OvladacObjektuEntity;
+import cz.inspire.thesis.data.repository.sport.objekt.OvladacObjektuRepository;
+import cz.inspire.thesis.exceptions.ApplicationException;
+import cz.inspire.thesis.exceptions.CreateException;
+import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.inject.Inject;
+import org.apache.deltaspike.jpa.api.transaction.Transactional;
+
+import java.util.Collection;
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
+
+import static cz.inspire.thesis.data.utils.guidGenerator.generateGUID;
+
+@ApplicationScoped
+public class OvladacObjektuService {
+
+    @Inject
+    private OvladacObjektuRepository ovladacObjektuRepository;
+
+    @Transactional
+    public OvladacObjektuEntity create(OvladacObjektuDetails details) throws CreateException {
+        try {
+            OvladacObjektuEntity entity = new OvladacObjektuEntity();
+            if (details.getId() == null) {
+                details.setId(generateGUID(entity));
+            }
+            entity.setId(details.getId());
+            entity.setIdOvladace(details.getIdOvladace());
+            entity.setManual(details.getManual());
+            entity.setAutomat(details.getAutomat());
+            entity.setDelkaSepnutiPoKonci(details.getDelkaSepnutiPoKonci());
+            entity.setZapnutiPredZacatkem(details.getZapnutiPredZacatkem());
+            entity.setCislaZapojeni(encodeNumbersToString(details.getCislaZapojeniList()));
+            entity.setObjektId(details.getObjektId());
+
+            ovladacObjektuRepository.save(entity);
+
+            return entity;
+        } catch (Exception e) {
+            throw new CreateException("Failed to create OvladacObjektu entity", e);
+        }
+    }
+
+    @Transactional
+    public void remove(String id) throws ApplicationException {
+        try {
+            OvladacObjektuEntity entity = ovladacObjektuRepository.findOptionalBy(id)
+                    .orElseThrow(() -> new ApplicationException("OvladacObjektu entity not found with id : " + id));
+
+            ovladacObjektuRepository.remove(entity);
+        } catch (Exception e) {
+            throw new ApplicationException("Failed to remove OvladacObjektu entity", e);
+        }
+    }
+
+    @Transactional
+    public void save(OvladacObjektuEntity entity) throws ApplicationException {
+        try {
+            ovladacObjektuRepository.save(entity);
+
+        } catch (Exception e) {
+            throw  new ApplicationException("Failed to save OvladacObjektu entity");
+        }
+    }
+
+    public Collection<OvladacObjektuEntity> findWithOvladacObjektu(String idOvladace) {
+        return ovladacObjektuRepository.findWithOvladacObjektu(idOvladace);
+    }
+
+
+
+    public Collection<OvladacObjektuEntity> findByObjekt(String objektId) {
+        return ovladacObjektuRepository.findByObjekt(objektId);
+    }
+
+    public Collection<OvladacObjektuEntity> findAll() {
+        return ovladacObjektuRepository.findAll();
+    }
+
+    public Optional<OvladacObjektuEntity> findOptionalBy (String objektId) {
+        return ovladacObjektuRepository.findOptionalBy(objektId);
+    }
+
+    /** These functions are generated to mimic functionality of
+     * OvladacObjektuBaseUtil.encodeNumbersToString()
+     */
+    private String encodeNumbersToString(List<Integer> numbers) {
+        if (numbers == null) return null;
+        return numbers.stream().map(String::valueOf).collect(Collectors.joining(","));
+    }
+
+    private List<Integer> decodeNumbersFromString(String numbers) {
+        if (numbers == null || numbers.isEmpty()) return List.of();
+        return List.of(numbers.split(",")).stream().map(Integer::valueOf).collect(Collectors.toList());
+    }
+}

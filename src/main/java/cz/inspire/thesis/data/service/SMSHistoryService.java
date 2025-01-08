@@ -3,6 +3,7 @@ package cz.inspire.thesis.data.service;
 import cz.inspire.thesis.data.dto.SMSHistoryDetails;
 import cz.inspire.thesis.data.model.SMSHistoryEntity;
 import cz.inspire.thesis.data.repository.SMSHistoryRepository;
+import cz.inspire.thesis.data.utils.CollectionsHelper;
 import cz.inspire.thesis.exceptions.CreateException;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
@@ -77,10 +78,7 @@ public class SMSHistoryService {
      */
 
     private byte[] serializeCollection(List<String> collection) {
-        if (collection == null || collection.isEmpty()) {
-            return null;
-        }
-        return String.join(",", collection).getBytes();
+        return CollectionsHelper.serializeCollection(collection);
     }
 
     private List<String> deserializeCollection(byte[] data) {
