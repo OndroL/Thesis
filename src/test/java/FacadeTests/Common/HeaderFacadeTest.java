@@ -1,4 +1,4 @@
-package FacadeTests.CommonServer;
+package FacadeTests.Common;
 
 import cz.inspire.common.dto.HeaderDto;
 import cz.inspire.common.facade.HeaderFacade;

@@ -1,8 +1,8 @@
-package RepositoryTests.CommonServer;
+package RepositoryTests.Common;
 
 import cz.inspire.common.entity.NastaveniEntity;
 import cz.inspire.common.repository.NastaveniRepository;
-import cz.inspire.thesis.data.EntityManagerProducer;
+import cz.inspire.EntityManagerProducer;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
 import jakarta.persistence.Persistence;

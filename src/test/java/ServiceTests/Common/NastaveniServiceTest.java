@@ -1,4 +1,4 @@
-package ServiceTests.CommonServer;
+package ServiceTests.Common;
 
 import cz.inspire.common.entity.NastaveniEntity;
 import cz.inspire.common.repository.NastaveniRepository;
