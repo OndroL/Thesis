@@ -1,4 +1,4 @@
-package cz.inspire.thesis.data;
+package cz.inspire;
 
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.enterprise.inject.Disposes;

@@ -1,4 +1,4 @@
-package cz.inspire.thesis;
+package cz.inspire;
 
 import jakarta.enterprise.inject.se.SeContainer;
 import jakarta.enterprise.inject.se.SeContainerInitializer;
