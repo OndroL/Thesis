@@ -1,6 +1,5 @@
 package cz.inspire.sequence.facade;
 
-import cz.inspire.common.mapper.MenaMapper;
 import cz.inspire.exception.SystemException;
 import cz.inspire.sequence.dto.SequenceDto;
 import cz.inspire.sequence.entity.SequenceEntity;
@@ -49,7 +48,7 @@ public class SequenceFacade {
     }
 
     /**
-     * Here is point for discussion on naming the function name to keep it as toEntity to be more constistent
+     * Here is point for discussion on naming the function name to keep it as toEntity to be more consistent
      * with naming scheme with other facades
      * Or name it toEntityWithRelationships to better describe it purpose, as it's probably never called from controller
      * and only in facade
@@ -58,11 +57,13 @@ public class SequenceFacade {
         SequenceEntity entity = sequenceMapper.toEntity(dto);
 
         try {
-            Optional<SequenceEntity> stornoSeqOpt = sequenceService.findById(dto.getStornoSeqName());
-            if (stornoSeqOpt.isPresent()) {
-                entity.setStornoSeq(stornoSeqOpt.get());
-            } else {
-                logger.error("Cannot find storno sequence with name: {}", dto.getStornoSeqName());
+            if (dto.getStornoSeqName() != null){
+                Optional<SequenceEntity> stornoSeqOpt = sequenceService.findById(dto.getStornoSeqName());
+                if (stornoSeqOpt.isPresent()) {
+                    entity.setStornoSeq(stornoSeqOpt.get());
+                } else {
+                    logger.error("Cannot find storno sequence with name: {}", dto.getStornoSeqName());
+                }
             }
         } catch (Exception ex) {
             logger.error("Error occurred while looking up storno sequence: {}", dto.getStornoSeqName(), ex);

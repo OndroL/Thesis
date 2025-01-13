@@ -4,7 +4,6 @@ import cz.inspire.sequence.dto.SequenceDto;
 import cz.inspire.sequence.entity.SequenceEntity;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
-import org.mapstruct.Named;
 
 @Mapper(componentModel = "cdi")
 public interface SequenceMapper {
