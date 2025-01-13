@@ -7,6 +7,10 @@
     <!-- Specify Hibernate as the JPA provider -->
     <provider>org.hibernate.jpa.HibernatePersistenceProvider</provider>
 
+    <!-- Entity Classes -->
+    <class>cz.inspire.common.entity.HeaderEntity</class>
+    <!-- Add other entities if applicable -->
+
     <properties>
       <!-- JDBC Connection Configuration -->
       <property name="jakarta.persistence.jdbc.driver" value="org.postgresql.Driver"/>

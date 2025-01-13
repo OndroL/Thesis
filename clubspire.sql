@@ -2991,9 +2991,9 @@ CREATE TABLE public.sms_history (
     id text NOT NULL,
     date timestamp without time zone,
     message text,
-    groups bytea,
-    recipients bytea,
-    morerecipients bytea,
+    groups json,
+    recipients json,
+    morerecipients json,
     automatic boolean
 );
 
