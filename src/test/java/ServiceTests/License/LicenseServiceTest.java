@@ -13,9 +13,8 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
 import java.util.Arrays;
-import java.util.Collection;
-import java.util.Date;
 import java.util.List;
+import java.util.Date;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
@@ -75,7 +74,7 @@ public class LicenseServiceTest {
 
         when(licenseRepository.findAll()).thenReturn(entities);
 
-        Collection<LicenseEntity> result = licenseService.findAll();
+        List<LicenseEntity> result = licenseService.findAll();
 
         assertNotNull(result);
         assertEquals(2, result.size());

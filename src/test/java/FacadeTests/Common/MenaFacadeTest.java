@@ -13,7 +13,6 @@ import org.mockito.MockitoAnnotations;
 
 import java.math.BigDecimal;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -67,7 +66,7 @@ public class MenaFacadeTest {
         when(menaMapper.toDto(entities.get(0))).thenReturn(dtos.get(0));
         when(menaMapper.toDto(entities.get(1))).thenReturn(dtos.get(1));
 
-        Collection<MenaDto> result = menaFacade.findByCode(code);
+        List<MenaDto> result = menaFacade.findByCode(code);
 
         assertNotNull(result);
         assertEquals(2, result.size());
@@ -93,7 +92,7 @@ public class MenaFacadeTest {
         when(menaMapper.toDto(entities.get(0))).thenReturn(dtos.get(0));
         when(menaMapper.toDto(entities.get(1))).thenReturn(dtos.get(1));
 
-        Collection<MenaDto> result = menaFacade.findByCodeNum(codeNum);
+        List<MenaDto> result = menaFacade.findByCodeNum(codeNum);
 
         assertNotNull(result);
         assertEquals(2, result.size());
@@ -118,7 +117,7 @@ public class MenaFacadeTest {
         when(menaMapper.toDto(entities.get(0))).thenReturn(dtos.get(0));
         when(menaMapper.toDto(entities.get(1))).thenReturn(dtos.get(1));
 
-        Collection<MenaDto> result = menaFacade.findAll();
+        List<MenaDto> result = menaFacade.findAll();
 
         assertNotNull(result);
         assertEquals(2, result.size());

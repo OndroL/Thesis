@@ -7,7 +7,7 @@ import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import org.apache.logging.log4j.Logger;
 
-import java.util.Collection;
+import java.util.List;
 
 @ApplicationScoped
 public class LicenseService extends BaseService<LicenseEntity, LicenseRepository> {
@@ -16,5 +16,5 @@ public class LicenseService extends BaseService<LicenseEntity, LicenseRepository
         super(logger, repository, LicenseEntity.class);
     }
 
-    public Collection<LicenseEntity> findAll() {return repository.findAll();}
+    public List<LicenseEntity> findAll() {return repository.findAll();}
 }

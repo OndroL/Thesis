@@ -13,7 +13,6 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -89,7 +88,7 @@ public class HeaderFacadeTest {
         when(headerMapper.toDto(entities.get(0))).thenReturn(dtos.get(0));
         when(headerMapper.toDto(entities.get(1))).thenReturn(dtos.get(1));
 
-        Collection<HeaderDto> result = headerFacade.findValidAtributes();
+        List<HeaderDto> result = headerFacade.findValidAtributes();
 
         assertNotNull(result);
         assertEquals(2, result.size());

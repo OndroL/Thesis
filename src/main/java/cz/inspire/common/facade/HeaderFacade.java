@@ -7,7 +7,7 @@ import jakarta.ejb.CreateException;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 
-import java.util.Collection;
+import java.util.List;
 
 @ApplicationScoped
 public class HeaderFacade {
@@ -28,7 +28,7 @@ public class HeaderFacade {
     }
 
     // Typo (missing 't' in Attributes) in old bean signature="java.util.Collection findValidAtributes()"
-    public Collection<HeaderDto> findValidAtributes() {
+    public List<HeaderDto> findValidAtributes() {
         return headerService.findValidAttributes().stream().map(headerMapper::toDto).toList();
     }
 
