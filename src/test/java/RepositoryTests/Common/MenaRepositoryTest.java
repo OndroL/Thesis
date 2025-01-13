@@ -50,7 +50,7 @@ public class MenaRepositoryTest {
         assertNotNull("MenaRepository should be initialized!", menaRepository);
 
         // Test saving a Mena entity
-        MenaEntity menaEntity = new MenaEntity("1", "USD", "Dollar", 840, 5, 2);
+        MenaEntity menaEntity = new MenaEntity("3", "USD", "Dollar", 840, 5, 2);
         menaRepository.save(menaEntity);
 
         // Test finding the Mena entity by code
@@ -65,7 +65,7 @@ public class MenaRepositoryTest {
         assertNotNull("MenaRepository should be initialized!", menaRepository);
 
         // Test saving a Mena entity
-        MenaEntity menaEntity = new MenaEntity("1", "USD", "Dollar", 840, 5, 2);
+        MenaEntity menaEntity = new MenaEntity("4", "USD", "Dollar", 840, 5, 2);
         menaRepository.save(menaEntity);
 
         // Test finding the Mena entity by codeNum

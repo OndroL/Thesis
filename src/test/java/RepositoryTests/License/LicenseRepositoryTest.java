@@ -69,7 +69,7 @@ public class LicenseRepositoryTest {
     @Test
     public void testSaveMultipleAndFindAll() {
         LicenseEntity license1 = new LicenseEntity(
-                "1", "Customer1", true, true,
+                "3", "Customer3", true, true,
                 new Date(), true, new Date(), true,
                 10, 5, 50, 20, 10,
                 5, 12, 15, true, 12345L, "hash123",
