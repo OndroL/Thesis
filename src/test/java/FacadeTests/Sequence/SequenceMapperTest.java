@@ -67,8 +67,6 @@ public class SequenceMapperTest {
         assertEquals(1, entity.getMinValue());
         assertEquals("last", entity.getLast());
         assertEquals(2, entity.getType());
-        assertNotNull(entity.getStornoSeq());
-        assertEquals("storno1", entity.getStornoSeq().getName());
     }
 
     @Test

@@ -5,6 +5,7 @@ import cz.inspire.sequence.dto.SequenceDto;
 import cz.inspire.sequence.entity.SequenceEntity;
 import cz.inspire.sequence.facade.SequenceFacade;
 import cz.inspire.sequence.repository.SequenceRepository;
+import jakarta.ejb.CreateException;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
 import jakarta.persistence.Persistence;
@@ -62,10 +63,8 @@ public class SequenceStornoFacadeTest {
         assertTrue("Storno sequence should exist", stornoCheck.isPresent());
 
         // Begin a new transaction for facade
-        em.getTransaction().begin();
         SequenceDto dto = new SequenceDto("111111", "pattern", 1, "last", 2, "stornoSeq1");
-        String generatedName = sequenceFacade.create(dto);
-        em.getTransaction().commit();
+        sequenceFacade.create(dto);
 
         // Verify the saved main sequence
         Optional<SequenceEntity> savedEntityOpt = sequenceRepository.findById("111111");
@@ -92,5 +91,19 @@ public class SequenceStornoFacadeTest {
         SequenceEntity savedEntity = savedEntityOpt.get();
         assertEquals("pattern", savedEntity.getPattern());
         assertNull(savedEntity.getStornoSeq());
+    }
+
+    @Test
+    public void testTransactionPropagation() throws CreateException {
+        EntityManager em = BeanProvider.getContextualReference(EntityManager.class);
+        em.getTransaction().begin();
+
+        SequenceDto dto = new SequenceDto("testSeq", "pattern", 1, "last", 2, null);
+        sequenceFacade.create(dto);
+
+        em.getTransaction().commit();
+
+        Optional<SequenceEntity> savedEntity = sequenceRepository.findById("testSeq");
+        assertTrue("Entity should be saved via Facade", savedEntity.isPresent());
     }
 }
