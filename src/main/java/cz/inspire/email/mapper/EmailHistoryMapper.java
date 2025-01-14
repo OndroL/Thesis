@@ -4,8 +4,9 @@ import cz.inspire.email.dto.EmailHistoryDto;
 import cz.inspire.email.entity.EmailHistoryEntity;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
+import org.mapstruct.MappingConstants;
 
-@Mapper(componentModel = "cdi")
+@Mapper(componentModel = MappingConstants.ComponentModel.JAKARTA_CDI)
 public interface EmailHistoryMapper {
 
     // Map from DTO to Entity

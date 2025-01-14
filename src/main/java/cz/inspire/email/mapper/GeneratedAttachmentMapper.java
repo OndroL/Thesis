@@ -4,8 +4,9 @@ import cz.inspire.email.dto.GeneratedAttachmentDto;
 import cz.inspire.email.entity.GeneratedAttachmentEntity;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
+import org.mapstruct.MappingConstants;
 
-@Mapper(componentModel = "cdi")
+@Mapper(componentModel = MappingConstants.ComponentModel.JAKARTA_CDI)
 public interface GeneratedAttachmentMapper {
 
     // Map DTO to Entity
