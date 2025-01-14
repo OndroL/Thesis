@@ -9,10 +9,12 @@ import org.mapstruct.Mapping;
 public interface EmailHistoryMapper {
 
     // Map from DTO to Entity
-    @Mapping(target = "attachments", source = "attachments", ignore = true) // attachments might need custom handling
+    @Mapping(target = "attachments", source = "attachments", ignore = true)
+    @Mapping(target = "generatedAttachments", source = "generatedAttachments", ignore = true)
     EmailHistoryEntity toEntity(EmailHistoryDto dto);
 
     // Map from Entity to DTO
-    @Mapping(target = "attachments", source = "attachments") // Map attachments directly
+    @Mapping(target = "attachments", source = "attachments", ignore = true)
+    @Mapping(target = "generatedAttachments", source = "generatedAttachments")
     EmailHistoryDto toDto(EmailHistoryEntity entity);
 }

@@ -43,8 +43,8 @@ public class EmailHistoryEntity {
     @JdbcTypeCode(SqlTypes.JSON)
     @Column(columnDefinition = "json")
     private List<String> recipients;
-    @JdbcTypeCode(SqlTypes.JSON)
 
+    @JdbcTypeCode(SqlTypes.JSON)
     @Column(columnDefinition = "json")
     private List<String> moreRecipients;
 

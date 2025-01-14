@@ -16,7 +16,7 @@ import lombok.Setter;
 import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.type.SqlTypes;
 
-import java.util.List;
+import java.util.Map;
 
 @AllArgsConstructor
 @Setter
@@ -33,10 +33,10 @@ public class GeneratedAttachmentEntity {
 
     @JdbcTypeCode(SqlTypes.JSON)
     @Column(columnDefinition = "json")
-    private List<String> attributes;
+    private Map<String, Object> attributes;
 
     @ManyToOne(cascade = CascadeType.REMOVE, fetch = FetchType.LAZY)
-    @JoinColumn(name = "email_history", referencedColumnName = "id", nullable = false)
+    @JoinColumn(name = "email_history", referencedColumnName = "id")
     private EmailHistoryEntity emailHistory;
 
     @ManyToOne

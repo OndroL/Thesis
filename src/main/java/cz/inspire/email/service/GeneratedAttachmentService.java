@@ -1,6 +1,5 @@
 package cz.inspire.email.service;
 
-
 import cz.inspire.common.service.BaseService;
 import cz.inspire.email.entity.GeneratedAttachmentEntity;
 import cz.inspire.email.repository.GeneratedAttachmentRepository;

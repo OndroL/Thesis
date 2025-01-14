@@ -22,7 +22,8 @@ public class EmailHistoryDto {
     private List<String> groups;
     private List<String> recipients;
     private List<String> moreRecipients;
-    private List<String> attachments;
+    // These are files
+    private List<byte[]> attachments;
     private Boolean automatic;
     private Boolean html;
     private Boolean sent;

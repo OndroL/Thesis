@@ -9,12 +9,12 @@ import org.mapstruct.Mapping;
 public interface GeneratedAttachmentMapper {
 
     // Map DTO to Entity
-    @Mapping(target = "emailHistory", ignore = true) // Handle emailHistory manually if needed
-    @Mapping(target = "printTemplate", ignore = true) // Handle printTemplate manually if needed
+    @Mapping(target = "emailHistory", ignore = true)
+    @Mapping(target = "printTemplate", ignore = true)
     GeneratedAttachmentEntity toEntity(GeneratedAttachmentDto dto);
 
     // Map Entity to DTO
-    @Mapping(target = "emailHistoryId", source = "emailHistory.id") // Map EmailHistoryEntity to emailHistoryId
-    @Mapping(target = "printTemplateId", source = "printTemplate.id") // Map PrintTemplateEntity to printTemplateId
+    @Mapping(target = "emailHistoryId", source = "emailHistory.id")
+    @Mapping(target = "printTemplateId", source = "printTemplate.id")
     GeneratedAttachmentDto toDto(GeneratedAttachmentEntity entity);
 }
