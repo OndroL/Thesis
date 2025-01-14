@@ -55,10 +55,12 @@ public class EmailHistoryFacade {
                     String filePath = emailHistoryService.saveFileToFileSystem(fileData, dto.getId());
                     filePaths.append(filePath).append(","); // Concatenate file paths
                 }
+                // Remove trailing comma
+                if (!filePaths.isEmpty()) {
+                    filePaths.setLength(filePaths.length() - 1);
+                }
                 entity.setAttachments(filePaths.toString()); // Set FilePaths to Entity
             }
-
-
             emailHistoryService.create(entity);
 
             //PostCreate logic

@@ -37,6 +37,10 @@ public class EmailHistoryService extends BaseService<EmailHistoryEntity, EmailHi
         return filePath; // Return the path to store in the database
     }
 
+    // Brainstorm naming pattern for vouchers, because with this implementation which is identical
+    // to controller implementation, problem with same names for 2 different voucher can occur.
+    // E.g. two vouchers created in same day for same EmailHistory will be stored in FileSystem
+    // with same name and second one will rewrite first one!
     public static String generateFileName() {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("d-M-yyyy");
         String datePart = LocalDate.now().format(formatter);

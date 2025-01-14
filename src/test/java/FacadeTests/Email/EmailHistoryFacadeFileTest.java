@@ -14,7 +14,9 @@ import org.apache.deltaspike.core.api.provider.BeanProvider;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.io.IOException;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Date;
@@ -23,7 +25,7 @@ import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-public class EmailHistoryFacadeTest {
+public class EmailHistoryFacadeFileTest {
 
     private EmailHistoryFacade emailHistoryFacade;
 
@@ -55,7 +57,12 @@ public class EmailHistoryFacadeTest {
     }
 
     @Test
-    public void testCreateEmailHistory() throws Exception {
+    public void testCreateEmailHistoryWithFile() throws Exception {
+
+        Path testDir = Paths.get("FILE_SYSTEM/Email_History/test-id");
+        deleteDirectoryRecursively(testDir);
+
+
         // Create DTO
         EmailHistoryDto dto = new EmailHistoryDto();
         dto.setId("test-id");
@@ -98,4 +105,78 @@ public class EmailHistoryFacadeTest {
         assertEquals("gen-attach-id", entity.getGeneratedAttachments().get(0).getId());
     }
 
+
+    @Test
+    public void testCreateEmailHistoryWithRealFile() throws Exception {
+        // File path for the real file
+        String filePath = "FILE_SYSTEM/file-example_PDF_1MB.pdf";
+        Path testDir = Paths.get("FILE_SYSTEM/Email_History/test-id-single-file");
+        deleteDirectoryRecursively(testDir);
+
+        // Ensure the file exists before the test
+        assertTrue(Files.exists(Paths.get(filePath)), "File does not exist: " + filePath);
+
+        // Convert the file to a byte array
+        byte[] fileContent = Files.readAllBytes(Paths.get(filePath));
+
+        // Create DTO
+        EmailHistoryDto dto = new EmailHistoryDto();
+        dto.setId("test-id-single-file");
+        dto.setDate(new Date());
+        dto.setText("Email with a single file");
+        dto.setSubject("Single File Test");
+        dto.setGroups(List.of("group1", "group2"));
+        dto.setRecipients(List.of("recipient1@example.com"));
+        dto.setMoreRecipients(List.of("more1@example.com"));
+        dto.setAutomatic(true);
+        dto.setHtml(true);
+        dto.setSent(true);
+        dto.setAttachments(List.of(fileContent)); // Attach the single file
+
+        // Create entity using the facade
+        String createdId = emailHistoryFacade.create(dto);
+
+        // Verify the entity in the database
+        EmailHistoryEntity entity = entityManager.find(EmailHistoryEntity.class, createdId);
+        assertNotNull(entity, "Entity should not be null");
+        assertEquals("Email with a single file", entity.getText());
+        assertEquals("Single File Test", entity.getSubject());
+
+        // Verify the stored file
+        String storedFilePath = entity.getAttachments().trim();
+        System.out.println("Stored path from entity: [" + storedFilePath + "]");
+        Path normalizedStoredPath = Paths.get(storedFilePath).toAbsolutePath().normalize();
+        System.out.println("Normalized stored path: [" + normalizedStoredPath + "]");
+
+        assertTrue(Files.exists(normalizedStoredPath), "Stored file does not exist: " + normalizedStoredPath);
+
+        // Validate the stored file content
+        byte[] storedFileContent = Files.readAllBytes(normalizedStoredPath);
+        assertArrayEquals(fileContent, storedFileContent, "File content mismatch for: " + normalizedStoredPath);
+
+        // Verify file reconstruction in DTO
+        EmailHistoryDto retrievedDto = emailHistoryFacade.findById(createdId).orElseThrow();
+        assertNotNull(retrievedDto.getAttachments(), "Attachments in DTO should not be null");
+        assertEquals(1, retrievedDto.getAttachments().size(), "Number of reconstructed files mismatch");
+        assertArrayEquals(fileContent, retrievedDto.getAttachments().getFirst(), "Reconstructed file content mismatch");
+    }
+
+
+    private void deleteDirectoryRecursively(Path directory) {
+        if (Files.exists(directory)) {
+            try {
+                Files.walk(directory)
+                        .sorted((a, b) -> b.compareTo(a)) // Delete children before parent
+                        .forEach(path -> {
+                            try {
+                                Files.delete(path);
+                            } catch (IOException e) {
+                                System.err.println("Failed to delete: " + path);
+                            }
+                        });
+            } catch (IOException e) {
+                System.err.println("Failed to clear test directory: " + directory);
+            }
+        }
+    }
 }
