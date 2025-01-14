@@ -1,14 +1,15 @@
 package cz.inspire.email.dto;
 
-import cz.inspire.email.entity.GeneratedAttachmentEntity;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.EqualsAndHashCode;
 
 import java.util.Date;
 import java.util.List;
 
+@EqualsAndHashCode
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
@@ -25,10 +26,5 @@ public class EmailHistoryDto {
     private Boolean automatic;
     private Boolean html;
     private Boolean sent;
-
-    /**
-     * This is added to mimic the implementation of postCreate in EmailHistoryService
-     * for adding Attachment to emails in DB
-     */
     private List<GeneratedAttachmentDto> generatedAttachments;
 }

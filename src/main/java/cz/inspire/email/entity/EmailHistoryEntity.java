@@ -6,22 +6,15 @@ import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.FetchType;
-import jakarta.persistence.CascadeType;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.hibernate.annotations.JdbcTypeCode;
-import org.hibernate.proxy.HibernateProxy;
 import org.hibernate.type.SqlTypes;
 
 import java.util.Date;
 import java.util.List;
-import java.util.Objects;
-
-/**
- * TODO : Add Equals ! ! !
- */
 
 
 @AllArgsConstructor
@@ -67,23 +60,6 @@ public class EmailHistoryEntity {
     @Column
     private Boolean sent;
 
-    @OneToMany(mappedBy = "emailHistory", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "emailHistory", fetch = FetchType.LAZY)
     private List<GeneratedAttachmentEntity> generatedAttachments;
-
-    @Override
-    public final boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null) return false;
-        Class<?> oEffectiveClass = o instanceof HibernateProxy ? ((HibernateProxy) o).getHibernateLazyInitializer().getPersistentClass() : o.getClass();
-        Class<?> thisEffectiveClass = this instanceof HibernateProxy ? ((HibernateProxy) this).getHibernateLazyInitializer().getPersistentClass() : this.getClass();
-        if (thisEffectiveClass != oEffectiveClass) return false;
-        EmailHistoryEntity obj = (EmailHistoryEntity) o;
-        return getId() != null && Objects.equals(getId(), obj.getId());
-    }
-
-    @Override
-    public final int hashCode() {
-        return this instanceof HibernateProxy ? ((HibernateProxy) this).getHibernateLazyInitializer().getPersistentClass().hashCode() : getClass().hashCode();
-    }
-
 }
