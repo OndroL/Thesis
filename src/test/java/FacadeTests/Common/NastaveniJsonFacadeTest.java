@@ -8,6 +8,7 @@ import cz.inspire.common.service.NastaveniJsonService;
 import jakarta.ejb.CreateException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
@@ -36,10 +37,20 @@ public class NastaveniJsonFacadeTest {
         String key = "testKey";
         String value = "testValue";
 
+        // Call the method
         String result = nastaveniJsonFacade.create(key, value);
 
+        // Verify the method returns null
         assertNull(result);
-        verify(nastaveniJsonService, times(1)).create(new NastaveniJsonEntity(key, value));
+
+        // Capture the argument passed to the service
+        ArgumentCaptor<NastaveniJsonEntity> captor = ArgumentCaptor.forClass(NastaveniJsonEntity.class);
+        verify(nastaveniJsonService, times(1)).create(captor.capture());
+
+        // Assert the captured entity has the correct properties
+        NastaveniJsonEntity capturedEntity = captor.getValue();
+        assertEquals(key, capturedEntity.getKey());
+        assertEquals(value, capturedEntity.getValue());
     }
 
     @Test

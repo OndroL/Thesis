@@ -36,11 +36,13 @@ public class NastaveniFacadeTest {
         String key = "testKey";
         String value = "testValue";
 
-        NastaveniEntity entity = new NastaveniEntity(key, value);
-
+        // Call the method
         nastaveniFacade.create(key, value);
 
-        verify(nastaveniService, times(1)).create(entity);
+        // Use argThat to match the argument by properties
+        verify(nastaveniService, times(1)).create(argThat(entity ->
+                entity.getKey().equals(key) && entity.getValue().equals(value)
+        ));
     }
 
     @Test
@@ -48,11 +50,15 @@ public class NastaveniFacadeTest {
         String key = "testKey";
         String value = "testValue";
 
-        NastaveniEntity entity = new NastaveniEntity(key, value);
-        doThrow(RuntimeException.class).when(nastaveniService).create(entity);
+        doThrow(RuntimeException.class).when(nastaveniService).create(argThat(entity ->
+                entity.getKey().equals(key) && entity.getValue().equals(value)
+        ));
 
         assertThrows(CreateException.class, () -> nastaveniFacade.create(key, value));
-        verify(nastaveniService, times(1)).create(entity);
+
+        verify(nastaveniService, times(1)).create(argThat(entity ->
+                entity.getKey().equals(key) && entity.getValue().equals(value)
+        ));
     }
 
     @Test
