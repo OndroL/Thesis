@@ -8,7 +8,6 @@ import cz.inspire.sms.utils.SMSHistoryUtil;
 import jakarta.ejb.CreateException;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
-import org.apache.deltaspike.jpa.api.transaction.Transactional;
 
 import java.util.Date;
 import java.util.List;
@@ -20,7 +19,6 @@ public class SMSHistoryFacade {
     @Inject
     private SMSHistoryMapper smsHistoryMapper;
 
-    @Transactional
     public String create(SMSHistoryDto dto) throws CreateException {
         try {
             if (dto.getId() == null) {
@@ -36,7 +34,7 @@ public class SMSHistoryFacade {
         }
     }
 
-    public SMSHistoryDto toDto(SMSHistoryEntity entity) { return smsHistoryMapper.toDto(entity); }
+    public SMSHistoryDto mapToDto(SMSHistoryEntity entity) { return smsHistoryMapper.toDto(entity); }
 
     public List<SMSHistoryEntity> findByDate(Date dateFrom, Date dateTo) { return smsHistoryService.findByDate(dateFrom, dateTo); }
 
