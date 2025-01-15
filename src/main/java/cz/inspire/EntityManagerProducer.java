@@ -7,7 +7,6 @@ import jakarta.persistence.EntityManagerFactory;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceUnit;
 
-
 @ApplicationScoped
 public class EntityManagerProducer {
 
@@ -15,6 +14,7 @@ public class EntityManagerProducer {
     private EntityManagerFactory emf;
 
     @Produces
+    @ApplicationScoped
     public EntityManager createEntityManager() {
         if (emf == null) {
             throw new IllegalStateException("EntityManagerFactory is not initialized!");
@@ -24,7 +24,11 @@ public class EntityManagerProducer {
 
     public void close(@Disposes EntityManager em) {
         if (em.isOpen()) {
-            em.close();
+            try {
+                em.close();
+            } catch (Exception e) {
+                System.err.println("Error while closing EntityManager: " + e.getMessage());
+            }
         }
     }
 
