@@ -18,6 +18,6 @@ public class HeaderService extends BaseService<HeaderEntity, HeaderRepository> {
 
     public List<HeaderEntity> findValidAttributes()
     {
-        return repository.findValidAtributes();
+        return repository.findValidAttributes();
     }
 }

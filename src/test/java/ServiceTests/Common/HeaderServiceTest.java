@@ -99,13 +99,13 @@ public class HeaderServiceTest {
                 new HeaderEntity("1", 42, 7),
                 new HeaderEntity("2", 24, 9)
         );
-        when(headerRepository.findValidAtributes()).thenReturn(expectedList);
+        when(headerRepository.findValidAttributes()).thenReturn(expectedList);
 
         List<HeaderEntity> result = headerService.findValidAttributes();
 
         assertNotNull(result);
         assertEquals(2, result.size());
         assertEquals("1", result.getFirst().getId());
-        verify(headerRepository, times(1)).findValidAtributes();
+        verify(headerRepository, times(1)).findValidAttributes();
     }
 }
