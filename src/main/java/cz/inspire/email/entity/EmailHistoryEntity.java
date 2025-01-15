@@ -15,6 +15,7 @@ import org.hibernate.type.SqlTypes;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 
 @AllArgsConstructor
@@ -54,8 +55,9 @@ public class EmailHistoryEntity {
     @Column
     private Boolean html;
 
-    @Column
-    private String attachments;
+    @JdbcTypeCode(SqlTypes.JSON)
+    @Column(columnDefinition = "jsonb")
+    private List<Map<String, String>> attachments;
 
     @Column
     private Boolean sent;
