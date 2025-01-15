@@ -107,7 +107,7 @@ public class SMSHistoryFacadeTest {
     }
 
     @Test
-    void testToDto() {
+    void testMapToDto() {
         SMSHistoryEntity entity = new SMSHistoryEntity(
                 "1", new Date(), "Test Message",
                 Arrays.asList("Group1", "Group2"),
@@ -126,7 +126,7 @@ public class SMSHistoryFacadeTest {
 
         when(smsHistoryMapper.toDto(entity)).thenReturn(dto);
 
-        SMSHistoryDto result = smsHistoryFacade.toDto(entity);
+        SMSHistoryDto result = smsHistoryFacade.mapToDto(entity);
 
         assertNotNull(result);
         assertEquals(entity.getId(), result.getId());

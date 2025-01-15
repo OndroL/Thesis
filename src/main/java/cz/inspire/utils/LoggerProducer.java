@@ -1,4 +1,4 @@
-package cz.inspire.ulits;
+package cz.inspire.utils;
 
 import jakarta.enterprise.inject.Produces;
 import jakarta.enterprise.inject.spi.InjectionPoint;

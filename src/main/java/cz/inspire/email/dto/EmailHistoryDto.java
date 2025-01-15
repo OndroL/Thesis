@@ -1,4 +1,4 @@
-package cz.inspire.sms.dto;
+package cz.inspire.email.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -10,16 +10,22 @@ import java.util.Date;
 import java.util.List;
 
 @EqualsAndHashCode
+@NoArgsConstructor
+@AllArgsConstructor
 @Getter
 @Setter
-@AllArgsConstructor
-@NoArgsConstructor
-public class SMSHistoryDto {
+public class EmailHistoryDto {
     private String id;
     private Date date;
-    private String message;
+    private String text;
+    private String subject;
     private List<String> groups;
     private List<String> recipients;
     private List<String> moreRecipients;
+    // These are files
+    private List<byte[]> attachments;
     private Boolean automatic;
+    private Boolean html;
+    private Boolean sent;
+    private List<GeneratedAttachmentDto> generatedAttachments;
 }

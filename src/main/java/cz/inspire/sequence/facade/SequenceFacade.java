@@ -9,11 +9,15 @@ import cz.inspire.sequence.utils.SequenceUtil;
 import jakarta.ejb.CreateException;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
-import org.apache.deltaspike.jpa.api.transaction.Transactional;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.util.Optional;
+
+
+/**
+ * TODO : Add missing business functionality - will be done with PokladnaBean
+ */
 
 
 @ApplicationScoped
@@ -26,7 +30,6 @@ public class SequenceFacade {
 
     Logger logger = LogManager.getLogger(SequenceFacade.class);
 
-    @Transactional
     public String create(SequenceDto dto) throws CreateException {
         try {
             if (dto.getName() == null) {
@@ -42,7 +45,7 @@ public class SequenceFacade {
         }
     }
 
-    public SequenceDto toDto(SequenceEntity entity) {
+    public SequenceDto mapToDto(SequenceEntity entity) {
         return sequenceMapper.toDto(entity);
     }
 
@@ -70,7 +73,6 @@ public class SequenceFacade {
         return entity;
     }
 
-    @Transactional
     public void update(SequenceDto dto) throws SystemException {
         SequenceEntity entity = toEntityWithRelationships(dto);
         logger.debug("setDetails - setting last: {}", dto.getLast());

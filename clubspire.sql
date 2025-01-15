@@ -762,12 +762,12 @@ CREATE TABLE public.email_history (
     date timestamp without time zone,
     text text,
     subject text,
-    groups bytea,
-    recipients bytea,
-    morerecipients bytea,
+    groups json,
+    recipients json,
+    morerecipients json,
     automatic boolean,
     html boolean,
-    attachments bytea,
+    attachments text,
     sent boolean DEFAULT true
 );
 
@@ -976,7 +976,7 @@ ALTER TABLE public.fakturacni_subjekt OWNER TO postgres;
 CREATE TABLE public.generated_attachment (
     id text NOT NULL,
     email text,
-    attributes bytea,
+    attributes json,
     email_history text,
     print_template text
 );

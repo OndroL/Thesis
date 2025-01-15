@@ -128,7 +128,7 @@ public class MenaServiceTest {
 
         assertNotNull(result);
         assertEquals(1, result.size());
-        assertEquals(840, result.getFirst().getKodnum());
+        assertEquals(840, result.getFirst().getKodNum());
         verify(menaRepository, times(1)).findByCodeNum(840);
     }
 }

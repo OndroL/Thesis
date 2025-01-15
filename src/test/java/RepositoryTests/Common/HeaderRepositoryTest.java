@@ -49,7 +49,7 @@ public class HeaderRepositoryTest {
 
         // Test saving and querying a header
         headerRepository.save(new HeaderEntity("1", 10, 1));
-        List<HeaderEntity> validHeaderEntities = headerRepository.findValidAtributes();
+        List<HeaderEntity> validHeaderEntities = headerRepository.findValidAttributes();
 
         assertEquals(1, validHeaderEntities.size());
     }

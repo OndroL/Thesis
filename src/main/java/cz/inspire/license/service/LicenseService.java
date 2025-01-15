@@ -16,5 +16,5 @@ public class LicenseService extends BaseService<LicenseEntity, LicenseRepository
         super(logger, repository, LicenseEntity.class);
     }
 
-    public List<LicenseEntity> findAll() {return repository.findAll();}
+    public List<LicenseEntity> findAll() { return repository.findAll(); }
 }

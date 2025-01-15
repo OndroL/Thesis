@@ -12,7 +12,7 @@ public interface MenaRepository extends EntityRepository<MenaEntity,String> {
     @Query("SELECT p FROM MenaEntity p WHERE p.kod = ?1")
     List<MenaEntity> findByCode(String code);
 
-    @Query("SELECT p FROM MenaEntity p WHERE p.kodnum = ?1")
+    @Query("SELECT p FROM MenaEntity p WHERE p.kodNum = ?1")
     List<MenaEntity> findByCodeNum(int codeNum);
 
     List<MenaEntity> findAll();

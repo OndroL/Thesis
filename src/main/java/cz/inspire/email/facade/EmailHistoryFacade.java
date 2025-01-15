@@ -1,0 +1,154 @@
+package cz.inspire.email.facade;
+
+import cz.inspire.email.dto.EmailHistoryDto;
+import cz.inspire.email.dto.GeneratedAttachmentDto;
+import cz.inspire.email.entity.EmailHistoryEntity;
+import cz.inspire.email.entity.GeneratedAttachmentEntity;
+import cz.inspire.email.mapper.EmailHistoryMapper;
+import cz.inspire.email.mapper.GeneratedAttachmentMapper;
+import cz.inspire.email.service.EmailHistoryService;
+import cz.inspire.email.service.GeneratedAttachmentService;
+import cz.inspire.email.utils.EmailHistoryUtil;
+import cz.inspire.email.utils.GeneratedAttachmentUtil;
+import cz.inspire.template.entity.PrintTemplateEntity;
+import cz.inspire.template.service.PrintTemplateService;
+import jakarta.ejb.CreateException;
+import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.inject.Inject;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import java.util.Optional;
+
+@ApplicationScoped
+public class EmailHistoryFacade {
+    @Inject
+    EmailHistoryService emailHistoryService;
+    @Inject
+    EmailHistoryMapper emailHistoryMapper;
+    @Inject
+    GeneratedAttachmentService generatedAttachmentService;
+    @Inject
+    GeneratedAttachmentMapper generatedAttachmentMapper;
+    @Inject
+    PrintTemplateService printTemplateService;
+
+    Logger logger = LogManager.getLogger(EmailHistoryFacade.class);
+
+    public String create(EmailHistoryDto dto) throws CreateException {
+        try {
+            if (dto.getId() == null) {
+                dto.setId(EmailHistoryUtil.generateGUID(dto));
+            }
+            EmailHistoryEntity entity = emailHistoryMapper.toEntity(dto);
+
+            if (dto.getAttachments() != null && !dto.getAttachments().isEmpty()) {
+                StringBuilder filePaths = new StringBuilder();
+                for (int i = 0; i < dto.getAttachments().size(); i++) {
+                    byte[] fileData = dto.getAttachments().get(i);
+                    String filePath = emailHistoryService.saveFileToFileSystem(fileData, dto.getId());
+                    filePaths.append(filePath).append(","); // Concatenate file paths
+                }
+                // Remove trailing comma
+                if (!filePaths.isEmpty()) {
+                    filePaths.setLength(filePaths.length() - 1);
+                }
+                entity.setAttachments(filePaths.toString()); // Set FilePaths to Entity
+            }
+            emailHistoryService.create(entity);
+
+            //PostCreate logic
+            setGeneratedAttachments(entity, dto);
+
+            emailHistoryService.update(entity);
+
+            return entity.getId();
+
+        } catch (Exception e) {
+            throw new CreateException();
+        }
+    }
+
+    public void setGeneratedAttachments (EmailHistoryEntity entity, EmailHistoryDto dto) throws CreateException {
+        if (dto.getGeneratedAttachments() != null && !dto.getGeneratedAttachments().isEmpty()) {
+            try {
+                for (GeneratedAttachmentDto gadDto : dto.getGeneratedAttachments()) {
+                    if(gadDto.getId() == null){
+                        gadDto.setId(GeneratedAttachmentUtil.generateGUID(gadDto));
+                    }
+                    GeneratedAttachmentEntity gadEntity = generatedAttachmentMapper.toEntity(gadDto);
+
+                    generatedAttachmentService.create(gadEntity);
+
+                    gadEntity.setEmailHistory(entity);
+
+                    setPrintedTemplate(gadEntity, gadDto);
+
+                    generatedAttachmentService.update(gadEntity);
+                }
+            } catch (Exception e) {
+                logger.error("EmailHistory couldn't be created", e);
+                throw new CreateException("EmailHistory couldn't be created: " + e.getMessage());
+            }
+        }
+    }
+
+    public void setPrintedTemplate(GeneratedAttachmentEntity entity, GeneratedAttachmentDto dto) throws CreateException {
+        try {
+            if (dto.getPrintTemplateId() != null) {
+                PrintTemplateEntity localTemplate = printTemplateService.findById(dto.getPrintTemplateId())
+                        .orElseThrow(() -> new CreateException("Couldn't find PrintTemplateEntity with id: " + dto.getPrintTemplateId() +
+                                " while trying to create generatedAttachment with id : " + entity.getId()));
+                entity.setPrintTemplate(localTemplate);
+            }
+
+        } catch (Exception e) {
+            logger.error("GeneratedAttachment couldn't be created, couldn't set PrintTemplate with id : " + entity.getPrintTemplate(), e);
+            throw new CreateException("GeneratedAttachment couldn't be created: " + e);
+        }
+    }
+
+    public EmailHistoryDto mapToDto(EmailHistoryEntity entity) {
+        EmailHistoryDto dto = emailHistoryMapper.toDto(entity);
+
+        // Reconstruct files from file paths
+        if (entity.getAttachments() != null) {
+            String[] filePaths = entity.getAttachments().split(",");
+            List<byte[]> files = new ArrayList<>();
+            for (String path : filePaths) {
+                try {
+                    files.add(Files.readAllBytes(Paths.get(path)));
+                } catch (IOException e) {
+                    logger.error("Failed to read file: " + path, e);
+                }
+            }
+            dto.setAttachments(files); // Set reconstructed files in DTO
+        }
+        return dto;
+    }
+
+
+    public List<EmailHistoryDto> findAll() {
+        return emailHistoryService.findAll().stream().map(this::mapToDto).toList();
+    }
+
+    public List<EmailHistoryDto> findAll(int offset, int count) {
+        return emailHistoryService.findAll(offset, count).stream().map(this::mapToDto).toList();
+    }
+
+    public List<EmailHistoryDto> findByDate(Date dateFrom, Date dateTo, int offset, int count) {
+        return emailHistoryService.findByDate(dateFrom, dateTo, offset, count).stream().map(this::mapToDto).toList();
+    }
+
+    public Optional<EmailHistoryDto> findById(String emailHistoryId) {
+        return emailHistoryService.findById(emailHistoryId).map(this::mapToDto);
+    }
+
+
+}
