@@ -11,7 +11,11 @@ import org.apache.logging.log4j.Logger;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-import java.util.*;
+import java.util.Map;
+import java.util.Date;
+import java.util.List;
+import java.util.Optional;
+import java.util.ArrayList;
 
 @ApplicationScoped
 public class EmailHistoryService extends BaseService<EmailHistoryEntity, EmailHistoryRepository> {
@@ -35,6 +39,7 @@ public class EmailHistoryService extends BaseService<EmailHistoryEntity, EmailHi
             String originalFileName = entry.getKey();
             byte[] fileData = entry.getValue();
 
+            // Generated fileName if one is not present by using generateFileName() with pattern voucher-d-M-yyyy.pdf
             String fileName = (originalFileName != null && !originalFileName.isEmpty())
                     ? originalFileName
                     : generateFileName();
@@ -49,12 +54,10 @@ public class EmailHistoryService extends BaseService<EmailHistoryEntity, EmailHi
         return fileStorageUtil.readFile(filePath); // Delegate to FileStorageUtil
     }
 
-    // Currently this is not used
-
     // Brainstorm naming pattern for vouchers, because with this implementation which is identical
     // to controller implementation, problem with same names for 2 different voucher can occur.
-    // E.g. two vouchers created in same day for same EmailHistory will be stored in FileSystem
-    // with same name and second one will rewrite first one!
+    // E.g. two vouchers created in same day for same EmailHistory will be returned as only one file
+    // because their name is the key in map and the existing (first) file for that key will be overwritten with the new file.
     public static String generateFileName() {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("d-M-yyyy");
         String datePart = LocalDate.now().format(formatter);
