@@ -32,7 +32,7 @@ public class GeneratedAttachmentEntity {
     private String email;
 
     @JdbcTypeCode(SqlTypes.JSON)
-    @Column(columnDefinition = "json")
+    @Column(columnDefinition = "jsonb")
     private Map<String, Object> attributes;
 
     @ManyToOne(cascade = CascadeType.REMOVE, fetch = FetchType.LAZY)
