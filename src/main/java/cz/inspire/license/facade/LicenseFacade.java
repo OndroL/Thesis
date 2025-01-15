@@ -30,7 +30,7 @@ public class LicenseFacade {
         }
     }
 
-    public LicenseDto mapToDto(LicenseEntity entity) { return licenseMapper.toDto(entity);}
+    public LicenseDto mapToDto(LicenseEntity entity) { return licenseMapper.toDto(entity); }
 
-    public LicenseEntity mapToEntity(LicenseDto dto) { return licenseMapper.toEntity(dto);}
+    public LicenseEntity mapToEntity(LicenseDto dto) { return licenseMapper.toEntity(dto); }
 }
