@@ -36,7 +36,6 @@ public class SequenceFacade {
             sequenceService.create(entity);
             entity = toEntityWithRelationships(dto);
             sequenceService.update(entity);
-            logger.debug("Entity persisted: {}", entity);
             return entity.getName();
         } catch (Exception e) {
             throw new CreateException();

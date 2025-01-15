@@ -7,7 +7,7 @@ import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import org.apache.logging.log4j.Logger;
 
-import java.util.Collection;
+import java.util.List;
 import java.util.Optional;
 
 @ApplicationScoped
@@ -18,7 +18,7 @@ public class SequenceService extends BaseService<SequenceEntity, SequenceReposit
         super(logger, repository, SequenceEntity.class);
     }
 
-    public Collection<SequenceEntity> findAll() { return repository.findAll(); }
+    public List<SequenceEntity> findAll() { return repository.findAll(); }
 
     public Optional<SequenceEntity> findBySkladType(String skladId, int type) {
         return repository.findBySkladType(skladId, type);
@@ -28,7 +28,7 @@ public class SequenceService extends BaseService<SequenceEntity, SequenceReposit
         return repository.findByPokladnaType(pokladnaId, type);
     }
 
-    public Collection<SequenceEntity> findByType(int type,int offset,int limit) {
+    public List<SequenceEntity> findByType(int type,int offset,int limit) {
         return repository.findByType(type, offset, limit);
     }
 
