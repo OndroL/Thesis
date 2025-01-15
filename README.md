@@ -1,5 +1,5 @@
 > [!CAUTION]
-> Sequence package is not finished. Missing bussiness logic and testing -> waiting for PokladnaBean 
+> **Sequence package is not finished**. Missing bussiness logic and testing -> waiting for PokladnaBean 
 
 # Migration of Entity Beans to Jakarta Persistence API (JPA)
 
