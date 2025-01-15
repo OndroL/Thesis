@@ -9,6 +9,7 @@ import java.util.Optional;
 
 @Repository
 public interface  PrintTemplateRepository extends EntityRepository<PrintTemplateEntity, String> {
+    // Added query for creation logic of GeneratedAttachment
     @Query
     Optional<PrintTemplateEntity> findById(String templateId);
 }
