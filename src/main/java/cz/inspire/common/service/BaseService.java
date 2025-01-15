@@ -6,7 +6,7 @@ import org.apache.deltaspike.data.api.EntityRepository;
 import org.apache.deltaspike.jpa.api.transaction.Transactional;
 import org.apache.logging.log4j.Logger;
 
-public abstract class BaseService<E, R extends EntityRepository<E, ? extends java. io. Serializable>>{
+public abstract class BaseService<E, R extends EntityRepository<E, ? extends java.io.Serializable>> {
 
     protected final Logger logger;
     protected final R repository;

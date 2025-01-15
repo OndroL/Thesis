@@ -1,7 +1,9 @@
 package cz.inspire.license.repository;
 
 import cz.inspire.license.entity.LicenseEntity;
-import org.apache.deltaspike.data.api.*;
+import org.apache.deltaspike.data.api.Repository;
+import org.apache.deltaspike.data.api.Query;
+import org.apache.deltaspike.data.api.EntityRepository;
 
 import java.util.List;
 
