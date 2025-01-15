@@ -55,6 +55,6 @@ public class EmailHistoryService extends BaseService<EmailHistoryEntity, EmailHi
         return repository.findByDate(dateFrom, dateTo, offset, count);
     }
 
-    public Optional<EmailHistoryEntity> findById(String emailHistoryId) {return repository.findById(emailHistoryId); }
+    public Optional<EmailHistoryEntity> findById(String emailHistoryId) { return repository.findById(emailHistoryId); }
 
 }

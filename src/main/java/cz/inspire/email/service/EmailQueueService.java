@@ -5,8 +5,6 @@ import cz.inspire.email.entity.EmailQueueEntity;
 import cz.inspire.email.repository.EmailQueueRepository;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
-import org.apache.deltaspike.data.api.FirstResult;
-import org.apache.deltaspike.data.api.MaxResults;
 import org.apache.logging.log4j.Logger;
 
 import java.util.List;
@@ -22,7 +20,7 @@ public class EmailQueueService extends BaseService<EmailQueueEntity, EmailQueueR
 
     public List<EmailQueueEntity> findAll() { return repository.findAll(); }
 
-    public List<EmailQueueEntity> findAll(@FirstResult int offset, @MaxResults int count) {
+    public List<EmailQueueEntity> findAll(int offset, int count) {
         return repository.findAll(offset, count);
     }
 
