@@ -4,8 +4,9 @@ import cz.inspire.sequence.dto.SequenceDto;
 import cz.inspire.sequence.entity.SequenceEntity;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
+import org.mapstruct.MappingConstants;
 
-@Mapper(componentModel = "cdi")
+@Mapper(componentModel = MappingConstants.ComponentModel.JAKARTA_CDI)
 public interface SequenceMapper {
     @Mapping(source = "stornoSeq.name", target = "stornoSeqName")
     SequenceDto toDto(SequenceEntity entity);

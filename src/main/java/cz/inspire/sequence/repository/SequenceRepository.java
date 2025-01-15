@@ -1,14 +1,17 @@
 package cz.inspire.sequence.repository;
 
 import cz.inspire.sequence.entity.SequenceEntity;
-import org.apache.deltaspike.data.api.*;
+import org.apache.deltaspike.data.api.EntityRepository;
+import org.apache.deltaspike.data.api.Query;
+import org.apache.deltaspike.data.api.Repository;
+import org.apache.deltaspike.data.api.FirstResult;
+import org.apache.deltaspike.data.api.MaxResults;
 
 import java.util.List;
 import java.util.Optional;
 
 /**
- * TODO : Add all Queries from SequenceBean
- * Missing finders : findBySkladType, findByPokladnaType,
+ * TODO : Test all Queries from SequenceBean
  */
 @Repository
 public interface SequenceRepository extends EntityRepository<SequenceEntity,String> {
