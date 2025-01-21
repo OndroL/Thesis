@@ -1,5 +1,6 @@
 package cz.inspire.common.dto;
 
+import java.io.Serializable;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -14,7 +15,7 @@ import java.util.List;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class MenaDto {
+public class MenaDto implements Serializable {
     private String id;
     private String kod;
     private String vycetka;
