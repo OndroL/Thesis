@@ -5,14 +5,14 @@ import cz.inspire.email.entity.GeneratedAttachmentEntity;
 import cz.inspire.email.repository.GeneratedAttachmentRepository;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
-import org.apache.logging.log4j.Logger;
 
 import java.util.List;
 
 @ApplicationScoped
 public class GeneratedAttachmentService extends BaseService<GeneratedAttachmentEntity, String, GeneratedAttachmentRepository> {
 
-    public GeneratedAttachmentService(){};
+    public GeneratedAttachmentService() {
+    }
 
     @Inject
     public GeneratedAttachmentService(GeneratedAttachmentRepository repository) {

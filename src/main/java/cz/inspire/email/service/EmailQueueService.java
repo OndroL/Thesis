@@ -6,7 +6,6 @@ import cz.inspire.email.repository.EmailQueueRepository;
 import jakarta.data.Limit;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
-import org.apache.logging.log4j.Logger;
 
 import java.util.List;
 import java.util.Optional;

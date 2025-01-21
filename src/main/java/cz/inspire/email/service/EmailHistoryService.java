@@ -6,7 +6,6 @@ import cz.inspire.email.repository.EmailHistoryRepository;
 import jakarta.data.Limit;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
-import org.apache.logging.log4j.Logger;
 
 import java.io.IOException;
 import java.nio.file.Files;
