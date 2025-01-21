@@ -3,7 +3,7 @@ package ServiceTests.License;
 import cz.inspire.license.entity.LicenseEntity;
 import cz.inspire.license.repository.LicenseRepository;
 import cz.inspire.license.service.LicenseService;
-import cz.inspire.exception.SystemException;
+import cz.inspire.enterprise.exception.SystemException;
 import jakarta.ejb.CreateException;
 import org.apache.logging.log4j.Logger;
 import org.junit.jupiter.api.BeforeEach;
@@ -72,7 +72,7 @@ public class LicenseServiceTest {
                 new LicenseEntity("2", "Customer2", false, false, new Date(), false, new Date(), false, 20, 10, 100, 40, 20, 10, 30, 20, false, 54321L, "hash456", new Date(), new Date(), 1002)
         );
 
-        when(licenseRepository.findAll()).thenReturn(entities);
+        when(licenseRepository.findAll().toList()).thenReturn(entities);
 
         List<LicenseEntity> result = licenseService.findAll();
 
@@ -122,9 +122,9 @@ public class LicenseServiceTest {
                 new Date(), new Date(), 1001
         );
 
-        licenseService.remove(entity);
+        licenseService.delete(entity);
 
-        verify(licenseRepository, times(1)).remove(entity);
+        verify(licenseRepository, times(1)).delete(entity);
     }
 
     @Test
@@ -136,9 +136,9 @@ public class LicenseServiceTest {
                 5, 15, 10, true, 12345L, "hash123",
                 new Date(), new Date(), 1001
         );
-        doThrow(RuntimeException.class).when(licenseRepository).remove(entity);
+        doThrow(RuntimeException.class).when(licenseRepository).delete(entity);
 
-        SystemException exception = assertThrows(SystemException.class, () -> licenseService.remove(entity));
+        SystemException exception = assertThrows(SystemException.class, () -> licenseService.delete(entity));
         assertEquals("Failed to remove LicenseEntity", exception.getMessage());
         verify(logger, times(1)).error(eq("Failed to remove LicenseEntity"), any(RuntimeException.class));
     }

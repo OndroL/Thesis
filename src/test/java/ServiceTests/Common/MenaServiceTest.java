@@ -3,7 +3,7 @@ package ServiceTests.Common;
 import cz.inspire.common.entity.MenaEntity;
 import cz.inspire.common.repository.MenaRepository;
 import cz.inspire.common.service.MenaService;
-import cz.inspire.exception.SystemException;
+import cz.inspire.enterprise.exception.SystemException;
 import jakarta.ejb.CreateException;
 import org.apache.logging.log4j.Logger;
 import org.junit.jupiter.api.BeforeEach;
@@ -75,17 +75,17 @@ public class MenaServiceTest {
     void testRemove_Success() throws SystemException {
         MenaEntity entity = new MenaEntity("1", "USD", "123,456", 840, 1, 1);
 
-        menaService.remove(entity);
+        menaService.delete(entity);
 
-        verify(menaRepository, times(1)).remove(entity);
+        verify(menaRepository, times(1)).delete(entity);
     }
 
     @Test
     void testRemove_Failure() {
         MenaEntity entity = new MenaEntity("1", "USD", "123,456", 840, 1, 1);
-        doThrow(RuntimeException.class).when(menaRepository).remove(entity);
+        doThrow(RuntimeException.class).when(menaRepository).delete(entity);
 
-        SystemException exception = assertThrows(SystemException.class, () -> menaService.remove(entity));
+        SystemException exception = assertThrows(SystemException.class, () -> menaService.delete(entity));
         assertEquals("Failed to remove MenaEntity", exception.getMessage());
         verify(logger, times(1)).error(eq("Failed to remove MenaEntity"), any(RuntimeException.class));
     }
@@ -96,7 +96,7 @@ public class MenaServiceTest {
                 new MenaEntity("1", "USD", "123,456", 840, 1, 1),
                 new MenaEntity("2", "EUR", "789", 978, 0, 0)
         );
-        when(menaRepository.findAll()).thenReturn(expectedList);
+        when(menaRepository.findAll().toList()).thenReturn(expectedList);
 
         List<MenaEntity> result = menaService.findAll();
 
@@ -128,7 +128,7 @@ public class MenaServiceTest {
 
         assertNotNull(result);
         assertEquals(1, result.size());
-        assertEquals(840, result.getFirst().getKodNum());
+        assertEquals(840, result.getFirst().getKodnum());
         verify(menaRepository, times(1)).findByCodeNum(840);
     }
 }

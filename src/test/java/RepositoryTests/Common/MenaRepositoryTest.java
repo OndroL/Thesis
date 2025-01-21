@@ -4,6 +4,7 @@ import cz.inspire.EntityManagerProducer;
 import cz.inspire.common.entity.MenaEntity;
 
 import cz.inspire.common.repository.MenaRepository;
+import jakarta.inject.Inject;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
 import jakarta.persistence.Persistence;
@@ -19,7 +20,10 @@ import static org.junit.Assert.*;
 
 public class MenaRepositoryTest {
 
+    @Inject
     private MenaRepository menaRepository;
+
+    private EntityManager entityManager;
 
     @Before
     public void setUp() {
@@ -82,6 +86,6 @@ public class MenaRepositoryTest {
         menaRepository.save(new MenaEntity("2", "EUR", "Euro", 978, 2, 2));
 
         // Test retrieving all Mena entities
-        assertEquals(2, menaRepository.findAll().size());
+        assertEquals(2, menaRepository.findAll().toList().size());
     }
 }

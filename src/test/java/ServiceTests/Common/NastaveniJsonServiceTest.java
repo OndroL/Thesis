@@ -3,7 +3,7 @@ package ServiceTests.Common;
 import cz.inspire.common.entity.NastaveniJsonEntity;
 import cz.inspire.common.repository.NastaveniJsonRepository;
 import cz.inspire.common.service.NastaveniJsonService;
-import cz.inspire.exception.SystemException;
+import cz.inspire.enterprise.exception.SystemException;
 import jakarta.ejb.CreateException;
 import org.apache.logging.log4j.Logger;
 import org.junit.jupiter.api.BeforeEach;
@@ -72,17 +72,17 @@ public class NastaveniJsonServiceTest {
     void testRemove_Success() throws SystemException {
         NastaveniJsonEntity entity = new NastaveniJsonEntity("key1", "value1");
 
-        nastaveniJsonService.remove(entity);
+        nastaveniJsonService.delete(entity);
 
-        verify(nastaveniJsonRepository, times(1)).remove(entity);
+        verify(nastaveniJsonRepository, times(1)).delete(entity);
     }
 
     @Test
     void testRemove_Failure() {
         NastaveniJsonEntity entity = new NastaveniJsonEntity("key1", "value1");
-        doThrow(RuntimeException.class).when(nastaveniJsonRepository).remove(entity);
+        doThrow(RuntimeException.class).when(nastaveniJsonRepository).delete(entity);
 
-        SystemException exception = assertThrows(SystemException.class, () -> nastaveniJsonService.remove(entity));
+        SystemException exception = assertThrows(SystemException.class, () -> nastaveniJsonService.delete(entity));
         assertEquals("Failed to remove NastaveniJsonEntity", exception.getMessage());
         verify(logger, times(1)).error(eq("Failed to remove NastaveniJsonEntity"), any(RuntimeException.class));
     }

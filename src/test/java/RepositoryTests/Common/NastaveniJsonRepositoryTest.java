@@ -49,7 +49,7 @@ public class NastaveniJsonRepositoryTest {
         NastaveniJsonEntity entity = new NastaveniJsonEntity("key1", "value1");
         nastaveniJsonRepository.save(entity);
 
-        NastaveniJsonEntity foundEntity = nastaveniJsonRepository.findBy(entity.getKey());
+        NastaveniJsonEntity foundEntity = nastaveniJsonRepository.findById(entity.getKey()).orElse(null);
         assertNotNull("Entity should be found!", foundEntity);
         assertEquals("key1", foundEntity.getKey());
         assertEquals("value1", foundEntity.getValue());

@@ -63,7 +63,7 @@ public class SMSHistoryRepositoryTest {
         smsHistoryRepository.save(history);
 
         // Test findById
-        Optional<SMSHistoryEntity> retrievedHistory = Optional.ofNullable(smsHistoryRepository.findBy("1"));
+        Optional<SMSHistoryEntity> retrievedHistory = Optional.of(smsHistoryRepository.findById("1").get());
         assertNotNull("Retrieved history should not be null", retrievedHistory);
         assertEquals("Test Message", retrievedHistory.get().getMessage());
         assertEquals(Arrays.asList("Group1", "Group2"), retrievedHistory.get().getGroups());
