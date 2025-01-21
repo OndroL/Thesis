@@ -14,7 +14,7 @@ public abstract class BaseService<E, PK extends Serializable, R extends CrudRepo
 
     private Logger logger;
     protected R repository;
-    private final TypeToken<E> typeToken = new TypeToken<E>(getClass()) {};
+    private final TypeToken<E> typeToken = new TypeToken<>(getClass()) {};
     
     public BaseService() {
     }
@@ -65,6 +65,10 @@ public abstract class BaseService<E, PK extends Serializable, R extends CrudRepo
 
 
     // Entity type Helper for errors and Exceptions
+    // If we are confident that typeToken.getRawType() always returns the correct Class<E>, the suppression is safe
+    // Otherwise we will have everywhere warnings for
+    // Unchecked cast: 'java. lang. Class<capture<? super E>>' to 'java. lang. Class<E>'
+    @SuppressWarnings("unchecked")
     private Class<E> getEntityType() {
         return (Class<E>) typeToken.getRawType();
     }
