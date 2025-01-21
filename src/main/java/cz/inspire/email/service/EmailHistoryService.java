@@ -3,6 +3,7 @@ package cz.inspire.email.service;
 import cz.inspire.common.service.BaseService;
 import cz.inspire.email.entity.EmailHistoryEntity;
 import cz.inspire.email.repository.EmailHistoryRepository;
+import jakarta.data.Limit;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import org.apache.logging.log4j.Logger;
@@ -17,15 +18,18 @@ import java.util.List;
 import java.util.Optional;
 
 @ApplicationScoped
-public class EmailHistoryService extends BaseService<EmailHistoryEntity, EmailHistoryRepository> {
+public class EmailHistoryService extends BaseService<EmailHistoryEntity, String, EmailHistoryRepository> {
 
     private static final String FILESYSTEM_PATH = "FILE_SYSTEM/Email_History/";
 
     private static final String FILE_NAME_PATTERN = "voucher-d-M-yyyy.pdf";
 
+    public EmailHistoryService() {
+    }
+
     @Inject
-    public EmailHistoryService(Logger logger, EmailHistoryRepository repository) {
-        super(logger, repository, EmailHistoryEntity.class);
+    public EmailHistoryService(EmailHistoryRepository repository) {
+        super(repository);
     }
 
     public String saveFileToFileSystem(byte[] fileData, String entityId) throws IOException {
@@ -47,12 +51,13 @@ public class EmailHistoryService extends BaseService<EmailHistoryEntity, EmailHi
         return FILE_NAME_PATTERN.replace("d-M-yyyy", datePart);
     }
 
-    public List<EmailHistoryEntity> findAll() { return repository.findAll(); }
+    public List<EmailHistoryEntity> findAll() { return repository.findAllOrdered(); }
 
-    public List<EmailHistoryEntity> findAll(int offset, int count) { return repository.findAll(offset, count); }
+    public List<EmailHistoryEntity> findAll(int offset, int count) {
+        return repository.findAll(new Limit(count, offset)); }
 
     public List<EmailHistoryEntity> findByDate(Date dateFrom, Date dateTo, int offset, int count) {
-        return repository.findByDate(dateFrom, dateTo, offset, count);
+        return repository.findByDate(dateFrom, dateTo, new Limit(count, offset));
     }
 
     public Optional<EmailHistoryEntity> findById(String emailHistoryId) { return repository.findById(emailHistoryId); }

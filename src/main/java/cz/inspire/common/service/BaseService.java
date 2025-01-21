@@ -72,5 +72,4 @@ public abstract class BaseService<E, PK extends Serializable, R extends CrudRepo
     private Class<E> getEntityType() {
         return (Class<E>) typeToken.getRawType();
     }
-    
 }

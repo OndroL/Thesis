@@ -18,11 +18,20 @@ public class MenaFacade {
     @Inject
     MenaMapper menaMapper;
 
+    public void create(MenaDto mena) throws CreateException {
+        try {
+            menaService.create(menaMapper.toEntity(mena));
+        } catch (Exception e) {
+            throw new CreateException(("Menae couldn't be created: " + e.getMessage()));
+        }
+    }
+
     public MenaDto mapToDto(MenaEntity entity) {
         return menaMapper.toDto(entity);
     }
 
-    public Collection<MenaDto> findByCode(String code) {
+
+    public List<MenaDto> findByCode(String code) {
         return menaService.findByCode(code).stream().map(menaMapper::toDto).toList();
     }
 
@@ -30,15 +39,12 @@ public class MenaFacade {
         return menaService.findByCodeNum(codeNum).stream().map(menaMapper::toDto).toList();
     }
 
-    public Collection<MenaDto> findAll() {
+    public List<MenaDto> findAll() {
         return menaService.findAll().stream().map(menaMapper::toDto).toList();
     }
     
     public MenaDto findByPK(String menaId) {
         return menaMapper.toDto(menaService.findByPK(menaId).orElse(null));
     }
-    
-    public void createMena(MenaDto mena) throws CreateException {
-        menaService.create(menaMapper.toEntity(mena));
-    }
+
 }

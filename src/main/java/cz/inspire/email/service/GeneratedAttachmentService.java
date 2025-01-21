@@ -10,11 +10,13 @@ import org.apache.logging.log4j.Logger;
 import java.util.List;
 
 @ApplicationScoped
-public class GeneratedAttachmentService extends BaseService<GeneratedAttachmentEntity, GeneratedAttachmentRepository> {
+public class GeneratedAttachmentService extends BaseService<GeneratedAttachmentEntity, String, GeneratedAttachmentRepository> {
+
+    public GeneratedAttachmentService(){};
 
     @Inject
-    public GeneratedAttachmentService(Logger logger, GeneratedAttachmentRepository repository) {
-        super(logger, repository, GeneratedAttachmentEntity.class);
+    public GeneratedAttachmentService(GeneratedAttachmentRepository repository) {
+        super(repository);
     }
 
     public List<GeneratedAttachmentEntity> findByEmailAndHistory(String historyId, String email) {

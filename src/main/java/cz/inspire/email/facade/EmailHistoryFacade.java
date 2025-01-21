@@ -109,7 +109,7 @@ public class EmailHistoryFacade {
             }
 
         } catch (Exception e) {
-            logger.error("GeneratedAttachment couldn't be created, couldn't set PrintTemplate with id : " + entity.getPrintTemplate(), e);
+            logger.error("GeneratedAttachment couldn't be created, couldn't set PrintTemplate with id : {}", entity.getPrintTemplate(), e);
             throw new CreateException("GeneratedAttachment couldn't be created: " + e);
         }
     }
@@ -125,7 +125,7 @@ public class EmailHistoryFacade {
                 try {
                     files.add(Files.readAllBytes(Paths.get(path)));
                 } catch (IOException e) {
-                    logger.error("Failed to read file: " + path, e);
+                    logger.error("Failed to read file: {}", path, e);
                 }
             }
             dto.setAttachments(files); // Set reconstructed files in DTO
