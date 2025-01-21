@@ -27,8 +27,17 @@ public class NastaveniFacade {
             throw new CreateException();
         }
     }
+    
+//    public void save(NastaveniDto dto) throws SystemException {
+//        NastaveniEntity entity = nastaveniMapper.toEntity(dto);
+//        nastaveniService.save(entity);
+//    }
 
     public NastaveniDto mapToDto(NastaveniEntity entity) {
         return nastaveniMapper.toDto(entity);
+    }
+    
+    public NastaveniDto findByPK(String nastaveniId) {
+        return nastaveniMapper.toDto(nastaveniService.findByPK(nastaveniId).orElse(null));
     }
 }

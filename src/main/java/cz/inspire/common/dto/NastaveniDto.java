@@ -1,19 +1,18 @@
 package cz.inspire.common.dto;
 
+import java.io.Serializable;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.EqualsAndHashCode;
 
-import java.io.Serializable;
-
 @EqualsAndHashCode
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class NastaveniDto {
+public class NastaveniDto implements Serializable {
     private String key;
     private Serializable value;
 }
