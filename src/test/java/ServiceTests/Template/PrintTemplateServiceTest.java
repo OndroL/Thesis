@@ -3,7 +3,7 @@ package ServiceTests.Template;
 import cz.inspire.template.entity.PrintTemplateEntity;
 import cz.inspire.template.repository.PrintTemplateRepository;
 import cz.inspire.template.service.PrintTemplateService;
-import cz.inspire.exception.SystemException;
+import cz.inspire.enterprise.exception.SystemException;
 import jakarta.ejb.CreateException;
 import org.apache.logging.log4j.Logger;
 import org.junit.jupiter.api.BeforeEach;
@@ -74,17 +74,17 @@ public class PrintTemplateServiceTest {
     void testRemove_Success() throws SystemException {
         PrintTemplateEntity entity = new PrintTemplateEntity("1", "Sample Content", 1, "TemplateName", "FileName");
 
-        printTemplateService.remove(entity);
+        printTemplateService.delete(entity);
 
-        verify(printTemplateRepository, times(1)).remove(entity);
+        verify(printTemplateRepository, times(1)).delete(entity);
     }
 
     @Test
     void testRemove_Failure() {
         PrintTemplateEntity entity = new PrintTemplateEntity("1", "Sample Content", 1, "TemplateName", "FileName");
-        doThrow(RuntimeException.class).when(printTemplateRepository).remove(entity);
+        doThrow(RuntimeException.class).when(printTemplateRepository).delete(entity);
 
-        SystemException exception = assertThrows(SystemException.class, () -> printTemplateService.remove(entity));
+        SystemException exception = assertThrows(SystemException.class, () -> printTemplateService.delete(entity));
         assertEquals("Failed to remove PrintTemplateEntity", exception.getMessage());
         verify(logger, times(1)).error(eq("Failed to remove PrintTemplateEntity"), any(RuntimeException.class));
     }

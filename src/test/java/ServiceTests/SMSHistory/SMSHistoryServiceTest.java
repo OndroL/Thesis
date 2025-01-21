@@ -1,6 +1,6 @@
 package ServiceTests.SMSHistory;
 
-import cz.inspire.exception.SystemException;
+import cz.inspire.enterprise.exception.SystemException;
 import cz.inspire.sms.entity.SMSHistoryEntity;
 import cz.inspire.sms.repository.SMSHistoryRepository;
 import cz.inspire.sms.service.SMSHistoryService;
@@ -142,9 +142,9 @@ public class SMSHistoryServiceTest {
                 true
         );
 
-        smsHistoryService.remove(entity);
+        smsHistoryService.delete(entity);
 
-        verify(smsHistoryRepository, times(1)).remove(entity);
+        verify(smsHistoryRepository, times(1)).delete(entity);
     }
 
     @Test
@@ -156,9 +156,9 @@ public class SMSHistoryServiceTest {
                 Arrays.asList("MoreRecipient1", "MoreRecipient2"),
                 true
         );
-        doThrow(RuntimeException.class).when(smsHistoryRepository).remove(entity);
+        doThrow(RuntimeException.class).when(smsHistoryRepository).delete(entity);
 
-        SystemException exception = assertThrows(SystemException.class, () -> smsHistoryService.remove(entity));
+        SystemException exception = assertThrows(SystemException.class, () -> smsHistoryService.delete(entity));
         assertEquals("Failed to remove SMSHistoryEntity", exception.getMessage());
         verify(logger, times(1)).error(eq("Failed to remove SMSHistoryEntity"), any(RuntimeException.class));
     }

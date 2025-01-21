@@ -74,7 +74,7 @@ public class GeneratedAttachmentRepositoryTest {
         generatedAttachmentRepository.save(attachment);
 
         // Retrieve all attachments
-        List<GeneratedAttachmentEntity> attachments = generatedAttachmentRepository.findAll();
+        List<GeneratedAttachmentEntity> attachments = generatedAttachmentRepository.findAll().toList();
         assertNotNull("Attachment list should not be null", attachments);
         assertEquals(1, attachments.size());
         assertEquals("attachment-5", attachments.get(0).getId());

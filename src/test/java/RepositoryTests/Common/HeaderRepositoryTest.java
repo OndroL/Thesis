@@ -1,12 +1,12 @@
 package RepositoryTests.Common;
 
-import cz.inspire.EntityManagerProducer;
 import cz.inspire.common.entity.HeaderEntity;
 import cz.inspire.common.repository.HeaderRepository;
-import jakarta.persistence.*;
-import org.apache.deltaspike.cdise.api.CdiContainer;
-import org.apache.deltaspike.cdise.api.CdiContainerLoader;
-import org.apache.deltaspike.core.api.provider.BeanProvider;
+import jakarta.enterprise.inject.spi.CDI;
+import jakarta.inject.Inject;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.EntityManagerFactory;
+import jakarta.persistence.Persistence;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -15,31 +15,28 @@ import java.util.List;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
+
 public class HeaderRepositoryTest {
 
+    @Inject
     private HeaderRepository headerRepository;
+
+    private EntityManager entityManager;
 
     @Before
     public void setUp() {
-        // Boot the CDI container
-        CdiContainer container = CdiContainerLoader.getCdiContainer();
-        container.boot();
-
-        // Create the EntityManagerFactory
+        // Initialize EntityManagerFactory
         EntityManagerFactory emf = Persistence.createEntityManagerFactory("default");
+        entityManager = emf.createEntityManager();
 
-        // Access EntityManagerProducer and set the EntityManagerFactory
-        EntityManagerProducer producer = BeanProvider.getContextualReference(EntityManagerProducer.class);
-        producer.setEntityManagerFactory(emf);
-
-        // Access HeaderRepository from CDI
-        headerRepository = BeanProvider.getContextualReference(HeaderRepository.class);
+        // Retrieve HeaderRepository using CDI
+        headerRepository = CDI.current().select(HeaderRepository.class).get();
+        assertNotNull("HeaderRepository should be initialized!", headerRepository);
 
         // Clear the database
-        EntityManager em = BeanProvider.getContextualReference(EntityManager.class);
-        em.getTransaction().begin();
-        em.createQuery("DELETE FROM HeaderEntity").executeUpdate();
-        em.getTransaction().commit();
+        entityManager.getTransaction().begin();
+        entityManager.createQuery("DELETE FROM HeaderEntity").executeUpdate();
+        entityManager.getTransaction().commit();
     }
 
 

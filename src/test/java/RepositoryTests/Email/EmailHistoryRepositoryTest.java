@@ -3,12 +3,10 @@ package RepositoryTests.Email;
 import cz.inspire.EntityManagerProducer;
 import cz.inspire.email.entity.EmailHistoryEntity;
 import cz.inspire.email.repository.EmailHistoryRepository;
+import jakarta.data.Limit;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
 import jakarta.persistence.Persistence;
-import org.apache.deltaspike.cdise.api.CdiContainer;
-import org.apache.deltaspike.cdise.api.CdiContainerLoader;
-import org.apache.deltaspike.core.api.provider.BeanProvider;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -68,7 +66,7 @@ public class EmailHistoryRepositoryTest {
         emailHistoryRepository.save(history);
 
         // Retrieve all email history
-        List<EmailHistoryEntity> histories = emailHistoryRepository.findAll();
+        List<EmailHistoryEntity> histories = emailHistoryRepository.findAllOrdered();
         assertNotNull("Email history list should not be null", histories);
         assertEquals(1, histories.size());
         assertEquals("history-100", histories.get(0).getId());
@@ -131,7 +129,7 @@ public class EmailHistoryRepositoryTest {
         emailHistoryRepository.save(history2);
 
         // Find by date range
-        List<EmailHistoryEntity> results = emailHistoryRepository.findByDate(new Date(System.currentTimeMillis() - 10000), new Date(System.currentTimeMillis() + 10000), 0, 10);
+        List<EmailHistoryEntity> results = emailHistoryRepository.findByDate(new Date(System.currentTimeMillis() - 10000), new Date(System.currentTimeMillis() + 10000), new Limit(10, 0));
         assertNotNull("Results should not be null", results);
         assertEquals(2, results.size());
     }

@@ -3,7 +3,7 @@ package ServiceTests.Common;
 import cz.inspire.common.entity.HeaderEntity;
 import cz.inspire.common.repository.HeaderRepository;
 import cz.inspire.common.service.HeaderService;
-import cz.inspire.exception.SystemException;
+import cz.inspire.enterprise.exception.SystemException;
 import jakarta.ejb.CreateException;
 import org.apache.logging.log4j.Logger;
 import org.junit.jupiter.api.BeforeEach;
@@ -75,18 +75,18 @@ public class HeaderServiceTest {
     void testRemove_Success() throws SystemException {
         HeaderEntity entity = new HeaderEntity("1", 42, 7);
 
-        headerService.remove(entity);
+        headerService.delete(entity);
 
-        verify(headerRepository, times(1)).remove(entity);
+        verify(headerRepository, times(1)).delete(entity);
     }
 
     @Test
     void testRemove_Failure() {
         HeaderEntity entity = new HeaderEntity("1", 42, 7);
 
-        doThrow(RuntimeException.class).when(headerRepository).remove(entity);
+        doThrow(RuntimeException.class).when(headerRepository).delete(entity);
 
-        SystemException exception = assertThrows(SystemException.class, () -> headerService.remove(entity));
+        SystemException exception = assertThrows(SystemException.class, () -> headerService.delete(entity));
 
         assertEquals("Failed to remove HeaderEntity", exception.getMessage());
 

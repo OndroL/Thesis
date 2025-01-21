@@ -3,6 +3,7 @@ package RepositoryTests.Email;
 import cz.inspire.EntityManagerProducer;
 import cz.inspire.email.entity.EmailQueueEntity;
 import cz.inspire.email.repository.EmailQueueRepository;
+import jakarta.data.Limit;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
 import jakarta.persistence.Persistence;
@@ -63,7 +64,7 @@ public class EmailQueueRepositoryTest {
         emailQueueRepository.save(emailQueue);
 
         // Retrieve all entries
-        List<EmailQueueEntity> queues = emailQueueRepository.findAll();
+        List<EmailQueueEntity> queues = emailQueueRepository.findAllOrdered();
         assertNotNull("Queue list should not be null", queues);
         assertEquals(1, queues.size());
         assertEquals("queue-10", queues.get(0).getId());
@@ -126,7 +127,7 @@ public class EmailQueueRepositoryTest {
         emailQueueRepository.save(queue2);
 
         // Find the first mail
-        Optional<EmailQueueEntity> firstMail = emailQueueRepository.findFirstMail();
+        Optional<EmailQueueEntity> firstMail = emailQueueRepository.findFirstMail(Limit.of(1));
         assertNotNull("First mail should not be null", firstMail);
         assertEquals("queue-4", firstMail.get().getId());
     }

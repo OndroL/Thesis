@@ -60,7 +60,7 @@ public class LicenseRepositoryTest {
         licenseRepository.save(license);
 
         // Retrieve all licenses
-        List<LicenseEntity> licenses = licenseRepository.findAll();
+        List<LicenseEntity> licenses = licenseRepository.findAll().toList();
         assertNotNull("License list should not be null", licenses);
         assertEquals(1, licenses.size());
         assertEquals("1", licenses.getFirst().getId());
@@ -88,7 +88,7 @@ public class LicenseRepositoryTest {
         licenseRepository.save(license2);
 
         // Retrieve all licenses
-        List<LicenseEntity> licenses = licenseRepository.findAll();
+        List<LicenseEntity> licenses = licenseRepository.findAll().toList();
         assertNotNull("License list should not be null", licenses);
         assertEquals(2, licenses.size());
     }

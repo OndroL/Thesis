@@ -49,7 +49,7 @@ public class NastaveniRepositoryTest {
         NastaveniEntity entity = new NastaveniEntity("key1", "value1");
         nastaveniRepository.save(entity);
 
-        NastaveniEntity foundEntity = nastaveniRepository.findBy(entity.getKey());
+        NastaveniEntity foundEntity = nastaveniRepository.findById(entity.getKey()).orElse(null);
         assertNotNull("Entity should be found!", foundEntity);
         assertEquals("key1", foundEntity.getKey());
         assertEquals("value1", foundEntity.getValue());
