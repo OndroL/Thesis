@@ -13,7 +13,7 @@ import java.util.Optional;
 public interface EmailQueueRepository extends CrudRepository<EmailQueueEntity,String> {
 
     @Query("SELECT p FROM EmailQueueEntity p ORDER BY p.created DESC")
-    List<EmailQueueEntity> findAllOrdered();
+    List<EmailQueueEntity> findAllOrdered(); // Renamed because of conflict with BaseRepository Stream findAll() func.
 
     @Query("SELECT p FROM EmailQueueEntity p ORDER BY p.created ASC")
     List<EmailQueueEntity> findAll(Limit limit);

@@ -6,6 +6,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.EqualsAndHashCode;
 
+import java.io.Serializable;
 import java.util.Date;
 
 @EqualsAndHashCode
@@ -13,7 +14,7 @@ import java.util.Date;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class LicenseDto {
+public class LicenseDto implements Serializable {
     private String id;
     private int centerId;
     private String customer;
