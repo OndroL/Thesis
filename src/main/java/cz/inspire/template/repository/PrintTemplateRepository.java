@@ -1,15 +1,9 @@
 package cz.inspire.template.repository;
 
 import cz.inspire.template.entity.PrintTemplateEntity;
-import org.apache.deltaspike.data.api.EntityRepository;
-import org.apache.deltaspike.data.api.Query;
-import org.apache.deltaspike.data.api.Repository;
-
-import java.util.Optional;
+import jakarta.data.repository.CrudRepository;
+import jakarta.data.repository.Repository;
 
 @Repository
-public interface  PrintTemplateRepository extends EntityRepository<PrintTemplateEntity, String> {
-    // Added query for creation logic of GeneratedAttachment
-    @Query
-    Optional<PrintTemplateEntity> findById(String templateId);
+public interface  PrintTemplateRepository extends CrudRepository<PrintTemplateEntity, String> {
 }
