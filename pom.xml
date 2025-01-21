@@ -138,6 +138,13 @@
             <version>${deltaspike.version}</version>
         </dependency>
 
+        <!-- Guava: Google Core -->
+        <dependency>
+            <groupId>com.google.guava</groupId>
+            <artifactId>guava</artifactId>
+            <version>33.4.0-jre</version>
+        </dependency>
+
         <!-- Lombok -->
         <dependency>
             <groupId>org.projectlombok</groupId>
