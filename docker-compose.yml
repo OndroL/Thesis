@@ -5,10 +5,20 @@ services:
     image: postgres
     container_name: postgres_db
     ports:
-      - "5432:5432"
+      - "5433:5433"
     environment:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
       POSTGRES_DB: Test
     volumes:
       - ./clubspire.sql:/docker-entrypoint-initdb.d/clubspire.sql
+  wildfly:
+    build:
+      context: .
+    container_name: wildfly
+    ports:
+      - "8181:8080"
+      - "9990:9990"
+    volumes:
+      - ./WF/modules/system/layers/base/org/postgresql/main:/opt/jboss/wildfly/modules/system/layers/base/org/postgresql/main
+      - ./WF/standalone.xml:/opt/jboss/wildfly/standalone/configuration/standalone.xml

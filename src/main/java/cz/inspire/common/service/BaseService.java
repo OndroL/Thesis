@@ -28,6 +28,7 @@ public abstract class BaseService<E, PK extends Serializable, R extends CrudRepo
 
     public void create(E entity) throws CreateException {
         try {
+
             repository.save(entity);
         } catch (Exception e) {
             logger.error("Failed to create " + getEntityType().getSimpleName(), e);
