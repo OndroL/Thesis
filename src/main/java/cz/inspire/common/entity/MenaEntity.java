@@ -23,7 +23,7 @@ public class MenaEntity {
     @Column
     private String vycetka;
     @Column
-    private int kodnum;
+    private int kodNum;
     @Column
     private int zaokrouhleniHotovost;
     @Column
