@@ -1,0 +1,22 @@
+tables:
+  - name: nastaveni
+    primaryKey: key
+    columns:
+      - name: value
+        target: jsonb
+        targetConfig: '{"Value": %s, "ClassName": "%s"}' # value and className
+  - name: email_history
+    primaryKey: id
+    columns:
+      - name: groups
+        target: jsonb
+        targetConfig: '{"groups": %s}'
+      - name: recipients
+        target: jsonb
+        targetConfig: '{"recipients": %s}'
+      - name: morerecipients
+        target: jsonb
+        targetConfig: '{"moreRecipients": %s}'
+      - name: attachments
+        target: filesystem
+        targetConfig: '{"FileName": %s, "FilePath": %s}'
