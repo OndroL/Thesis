@@ -1,54 +1,94 @@
 package RepositoryTests.Common;
 
+
+import RepositoryTests.TestDataSourceConfig;
 import cz.inspire.common.entity.HeaderEntity;
 import cz.inspire.common.repository.HeaderRepository;
 import jakarta.inject.Inject;
+import jakarta.persistence.EntityManager;
+import jakarta.transaction.TransactionScoped;
+import jakarta.transaction.UserTransaction;
 import org.jboss.arquillian.container.test.api.Deployment;
-import org.jboss.arquillian.junit.Arquillian;
+import org.jboss.arquillian.junit5.ArquillianExtension;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
+import org.jboss.shrinkwrap.api.asset.EmptyAsset;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
-import org.junit.BeforeClass;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.apache.logging.log4j.LogManager;
+
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
+import org.jboss.shrinkwrap.resolver.api.maven.Maven;
+import org.junit.jupiter.api.extension.ExtendWith;
 
 import java.util.List;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-
-@RunWith(Arquillian.class)
+@ExtendWith(ArquillianExtension.class)
 public class HeaderRepositoryTest {
 
+    // If your repository is discovered by the Jakarta Data extension,
+    // it will be injected here automatically
     @Inject
     private HeaderRepository headerRepository;
 
+    // If you need direct access for manual transactions,
+    // you can also inject an EntityManager or a UserTransaction
+    @Inject
+    private EntityManager em;
+
+    @Inject
+    private UserTransaction utx;
+
     @Deployment
     public static WebArchive createDeployment() {
-        WebArchive archive = ShrinkWrap.create(WebArchive.class)
-                .addPackage(HeaderEntity.class.getPackage()) // Include your entity package
-                .addPackage(HeaderRepository.class.getPackage()) // Include your repository package
-                .addAsResource("META-INF/persistence.xml"); // Include persistence configuration
-        System.out.println(archive.toString(true)); // Print the archive contents
-        return archive;
+        return ShrinkWrap.create(WebArchive.class, "test.war")
+                // Add classes: your entities, repositories, data-source config
+                .addClasses(
+                        HeaderEntity.class,
+                        HeaderRepository.class,
+                        // e.g., your @Singleton class with @DataSourceDefinition
+                        TestDataSourceConfig.class
+                )
+                .addAsLibraries(
+                        Maven.resolver()
+                                .resolve("org.postgresql:postgresql:42.7.4")
+                                .withTransitivity()
+                                .asFile()
+                )
+                // Add your persistence.xml
+                .addAsResource("META-INF/persistence.xml", "META-INF/persistence.xml")
+                .addAsWebInfResource(EmptyAsset.INSTANCE, "beans.xml");
     }
 
+    @TransactionScoped
     @Test
-    public void testFindValidAttributes() {
-        assertNotNull("HeaderRepository should be initialized!", headerRepository);
+    public void testFindValidAttributes() throws Exception {
+        // Because we're in a container environment, let's manually handle transaction boundaries:
+        utx.begin();
+        em.joinTransaction();
 
-        // Save some entities using repository functions
-        headerRepository.save(new HeaderEntity("1", 10, 1));
-        headerRepository.save(new HeaderEntity("2", 20, -5)); // Invalid location
-        headerRepository.save(new HeaderEntity("3", 30, 15));
+        // Insert test data
+        HeaderEntity e1 = new HeaderEntity("id1", 10, 0);
+        HeaderEntity e2 = new HeaderEntity("id2", 20, 5);
+        HeaderEntity e3 = new HeaderEntity("id3", 30, -1);
 
-        // Query valid attributes
-        List<HeaderEntity> validAttributes = headerRepository.findValidAttributes();
+        em.getTransaction().begin();
+        em.persist(e1);
+        em.persist(e2);
+        em.persist(e3);
+        em.getTransaction().commit();
+        utx.commit();
 
-        // Assertions
-        assertNotNull(validAttributes);
-        assertEquals(2, validAttributes.size());
-        assertEquals("1", validAttributes.get(0).getId());
-        assertEquals("3", validAttributes.get(1).getId());
+        utx.begin();
+        em.joinTransaction();
+        List<HeaderEntity> entities = em.createQuery("SELECT h FROM HeaderEntity h", HeaderEntity.class).getResultList();
+        utx.commit();
+
+        System.out.println("Persisted entities: " + entities);
+        Assertions.assertEquals(3, entities.size());
+
+
+        // Now call the repository method
+        var valid = headerRepository.findValidAttributes();
+        // Expect e1 and e2, but not e3
+        Assertions.assertEquals(1, valid.size(), "Should return 2 rows");
     }
 }
