@@ -5,16 +5,19 @@ import cz.inspire.license.entity.LicenseEntity;
 import cz.inspire.license.repository.LicenseRepository;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
-import org.apache.logging.log4j.Logger;
 
 import java.util.List;
 
 @ApplicationScoped
-public class LicenseService extends BaseService<LicenseEntity, LicenseRepository> {
-    @Inject
-    public LicenseService(Logger logger, LicenseRepository repository) {
-        super(logger, repository, LicenseEntity.class);
+public class LicenseService extends BaseService<LicenseEntity, String, LicenseRepository> {
+
+    public LicenseService() {
     }
 
-    public List<LicenseEntity> findAll() { return repository.findAll(); }
+    @Inject
+    public LicenseService(LicenseRepository repository) {
+        super(repository);
+    }
+
+    public List<LicenseEntity> findAll() { return repository.findAllOrdered(); }
 }

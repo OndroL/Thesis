@@ -1,15 +1,15 @@
 package cz.inspire.sms.repository;
 
 import cz.inspire.sms.entity.SMSHistoryEntity;
-import org.apache.deltaspike.data.api.EntityRepository;
-import org.apache.deltaspike.data.api.Query;
-import org.apache.deltaspike.data.api.Repository;
+import jakarta.data.repository.CrudRepository;
+import jakarta.data.repository.Query;
+import jakarta.data.repository.Repository;
 
 import java.util.List;
 import java.util.Date;
 
 @Repository
-public interface SMSHistoryRepository extends EntityRepository<SMSHistoryEntity, String> {
+public interface SMSHistoryRepository extends CrudRepository<SMSHistoryEntity, String> {
     @Query("SELECT p from SMSHistoryEntity p WHERE (p.date >= ?1) AND (p.date <= ?2)")
     List<SMSHistoryEntity> findByDate(Date dateFrom, Date dateTo);
 

@@ -1,50 +1,76 @@
 package cz.inspire.common.service;
 
-import cz.inspire.exception.SystemException;
+import com.google.common.reflect.TypeToken;
+import cz.inspire.enterprise.exception.SystemException;
+import jakarta.data.repository.CrudRepository;
 import jakarta.ejb.CreateException;
-import org.apache.deltaspike.data.api.EntityRepository;
-import org.apache.deltaspike.jpa.api.transaction.Transactional;
+import java.io.Serializable;
+import java.util.List;
+import java.util.Optional;
+import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-public abstract class BaseService<E, R extends EntityRepository<E, ? extends java.io.Serializable>> {
+public abstract class BaseService<E, PK extends Serializable, R extends CrudRepository<E, PK>> {
 
-    protected final Logger logger;
-    protected final R repository;
-    private final Class<E> entityClass;
-
-    public BaseService(Logger logger, R repository, Class<E> entityClass) {
-        this.logger = logger;
-        this.repository = repository;
-        this.entityClass = entityClass;
+    private Logger logger;
+    protected R repository;
+    private final TypeToken<E> typeToken = new TypeToken<>(getClass()) {};
+    
+    public BaseService() {
     }
 
-    @Transactional
+    public BaseService(R repository) {
+        this.repository = repository;
+        logger = LogManager.getLogger(getClass());
+    }
+
+    // CRUD operations
+
     public void create(E entity) throws CreateException {
         try {
+
             repository.save(entity);
         } catch (Exception e) {
-            logger.error("Failed to create " + entityClass.getSimpleName(), e);
-            throw new CreateException("Failed to create " + entityClass.getSimpleName());
+            logger.error("Failed to create " + getEntityType().getSimpleName(), e);
+            throw new CreateException("Failed to create " + getEntityType().getSimpleName());
         }
     }
 
-    @Transactional
     public void update(E entity) throws SystemException {
         try {
             repository.save(entity);
         } catch (Exception e) {
-            logger.error("Failed to update " +  entityClass.getSimpleName(), e);
-            throw new SystemException("Failed to update " + entityClass.getSimpleName(), e);
+            logger.error("Failed to update " +  getEntityType().getSimpleName(), e);
+            throw new SystemException("Failed to update " + getEntityType().getSimpleName(), e);
         }
     }
 
-    @Transactional
-    public void remove(E entity) throws SystemException {
+    public void delete(E entity) throws SystemException {
         try {
-            repository.remove(entity);
+            repository.delete(entity);
         } catch (Exception e) {
-            logger.error("Failed to remove " + entityClass.getSimpleName(), e);
-            throw new SystemException("Failed to remove " + entityClass.getSimpleName(), e);
+            logger.error("Failed to remove " + getEntityType().getSimpleName(), e);
+            throw new SystemException("Failed to remove " + getEntityType().getSimpleName(), e);
         }
+    }
+
+    // Basic finders
+
+    public List<E> findAll() {
+        return repository.findAll().toList();
+    }
+
+    public Optional<E> findByPK(PK pk) {
+        return repository.findById(pk);
+    }
+
+
+    // Entity type Helper for errors and Exceptions
+    // If we are confident that typeToken.getRawType() always returns the correct Class<E>, the suppression is safe
+    // Otherwise we will have everywhere warnings for
+    // Unchecked cast: 'java. lang. Class<capture<? super E>>' to 'java. lang. Class<E>'
+    @SuppressWarnings("unchecked")
+    private Class<E> getEntityType() {
+        return (Class<E>) typeToken.getRawType();
     }
 }

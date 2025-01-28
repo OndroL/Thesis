@@ -6,6 +6,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.EqualsAndHashCode;
 
+import java.io.Serializable;
 import java.util.Map;
 
 @EqualsAndHashCode
@@ -13,7 +14,7 @@ import java.util.Map;
 @AllArgsConstructor
 @Getter
 @Setter
-public class GeneratedAttachmentDto {
+public class GeneratedAttachmentDto implements Serializable {
     private String id;
     private String email;
     private Map<String, Object> attributes;

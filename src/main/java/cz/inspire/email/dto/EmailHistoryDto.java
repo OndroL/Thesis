@@ -6,6 +6,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.EqualsAndHashCode;
 
+import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -15,7 +16,7 @@ import java.util.Map;
 @AllArgsConstructor
 @Getter
 @Setter
-public class EmailHistoryDto {
+public class EmailHistoryDto implements Serializable {
     private String id;
     private Date date;
     private String text;

@@ -12,3 +12,13 @@ services:
       POSTGRES_DB: Test
     volumes:
       - ./clubspire.sql:/docker-entrypoint-initdb.d/clubspire.sql
+  wildfly:
+    build:
+      context: .
+    container_name: wildfly
+    ports:
+      - "8181:8080"
+      - "9990:9990"
+    volumes:
+      - ./WF/modules/system/layers/base/org/postgresql/main:/opt/jboss/wildfly/modules/system/layers/base/org/postgresql/main
+      - ./WF/standalone.xml:/opt/jboss/wildfly/standalone/configuration/standalone.xml

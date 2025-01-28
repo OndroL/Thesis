@@ -6,12 +6,14 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.EqualsAndHashCode;
 
+import java.io.Serializable;
+
 @EqualsAndHashCode
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class PrintTemplateDto {
+public class PrintTemplateDto implements Serializable {
     private String id;
     private String content;
     private int type;

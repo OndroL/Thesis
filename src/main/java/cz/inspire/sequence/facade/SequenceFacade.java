@@ -1,6 +1,6 @@
 package cz.inspire.sequence.facade;
 
-import cz.inspire.exception.SystemException;
+import cz.inspire.enterprise.exception.SystemException;
 import cz.inspire.sequence.dto.SequenceDto;
 import cz.inspire.sequence.entity.SequenceEntity;
 import cz.inspire.sequence.mapper.SequenceMapper;

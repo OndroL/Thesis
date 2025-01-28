@@ -32,7 +32,7 @@ public class GeneratedAttachmentFacade {
 
     // Create in old bean was only called from EmailHistory bean, I left here generic create (same as in PrintedTemplate)
     // with only one parameter for DTO and "same" logic as in Bean. Can be deleted or left if necessary in controllers
-    // Difrence in logic is with searching for EmailHistory by its Id and
+    // Difference in logic is with searching for EmailHistory by its Id
     public String create(GeneratedAttachmentDto dto) throws CreateException {
         try {
             if (dto.getId() == null) {
