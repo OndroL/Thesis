@@ -18,7 +18,7 @@ public class FilesystemMigrator implements Migrator {
     private static final ObjectMapper mapper = new ObjectMapper();
 
     // Base directory where attachments will be stored
-    private static final String ATTACHMENTS_BASE_DIR = "FILE_SYSTEM/attachments/";
+    private static final String BASE_DIR = "FILE_SYSTEM";
 
     @Override
     public void migrate(Connection readConn, Connection writeConn, String tableName, String primaryKey,
@@ -35,7 +35,7 @@ public class FilesystemMigrator implements Migrator {
             return;
         }
 
-        // Step 1: Alter the table to add new column (original_column_json) if it doesn't exist
+        // Alter the table to add new column (original_column_json) if it doesn't exist
         String alterTableSQL = String.format("ALTER TABLE %s ADD COLUMN IF NOT EXISTS %s jsonb;", tableName, newColumnName);
         try (Statement stmt = writeConn.createStatement()) {
             stmt.execute(alterTableSQL);
@@ -47,7 +47,7 @@ public class FilesystemMigrator implements Migrator {
             return;
         }
 
-        // Step 2: Prepare SELECT and UPDATE statements
+        // Prepare SELECT and UPDATE statements
         String selectSQL = String.format("SELECT %s, %s FROM %s", primaryKey, originalColumnName, tableName);
         String updateSQL = String.format("UPDATE %s SET %s = ? WHERE %s = ?", tableName, newColumnName, primaryKey);
 
@@ -104,11 +104,14 @@ public class FilesystemMigrator implements Migrator {
             // Deserialize the Map from bytea
             Object obj = JBossDeserializer.deserialize(valueBytes);
             if (!(obj instanceof Map)) {
-                logger.info("Table '{}', Key '{}': Expected a Map for attachments, but found {}", tableName, key, obj != null ? obj.getClass().getName() : "null");
+                if (obj != null) {
+                    logger.info("Table '{}', Key '{}': Expected a Map for attachments, but found {}", tableName, key, obj != null ? obj.getClass().getName() : "null");
+                }
+                // Fallback JSON with empty array
                 return "[]";
             }
 
-            Map<String, byte[]> attachmentsMap = (Map<String, byte[]>) obj; // Adjust type if necessary
+            Map<String, byte[]> attachmentsMap = (Map<String, byte[]>) obj;
 
             List<Map<String, String>> attachmentsList = new ArrayList<>();
 
@@ -118,14 +121,15 @@ public class FilesystemMigrator implements Migrator {
 
                 // Generate unique identifier for filePath
                 String uniqueId = UUID.randomUUID().toString();
-                String filePath = ATTACHMENTS_BASE_DIR + uniqueId + "_" + fileName;
+                String baseDirPath = BASE_DIR + '/' + targetConfig + '/';
+                String filePath = baseDirPath + uniqueId;
 
                 // Ensure the base directory exists
-                File baseDir = new File(ATTACHMENTS_BASE_DIR);
+                File baseDir = new File(baseDirPath);
                 if (!baseDir.exists()) {
                     boolean dirsCreated = baseDir.mkdirs();
                     if (!dirsCreated) {
-                        logger.error("Failed to create directories for path '{}'.", ATTACHMENTS_BASE_DIR);
+                        logger.error("Failed to create directories for path '{}'.", BASE_DIR);
                         continue; // Skip this attachment
                     }
                 }

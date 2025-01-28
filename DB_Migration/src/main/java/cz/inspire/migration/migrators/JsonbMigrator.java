@@ -11,6 +11,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.sql.*;
+import java.util.Map;
+
 
 public class JsonbMigrator implements Migrator {
     private static final Logger logger = LoggerFactory.getLogger(JsonbMigrator.class);
@@ -30,7 +32,7 @@ public class JsonbMigrator implements Migrator {
             return;
         }
 
-        // Step 1: Alter the table to add new column (original_column_json) if it doesn't exist
+        // Alter the table to add new column (original_column_json) if it doesn't exist
         String alterTableSQL = String.format("ALTER TABLE %s ADD COLUMN IF NOT EXISTS %s jsonb;", tableName, newColumnName);
         try (Statement stmt = writeConn.createStatement()) {
             stmt.execute(alterTableSQL);
@@ -42,7 +44,7 @@ public class JsonbMigrator implements Migrator {
             return;
         }
 
-        // Step 2: Prepare SELECT and UPDATE statements
+        // Prepare SELECT and UPDATE statements
         String selectSQL = String.format("SELECT %s, %s FROM %s", primaryKey, originalColumnName, tableName);
         String updateSQL = String.format("UPDATE %s SET %s = ? WHERE %s = ?", tableName, newColumnName, primaryKey);
 
@@ -58,34 +60,17 @@ public class JsonbMigrator implements Migrator {
                     String key = rs.getString(primaryKey);
                     byte[] valueBytes = rs.getBytes(originalColumnName);
 
-                    String finalJsonValue = null;
+                    String finalJsonValue;
 
                     // Deserialize and convert to JSON
                     try {
                         Object obj = JBossDeserializer.deserialize(valueBytes);
-                        if (obj != null) {
-                            String jsonValue = JsonConverter.toJson(obj);
-                            logger.debug("Table '{}', Key '{}': JSON Value: {}", tableName, key, jsonValue);
+                        finalJsonValue = buildJson(obj, columnConfig, tableName, originalColumnName);
 
-                            // Parse jsonValue back into JsonNode
-                            JsonNode valueNode = mapper.readTree(jsonValue);
-
-                            // Construct the final JSON object based on targetConfig
-                            ObjectNode jsonNode = mapper.createObjectNode();
-                            if ("nastaveni".equals(tableName) && "value".equals(originalColumnName)) {
-                                jsonNode.set("Value", valueNode);
-                                jsonNode.put("ClassName", obj.getClass().getSimpleName());
-                            } else {
-                                // For other tables and columns
-                                jsonNode.set("Value", valueNode);
-                            }
-
-                            finalJsonValue = mapper.writeValueAsString(jsonNode);
+                        if (finalJsonValue != null) {
                             logger.debug("Constructed JSON for key '{}': {}", key, finalJsonValue);
                         } else {
-                            logger.warn("Table '{}', Key '{}': Deserialized object is null. Setting jsonb column to NULL.", tableName, key);
-                            // Set finalJsonValue to null to indicate SQL NULL
-                            finalJsonValue = null;
+                            logger.info("Table '{}', Key '{}': JSON value is null.", tableName, key);
                         }
                     } catch (Exception e) {
                         logger.error("Table '{}', Key '{}': Failed to deserialize or convert data.", tableName, key, e);
@@ -103,7 +88,6 @@ public class JsonbMigrator implements Migrator {
                     updateStmt.addBatch();
 
                     count++;
-
 
                     if (count % batchSize == 0) {
                         executeBatch(updateStmt, writeConn, count, tableName, newColumnName);
@@ -138,6 +122,61 @@ public class JsonbMigrator implements Migrator {
             } catch (SQLException rollbackEx) {
                 logger.error("Failed to rollback transaction for table '{}', column '{}'.", tableName, columnName, rollbackEx);
             }
+        }
+    }
+
+    private String buildJson(Object deserializedObj, ColumnConfig columnConfig, String tableName, String originalColumnName) {
+        try {
+            if (deserializedObj == null) {
+                return null;
+            }
+
+            String targetConfig = columnConfig.getTargetConfig();
+
+            if ("list".equals(targetConfig)) {
+                // For "list" targetConfig, serialize the object as a JSON array
+                return mapper.writeValueAsString(deserializedObj);
+            } else if ("nastaveni".equals(targetConfig)) {
+                // Build JSON for "nastaveni" case
+                String jsonValue = JsonConverter.toJson(deserializedObj);
+                JsonNode valueNode = mapper.readTree(jsonValue);
+
+                ObjectNode jsonNode = mapper.createObjectNode();
+                jsonNode.set("Value", valueNode);
+                jsonNode.put("ClassName", deserializedObj.getClass().getSimpleName());
+
+                return mapper.writeValueAsString(jsonNode);
+            } else if ("attributes".equals(targetConfig)) {
+                Map<String, Object> attributesMap;
+                try {
+                    // Assuming deserializedObj is already a compatible Map structure
+                    if (deserializedObj instanceof Map) {
+                        attributesMap = (Map<String, Object>) deserializedObj;
+                    } else {
+                        // Fallback: Convert the object into a Map using Jackson
+                        attributesMap = mapper.convertValue(deserializedObj, Map.class);
+                    }
+                    // Convert the Map to a JSON string
+                    return mapper.writeValueAsString(attributesMap);
+
+                } catch (Exception e) {
+                    logger.error("Table '{}': Failed to process 'attributes' data. Setting column to NULL.", tableName, e);
+                    return null; // Default to SQL NULL in case of errors
+                }
+            } else {
+                // Default behavior for other cases
+                logger.warn("Unsupported targetConfig '{}' for table '{}', column '{}'. Returning basic Jsonb with Value.", targetConfig, tableName, originalColumnName);
+                String jsonValue = JsonConverter.toJson(deserializedObj);
+                JsonNode valueNode = mapper.readTree(jsonValue);
+
+                ObjectNode jsonNode = mapper.createObjectNode();
+                jsonNode.set("Value", valueNode);
+
+                return mapper.writeValueAsString(jsonNode);
+            }
+        } catch (Exception e) {
+            logger.error("Failed to build JSON for table '{}', column '{}'. Returning null.", tableName, originalColumnName, e);
+            return null;
         }
     }
 }
