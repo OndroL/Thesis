@@ -19,9 +19,8 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Paths;
-import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
@@ -49,18 +48,10 @@ public class EmailHistoryFacade {
             EmailHistoryEntity entity = emailHistoryMapper.toEntity(dto);
 
             if (dto.getAttachments() != null && !dto.getAttachments().isEmpty()) {
-                StringBuilder filePaths = new StringBuilder();
-                for (int i = 0; i < dto.getAttachments().size(); i++) {
-                    byte[] fileData = dto.getAttachments().get(i);
-                    String filePath = emailHistoryService.saveFileToFileSystem(fileData, dto.getId());
-                    filePaths.append(filePath).append(","); // Concatenate file paths
-                }
-                // Remove trailing comma
-                if (!filePaths.isEmpty()) {
-                    filePaths.setLength(filePaths.length() - 1);
-                }
-                entity.setAttachments(filePaths.toString()); // Set FilePaths to Entity
+                List<Map<String, String>> savedAttachments = emailHistoryService.saveAttachments(dto.getAttachments());
+                entity.setAttachments(savedAttachments); // Save as JSONB
             }
+
             emailHistoryService.create(entity);
 
             //PostCreate logic
@@ -71,7 +62,7 @@ public class EmailHistoryFacade {
             return entity.getId();
 
         } catch (Exception e) {
-            throw new CreateException();
+            throw new CreateException("Failed while creating EmailHistory with error : " + e);
         }
     }
 
@@ -109,7 +100,7 @@ public class EmailHistoryFacade {
             }
 
         } catch (Exception e) {
-            logger.error("GeneratedAttachment couldn't be created, couldn't set PrintTemplate with id : {}", entity.getPrintTemplate(), e);
+            logger.error("GeneratedAttachment couldn't be created, couldn't set PrintTemplate with id : " + entity.getPrintTemplate(), e);
             throw new CreateException("GeneratedAttachment couldn't be created: " + e);
         }
     }
@@ -117,19 +108,21 @@ public class EmailHistoryFacade {
     public EmailHistoryDto mapToDto(EmailHistoryEntity entity) {
         EmailHistoryDto dto = emailHistoryMapper.toDto(entity);
 
-        // Reconstruct files from file paths
         if (entity.getAttachments() != null) {
-            String[] filePaths = entity.getAttachments().split(",");
-            List<byte[]> files = new ArrayList<>();
-            for (String path : filePaths) {
+            Map<String, byte[]> attachments = new HashMap<>();
+            for (Map<String, String> attachment : entity.getAttachments()) {
                 try {
-                    files.add(Files.readAllBytes(Paths.get(path)));
+                    String fileName = attachment.get("FileName");
+                    String filePath = attachment.get("FilePath");
+                    byte[] fileContent = emailHistoryService.readFile(filePath);
+                    attachments.put(fileName, fileContent);
                 } catch (IOException e) {
-                    logger.error("Failed to read file: {}", path, e);
+                    logger.error("Failed to read file: " + attachment.get("FilePath"), e);
                 }
             }
-            dto.setAttachments(files); // Set reconstructed files in DTO
+            dto.setAttachments(attachments);
         }
+
         return dto;
     }
 
