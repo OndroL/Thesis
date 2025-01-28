@@ -135,7 +135,7 @@ public class JsonbMigrator implements Migrator {
 
             if ("list".equals(targetConfig)) {
                 // For "list" targetConfig, serialize the object as a JSON array
-                return mapper.writeValueAsString(deserializedObj);
+                return JsonConverter.toJson(deserializedObj);
             } else if ("nastaveni".equals(targetConfig)) {
                 // Build JSON for "nastaveni" case
                 String jsonValue = JsonConverter.toJson(deserializedObj);
