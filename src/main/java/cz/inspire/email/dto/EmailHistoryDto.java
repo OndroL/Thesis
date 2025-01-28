@@ -8,6 +8,7 @@ import lombok.EqualsAndHashCode;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 @EqualsAndHashCode
 @NoArgsConstructor
@@ -23,7 +24,7 @@ public class EmailHistoryDto {
     private List<String> recipients;
     private List<String> moreRecipients;
     // These are files
-    private List<byte[]> attachments;
+    private Map<String, byte[]> attachments;
     private Boolean automatic;
     private Boolean html;
     private Boolean sent;

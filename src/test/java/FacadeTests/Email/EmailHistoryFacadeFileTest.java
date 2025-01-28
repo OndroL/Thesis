@@ -2,7 +2,6 @@ package FacadeTests.Email;
 
 import cz.inspire.EntityManagerProducer;
 import cz.inspire.email.dto.EmailHistoryDto;
-import cz.inspire.email.dto.GeneratedAttachmentDto;
 import cz.inspire.email.entity.EmailHistoryEntity;
 import cz.inspire.email.facade.EmailHistoryFacade;
 import jakarta.persistence.EntityManager;
@@ -14,14 +13,10 @@ import org.apache.deltaspike.core.api.provider.BeanProvider;
 import org.junit.Before;
 import org.junit.Test;
 
-import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -58,12 +53,11 @@ public class EmailHistoryFacadeFileTest {
 
     @Test
     public void testCreateEmailHistoryWithFile() throws Exception {
+        // Ensure the attachments directory is cleaned up before the test
+        Path testDir = Paths.get("FILE_SYSTEM/attachments");
+        //deleteDirectoryRecursively(testDir);
 
-        Path testDir = Paths.get("FILE_SYSTEM/Email_History/test-id");
-        deleteDirectoryRecursively(testDir);
-
-
-        // Create DTO
+        // Create DTO with attachments
         EmailHistoryDto dto = new EmailHistoryDto();
         dto.setId("test-id");
         dto.setDate(new Date());
@@ -76,19 +70,12 @@ public class EmailHistoryFacadeFileTest {
         dto.setHtml(false);
         dto.setSent(false);
 
-        // Attachments as byte arrays
-        List<byte[]> attachments = new ArrayList<>();
-        attachments.add("Test file content".getBytes());
+        // Attachments as a Map<String, byte[]>
+        Map<String, byte[]> attachments = new HashMap<>();
+        String fileName = "testFile.txt";
+        String fileContent = "Test file content";
+        attachments.put(fileName, fileContent.getBytes());
         dto.setAttachments(attachments);
-
-        // Generated Attachments
-        List<GeneratedAttachmentDto> generatedAttachments = new ArrayList<>();
-        GeneratedAttachmentDto attachmentDto = new GeneratedAttachmentDto();
-        attachmentDto.setId("gen-attach-id");
-        attachmentDto.setEmail("recipient1@example.com");
-        attachmentDto.setAttributes(Map.of("key1", "value1"));
-        generatedAttachments.add(attachmentDto);
-        dto.setGeneratedAttachments(generatedAttachments);
 
         // Create entity using the facade
         String createdId = emailHistoryFacade.create(dto);
@@ -98,28 +85,46 @@ public class EmailHistoryFacadeFileTest {
         assertNotNull(entity);
         assertEquals("Test email text", entity.getText());
         assertEquals("Test subject", entity.getSubject());
-        assertTrue(Files.exists(Paths.get("FILE_SYSTEM/Email_History/" + createdId)));
+        assertNotNull(entity.getAttachments());
 
-        // Verify generated attachments
-        assertEquals(1, entity.getGeneratedAttachments().size());
-        assertEquals("gen-attach-id", entity.getGeneratedAttachments().get(0).getId());
+        // Verify JSONB structure
+        List<Map<String, String>> dbAttachments = entity.getAttachments();
+        assertEquals(1, dbAttachments.size());
+        Map<String, String> attachment = dbAttachments.get(0);
+        assertTrue(attachment.containsKey("FilePath"));
+        assertTrue(attachment.containsKey("FileName"));
+
+        // Verify the stored file
+        String filePath = attachment.get("FilePath");
+        Path normalizedPath = Paths.get(filePath).toAbsolutePath();
+        assertTrue(Files.exists(normalizedPath), "File should exist: " + normalizedPath);
+
+        // Validate the stored file content
+        byte[] storedFileContent = Files.readAllBytes(normalizedPath);
+        assertArrayEquals(fileContent.getBytes(), storedFileContent, "File content mismatch");
+
+        // Verify file reconstruction in DTO
+        EmailHistoryDto retrievedDto = emailHistoryFacade.findById(createdId).orElseThrow();
+        assertNotNull(retrievedDto.getAttachments());
+        assertEquals(1, retrievedDto.getAttachments().size());
+        assertArrayEquals(fileContent.getBytes(), retrievedDto.getAttachments().get(fileName), "Reconstructed file content mismatch");
     }
-
 
     @Test
     public void testCreateEmailHistoryWithRealFile() throws Exception {
         // File path for the real file
         String filePath = "FILE_SYSTEM/file-example_PDF_1MB.pdf";
-        Path testDir = Paths.get("FILE_SYSTEM/Email_History/test-id-single-file");
-        deleteDirectoryRecursively(testDir);
+        Path testDir = Paths.get("FILE_SYSTEM/attachments");
+        //deleteDirectoryRecursively(testDir);
 
         // Ensure the file exists before the test
-        assertTrue(Files.exists(Paths.get(filePath)), "File does not exist: " + filePath);
+        Path path = Paths.get(filePath);
+        assertTrue(Files.exists(path), "File does not exist: " + filePath);
 
         // Convert the file to a byte array
-        byte[] fileContent = Files.readAllBytes(Paths.get(filePath));
+        byte[] fileContent = Files.readAllBytes(path);
 
-        // Create DTO
+        // Create DTO with real file
         EmailHistoryDto dto = new EmailHistoryDto();
         dto.setId("test-id-single-file");
         dto.setDate(new Date());
@@ -131,7 +136,11 @@ public class EmailHistoryFacadeFileTest {
         dto.setAutomatic(true);
         dto.setHtml(true);
         dto.setSent(true);
-        dto.setAttachments(List.of(fileContent)); // Attach the single file
+
+        // Add the file as an attachment
+        String fileName = "file-example_PDF_1MB.pdf";
+        Map<String, byte[]> attachments = Map.of(fileName, fileContent);
+        dto.setAttachments(attachments);
 
         // Create entity using the facade
         String createdId = emailHistoryFacade.create(dto);
@@ -142,41 +151,27 @@ public class EmailHistoryFacadeFileTest {
         assertEquals("Email with a single file", entity.getText());
         assertEquals("Single File Test", entity.getSubject());
 
-        // Verify the stored file
-        String storedFilePath = entity.getAttachments().trim();
-        System.out.println("Stored path from entity: [" + storedFilePath + "]");
-        Path normalizedStoredPath = Paths.get(storedFilePath).toAbsolutePath().normalize();
-        System.out.println("Normalized stored path: [" + normalizedStoredPath + "]");
+        // Verify JSONB structure
+        List<Map<String, String>> dbAttachments = entity.getAttachments();
+        assertEquals(1, dbAttachments.size());
+        Map<String, String> attachment = dbAttachments.get(0);
+        assertTrue(attachment.containsKey("FilePath"));
+        assertTrue(attachment.containsKey("FileName"));
 
-        assertTrue(Files.exists(normalizedStoredPath), "Stored file does not exist: " + normalizedStoredPath);
+        // Verify the stored file
+        String storedFilePath = attachment.get("FilePath");
+        Path normalizedPath = Paths.get(storedFilePath).toAbsolutePath();
+        assertTrue(Files.exists(normalizedPath), "File should exist: " + normalizedPath);
 
         // Validate the stored file content
-        byte[] storedFileContent = Files.readAllBytes(normalizedStoredPath);
-        assertArrayEquals(fileContent, storedFileContent, "File content mismatch for: " + normalizedStoredPath);
+        byte[] storedFileContent = Files.readAllBytes(normalizedPath);
+        assertArrayEquals(fileContent, storedFileContent, "File content mismatch");
 
         // Verify file reconstruction in DTO
         EmailHistoryDto retrievedDto = emailHistoryFacade.findById(createdId).orElseThrow();
-        assertNotNull(retrievedDto.getAttachments(), "Attachments in DTO should not be null");
-        assertEquals(1, retrievedDto.getAttachments().size(), "Number of reconstructed files mismatch");
-        assertArrayEquals(fileContent, retrievedDto.getAttachments().getFirst(), "Reconstructed file content mismatch");
+        assertNotNull(retrievedDto.getAttachments());
+        assertEquals(1, retrievedDto.getAttachments().size());
+        assertArrayEquals(fileContent, retrievedDto.getAttachments().get(fileName), "Reconstructed file content mismatch");
     }
 
-
-    private void deleteDirectoryRecursively(Path directory) {
-        if (Files.exists(directory)) {
-            try {
-                Files.walk(directory)
-                        .sorted((a, b) -> b.compareTo(a)) // Delete children before parent
-                        .forEach(path -> {
-                            try {
-                                Files.delete(path);
-                            } catch (IOException e) {
-                                System.err.println("Failed to delete: " + path);
-                            }
-                        });
-            } catch (IOException e) {
-                System.err.println("Failed to clear test directory: " + directory);
-            }
-        }
-    }
 }

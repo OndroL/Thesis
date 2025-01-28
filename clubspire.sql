@@ -767,7 +767,7 @@ CREATE TABLE public.email_history (
     morerecipients jsonb,
     automatic boolean,
     html boolean,
-    attachments text,
+    attachments jsonb,
     sent boolean DEFAULT true
 );
 
