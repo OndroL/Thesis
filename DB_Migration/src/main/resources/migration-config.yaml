@@ -1,22 +1,41 @@
+# Config for Migration of data in tables
 tables:
   - name: nastaveni
     primaryKey: key
     columns:
       - name: value
         target: jsonb
-        targetConfig: '{"Value": %s, "ClassName": "%s"}' # value and className
+        targetConfig: "nastaveni" # contains value and className in jsonb
+  - name: sms_history
+    primaryKey: id
+    columns:
+      - name: groups
+        target: jsonb
+        targetConfig: "list"
+      - name: recipients
+        target: jsonb
+        targetConfig: "list"
+      - name: morerecipients
+        target: jsonb
+        targetConfig: "list"
   - name: email_history
     primaryKey: id
     columns:
       - name: groups
         target: jsonb
-        targetConfig: '{"groups": %s}'
+        targetConfig: "list"
       - name: recipients
         target: jsonb
-        targetConfig: '{"recipients": %s}'
+        targetConfig: "list"
       - name: morerecipients
         target: jsonb
-        targetConfig: '{"moreRecipients": %s}'
+        targetConfig: "list"
       - name: attachments
         target: filesystem
-        targetConfig: '{"FileName": %s, "FilePath": %s}'
+        targetConfig: "attachments"  # base dir in FileSystem - rename to some number contains FileName and FilePath
+  - name: generated_attachment
+    primaryKey: id
+    columns:
+      - name: attributes
+        target: jsonb
+        targetConfig: "attributes" # contains value and Key in jsonb (Map<String,Object>)
