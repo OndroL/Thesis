@@ -11,17 +11,19 @@ import jakarta.inject.Inject;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-import java.util.*;
+import java.util.List;
+import java.util.ArrayList;
+import java.util.Map;
+import java.util.Optional;
+import java.util.Date;
 
 @ApplicationScoped
 public class EmailHistoryService extends BaseService<EmailHistoryEntity, String, EmailHistoryRepository> {
 
+    private final FileStorageUtil fileStorageUtil = new FileStorageUtil("FILE_SYSTEM");
+    private static final String FILE_NAME_PATTERN = "voucher-d-M-yyyy.pdf";
     // Rename this to some number, which will not be easily recognised
     private static final String ATTACHMENTS_DIRECTORY = "attachments";
-    private final FileStorageUtil fileStorageUtil = new FileStorageUtil("FILE_SYSTEM");
-
-
-    private static final String FILE_NAME_PATTERN = "voucher-d-M-yyyy.pdf";
 
     public EmailHistoryService() {
     }
