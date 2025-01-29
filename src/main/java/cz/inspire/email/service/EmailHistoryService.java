@@ -11,11 +11,11 @@ import jakarta.inject.Inject;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.Date;
 import java.util.List;
 import java.util.ArrayList;
 import java.util.Map;
 import java.util.Optional;
-import java.util.Date;
 
 @ApplicationScoped
 public class EmailHistoryService extends BaseService<EmailHistoryEntity, String, EmailHistoryRepository> {
