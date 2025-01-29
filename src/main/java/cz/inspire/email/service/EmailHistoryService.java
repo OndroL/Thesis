@@ -9,9 +9,9 @@ import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 
 import java.io.IOException;
-
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.Date;
 import java.util.List;
 import java.util.ArrayList;
 import java.util.Map;
@@ -46,6 +46,7 @@ public class EmailHistoryService extends BaseService<EmailHistoryEntity, String,
                     ? originalFileName
                     : generateFileName();
 
+
             savedAttachments.add(fileStorageUtil.saveFile(fileData, fileName, ATTACHMENTS_DIRECTORY));
         }
         return savedAttachments;
@@ -55,14 +56,15 @@ public class EmailHistoryService extends BaseService<EmailHistoryEntity, String,
         return fileStorageUtil.readFile(filePath); // Delegate to FileStorageUtil
     }
 
+
     // Brainstorm naming pattern for vouchers, because with this implementation which is identical
     // to controller implementation, problem with same names for 2 different voucher can occur.
     // E.g. two vouchers created in same day for same EmailHistory will be returned as only one file
     // because their name is the key in map and the existing (first) file for that key will be overwritten with the new file.
     public static String generateFileName() {
-       DateTimeFormatter formatter = DateTimeFormatter.ofPattern("d-M-yyyy");
-       String datePart = LocalDate.now().format(formatter);
-       return FILE_NAME_PATTERN.replace("d-M-yyyy", datePart);
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("d-M-yyyy");
+        String datePart = LocalDate.now().format(formatter);
+        return FILE_NAME_PATTERN.replace("d-M-yyyy", datePart);
     }
 
     public List<EmailHistoryEntity> findAll() { return repository.findAllOrdered(); }

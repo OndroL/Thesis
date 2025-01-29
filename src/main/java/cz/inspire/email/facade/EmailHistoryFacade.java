@@ -61,7 +61,7 @@ public class EmailHistoryFacade {
             return entity.getId();
 
         } catch (Exception e) {
-            throw new CreateException();
+            throw new CreateException("Failed while creating EmailHistory with error : " + e);
         }
     }
 
