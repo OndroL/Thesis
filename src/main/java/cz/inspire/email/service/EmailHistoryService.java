@@ -46,7 +46,6 @@ public class EmailHistoryService extends BaseService<EmailHistoryEntity, String,
                     ? originalFileName
                     : generateFileName();
 
-
             savedAttachments.add(fileStorageUtil.saveFile(fileData, fileName, ATTACHMENTS_DIRECTORY));
         }
         return savedAttachments;
