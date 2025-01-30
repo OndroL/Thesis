@@ -6,6 +6,7 @@ import cz.inspire.sms.repository.SMSHistoryRepository;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 
+import java.sql.Timestamp;
 import java.util.List;
 import java.util.Date;
 
@@ -20,9 +21,9 @@ public class SMSHistoryService extends BaseService<SMSHistoryEntity, String, SMS
         super(repository);
     }
 
-    public List<SMSHistoryEntity> findByDate(Date from, Date to) { return repository.findByDate(from, to); }
+    public List<SMSHistoryEntity> findByDate(Date from, Date to) { return repository.findByDate(new Timestamp(from.getTime()), new Timestamp(to.getTime())); }
 
     public List<SMSHistoryEntity> findByDateAutomatic(Date from, Date to, boolean automatic) {
-        return repository.findByDateAutomatic(from, to, automatic);
+        return repository.findByDateAutomatic(new Timestamp(from.getTime()), new Timestamp(to.getTime()), automatic);
     }
 }

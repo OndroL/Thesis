@@ -9,6 +9,7 @@ import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 
 import java.io.IOException;
+import java.sql.Timestamp;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
@@ -72,7 +73,7 @@ public class EmailHistoryService extends BaseService<EmailHistoryEntity, String,
         return repository.findAll(new Limit(count, offset)); }
 
     public List<EmailHistoryEntity> findByDate(Date dateFrom, Date dateTo, int offset, int count) {
-        return repository.findByDate(dateFrom, dateTo, new Limit(count, offset));
+        return repository.findByDate(new Timestamp(dateFrom.getTime()), new Timestamp(dateTo.getTime()), new Limit(count, offset));
     }
 
     public Optional<EmailHistoryEntity> findById(String emailHistoryId) { return repository.findById(emailHistoryId); }
