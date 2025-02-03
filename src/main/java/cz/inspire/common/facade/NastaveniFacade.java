@@ -19,7 +19,7 @@ public class NastaveniFacade {
 
     public String create(String key, Serializable value) throws CreateException {
         try {
-            nastaveniService.create(new NastaveniEntity(key, value));
+            nastaveniService.create(nastaveniMapper.toEntity(new NastaveniDto(key, value)));
             /// Even that the docs in old Bean said return type to be primary key of the new instance
             /// It is set to return null
             return null;
@@ -27,11 +27,6 @@ public class NastaveniFacade {
             throw new CreateException();
         }
     }
-    
-//    public void save(NastaveniDto dto) throws SystemException {
-//        NastaveniEntity entity = nastaveniMapper.toEntity(dto);
-//        nastaveniService.save(entity);
-//    }
 
     public NastaveniDto mapToDto(NastaveniEntity entity) {
         return nastaveniMapper.toDto(entity);

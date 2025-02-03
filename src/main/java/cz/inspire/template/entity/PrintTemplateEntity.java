@@ -27,5 +27,5 @@ public class PrintTemplateEntity {
     @Column
     private String templateName;
     @Column
-    private String filename;
+    private String fileName;
 }

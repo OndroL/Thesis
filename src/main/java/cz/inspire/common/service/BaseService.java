@@ -24,6 +24,13 @@ public abstract class BaseService<E, PK extends Serializable, R extends CrudRepo
         logger = LogManager.getLogger(getClass());
     }
 
+    public Optional<E> findByPK(PK pk) {
+        if (pk == null) {
+            return Optional.empty();
+        }
+        return repository.findById(pk);
+    }
+
     // CRUD operations
 
     public void create(E entity) throws CreateException {
@@ -59,11 +66,6 @@ public abstract class BaseService<E, PK extends Serializable, R extends CrudRepo
     public List<E> findAll() {
         return repository.findAll().toList();
     }
-
-    public Optional<E> findByPK(PK pk) {
-        return repository.findById(pk);
-    }
-
 
     // Entity type Helper for errors and Exceptions
     // If we are confident that typeToken.getRawType() always returns the correct Class<E>, the suppression is safe

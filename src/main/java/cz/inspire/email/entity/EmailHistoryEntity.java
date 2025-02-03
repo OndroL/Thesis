@@ -57,7 +57,7 @@ public class EmailHistoryEntity {
 
     @JdbcTypeCode(SqlTypes.JSON)
     @Column(columnDefinition = "jsonb")
-    private List<Map<String, String>> attachments;
+    private Map<String, String> attachments;
 
     @Column
     private Boolean sent;

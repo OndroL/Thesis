@@ -48,7 +48,7 @@ public class EmailHistoryFacade {
             EmailHistoryEntity entity = emailHistoryMapper.toEntity(dto);
 
             if (dto.getAttachments() != null && !dto.getAttachments().isEmpty()) {
-                List<Map<String, String>> savedAttachments = emailHistoryService.saveAttachments(dto.getAttachments());
+                Map<String, String> savedAttachments = emailHistoryService.saveAttachments(dto.getAttachments());
                 entity.setAttachments(savedAttachments); // Save as JSONB
             }
             emailHistoryService.create(entity);
@@ -110,20 +110,19 @@ public class EmailHistoryFacade {
         // Reconstruct files from file paths
         if (entity.getAttachments() != null) {
             Map<String, byte[]> attachments = new HashMap<>();
-            for (Map<String, String> attachment : entity.getAttachments()) {
+            entity.getAttachments().forEach((fileName, filePath) -> {
                 try {
-                    String fileName = attachment.get("FileName");
-                    String filePath = attachment.get("FilePath");
                     byte[] fileContent = emailHistoryService.readFile(filePath);
                     attachments.put(fileName, fileContent);
                 } catch (IOException e) {
-                    logger.error("Failed to read file: " + attachment.get("FilePath"), e);
+                    logger.error("Failed to read file: " + filePath, e);
                 }
-            }
+            });
             dto.setAttachments(attachments);
         }
         return dto;
     }
+
 
 
     public List<EmailHistoryDto> findAll() {

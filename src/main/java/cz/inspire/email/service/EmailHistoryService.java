@@ -12,11 +12,8 @@ import java.io.IOException;
 import java.sql.Timestamp;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-import java.util.List;
-import java.util.ArrayList;
-import java.util.Map;
-import java.util.Optional;
-import java.util.Date;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @ApplicationScoped
 public class EmailHistoryService extends BaseService<EmailHistoryEntity, String, EmailHistoryRepository> {
@@ -34,23 +31,32 @@ public class EmailHistoryService extends BaseService<EmailHistoryEntity, String,
         super(repository);
     }
 
-    public List<Map<String, String>> saveAttachments(Map<String, byte[]> attachments) throws IOException {
-        List<Map<String, String>> savedAttachments = new ArrayList<>();
-        for (Map.Entry<String, byte[]> entry : attachments.entrySet()) {
-
-            String originalFileName = entry.getKey();
-            byte[] fileData = entry.getValue();
-
-            // Generated fileName if one is not present by using generateFileName() with pattern voucher-d-M-yyyy.pdf
-            String fileName = (originalFileName != null && !originalFileName.isEmpty())
-                    ? originalFileName
-                    : generateFileName();
-
-
-            savedAttachments.add(fileStorageUtil.saveFile(fileData, fileName, ATTACHMENTS_DIRECTORY));
+    public Map<String, String> saveAttachments(Map<String, byte[]> attachments) {
+        if (attachments == null || attachments.isEmpty()) {
+            return Collections.emptyMap();
         }
+
+        Map<String, String> savedAttachments = new HashMap<>();
+
+        attachments.forEach((key, value) -> {
+            try {
+                // Generate a valid file name if none is provided
+                String fileName = Optional.ofNullable(key).filter(name -> !name.isEmpty()).orElse(generateFileName());
+
+                // Save the file and get metadata
+                Map<String, String> fileMetadata = fileStorageUtil.saveFile(value, fileName, ATTACHMENTS_DIRECTORY);
+
+                // Store only file path in result map
+                savedAttachments.put(fileName, fileMetadata.get("FilePath"));
+            } catch (IOException e) {
+                throw new RuntimeException("Failed to save attachment: " + key, e);
+            }
+        });
+
         return savedAttachments;
     }
+
+
 
     public byte[] readFile(String filePath) throws IOException {
         return fileStorageUtil.readFile(filePath); // Delegate to FileStorageUtil

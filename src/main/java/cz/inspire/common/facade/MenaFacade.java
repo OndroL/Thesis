@@ -22,7 +22,7 @@ public class MenaFacade {
         try {
             menaService.create(menaMapper.toEntity(mena));
         } catch (Exception e) {
-            throw new CreateException(("Menae couldn't be created: " + e.getMessage()));
+            throw new CreateException(("Mena couldn't be created: " + e.getMessage()));
         }
     }
 
