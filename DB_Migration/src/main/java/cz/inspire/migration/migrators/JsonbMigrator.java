@@ -143,7 +143,7 @@ public class JsonbMigrator implements Migrator {
 
                 ObjectNode jsonNode = mapper.createObjectNode();
                 jsonNode.set("Value", valueNode);
-                jsonNode.put("ClassName", deserializedObj.getClass().getSimpleName());
+                jsonNode.put("ClassName", deserializedObj.getClass().getName());
 
                 return mapper.writeValueAsString(jsonNode);
             } else if ("attributes".equals(targetConfig)) {
