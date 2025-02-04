@@ -6,11 +6,13 @@ import cz.inspire.common.entity.NastaveniEntity;
 import cz.inspire.common.repository.NastaveniRepository;
 import cz.inspire.common.mapper.NastaveniMapper;
 import io.quarkus.test.junit.QuarkusTest;
+import jakarta.enterprise.context.control.ActivateRequestContext;
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
 import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInstance;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
@@ -20,20 +22,22 @@ import java.util.Optional;
 
 @QuarkusTest
 @Transactional
+@TestInstance(TestInstance.Lifecycle.PER_CLASS) // Allows non-static @BeforeAll
 public class NastaveniRepositoryIT {
 
     @Inject
     NastaveniRepository nastaveniRepository;
 
     /**
-     * Clears the database before each test to ensure isolation.
+     * Clears the database before tests to ensure isolation.
      */
-    @BeforeEach
+    @BeforeAll
+    @ActivateRequestContext
     public void clearDatabase() {
         List<NastaveniEntity> allEntities = new ArrayList<>();
         nastaveniRepository.findAll().forEach(allEntities::add);
         if (!allEntities.isEmpty()) {
-           // nastaveniRepository.deleteAll(allEntities);
+           nastaveniRepository.deleteAll(allEntities);
         }
     }
 

@@ -1,29 +1,32 @@
 package RepositoryTests.SMS;
 
-import cz.inspire.common.entity.NastaveniEntity;
 import cz.inspire.sms.entity.SMSHistoryEntity;
 import cz.inspire.sms.repository.SMSHistoryRepository;
 import io.quarkus.test.junit.QuarkusTest;
+import jakarta.enterprise.context.control.ActivateRequestContext;
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
 import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInstance;
 
 import java.sql.Timestamp;
 import java.util.*;
 
 @QuarkusTest
 @Transactional
+@TestInstance(TestInstance.Lifecycle.PER_CLASS) // Allows non-static @BeforeAll
 public class SMSHistoryRepositoryIT {
 
     @Inject
     SMSHistoryRepository smsHistoryRepository;
 
     /**
-     * Clears the database before each test to ensure isolation.
+     * Clears the database before tests to ensure isolation.
      */
-    @BeforeEach
+    @BeforeAll
+    @ActivateRequestContext
     public void clearDatabase() {
         List<SMSHistoryEntity> allEntities = new ArrayList<>();
         smsHistoryRepository.findAll().forEach(allEntities::add);

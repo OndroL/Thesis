@@ -1,5 +1,6 @@
 package cz.inspire.email.entity;
 
+import cz.inspire.utils.File;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
@@ -15,7 +16,6 @@ import org.hibernate.type.SqlTypes;
 
 import java.util.Date;
 import java.util.List;
-import java.util.Map;
 
 
 @AllArgsConstructor
@@ -57,7 +57,9 @@ public class EmailHistoryEntity {
 
     @JdbcTypeCode(SqlTypes.JSON)
     @Column(columnDefinition = "jsonb")
-    private Map<String, String> attachments;
+    // File from cz.inspire.utils.File;
+    // Maybe rename to something else like FsFile
+    private List<File> attachments;
 
     @Column
     private Boolean sent;

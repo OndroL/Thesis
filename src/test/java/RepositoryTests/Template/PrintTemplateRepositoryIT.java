@@ -3,11 +3,13 @@ package RepositoryTests.Template;
 import cz.inspire.template.entity.PrintTemplateEntity;
 import cz.inspire.template.repository.PrintTemplateRepository;
 import io.quarkus.test.junit.QuarkusTest;
+import jakarta.enterprise.context.control.ActivateRequestContext;
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
 import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInstance;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -15,16 +17,18 @@ import java.util.Optional;
 
 @QuarkusTest
 @Transactional
+@TestInstance(TestInstance.Lifecycle.PER_CLASS) // Allows non-static @BeforeAll
 public class PrintTemplateRepositoryIT {
 
     @Inject
     PrintTemplateRepository printTemplateRepository;
 
     /**
-     * Clears the database before each test to ensure isolation.
+     * Clears the database before tests to ensure isolation.
      */
-    @BeforeEach
-    public void clearDatabase() {
+    @BeforeAll
+    @ActivateRequestContext
+    public  void clearDatabase() {
         List<PrintTemplateEntity> allEntities = new ArrayList<>();
         printTemplateRepository.findAll().forEach(allEntities::add);
         if (!allEntities.isEmpty()) {

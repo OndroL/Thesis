@@ -12,6 +12,7 @@ import cz.inspire.email.utils.EmailHistoryUtil;
 import cz.inspire.email.utils.GeneratedAttachmentUtil;
 import cz.inspire.template.entity.PrintTemplateEntity;
 import cz.inspire.template.service.PrintTemplateService;
+import cz.inspire.utils.File;
 import jakarta.ejb.CreateException;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
@@ -48,7 +49,7 @@ public class EmailHistoryFacade {
             EmailHistoryEntity entity = emailHistoryMapper.toEntity(dto);
 
             if (dto.getAttachments() != null && !dto.getAttachments().isEmpty()) {
-                Map<String, String> savedAttachments = emailHistoryService.saveAttachments(dto.getAttachments());
+                List<File> savedAttachments = emailHistoryService.saveAttachments(dto.getAttachments());
                 entity.setAttachments(savedAttachments); // Save as JSONB
             }
             emailHistoryService.create(entity);
@@ -110,12 +111,12 @@ public class EmailHistoryFacade {
         // Reconstruct files from file paths
         if (entity.getAttachments() != null) {
             Map<String, byte[]> attachments = new HashMap<>();
-            entity.getAttachments().forEach((fileName, filePath) -> {
+            entity.getAttachments().forEach((file) -> {
                 try {
-                    byte[] fileContent = emailHistoryService.readFile(filePath);
-                    attachments.put(fileName, fileContent);
+                    byte[] fileContent = emailHistoryService.readFile(file.getFilePath());
+                    attachments.put(file.getFileName(), fileContent);
                 } catch (IOException e) {
-                    logger.error("Failed to read file: " + filePath, e);
+                    logger.error("Failed to read file with name : {} and file path :{}", file.getFileName(), file.getFilePath(), e);
                 }
             });
             dto.setAttachments(attachments);

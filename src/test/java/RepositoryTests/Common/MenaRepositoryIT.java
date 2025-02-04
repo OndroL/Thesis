@@ -3,11 +3,13 @@ package RepositoryTests.Common;
 import cz.inspire.common.entity.MenaEntity;
 import cz.inspire.common.repository.MenaRepository;
 import io.quarkus.test.junit.QuarkusTest;
+import jakarta.enterprise.context.control.ActivateRequestContext;
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
 import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInstance;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -15,15 +17,17 @@ import java.util.Optional;
 
 @QuarkusTest
 @Transactional
+@TestInstance(TestInstance.Lifecycle.PER_CLASS) // Allows non-static @BeforeAll
 public class MenaRepositoryIT {
 
     @Inject
     MenaRepository menaRepository;
 
     /**
-     * Clears all records before each test to ensure isolation.
+     * Clears the database before tests to ensure isolation.
      */
-    @BeforeEach
+    @BeforeAll
+    @ActivateRequestContext
     public void clearDatabase() {
         List<MenaEntity> allEntities = new ArrayList<>();
         menaRepository.findAll().forEach(allEntities::add);

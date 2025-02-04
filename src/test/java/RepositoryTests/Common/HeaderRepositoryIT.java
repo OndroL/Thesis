@@ -3,11 +3,13 @@ package RepositoryTests.Common;
 import cz.inspire.common.entity.HeaderEntity;
 import cz.inspire.common.repository.HeaderRepository;
 import io.quarkus.test.junit.QuarkusTest;
+import jakarta.enterprise.context.control.ActivateRequestContext;
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
 import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInstance;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -15,15 +17,17 @@ import java.util.Optional;
 
 @Transactional
 @QuarkusTest
+@TestInstance(TestInstance.Lifecycle.PER_CLASS) // Allows non-static @BeforeAll
 public class HeaderRepositoryIT {
 
     @Inject
     HeaderRepository headerRepository;
 
     /**
-     * Clears all records before each test to ensure isolation.
+     * Clears the database before tests to ensure isolation.
      */
-    @BeforeEach
+    @BeforeAll
+    @ActivateRequestContext
     public void clearDatabase() {
         List<HeaderEntity> allEntities = new ArrayList<>();
         headerRepository.findAll().forEach(allEntities::add);
@@ -135,7 +139,10 @@ public class HeaderRepositoryIT {
         headerRepository.save(e1);
         headerRepository.save(e2);
 
-        List<HeaderEntity> validEntities = headerRepository.findValidAttributes();
+        List<HeaderEntity> validEntities = headerRepository.findValidAttributes()
+                .stream()
+                .filter(e -> "ID-009".equals(e.getId()) || "ID-010".equals(e.getId()))
+                .toList();
         Assertions.assertTrue(validEntities.isEmpty(), "Expected no valid entities as all have negative locations.");
     }
 

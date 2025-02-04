@@ -2,28 +2,33 @@ package RepositoryTests.Email;
 
 import cz.inspire.email.entity.EmailHistoryEntity;
 import cz.inspire.email.repository.EmailHistoryRepository;
+import cz.inspire.utils.File;
 import io.quarkus.test.junit.QuarkusTest;
 import jakarta.data.Limit;
+import jakarta.enterprise.context.control.ActivateRequestContext;
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
 import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInstance;
 
 import java.sql.Timestamp;
 import java.util.*;
 
 @QuarkusTest
 @Transactional
+@TestInstance(TestInstance.Lifecycle.PER_CLASS) // Allows non-static @BeforeAll
 public class EmailHistoryRepositoryIT {
 
     @Inject
     EmailHistoryRepository emailHistoryRepository;
 
     /**
-     * Clears the database before each test to ensure isolation.
+     * Clears the database before tests to ensure isolation.
      */
-    @BeforeEach
+    @BeforeAll
+    @ActivateRequestContext
     public void clearDatabase() {
         List<EmailHistoryEntity> allEntities = new ArrayList<>();
         emailHistoryRepository.findAll().forEach(allEntities::add);
@@ -37,14 +42,14 @@ public class EmailHistoryRepositoryIT {
      */
     @Test
     public void testSaveAndFindById() {
-        Map<String, String> attachments = Map.of(
-                "attachment.pdf", "http://example.com/attachment.pdf"
+        List<File> attachments = List.of(
+                new File("attachment.pdf", "FILE_SYSTEM/attachments/68057fc4-91a4-46bd-8229-7f770530a644")
         );
 
         EmailHistoryEntity entity = new EmailHistoryEntity(
                 "EMAIL-001", new Date(), "Test email content", "Test Subject",
                 Arrays.asList("GroupA", "GroupB"), Arrays.asList("user1@example.com", "user2@example.com"),
-                Arrays.asList("extra@example.com"), true, false,
+                List.of("extra@example.com"), true, false,
                 attachments, true, new ArrayList<>());
 
         emailHistoryRepository.save(entity);
@@ -55,8 +60,9 @@ public class EmailHistoryRepositoryIT {
         Assertions.assertEquals(2, retrieved.get().getGroups().size(), "Groups count should match.");
         Assertions.assertEquals(1, retrieved.get().getMoreRecipients().size(), "MoreRecipients count should match.");
         Assertions.assertTrue(retrieved.get().getSent(), "Sent status should match.");
-        Assertions.assertEquals(1, retrieved.get().getAttachments().size(), "Attachments count should match.");
-        Assertions.assertEquals("http://example.com/attachment.pdf", retrieved.get().getAttachments().get("attachment.pdf"), "Attachment URL should match.");
+        Assertions.assertEquals(1, retrieved.get().getAttachments().size(), "Files count should match.");
+        Assertions.assertEquals("attachment.pdf", retrieved.get().getAttachments().getFirst().getFileName(), "First file name should match.");
+        Assertions.assertEquals("FILE_SYSTEM/attachments/68057fc4-91a4-46bd-8229-7f770530a644", retrieved.get().getAttachments().getFirst().getFilePath(), "First file path should match.");
     }
 
     /**
@@ -65,9 +71,9 @@ public class EmailHistoryRepositoryIT {
     @Test
     public void testFindAllOrdered() {
         EmailHistoryEntity entity1 = new EmailHistoryEntity("EMAIL-001", new Date(System.currentTimeMillis() - 10000), "Old email", "Old Subject",
-                Arrays.asList(), Arrays.asList(), Arrays.asList(), true, false, new HashMap<>(), true, new ArrayList<>());
+                List.of(), List.of(), List.of(), true, false, new ArrayList<>(), true, new ArrayList<>());
         EmailHistoryEntity entity2 = new EmailHistoryEntity("EMAIL-002", new Date(), "New email", "New Subject",
-                Arrays.asList(), Arrays.asList(), Arrays.asList(), false, true, new HashMap<>(), false, new ArrayList<>());
+                List.of(), List.of(), List.of(), false, true, new ArrayList<>(), false, new ArrayList<>());
 
         emailHistoryRepository.save(entity1);
         emailHistoryRepository.save(entity2);
@@ -87,9 +93,9 @@ public class EmailHistoryRepositoryIT {
         Date past = new Date(System.currentTimeMillis() - 100000);
         Date future = new Date(System.currentTimeMillis() + 100000);
 
-        EmailHistoryEntity entity1 = new EmailHistoryEntity("EMAIL-001", past, "Old email", "Subject1", Arrays.asList(), Arrays.asList(), Arrays.asList(), true, false, new HashMap<>(), true, new ArrayList<>());
-        EmailHistoryEntity entity2 = new EmailHistoryEntity("EMAIL-002", now, "Current email", "Subject2", Arrays.asList(), Arrays.asList(), Arrays.asList(), false, true, new HashMap<>(), true, new ArrayList<>());
-        EmailHistoryEntity entity3 = new EmailHistoryEntity("EMAIL-003", future, "Future email", "Subject3", Arrays.asList(), Arrays.asList(), Arrays.asList(), true, true, new HashMap<>(), true, new ArrayList<>());
+        EmailHistoryEntity entity1 = new EmailHistoryEntity("EMAIL-001", past, "Old email", "Subject1", List.of(), List.of(), List.of(), true, false, new ArrayList<>(), true, new ArrayList<>());
+        EmailHistoryEntity entity2 = new EmailHistoryEntity("EMAIL-002", now, "Current email", "Subject2", List.of(), List.of(), List.of(), false, true, new ArrayList<>(), true, new ArrayList<>());
+        EmailHistoryEntity entity3 = new EmailHistoryEntity("EMAIL-003", future, "Future email", "Subject3", List.of(), List.of(), List.of(), true, true, new ArrayList<>(), true, new ArrayList<>());
 
         emailHistoryRepository.save(entity1);
         emailHistoryRepository.save(entity2);
@@ -108,15 +114,15 @@ public class EmailHistoryRepositoryIT {
     public void testUpdateEntity() {
         EmailHistoryEntity entity = new EmailHistoryEntity(
                 "EMAIL-004", new Date(), "Initial content", "Initial Subject",
-                Arrays.asList("InitialGroup"), Arrays.asList("initial@example.com"),
-                Arrays.asList(), false, false, new HashMap<>(), false, new ArrayList<>());
+                List.of("InitialGroup"), List.of("initial@example.com"),
+                List.of(), false, false, new ArrayList<>(), false, new ArrayList<>());
         emailHistoryRepository.save(entity);
 
         // Update email content and subject
         entity.setText("Updated content");
         entity.setSubject("Updated Subject");
         entity.setSent(true);
-        entity.setAttachments(Map.of("updated.pdf", "http://example.com/updated.pdf"));
+        entity.setAttachments(List.of(new File("updated.pdf", "http://example.com/updated.pdf")));
         emailHistoryRepository.save(entity);
 
         Optional<EmailHistoryEntity> updated = emailHistoryRepository.findById("EMAIL-004");
@@ -124,8 +130,9 @@ public class EmailHistoryRepositoryIT {
         Assertions.assertEquals("Updated content", updated.get().getText(), "Updated content should match.");
         Assertions.assertEquals("Updated Subject", updated.get().getSubject(), "Updated subject should match.");
         Assertions.assertTrue(updated.get().getSent(), "Updated sent status should be true.");
-        Assertions.assertEquals(1, updated.get().getAttachments().size(), "Attachments count should match.");
-        Assertions.assertEquals("http://example.com/updated.pdf", updated.get().getAttachments().get("updated.pdf"), "Updated attachment should match.");
+        Assertions.assertEquals(1, updated.get().getAttachments().size(), "Files count should match.");
+        Assertions.assertEquals("updated.pdf", updated.get().getAttachments().getFirst().getFileName(), "Updated file name should match.");
+        Assertions.assertEquals("http://example.com/updated.pdf", updated.get().getAttachments().getFirst().getFilePath(), "Updated file path should match.");
     }
 
     /**
@@ -135,8 +142,8 @@ public class EmailHistoryRepositoryIT {
     public void testDeleteEntity() {
         EmailHistoryEntity entity = new EmailHistoryEntity(
                 "EMAIL-005", new Date(), "To be deleted", "Delete Subject",
-                Arrays.asList("DeleteGroup"), Arrays.asList("delete@example.com"),
-                Arrays.asList(), true, true, new HashMap<>(), false, new ArrayList<>());
+                List.of("DeleteGroup"), List.of("delete@example.com"),
+                List.of(), true, true, new ArrayList<>(), false, new ArrayList<>());
         emailHistoryRepository.save(entity);
 
         emailHistoryRepository.deleteById("EMAIL-005");
@@ -145,11 +152,34 @@ public class EmailHistoryRepositoryIT {
     }
 
     /**
-     * Tests that retrieving a non-existent entity returns empty.
+     * Tests saving and retrieving email history records with multiple files.
      */
     @Test
-    public void testFindNonExistentEntity() {
-        Optional<EmailHistoryEntity> retrieved = emailHistoryRepository.findById("NON_EXISTENT");
-        Assertions.assertFalse(retrieved.isPresent(), "Should return empty for non-existent entity.");
+    public void testSaveAndRetrieveFiles() {
+        // Correct List<File> format
+        List<File> attachments = List.of(
+                new File("photo1.jpg", "FILE_SYSTEM/photos/1234-5678"),
+                new File("document.pdf", "FILE_SYSTEM/attachments/abcd-efgh")
+        );
+
+        // Create and save EmailHistoryEntity
+        EmailHistoryEntity entity = new EmailHistoryEntity();
+        entity.setId("EMAIL-007");
+        entity.setSubject("Test Subject");
+        entity.setText("File test email");
+        entity.setAttachments(attachments); // Store as JSON array
+
+        emailHistoryRepository.save(entity);
+
+        // Retrieve from database
+        Optional<EmailHistoryEntity> retrieved = emailHistoryRepository.findById("EMAIL-007");
+        Assertions.assertTrue(retrieved.isPresent(), "Entity should be present in repository.");
+        Assertions.assertNotNull(retrieved.get().getAttachments(), "Files should not be null.");
+
+        // Check that both files are stored correctly
+        List<File> retrievedFiles = retrieved.get().getAttachments();
+        Assertions.assertEquals(2, retrievedFiles.size(), "Files count should match.");
+        Assertions.assertEquals("photo1.jpg", retrievedFiles.getFirst().getFileName(), "First file name should match.");
+        Assertions.assertEquals("FILE_SYSTEM/photos/1234-5678", retrievedFiles.getFirst().getFilePath(), "First file path should match.");
     }
 }

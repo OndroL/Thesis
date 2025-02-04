@@ -3,11 +3,13 @@ package RepositoryTests.License;
 import cz.inspire.license.entity.LicenseEntity;
 import cz.inspire.license.repository.LicenseRepository;
 import io.quarkus.test.junit.QuarkusTest;
+import jakarta.enterprise.context.control.ActivateRequestContext;
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
 import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInstance;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -16,15 +18,17 @@ import java.util.Optional;
 
 @QuarkusTest
 @Transactional
+@TestInstance(TestInstance.Lifecycle.PER_CLASS) // Allows non-static @BeforeAll
 public class LicenseRepositoryIT {
 
     @Inject
     LicenseRepository licenseRepository;
 
     /**
-     * Clears the database before each test to ensure isolation.
+     * Clears the database before tests to ensure isolation.
      */
-    @BeforeEach
+    @BeforeAll
+    @ActivateRequestContext
     public void clearDatabase() {
         List<LicenseEntity> allEntities = new ArrayList<>();
         licenseRepository.findAll().forEach(allEntities::add);

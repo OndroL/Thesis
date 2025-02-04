@@ -3,6 +3,7 @@ package cz.inspire.email.service;
 import cz.inspire.common.service.BaseService;
 import cz.inspire.email.entity.EmailHistoryEntity;
 import cz.inspire.email.repository.EmailHistoryRepository;
+import cz.inspire.utils.File;
 import cz.inspire.utils.FileStorageUtil;
 import jakarta.data.Limit;
 import jakarta.enterprise.context.ApplicationScoped;
@@ -31,28 +32,27 @@ public class EmailHistoryService extends BaseService<EmailHistoryEntity, String,
         super(repository);
     }
 
-    public Map<String, String> saveAttachments(Map<String, byte[]> attachments) {
+    public List<File> saveAttachments(Map<String, byte[]> attachments) {
         if (attachments == null || attachments.isEmpty()) {
-            return Collections.emptyMap();
+            return Collections.emptyList();
         }
 
-        Map<String, String> savedAttachments = new HashMap<>();
+        List<File> savedAttachments = new ArrayList<>();
 
         attachments.forEach((key, value) -> {
             try {
                 // Generate a valid file name if none is provided
                 String fileName = Optional.ofNullable(key).filter(name -> !name.isEmpty()).orElse(generateFileName());
 
-                // Save the file and get metadata
-                Map<String, String> fileMetadata = fileStorageUtil.saveFile(value, fileName, ATTACHMENTS_DIRECTORY);
+                // Save the file and get it back
+                File file = fileStorageUtil.saveFile(value, fileName, ATTACHMENTS_DIRECTORY);
 
-                // Store only file path in result map
-                savedAttachments.put(fileName, fileMetadata.get("FilePath"));
+                // Add the file to List of attachments
+                savedAttachments.add(file);
             } catch (IOException e) {
                 throw new RuntimeException("Failed to save attachment: " + key, e);
             }
         });
-
         return savedAttachments;
     }
 
@@ -65,7 +65,7 @@ public class EmailHistoryService extends BaseService<EmailHistoryEntity, String,
 
     // Brainstorm naming pattern for vouchers, because with this implementation which is identical
     // to controller implementation, problem with same names for 2 different voucher can occur.
-    // E.g. two vouchers created in same day for same EmailHistory will be returned as only one file
+    // E.g. two vouchers created in same day for same EmailHistory will be returned as only one in EmailHistoryDto
     // because their name is the key in map and the existing (first) file for that key will be overwritten with the new file.
     public static String generateFileName() {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("d-M-yyyy");
