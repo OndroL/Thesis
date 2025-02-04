@@ -14,11 +14,9 @@ import java.sql.Timestamp;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
-import java.util.stream.Collectors;
 
 @ApplicationScoped
 public class EmailHistoryService extends BaseService<EmailHistoryEntity, String, EmailHistoryRepository> {
-
     private final FileStorageUtil fileStorageUtil = new FileStorageUtil("FILE_SYSTEM");
     private static final String FILE_NAME_PATTERN = "voucher-d-M-yyyy.pdf";
     // Rename this to some number, which will not be easily recognised
@@ -43,10 +41,8 @@ public class EmailHistoryService extends BaseService<EmailHistoryEntity, String,
             try {
                 // Generate a valid file name if none is provided
                 String fileName = Optional.ofNullable(key).filter(name -> !name.isEmpty()).orElse(generateFileName());
-
                 // Save the file and get it back
                 File file = fileStorageUtil.saveFile(value, fileName, ATTACHMENTS_DIRECTORY);
-
                 // Add the file to List of attachments
                 savedAttachments.add(file);
             } catch (IOException e) {

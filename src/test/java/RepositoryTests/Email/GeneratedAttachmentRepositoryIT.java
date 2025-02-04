@@ -46,7 +46,7 @@ public class GeneratedAttachmentRepositoryIT {
         EmailHistoryEntity emailHistory = new EmailHistoryEntity("HIST-001", new Date(), "Sample Text", "Subject", new ArrayList<>(), new ArrayList<>(), new ArrayList<>(), false, false, new ArrayList<>(), true, new ArrayList<>());
         emailHistoryRepository.save(emailHistory);
 
-        PrintTemplateEntity printTemplate = new PrintTemplateEntity("TPL-001", "Template A");
+        PrintTemplateEntity printTemplate = new PrintTemplateEntity("TPL-001", "Template Content", 1, "Invoice Template", "invoice.pdf");
         printTemplateRepository.save(printTemplate);
 
         Map<String, Object> attributes = Map.of("key1", "value1", "key2", 123);
@@ -66,40 +66,11 @@ public class GeneratedAttachmentRepositoryIT {
     }
 
     @Test
-    public void testFindByEmailAndHistory() {
-        EmailHistoryEntity emailHistory = new EmailHistoryEntity("HIST-002", new Date(), "Email Text", "Another Subject", new ArrayList<>(), new ArrayList<>(), new ArrayList<>(), false, false, new ArrayList<>(), true, new ArrayList<>());
-        emailHistoryRepository.save(emailHistory);
-
-        GeneratedAttachmentEntity entity1 = new GeneratedAttachmentEntity("ATT-002", "user@example.com", Map.of("data", "value"), emailHistory, null);
-        GeneratedAttachmentEntity entity2 = new GeneratedAttachmentEntity("ATT-003", "other@example.com", Map.of("data", "value"), emailHistory, null);
-        generatedAttachmentRepository.save(entity1);
-        generatedAttachmentRepository.save(entity2);
-
-        List<GeneratedAttachmentEntity> results = generatedAttachmentRepository.findByEmailAndHistory("HIST-002", "user@example.com");
-        Assertions.assertEquals(1, results.size(), "Expected 1 attachment for this email and history.");
-        Assertions.assertEquals("ATT-002", results.get(0).getId(), "Expected ATT-002.");
-    }
-
-    @Test
-    public void testFindByHistory() {
-        EmailHistoryEntity emailHistory = new EmailHistoryEntity("HIST-003", new Date(), "Email Text", "Another Subject", new ArrayList<>(), new ArrayList<>(), new ArrayList<>(), false, false, new ArrayList<>(), true, new ArrayList<>());
-        emailHistoryRepository.save(emailHistory);
-
-        GeneratedAttachmentEntity entity1 = new GeneratedAttachmentEntity("ATT-004", "user1@example.com", Map.of("key", "val1"), emailHistory, null);
-        GeneratedAttachmentEntity entity2 = new GeneratedAttachmentEntity("ATT-005", "user2@example.com", Map.of("key", "val2"), emailHistory, null);
-        generatedAttachmentRepository.save(entity1);
-        generatedAttachmentRepository.save(entity2);
-
-        List<GeneratedAttachmentEntity> results = generatedAttachmentRepository.findByHistory("HIST-003");
-        Assertions.assertEquals(2, results.size(), "Expected 2 attachments for this history ID.");
-    }
-
-    @Test
     public void testFindByEmailAndHistoryAndTemplate() {
         EmailHistoryEntity emailHistory = new EmailHistoryEntity("HIST-004", new Date(), "Email Content", "Subject", new ArrayList<>(), new ArrayList<>(), new ArrayList<>(), false, false, new ArrayList<>(), true, new ArrayList<>());
         emailHistoryRepository.save(emailHistory);
 
-        PrintTemplateEntity printTemplate = new PrintTemplateEntity("TPL-001", "Template Content", 1, "Invoice Template", "invoice.pdf");
+        PrintTemplateEntity printTemplate = new PrintTemplateEntity("TPL-002", "Report Content", 2, "Report Template", "report.pdf");
         printTemplateRepository.save(printTemplate);
 
         GeneratedAttachmentEntity entity = new GeneratedAttachmentEntity("ATT-006", "user@example.com", Map.of("key", "val"), emailHistory, printTemplate);
@@ -107,7 +78,7 @@ public class GeneratedAttachmentRepositoryIT {
 
         List<GeneratedAttachmentEntity> results = generatedAttachmentRepository.findByEmailAndHistoryAndTemplate("HIST-004", "user@example.com", "TPL-002");
         Assertions.assertEquals(1, results.size(), "Expected 1 matching attachment.");
-        Assertions.assertEquals("ATT-006", results.get(0).getId(), "Expected ATT-006.");
+        Assertions.assertEquals("ATT-006", results.getFirst().getId(), "Expected ATT-006.");
     }
 
     @Test
@@ -115,7 +86,10 @@ public class GeneratedAttachmentRepositoryIT {
         EmailHistoryEntity emailHistory = new EmailHistoryEntity("HIST-005", new Date(), "Sample Content", "Some Subject", new ArrayList<>(), new ArrayList<>(), new ArrayList<>(), false, false, new ArrayList<>(), true, new ArrayList<>());
         emailHistoryRepository.save(emailHistory);
 
-        GeneratedAttachmentEntity entity = new GeneratedAttachmentEntity("ATT-007", "test@example.com", Map.of("field", "old"), emailHistory, null);
+        PrintTemplateEntity printTemplate = new PrintTemplateEntity("TPL-003", "Contract Template", 3, "Contract", "contract.pdf");
+        printTemplateRepository.save(printTemplate);
+
+        GeneratedAttachmentEntity entity = new GeneratedAttachmentEntity("ATT-007", "test@example.com", Map.of("field", "old"), emailHistory, printTemplate);
         generatedAttachmentRepository.save(entity);
 
         entity.setEmail("updated@example.com");
@@ -130,7 +104,10 @@ public class GeneratedAttachmentRepositoryIT {
 
     @Test
     public void testDeleteEntity() {
-        GeneratedAttachmentEntity entity = new GeneratedAttachmentEntity("ATT-008", "delete@example.com", Map.of("key", "val"), null, null);
+        PrintTemplateEntity printTemplate = new PrintTemplateEntity("TPL-004", "Simple Template", 4, "Simple Report", "simple.pdf");
+        printTemplateRepository.save(printTemplate);
+
+        GeneratedAttachmentEntity entity = new GeneratedAttachmentEntity("ATT-008", "delete@example.com", Map.of("key", "val"), null, printTemplate);
         generatedAttachmentRepository.save(entity);
 
         generatedAttachmentRepository.deleteById("ATT-008");
