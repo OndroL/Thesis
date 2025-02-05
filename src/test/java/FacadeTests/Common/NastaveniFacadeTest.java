@@ -1,28 +1,24 @@
 package FacadeTests.Common;
 
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.node.ObjectNode;
 import cz.inspire.common.dto.NastaveniDto;
+import cz.inspire.common.entity.NastaveniEntity;
 import cz.inspire.common.facade.NastaveniFacade;
 import cz.inspire.common.mapper.NastaveniMapper;
-import cz.inspire.common.entity.NastaveniEntity;
 import cz.inspire.common.service.NastaveniService;
 import jakarta.ejb.CreateException;
+import jakarta.ejb.FinderException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.*;
 
 import java.io.Serializable;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
+@ExtendWith(org.mockito.junit.jupiter.MockitoExtension.class)
 public class NastaveniFacadeTest {
-
-    private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
 
     @Mock
     private NastaveniService nastaveniService;
@@ -38,63 +34,84 @@ public class NastaveniFacadeTest {
         MockitoAnnotations.openMocks(this);
     }
 
-    private JsonNode createJsonValue(String className, String value) {
-        ObjectNode jsonNode = OBJECT_MAPPER.createObjectNode();
-        jsonNode.put("ClassName", className);
-        jsonNode.put("Value", value);
-        return jsonNode;
-    }
-
-    private Serializable jsonToSerializable(JsonNode jsonNode) {
-        return jsonNode.toString(); // ✅ Convert JsonNode to String
-    }
-
     @Test
     void testCreate_Success() throws CreateException {
         String key = "testKey";
-        JsonNode jsonValue = createJsonValue("java.lang.String", "testValue");
-        Serializable serializableValue = jsonToSerializable(jsonValue);
+        Serializable value = "testValue";
+        NastaveniDto dto = new NastaveniDto(key, value);
+        NastaveniEntity entity = new NastaveniEntity(key, null);
 
-        nastaveniFacade.create(key, serializableValue);
+        when(nastaveniMapper.toEntity(dto)).thenReturn(entity);
+        doNothing().when(nastaveniService).create(entity);
 
-        verify(nastaveniService, times(1)).create(argThat(entity ->
-                entity.getKey().equals(key) && entity.getValue().toString().equals(serializableValue)
-        ));
+        String result = nastaveniFacade.create(key, value);
+
+        assertNull(result, "Expected create method to return null");
+        verify(nastaveniMapper, times(1)).toEntity(dto);
+        verify(nastaveniService, times(1)).create(entity);
     }
 
     @Test
     void testCreate_Failure() throws CreateException {
         String key = "testKey";
-        JsonNode jsonValue = createJsonValue("java.lang.String", "testValue");
-        Serializable serializableValue = jsonToSerializable(jsonValue);
+        Serializable value = "testValue";
+        NastaveniDto dto = new NastaveniDto(key, value);
 
-        doThrow(RuntimeException.class).when(nastaveniService).create(argThat(entity ->
-                entity.getKey().equals(key) && entity.getValue().toString().equals(serializableValue)
-        ));
+        when(nastaveniMapper.toEntity(dto)).thenThrow(new RuntimeException("Mapping error"));
 
-        assertThrows(CreateException.class, () -> nastaveniFacade.create(key, serializableValue));
+        assertThrows(CreateException.class, () -> nastaveniFacade.create(key, value));
 
-        verify(nastaveniService, times(1)).create(argThat(entity ->
-                entity.getKey().equals(key) && entity.getValue().toString().equals(serializableValue)
-        ));
+        verify(nastaveniMapper, times(1)).toEntity(dto);
+        verify(nastaveniService, never()).create(any(NastaveniEntity.class));
     }
 
     @Test
     void testMapToDto() {
         String key = "testKey";
-        JsonNode jsonValue = createJsonValue("java.lang.String", "testValue");
-        Serializable serializableValue = jsonToSerializable(jsonValue);
-
-        NastaveniEntity entity = new NastaveniEntity(key, jsonValue);
-        NastaveniDto dto = new NastaveniDto(key, serializableValue);
+        NastaveniEntity entity = new NastaveniEntity(key, null);
+        NastaveniDto dto = new NastaveniDto(key, "testValue");
 
         when(nastaveniMapper.toDto(entity)).thenReturn(dto);
 
         NastaveniDto result = nastaveniFacade.mapToDto(entity);
 
-        assertNotNull(result);
-        assertEquals("testKey", result.getKey());
-        assertEquals(serializableValue, result.getValue()); // ✅ Ensure string representation matches
+        assertNotNull(result, "Result should not be null");
+        assertEquals(dto.getKey(), result.getKey());
+        assertEquals(dto.getValue(), result.getValue());
+
         verify(nastaveniMapper, times(1)).toDto(entity);
+    }
+
+    @Test
+    void testFindByPrimaryKey_Found() throws FinderException {
+        String key = "testKey";
+        NastaveniEntity entity = new NastaveniEntity(key, null);
+        NastaveniDto dto = new NastaveniDto(key, "testValue");
+
+        when(nastaveniService.findByPrimaryKey(key)).thenReturn(entity);
+        when(nastaveniMapper.toDto(entity)).thenReturn(dto);
+
+        NastaveniDto result = nastaveniFacade.findByPrimaryKey(key);
+
+        assertNotNull(result, "Result should not be null");
+        assertEquals(dto.getKey(), result.getKey());
+        assertEquals(dto.getValue(), result.getValue());
+
+        verify(nastaveniService, times(1)).findByPrimaryKey(key);
+        verify(nastaveniMapper, times(1)).toDto(entity);
+    }
+
+    @Test
+    void testFindByPrimaryKey_NotFound() throws FinderException {
+        String key = "testKey";
+
+        when(nastaveniService.findByPrimaryKey(key)).thenReturn(null);
+
+        NastaveniDto result = nastaveniFacade.findByPrimaryKey(key);
+
+        assertNull(result, "Expected null when entity is not found");
+
+        verify(nastaveniService, times(1)).findByPrimaryKey(key);
+        verify(nastaveniMapper, never()).toDto(any(NastaveniEntity.class));
     }
 }

@@ -183,7 +183,7 @@ public class EmailHistoryServiceTest {
 
 
         doAnswer(invocation -> {
-            byte[] data = invocation.getArgument(0);
+            byte[] _data = invocation.getArgument(0);
             String fileName = invocation.getArgument(1);
             String subDir = invocation.getArgument(2);
 
@@ -198,7 +198,6 @@ public class EmailHistoryServiceTest {
         assertNotNull(result);
         assertEquals(2, result.size());
 
-        // ✅ Ensure `saveFile()` was called with any valid UUID-based file path
         verify(fileStorageUtil, times(2)).saveFile(any(), any(), eq(subDirectory));
     }
 

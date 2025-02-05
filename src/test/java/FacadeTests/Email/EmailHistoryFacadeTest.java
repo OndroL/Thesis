@@ -10,12 +10,11 @@ import cz.inspire.email.mapper.GeneratedAttachmentMapper;
 import cz.inspire.email.service.EmailHistoryService;
 import cz.inspire.email.service.GeneratedAttachmentService;
 import cz.inspire.enterprise.exception.SystemException;
-import cz.inspire.template.dto.PrintTemplateDto;
 import cz.inspire.template.entity.PrintTemplateEntity;
-import cz.inspire.template.mapper.PrintTemplateMapper;
 import cz.inspire.template.service.PrintTemplateService;
 import cz.inspire.utils.File;
 import jakarta.ejb.CreateException;
+import jakarta.ejb.FinderException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -23,7 +22,6 @@ import org.mockito.*;
 
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
@@ -31,6 +29,9 @@ import static org.mockito.Mockito.*;
 
 @ExtendWith(org.mockito.junit.jupiter.MockitoExtension.class)
 public class EmailHistoryFacadeTest {
+
+    @Mock
+    private EmailHistoryService emailHistoryService;
 
     @Mock
     private EmailHistoryMapper emailHistoryMapper;
@@ -50,6 +51,39 @@ public class EmailHistoryFacadeTest {
     @BeforeEach
     void setUp() {
         MockitoAnnotations.openMocks(this);
+    }
+
+    @Test
+    void testCreate_Success() throws CreateException, SystemException {
+        EmailHistoryDto dto = new EmailHistoryDto();
+        dto.setId("email123");
+
+        EmailHistoryEntity entity = new EmailHistoryEntity();
+        entity.setId("email123");
+
+        when(emailHistoryMapper.toEntity(dto)).thenReturn(entity);
+        doNothing().when(emailHistoryService).create(entity);
+        doNothing().when(emailHistoryService).update(entity);
+
+        String result = emailHistoryFacade.create(dto);
+
+        assertEquals("email123", result);
+        verify(emailHistoryMapper, times(1)).toEntity(dto);
+        verify(emailHistoryService, times(1)).create(entity);
+        verify(emailHistoryService, times(1)).update(entity);
+    }
+
+    @Test
+    void testCreate_Failure() throws CreateException {
+        EmailHistoryDto dto = new EmailHistoryDto();
+        dto.setId("email123");
+
+        when(emailHistoryMapper.toEntity(dto)).thenThrow(new RuntimeException("Mapping error"));
+
+        assertThrows(CreateException.class, () -> emailHistoryFacade.create(dto));
+
+        verify(emailHistoryMapper, times(1)).toEntity(dto);
+        verify(emailHistoryService, never()).create(any(EmailHistoryEntity.class));
     }
 
     @Test
@@ -78,46 +112,38 @@ public class EmailHistoryFacadeTest {
     }
 
     @Test
-    void testSetGeneratedAttachments() throws CreateException {
+    void testSetGeneratedAttachments() throws CreateException, SystemException {
         String emailHistoryId = "email123";
         EmailHistoryEntity entity = new EmailHistoryEntity();
         entity.setId(emailHistoryId);
-
-        List<GeneratedAttachmentEntity> generatedAttachments = List.of(
-                new GeneratedAttachmentEntity("1", "user@example.com", Map.of("key", "value"), entity, null),
-                new GeneratedAttachmentEntity("2", "user@example.com", Map.of("key2", "value2"), entity, null)
-        );
 
         List<GeneratedAttachmentDto> generatedAttachmentDtos = List.of(
                 new GeneratedAttachmentDto("1", "user@example.com", Map.of("key", "value"), emailHistoryId, null),
                 new GeneratedAttachmentDto("2", "user@example.com", Map.of("key2", "value2"), emailHistoryId, null)
         );
 
-        when(generatedAttachmentService.findByHistory(emailHistoryId)).thenReturn(generatedAttachments);
-        when(generatedAttachmentMapper.toDto(any(GeneratedAttachmentEntity.class)))
+        when(generatedAttachmentMapper.toEntity(any(GeneratedAttachmentDto.class)))
                 .thenAnswer(invocation -> {
-                    GeneratedAttachmentEntity arg = invocation.getArgument(0);
-                    return new GeneratedAttachmentDto(
-                            arg.getId(),
-                            arg.getEmail(),
-                            arg.getAttributes(),
-                            emailHistoryId,
-                            (arg.getPrintTemplate() != null) ? arg.getPrintTemplate().getId() : null
-                    );
+                    GeneratedAttachmentDto arg = invocation.getArgument(0);
+                    return new GeneratedAttachmentEntity(arg.getId(), arg.getEmail(), arg.getAttributes(), entity, null);
                 });
 
         EmailHistoryDto dto = new EmailHistoryDto();
+        dto.setGeneratedAttachments(generatedAttachmentDtos);
+
         emailHistoryFacade.setGeneratedAttachments(entity, dto);
 
-        assertNotNull(dto.getGeneratedAttachments());
-        assertEquals(2, dto.getGeneratedAttachments().size());
-        assertEquals("1", dto.getGeneratedAttachments().get(0).getId());
-        assertEquals("2", dto.getGeneratedAttachments().get(1).getId());
-        verify(generatedAttachmentService, times(1)).findByHistory(emailHistoryId);
+        assertNotNull(dto.getGeneratedAttachments(), "Generated attachments list is null");
+        assertFalse(dto.getGeneratedAttachments().isEmpty(), "Generated attachments list is empty");
+        assertEquals(2, dto.getGeneratedAttachments().size(), "Expected 2 generated attachments");
+
+        verify(generatedAttachmentMapper, times(2)).toEntity(any(GeneratedAttachmentDto.class));
+        verify(generatedAttachmentService, times(2)).create(any(GeneratedAttachmentEntity.class));
+        verify(generatedAttachmentService, times(2)).update(any(GeneratedAttachmentEntity.class));
     }
 
     @Test
-    void testSetGeneratedAttachments_WithPrintedTemplate() throws CreateException, SystemException {
+    void testSetGeneratedAttachments_WithPrintedTemplate() throws CreateException, SystemException, FinderException {
         String emailHistoryId = "email123";
         String templateId = "template123";
 
@@ -137,7 +163,7 @@ public class EmailHistoryFacadeTest {
         generatedAttachmentEntity.setId("attachment1");
 
         when(generatedAttachmentMapper.toEntity(generatedAttachmentDto)).thenReturn(generatedAttachmentEntity);
-        when(printTemplateService.findById(templateId)).thenReturn(Optional.of(printTemplateEntity));
+        when(printTemplateService.findByPrimaryKey(templateId)).thenReturn(printTemplateEntity);
 
         EmailHistoryDto emailHistoryDto = new EmailHistoryDto();
         emailHistoryDto.setGeneratedAttachments(generatedAttachmentDtos);
@@ -147,9 +173,41 @@ public class EmailHistoryFacadeTest {
         assertNotNull(generatedAttachmentEntity.getPrintTemplate());
         assertEquals(templateId, generatedAttachmentEntity.getPrintTemplate().getId());
 
-        verify(printTemplateService, times(1)).findById(templateId);
+        verify(printTemplateService, times(1)).findByPrimaryKey(templateId);
         verify(generatedAttachmentService, times(1)).create(any(GeneratedAttachmentEntity.class));
         verify(generatedAttachmentService, times(1)).update(any(GeneratedAttachmentEntity.class));
+    }
+
+    @Test
+    void testFindByPrimaryKey_Found() throws FinderException {
+        String emailHistoryId = "email123";
+        EmailHistoryEntity entity = new EmailHistoryEntity();
+        entity.setId(emailHistoryId);
+
+        EmailHistoryDto dto = new EmailHistoryDto();
+        dto.setId(emailHistoryId);
+
+        when(emailHistoryService.findByPrimaryKey(emailHistoryId)).thenReturn(entity);
+        when(emailHistoryMapper.toDto(entity)).thenReturn(dto);
+
+        EmailHistoryDto result = emailHistoryFacade.findByPrimaryKey(emailHistoryId);
+
+        assertEquals(emailHistoryId, result.getId());
+
+        verify(emailHistoryService, times(1)).findByPrimaryKey(emailHistoryId);
+        verify(emailHistoryMapper, times(1)).toDto(entity);
+    }
+
+    @Test
+    void testFindByPrimaryKey_NotFound() throws FinderException {
+        String emailHistoryId = "email123";
+
+        when(emailHistoryService.findByPrimaryKey(emailHistoryId)).thenThrow(new FinderException("Failed to find EmailHistoryEntity with primary key: email123"));
+
+        assertThrows(FinderException.class, () -> emailHistoryFacade.findByPrimaryKey(emailHistoryId));
+
+        verify(emailHistoryService, times(1)).findByPrimaryKey(emailHistoryId);
+        verify(emailHistoryMapper, never()).toDto(any());
     }
 
 }
