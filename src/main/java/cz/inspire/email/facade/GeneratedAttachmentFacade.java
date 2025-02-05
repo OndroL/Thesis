@@ -24,9 +24,9 @@ public class GeneratedAttachmentFacade {
     @Inject
     GeneratedAttachmentMapper generatedAttachmentMapper;
     @Inject
-    private EmailHistoryService emailHistoryService;
+    EmailHistoryService emailHistoryService;
     @Inject
-    private PrintTemplateService printTemplateService;
+    PrintTemplateService printTemplateService;
 
     Logger logger = LogManager.getLogger(GeneratedAttachmentFacade.class);
 
@@ -41,9 +41,7 @@ public class GeneratedAttachmentFacade {
 
             GeneratedAttachmentEntity entity = generatedAttachmentMapper.toEntity(dto);
 
-            EmailHistoryEntity emailEntity = emailHistoryService.findById(dto.getEmailHistoryId())
-                            .orElseThrow(() -> new CreateException("Couldn't find EmailHistoryEntity with id : " + dto.getEmailHistoryId() +
-                                    " while trying to create GeneratedAttachmentEntity"));
+            EmailHistoryEntity emailEntity = emailHistoryService.findByPrimaryKey(dto.getEmailHistoryId());
 
             entity.setEmailHistory(emailEntity);
 
@@ -56,7 +54,8 @@ public class GeneratedAttachmentFacade {
             return entity.getId();
 
         } catch (Exception e) {
-            throw new CreateException();
+            logger.error("Failed to create GeneratedAttachmentEntity : ", e);
+            throw new CreateException("Failed to create GeneratedAttachmentEntity : " + e);
         }
     }
 
@@ -64,9 +63,7 @@ public class GeneratedAttachmentFacade {
     public void setPrintTemplate(GeneratedAttachmentEntity entity, GeneratedAttachmentDto dto) throws CreateException {
         try {
             if (dto.getPrintTemplateId() != null) {
-                PrintTemplateEntity localTemplate = printTemplateService.findById(dto.getPrintTemplateId())
-                        .orElseThrow(() -> new CreateException("Couldn't find PrintTemplateEntity with id: " + dto.getPrintTemplateId() +
-                                " while trying to create generatedAttachment with id : " + entity.getId()));
+                PrintTemplateEntity localTemplate = printTemplateService.findByPrimaryKey(dto.getPrintTemplateId());
                 entity.setPrintTemplate(localTemplate);
             }
         } catch (Exception e) {

@@ -14,6 +14,7 @@ import cz.inspire.template.entity.PrintTemplateEntity;
 import cz.inspire.template.service.PrintTemplateService;
 import cz.inspire.utils.File;
 import jakarta.ejb.CreateException;
+import jakarta.ejb.FinderException;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import org.apache.logging.log4j.LogManager;
@@ -24,7 +25,6 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 
 @ApplicationScoped
 public class EmailHistoryFacade {
@@ -93,15 +93,13 @@ public class EmailHistoryFacade {
     public void setPrintedTemplate(GeneratedAttachmentEntity entity, GeneratedAttachmentDto dto) throws CreateException {
         try {
             if (dto.getPrintTemplateId() != null) {
-                PrintTemplateEntity localTemplate = printTemplateService.findById(dto.getPrintTemplateId())
-                        .orElseThrow(() -> new CreateException("Couldn't find PrintTemplateEntity with id: " + dto.getPrintTemplateId() +
-                                " while trying to create generatedAttachment with id : " + entity.getId()));
+                PrintTemplateEntity localTemplate = printTemplateService.findByPrimaryKey(dto.getPrintTemplateId());
                 entity.setPrintTemplate(localTemplate);
             }
-
         } catch (Exception e) {
-            logger.error("GeneratedAttachment couldn't be created, couldn't set PrintTemplate with id : {}", entity.getPrintTemplate(), e);
-            throw new CreateException("GeneratedAttachment couldn't be created: " + e);
+            logger.error("Couldn't find PrintTemplateEntity with id: {} while trying to create generatedAttachment with id : {}, {}", dto.getPrintTemplateId(), entity.getId(), e);
+            throw new CreateException("Couldn't find PrintTemplateEntity with id: " + dto.getPrintTemplateId() +
+                    " while trying to create generatedAttachment with id : " + entity.getId() + e);
         }
     }
 
@@ -124,8 +122,6 @@ public class EmailHistoryFacade {
         return dto;
     }
 
-
-
     public List<EmailHistoryDto> findAll() {
         return emailHistoryService.findAll().stream().map(this::mapToDto).toList();
     }
@@ -138,8 +134,8 @@ public class EmailHistoryFacade {
         return emailHistoryService.findByDate(dateFrom, dateTo, offset, count).stream().map(this::mapToDto).toList();
     }
 
-    public Optional<EmailHistoryDto> findById(String emailHistoryId) {
-        return emailHistoryService.findById(emailHistoryId).map(this::mapToDto);
+    public EmailHistoryDto findByPrimaryKey(String emailHistoryId) throws FinderException {
+        return mapToDto(emailHistoryService.findByPrimaryKey(emailHistoryId));
     }
 
 

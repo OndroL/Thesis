@@ -5,10 +5,10 @@ import cz.inspire.common.mapper.MenaMapper;
 import cz.inspire.common.entity.MenaEntity;
 import cz.inspire.common.service.MenaService;
 import jakarta.ejb.CreateException;
+import jakarta.ejb.FinderException;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 
-import java.util.Collection;
 import java.util.List;
 
 @ApplicationScoped
@@ -22,7 +22,7 @@ public class MenaFacade {
         try {
             menaService.create(menaMapper.toEntity(mena));
         } catch (Exception e) {
-            throw new CreateException(("Mena couldn't be created: " + e.getMessage()));
+            throw new CreateException(("Failed to create MenaEntity: " + e.getMessage()));
         }
     }
 
@@ -43,8 +43,8 @@ public class MenaFacade {
         return menaService.findAll().stream().map(menaMapper::toDto).toList();
     }
     
-    public MenaDto findByPK(String menaId) {
-        return menaMapper.toDto(menaService.findByPK(menaId).orElse(null));
+    public MenaDto findByPrimaryKey(String menaId) throws FinderException {
+        return menaMapper.toDto(menaService.findByPrimaryKey(menaId));
     }
 
 }

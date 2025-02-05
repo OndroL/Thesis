@@ -12,7 +12,6 @@ import jakarta.inject.Inject;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import java.util.Optional;
 
 
 /**
@@ -60,15 +59,11 @@ public class SequenceFacade {
 
         try {
             if (dto.getStornoSeqName() != null){
-                Optional<SequenceEntity> stornoSeqOpt = sequenceService.findById(dto.getStornoSeqName());
-                if (stornoSeqOpt.isPresent()) {
-                    entity.setStornoSeq(stornoSeqOpt.get());
-                } else {
-                    logger.error("Cannot find storno sequence with name: {}", dto.getStornoSeqName());
-                }
+                SequenceEntity stornoSeqOpt = sequenceService.findByPrimaryKey(dto.getStornoSeqName());
+                entity.setStornoSeq(stornoSeqOpt);
             }
         } catch (Exception ex) {
-            logger.error("Error occurred while looking up storno sequence: {}", dto.getStornoSeqName(), ex);
+            logger.error("Failed to find storno sequence with name : {} for sequence with name : {}", dto.getStornoSeqName(), dto.getName(), ex);
         }
         return entity;
     }

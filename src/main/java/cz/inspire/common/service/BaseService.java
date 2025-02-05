@@ -7,6 +7,8 @@ import jakarta.ejb.CreateException;
 import java.io.Serializable;
 import java.util.List;
 import java.util.Optional;
+
+import jakarta.ejb.FinderException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -24,7 +26,22 @@ public abstract class BaseService<E, PK extends Serializable, R extends CrudRepo
         logger = LogManager.getLogger(getClass());
     }
 
-    public Optional<E> findByPK(PK pk) {
+    public List<E> findAll() {
+        return repository.findAll().toList();
+    }
+
+    public E findByPrimaryKey(PK pk) throws FinderException {
+        if (pk == null) {
+            throw new FinderException("Primary key cannot be null for " + getEntityType().getSimpleName());
+        }
+
+        return repository.findById(pk)
+                .orElseThrow(() -> new FinderException(
+                        "Failed to find " + getEntityType().getSimpleName() + " with primary key: " + pk
+                ));
+    }
+
+    public Optional<E> findById(PK pk) {
         if (pk == null) {
             return Optional.empty();
         }
@@ -35,7 +52,6 @@ public abstract class BaseService<E, PK extends Serializable, R extends CrudRepo
 
     public void create(E entity) throws CreateException {
         try {
-
             repository.save(entity);
         } catch (Exception e) {
             logger.error("Failed to create " + getEntityType().getSimpleName(), e);
@@ -59,12 +75,6 @@ public abstract class BaseService<E, PK extends Serializable, R extends CrudRepo
             logger.error("Failed to remove " + getEntityType().getSimpleName(), e);
             throw new SystemException("Failed to remove " + getEntityType().getSimpleName(), e);
         }
-    }
-
-    // Basic finders
-
-    public List<E> findAll() {
-        return repository.findAll().toList();
     }
 
     // Entity type Helper for errors and Exceptions

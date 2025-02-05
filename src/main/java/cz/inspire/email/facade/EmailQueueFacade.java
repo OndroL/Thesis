@@ -17,9 +17,9 @@ import java.util.Optional;
 @ApplicationScoped
 public class EmailQueueFacade {
     @Inject
-    private EmailQueueService emailQueueService;
+    EmailQueueService emailQueueService;
     @Inject
-    private EmailQueueMapper emailQueueMapper;
+    EmailQueueMapper emailQueueMapper;
 
     Logger logger = LogManager.getLogger(EmailQueueFacade.class);
 

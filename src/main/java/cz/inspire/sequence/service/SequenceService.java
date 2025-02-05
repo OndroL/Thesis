@@ -8,7 +8,6 @@ import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 
 import java.util.List;
-import java.util.Optional;
 
 @ApplicationScoped
 public class SequenceService extends BaseService<SequenceEntity, String, SequenceRepository> {
@@ -34,6 +33,4 @@ public class SequenceService extends BaseService<SequenceEntity, String, Sequenc
     public List<SequenceEntity> findByType(int type, int offset, int limit) {
         return repository.findByType(type, new Limit(limit, offset));
     }
-
-    public Optional<SequenceEntity> findById(String id) { return repository.findById(id); }
 }

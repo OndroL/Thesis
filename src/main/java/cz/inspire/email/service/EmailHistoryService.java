@@ -52,12 +52,9 @@ public class EmailHistoryService extends BaseService<EmailHistoryEntity, String,
         return savedAttachments;
     }
 
-
-
     public byte[] readFile(String filePath) throws IOException {
         return fileStorageUtil.readFile(filePath); // Delegate to FileStorageUtil
     }
-
 
     // Brainstorm naming pattern for vouchers, because with this implementation which is identical
     // to controller implementation, problem with same names for 2 different voucher can occur.
@@ -77,7 +74,4 @@ public class EmailHistoryService extends BaseService<EmailHistoryEntity, String,
     public List<EmailHistoryEntity> findByDate(Date dateFrom, Date dateTo, int offset, int count) {
         return repository.findByDate(new Timestamp(dateFrom.getTime()), new Timestamp(dateTo.getTime()), new Limit(count, offset));
     }
-
-    public Optional<EmailHistoryEntity> findById(String emailHistoryId) { return repository.findById(emailHistoryId); }
-
 }

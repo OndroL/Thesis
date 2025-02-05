@@ -5,6 +5,7 @@ import cz.inspire.common.mapper.NastaveniMapper;
 import cz.inspire.common.entity.NastaveniEntity;
 import cz.inspire.common.service.NastaveniService;
 import jakarta.ejb.CreateException;
+import jakarta.ejb.FinderException;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 
@@ -32,7 +33,7 @@ public class NastaveniFacade {
         return nastaveniMapper.toDto(entity);
     }
     
-    public NastaveniDto findByPK(String nastaveniId) {
-        return nastaveniMapper.toDto(nastaveniService.findByPK(nastaveniId).orElse(null));
+    public NastaveniDto findByPrimaryKey(String nastaveniId) throws FinderException {
+        return nastaveniMapper.toDto(nastaveniService.findByPrimaryKey(nastaveniId));
     }
 }
