@@ -5,6 +5,9 @@ import cz.inspire.common.repository.HeaderRepository;
 import cz.inspire.common.service.HeaderService;
 import cz.inspire.enterprise.exception.SystemException;
 import jakarta.ejb.CreateException;
+import jakarta.ejb.DuplicateKeyException;
+import jakarta.ejb.FinderException;
+import jakarta.ejb.RemoveException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -85,7 +88,7 @@ public class HeaderServiceTest {
     }
 
     @Test
-    void testRemove_Failure() throws SystemException {
+    void testRemove_Failure() throws SystemException, RemoveException {
         HeaderEntity entity = new HeaderEntity("1", 42, 7);
         doThrow(new RuntimeException("Database failure")).when(headerRepository).delete(entity);
 
@@ -95,7 +98,7 @@ public class HeaderServiceTest {
     }
 
     @Test
-    void testFindValidAttributes() {
+    void testFindValidAttributes() throws FinderException, DuplicateKeyException {
         List<HeaderEntity> expectedList = Arrays.asList(
                 new HeaderEntity("1", 42, 7),
                 new HeaderEntity("2", 24, 9)

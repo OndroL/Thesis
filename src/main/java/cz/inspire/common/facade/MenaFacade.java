@@ -31,15 +31,15 @@ public class MenaFacade {
     }
 
 
-    public List<MenaDto> findByCode(String code) {
+    public List<MenaDto> findByCode(String code) throws FinderException {
         return menaService.findByCode(code).stream().map(menaMapper::toDto).toList();
     }
 
-    public List<MenaDto> findByCodeNum(int codeNum) {
+    public List<MenaDto> findByCodeNum(int codeNum) throws FinderException {
         return menaService.findByCodeNum(codeNum).stream().map(menaMapper::toDto).toList();
     }
 
-    public List<MenaDto> findAll() {
+    public List<MenaDto> findAll() throws FinderException {
         return menaService.findAll().stream().map(menaMapper::toDto).toList();
     }
     

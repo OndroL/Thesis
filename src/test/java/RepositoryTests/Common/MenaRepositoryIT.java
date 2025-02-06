@@ -17,7 +17,7 @@ import java.util.Optional;
 
 @QuarkusTest
 @Transactional
-@TestInstance(TestInstance.Lifecycle.PER_CLASS) // Allows non-static @BeforeAll
+@TestInstance(TestInstance.Lifecycle.PER_CLASS)
 public class MenaRepositoryIT {
 
     @Inject

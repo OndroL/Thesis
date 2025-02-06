@@ -6,6 +6,8 @@ import cz.inspire.common.mapper.HeaderMapper;
 import cz.inspire.common.entity.HeaderEntity;
 import cz.inspire.common.service.HeaderService;
 import jakarta.ejb.CreateException;
+import jakarta.ejb.DuplicateKeyException;
+import jakarta.ejb.FinderException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -73,7 +75,7 @@ public class HeaderFacadeTest {
     }
 
     @Test
-    void testFindValidAtributes() {
+    void testFindValidAtributes() throws FinderException, DuplicateKeyException {
         List<HeaderEntity> entities = Arrays.asList(
                 new HeaderEntity("1", 42, 7),
                 new HeaderEntity("2", 24, 9)
