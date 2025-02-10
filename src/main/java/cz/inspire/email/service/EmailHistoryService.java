@@ -6,6 +6,7 @@ import cz.inspire.email.repository.EmailHistoryRepository;
 import cz.inspire.utils.File;
 import cz.inspire.utils.FileStorageUtil;
 import jakarta.data.Limit;
+import jakarta.ejb.FinderException;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 
@@ -14,6 +15,8 @@ import java.sql.Timestamp;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
+
+import static cz.inspire.common.utils.ExceptionHandler.wrapDBException;
 
 @ApplicationScoped
 public class EmailHistoryService extends BaseService<EmailHistoryEntity, String, EmailHistoryRepository> {
@@ -66,12 +69,26 @@ public class EmailHistoryService extends BaseService<EmailHistoryEntity, String,
         return FILE_NAME_PATTERN.replace("d-M-yyyy", datePart);
     }
 
-    public List<EmailHistoryEntity> findAll() { return repository.findAllOrdered(); }
+    public List<EmailHistoryEntity> findAll() throws FinderException {
+        return wrapDBException(
+                () -> repository.findAllOrdered(),
+                "Error retrieving all EmailHistoryEntity records (Ordered)"
+        );
+    }
 
-    public List<EmailHistoryEntity> findAll(int offset, int count) {
-        return repository.findAll(new Limit(count, offset)); }
+    public List<EmailHistoryEntity> findAll(int offset, int count) throws FinderException {
+        return wrapDBException(
+                () -> repository.findAll(new Limit(count, offset + 1)),
+                "Error retrieving paginated EmailHistoryEntity records (offset=" + offset + ", count=" + count + ")"
+        );
+    }
 
-    public List<EmailHistoryEntity> findByDate(Date dateFrom, Date dateTo, int offset, int count) {
-        return repository.findByDate(new Timestamp(dateFrom.getTime()), new Timestamp(dateTo.getTime()), new Limit(count, offset));
+    public List<EmailHistoryEntity> findByDate(Date dateFrom, Date dateTo, int offset, int count) throws FinderException {
+        return wrapDBException(
+                () -> repository.findByDate(
+                        new Timestamp(dateFrom.getTime()), new Timestamp(dateTo.getTime()), new Limit(count, offset + 1)
+                ),
+                "Error retrieving EmailHistoryEntity records by date range (from=" + dateFrom + ", to=" + dateTo + ", offset=" + offset + ", count=" + count + ")"
+        );
     }
 }

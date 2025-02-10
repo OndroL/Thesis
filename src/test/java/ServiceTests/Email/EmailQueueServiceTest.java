@@ -6,6 +6,8 @@ import cz.inspire.email.service.EmailQueueService;
 import cz.inspire.enterprise.exception.SystemException;
 import jakarta.ejb.CreateException;
 import jakarta.data.Limit;
+import jakarta.ejb.FinderException;
+import jakarta.ejb.RemoveException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -43,7 +45,7 @@ public class EmailQueueServiceTest {
         emailQueueService.create(entity);
 
         verify(emailQueueService, times(1)).create(entity);
-        verify(emailQueueRepository, times(1)).save(entity);
+        verify(emailQueueRepository, times(1)).insert(entity);
     }
 
     @Test
@@ -51,7 +53,7 @@ public class EmailQueueServiceTest {
         EmailQueueEntity entity = new EmailQueueEntity(
                 "1", new Date(), "history1", "recipient@example.com", 1, false, "depHistory1"
         );
-        doThrow(new RuntimeException("Database failure")).when(emailQueueRepository).save(entity);
+        doThrow(new RuntimeException("Database failure")).when(emailQueueRepository).insert(entity);
 
         assertThrows(CreateException.class, () -> emailQueueService.create(entity));
 
@@ -83,7 +85,7 @@ public class EmailQueueServiceTest {
     }
 
     @Test
-    void testRemove_Success() throws SystemException {
+    void testRemove_Success() throws RemoveException {
         EmailQueueEntity entity = new EmailQueueEntity(
                 "1", new Date(), "history1", "recipient@example.com", 1, false, "depHistory1"
         );
@@ -95,19 +97,19 @@ public class EmailQueueServiceTest {
     }
 
     @Test
-    void testRemove_Failure() throws SystemException {
+    void testRemove_Failure() throws RemoveException {
         EmailQueueEntity entity = new EmailQueueEntity(
                 "1", new Date(), "history1", "recipient@example.com", 1, false, "depHistory1"
         );
         doThrow(new RuntimeException("Database failure")).when(emailQueueRepository).delete(entity);
 
-        assertThrows(SystemException.class, () -> emailQueueService.delete(entity));
+        assertThrows(RemoveException.class, () -> emailQueueService.delete(entity));
 
         verify(emailQueueService, times(1)).delete(entity);
     }
 
     @Test
-    void testFindAll_Success() {
+    void testFindAll_Success() throws FinderException {
         List<EmailQueueEntity> entities = List.of(
                 new EmailQueueEntity("1", new Date(), "history1", "recipient1@example.com", 1, false, "depHistory1"),
                 new EmailQueueEntity("2", new Date(), "history2", "recipient2@example.com", 2, true, "depHistory2")
@@ -123,14 +125,14 @@ public class EmailQueueServiceTest {
     }
 
     @Test
-    void testFindAll_WithLimit_Success() {
+    void testFindAll_WithLimit_Success() throws FinderException {
         List<EmailQueueEntity> entities = List.of(
                 new EmailQueueEntity("1", new Date(), "history1", "recipient1@example.com", 1, false, "depHistory1")
         );
 
         when(emailQueueRepository.findAll(new Limit(1, 1))).thenReturn(entities);
 
-        List<EmailQueueEntity> result = emailQueueService.findAll(1, 1);
+        List<EmailQueueEntity> result = emailQueueService.findAll(0, 1);
 
         assertNotNull(result);
         assertEquals(1, result.size());
@@ -138,7 +140,7 @@ public class EmailQueueServiceTest {
     }
 
     @Test
-    void testFindFirstMail_Success() {
+    void testFindFirstMail_Success() throws FinderException {
         EmailQueueEntity entity = new EmailQueueEntity("1", new Date(), "history1", "recipient@example.com", 1, false, "depHistory1");
         when(emailQueueRepository.findFirstMail(Limit.of(1))).thenReturn(Optional.of(entity));
 
@@ -150,7 +152,7 @@ public class EmailQueueServiceTest {
     }
 
     @Test
-    void testFindByHistory_Success() {
+    void testFindByHistory_Success() throws FinderException {
         List<EmailQueueEntity> entities = List.of(
                 new EmailQueueEntity("1", new Date(), "history1", "recipient@example.com", 1, false, "depHistory1")
         );
@@ -165,7 +167,7 @@ public class EmailQueueServiceTest {
     }
 
     @Test
-    void testFindByDependentHistory_Success() {
+    void testFindByDependentHistory_Success() throws FinderException {
         List<EmailQueueEntity> entities = List.of(
                 new EmailQueueEntity("1", new Date(), "history1", "recipient@example.com", 1, false, "depHistory1")
         );

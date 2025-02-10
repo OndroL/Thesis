@@ -3,8 +3,10 @@ package ServiceTests.Common;
 import cz.inspire.common.service.BaseService;
 import cz.inspire.enterprise.exception.SystemException;
 import jakarta.ejb.CreateException;
+import jakarta.ejb.DuplicateKeyException;
 import jakarta.ejb.FinderException;
 import jakarta.data.repository.CrudRepository;
+import jakarta.ejb.RemoveException;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -45,16 +47,16 @@ class BaseServiceTest {
     @Mock
     private TestRepository repository;
 
-    private TestService baseService;  // Manually initialized
+    private TestService baseService;
 
     @BeforeEach
     void setUp() {
         MockitoAnnotations.openMocks(this);
-        baseService = new TestService(repository);  // Manually initialize with mocked repository
+        baseService = new TestService(repository);
     }
 
     @Test
-    void testFindAll() {
+    void testFindAll() throws FinderException {
         List<TestEntity> entities = Arrays.asList(new TestEntity("1"), new TestEntity("2"));
         when(repository.findAll()).thenReturn(entities.stream());
 
@@ -96,19 +98,19 @@ class BaseServiceTest {
 
         baseService.create(entity);
 
-        verify(repository, times(1)).save(entity);
+        verify(repository, times(1)).insert(entity);
     }
 
     @Test
     void testCreate_Failure() {
         TestEntity entity = new TestEntity("123");
 
-        doThrow(new RuntimeException("DB error")).when(repository).save(entity);
+        doThrow(new RuntimeException("DB error")).when(repository).insert(entity);
 
         CreateException exception = assertThrows(CreateException.class, () -> baseService.create(entity));
         assertEquals("Failed to create TestEntity", exception.getMessage());
 
-        verify(repository, times(1)).save(entity);
+        verify(repository, times(1)).insert(entity);
     }
 
     @Test
@@ -133,7 +135,7 @@ class BaseServiceTest {
     }
 
     @Test
-    void testDelete_Success() throws SystemException {
+    void testDelete_Success() throws RemoveException {
         TestEntity entity = new TestEntity("123");
 
         baseService.delete(entity);
@@ -147,9 +149,71 @@ class BaseServiceTest {
 
         doThrow(new RuntimeException("DB error")).when(repository).delete(entity);
 
-        SystemException exception = assertThrows(SystemException.class, () -> baseService.delete(entity));
+        RemoveException exception = assertThrows(RemoveException.class, () -> baseService.delete(entity));
         assertEquals("Failed to remove TestEntity", exception.getMessage());
 
         verify(repository, times(1)).delete(entity);
     }
+    @Test
+    void testFindById_Found() {
+        String entityId = "123";
+        TestEntity entity = new TestEntity(entityId);
+
+        when(repository.findById(entityId)).thenReturn(Optional.of(entity));
+
+        Optional<TestEntity> result = baseService.findById(entityId);
+
+        assertTrue(result.isPresent());
+        assertEquals(entityId, result.get().getId());
+        verify(repository, times(1)).findById(entityId);
+    }
+
+    @Test
+    void testFindById_NotFound() {
+        String entityId = "123";
+
+        when(repository.findById(entityId)).thenReturn(Optional.empty());
+
+        Optional<TestEntity> result = baseService.findById(entityId);
+
+        assertFalse(result.isPresent());
+        verify(repository, times(1)).findById(entityId);
+    }
+
+    @Test
+    void testFindByPrimaryKey_NullPK() {
+        FinderException exception = assertThrows(FinderException.class, () -> baseService.findByPrimaryKey(null));
+        assertEquals("Primary key cannot be null for TestEntity", exception.getMessage());
+    }
+
+    @Test
+    void testCreate_EntityAlreadyExists() {
+        TestEntity entity = new TestEntity("123");
+
+        doThrow(new jakarta.data.exceptions.EntityExistsException("Already exists")).when(repository).insert(entity);
+
+        DuplicateKeyException exception = assertThrows(DuplicateKeyException.class, () -> baseService.create(entity));
+        assertEquals("Failed to create TestEntity already exists.", exception.getMessage());
+
+        verify(repository, times(1)).insert(entity);
+    }
+
+    @Test
+    void testUpdate_ThrowsSystemException() {
+        TestEntity entity = new TestEntity("123");
+
+        doThrow(new RuntimeException("DB error")).when(repository).save(entity);
+
+        SystemException exception = assertThrows(SystemException.class, () -> baseService.update(entity));
+        assertEquals("Failed to update TestEntity", exception.getMessage());
+
+        verify(repository, times(1)).save(entity);
+    }
+
+    @Test
+    void testDelete_NullEntity() {
+        RemoveException exception = assertThrows(RemoveException.class, () -> baseService.delete(null));
+        assertEquals("Cannot delete null entity in TestEntity", exception.getMessage());
+    }
+
 }

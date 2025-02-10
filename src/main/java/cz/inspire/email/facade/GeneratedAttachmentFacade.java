@@ -10,6 +10,7 @@ import cz.inspire.email.utils.GeneratedAttachmentUtil;
 import cz.inspire.template.entity.PrintTemplateEntity;
 import cz.inspire.template.service.PrintTemplateService;
 import jakarta.ejb.CreateException;
+import jakarta.ejb.FinderException;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import org.apache.logging.log4j.LogManager;
@@ -76,15 +77,15 @@ public class GeneratedAttachmentFacade {
         return generatedAttachmentMapper.toDto(entity);
     }
 
-    public List<GeneratedAttachmentDto> findByEmailAndHistory(String historyId, String email) {
+    public List<GeneratedAttachmentDto> findByEmailAndHistory(String historyId, String email) throws FinderException {
         return generatedAttachmentService.findByEmailAndHistory(historyId, email).stream().map(this::mapToDto).toList();
     }
 
-    public List<GeneratedAttachmentDto> findByHistory(String historyId) {
+    public List<GeneratedAttachmentDto> findByHistory(String historyId) throws FinderException {
         return generatedAttachmentService.findByHistory(historyId).stream().map(this::mapToDto).toList();
     }
 
-    public List<GeneratedAttachmentDto> findByEmailAndHistoryAndTemplate(String historyId, String email, String templateId) {
+    public List<GeneratedAttachmentDto> findByEmailAndHistoryAndTemplate(String historyId, String email, String templateId) throws FinderException {
         return generatedAttachmentService.findByEmailAndHistoryAndTemplate(historyId, email, templateId).stream()
                 .map(this::mapToDto).toList();
     }

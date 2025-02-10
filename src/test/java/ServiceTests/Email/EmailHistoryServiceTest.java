@@ -7,6 +7,8 @@ import cz.inspire.enterprise.exception.SystemException;
 import cz.inspire.utils.File;
 import cz.inspire.utils.FileStorageUtil;
 import jakarta.ejb.CreateException;
+import jakarta.ejb.FinderException;
+import jakarta.ejb.RemoveException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -54,7 +56,7 @@ public class EmailHistoryServiceTest {
         emailHistoryService.create(entity);
 
         verify(emailHistoryService, times(1)).create(entity);
-        verify(emailHistoryRepository, times(1)).save(entity);
+        verify(emailHistoryRepository, times(1)).insert(entity);
     }
 
     @Test
@@ -64,7 +66,7 @@ public class EmailHistoryServiceTest {
                 List.of("Group1"), List.of("Recipient1"), List.of("MoreRecipient1"),
                 true, false, new ArrayList<>(), false, new ArrayList<>()
         );
-        doThrow(new RuntimeException("Database failure")).when(emailHistoryRepository).save(entity);
+        doThrow(new RuntimeException("Database failure")).when(emailHistoryRepository).insert(entity);
 
         assertThrows(CreateException.class, () -> emailHistoryService.create(entity));
 
@@ -100,7 +102,7 @@ public class EmailHistoryServiceTest {
     }
 
     @Test
-    void testRemove_Success() throws SystemException {
+    void testRemove_Success() throws RemoveException {
         EmailHistoryEntity entity = new EmailHistoryEntity(
                 "1", new Date(), "Test Email", "Test Subject",
                 List.of("Group1"), List.of("Recipient1"), List.of("MoreRecipient1"),
@@ -114,7 +116,7 @@ public class EmailHistoryServiceTest {
     }
 
     @Test
-    void testRemove_Failure() throws SystemException {
+    void testRemove_Failure() throws RemoveException {
         EmailHistoryEntity entity = new EmailHistoryEntity(
                 "1", new Date(), "Test Email", "Test Subject",
                 List.of("Group1"), List.of("Recipient1"), List.of("MoreRecipient1"),
@@ -122,13 +124,13 @@ public class EmailHistoryServiceTest {
         );
         doThrow(new RuntimeException("Database failure")).when(emailHistoryRepository).delete(entity);
 
-        assertThrows(SystemException.class, () -> emailHistoryService.delete(entity));
+        assertThrows(RemoveException.class, () -> emailHistoryService.delete(entity));
 
         verify(emailHistoryService, times(1)).delete(entity);
     }
 
     @Test
-    void testFindAll_Success() {
+    void testFindAll_Success() throws FinderException {
         List<EmailHistoryEntity> entities = List.of(
                 new EmailHistoryEntity("1", new Date(), "Email 1", "Subject 1", List.of(), List.of(), List.of(), true, false, List.of(), false, List.of()),
                 new EmailHistoryEntity("2", new Date(), "Email 2", "Subject 2", List.of(), List.of(), List.of(), false, true, List.of(), true, List.of())
@@ -144,7 +146,7 @@ public class EmailHistoryServiceTest {
     }
 
     @Test
-    void testFindByDate_Success() {
+    void testFindByDate_Success() throws FinderException {
         Timestamp from = new Timestamp(System.currentTimeMillis() - 10000);
         Timestamp to = new Timestamp(System.currentTimeMillis());
         List<EmailHistoryEntity> expected = List.of(
@@ -153,7 +155,7 @@ public class EmailHistoryServiceTest {
 
         when(emailHistoryRepository.findByDate(from, to, new jakarta.data.Limit(10, 1))).thenReturn(expected);
 
-        List<EmailHistoryEntity> result = emailHistoryService.findByDate(new Date(from.getTime()), new Date(to.getTime()), 1, 10);
+        List<EmailHistoryEntity> result = emailHistoryService.findByDate(new Date(from.getTime()), new Date(to.getTime()), 0, 10);
 
         assertNotNull(result);
         assertEquals(1, result.size());
@@ -183,7 +185,7 @@ public class EmailHistoryServiceTest {
 
 
         doAnswer(invocation -> {
-            byte[] _data = invocation.getArgument(0);
+            invocation.getArgument(0);
             String fileName = invocation.getArgument(1);
             String subDir = invocation.getArgument(2);
 

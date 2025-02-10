@@ -5,6 +5,7 @@ import cz.inspire.common.repository.NastaveniJsonRepository;
 import cz.inspire.common.service.NastaveniJsonService;
 import cz.inspire.enterprise.exception.SystemException;
 import jakarta.ejb.CreateException;
+import jakarta.ejb.RemoveException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -38,13 +39,13 @@ public class NastaveniJsonServiceTest {
         nastaveniJsonService.create(entity);
 
         verify(nastaveniJsonService, times(1)).create(entity);
-        verify(nastaveniJsonRepository, times(1)).save(entity);
+        verify(nastaveniJsonRepository, times(1)).insert(entity);
     }
 
     @Test
     void testCreate_Failure() throws CreateException {
         NastaveniJsonEntity entity = new NastaveniJsonEntity("key1", "value1");
-        doThrow(new RuntimeException("Database failure")).when(nastaveniJsonRepository).save(entity);
+        doThrow(new RuntimeException("Database failure")).when(nastaveniJsonRepository).insert(entity);
 
         assertThrows(CreateException.class, () -> nastaveniJsonService.create(entity));
 
@@ -72,7 +73,7 @@ public class NastaveniJsonServiceTest {
     }
 
     @Test
-    void testRemove_Success() throws SystemException {
+    void testRemove_Success() throws RemoveException {
         NastaveniJsonEntity entity = new NastaveniJsonEntity("key1", "value1");
 
         nastaveniJsonService.delete(entity);
@@ -82,11 +83,11 @@ public class NastaveniJsonServiceTest {
     }
 
     @Test
-    void testRemove_Failure() throws SystemException {
+    void testRemove_Failure() throws RemoveException {
         NastaveniJsonEntity entity = new NastaveniJsonEntity("key1", "value1");
         doThrow(new RuntimeException("Database failure")).when(nastaveniJsonRepository).delete(entity);
 
-        assertThrows(SystemException.class, () -> nastaveniJsonService.delete(entity));
+        assertThrows(RemoveException.class, () -> nastaveniJsonService.delete(entity));
 
         verify(nastaveniJsonService, times(1)).delete(entity);
     }

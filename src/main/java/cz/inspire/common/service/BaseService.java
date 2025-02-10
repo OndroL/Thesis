@@ -32,17 +32,17 @@ public abstract class BaseService<E, PK extends Serializable, R extends CrudRepo
     }
 
     public List<E> findAll() throws FinderException {
-        return wrapDBException(() -> repository.findAll().toList(), "Failed to findAll for " + getEntityType().getSimpleName());
+        return wrapDBException(() -> repository.findAll().toList(), "Failed to findAll for " + getEntityType());
     }
 
     public E findByPrimaryKey(PK pk) throws FinderException {
         if (pk == null) {
-            throw new FinderException("Primary key cannot be null for " + getEntityType().getSimpleName());
+            throw new FinderException("Primary key cannot be null for " + getEntityType());
         }
 
         return repository.findById(pk)
                 .orElseThrow(() -> new FinderException(
-                        "Failed to find " + getEntityType().getSimpleName() + " with primary key: " + pk
+                        "Failed to find " + getEntityType() + " with primary key: " + pk
                 ));
     }
 
@@ -59,11 +59,11 @@ public abstract class BaseService<E, PK extends Serializable, R extends CrudRepo
         try {
             repository.insert(entity);
         } catch (EntityExistsException e) {
-            logger.error("Failed to create " + getEntityType().getSimpleName() + " already exists.", e);
-            throw new DuplicateKeyException("Failed to create " + getEntityType().getSimpleName() + " already exists.");
+            logger.error("Failed to create " + getEntityType() + " already exists.", e);
+            throw new DuplicateKeyException("Failed to create " + getEntityType() + " already exists.");
         } catch (Exception e) {
-            logger.error("Failed to create " + getEntityType().getSimpleName(), e);
-            throw new CreateException("Failed to create " + getEntityType().getSimpleName());
+            logger.error("Failed to create " + getEntityType(), e);
+            throw new CreateException("Failed to create " + getEntityType());
         }
     }
 
@@ -71,26 +71,24 @@ public abstract class BaseService<E, PK extends Serializable, R extends CrudRepo
         try {
             repository.save(entity);
         } catch (Exception e) {
-            logger.error("Failed to update " +  getEntityType().getSimpleName(), e);
-            throw new SystemException("Failed to update " + getEntityType().getSimpleName(), e);
+            logger.error("Failed to update " +  getEntityType(), e);
+            throw new SystemException("Failed to update " + getEntityType(), e);
         }
     }
 
     public void delete(E entity) throws RemoveException {
+        if (entity == null) {
+            throw new RemoveException("Cannot delete null entity in " + getEntityType());
+        }
         try {
             repository.delete(entity);
         } catch (Exception e) {
-            logger.error("Failed to remove " + getEntityType().getSimpleName(), e);
-            throw new RemoveException("Failed to remove " + getEntityType().getSimpleName());
+            logger.error("Failed to remove " + getEntityType(), e);
+            throw new RemoveException("Failed to remove " + getEntityType());
         }
     }
 
-    // Entity type Helper for errors and Exceptions
-    // If we are confident that typeToken.getRawType() always returns the correct Class<E>, the suppression is safe
-    // Otherwise we will have everywhere warnings for
-    // Unchecked cast: 'java. lang. Class<capture<? super E>>' to 'java. lang. Class<E>'
-    @SuppressWarnings("unchecked")
-    private Class<E> getEntityType() {
-        return (Class<E>) typeToken.getRawType();
+    private String getEntityType() {
+        return typeToken.getRawType().getSimpleName();
     }
 }

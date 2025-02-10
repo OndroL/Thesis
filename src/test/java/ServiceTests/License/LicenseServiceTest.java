@@ -5,6 +5,7 @@ import cz.inspire.license.repository.LicenseRepository;
 import cz.inspire.license.service.LicenseService;
 import cz.inspire.enterprise.exception.SystemException;
 import jakarta.ejb.CreateException;
+import jakarta.ejb.RemoveException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -46,7 +47,7 @@ public class LicenseServiceTest {
         licenseService.create(entity);
 
         verify(licenseService, times(1)).create(entity);
-        verify(licenseRepository, times(1)).save(entity);
+        verify(licenseRepository, times(1)).insert(entity);
     }
 
     @Test
@@ -58,7 +59,7 @@ public class LicenseServiceTest {
                 5, 15, 10, true, 12345L, "hash123",
                 new Date(), new Date(), 1001
         );
-        doThrow(new RuntimeException("Database failure")).when(licenseRepository).save(entity);
+        doThrow(new RuntimeException("Database failure")).when(licenseRepository).insert(entity);
 
         assertThrows(CreateException.class, () -> licenseService.create(entity));
 
@@ -99,7 +100,7 @@ public class LicenseServiceTest {
     }
 
     @Test
-    void testRemove_Success() throws SystemException {
+    void testRemove_Success() throws RemoveException {
         LicenseEntity entity = new LicenseEntity(
                 "1", "Customer1", true, true,
                 new Date(), true, new Date(), true,
@@ -115,7 +116,7 @@ public class LicenseServiceTest {
     }
 
     @Test
-    void testRemove_Failure() throws SystemException {
+    void testRemove_Failure() throws RemoveException {
         LicenseEntity entity = new LicenseEntity(
                 "1", "Customer1", true, true,
                 new Date(), true, new Date(), true,
@@ -125,7 +126,7 @@ public class LicenseServiceTest {
         );
         doThrow(new RuntimeException("Database failure")).when(licenseRepository).delete(entity);
 
-        assertThrows(SystemException.class, () -> licenseService.delete(entity));
+        assertThrows(RemoveException.class, () -> licenseService.delete(entity));
 
         verify(licenseService, times(1)).delete(entity);
     }

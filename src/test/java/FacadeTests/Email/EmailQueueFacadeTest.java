@@ -6,6 +6,7 @@ import cz.inspire.email.facade.EmailQueueFacade;
 import cz.inspire.email.mapper.EmailQueueMapper;
 import cz.inspire.email.service.EmailQueueService;
 import jakarta.ejb.CreateException;
+import jakarta.ejb.FinderException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -84,7 +85,7 @@ public class EmailQueueFacadeTest {
     }
 
     @Test
-    void testFindAll() {
+    void testFindAll() throws FinderException {
         EmailQueueEntity entity = new EmailQueueEntity();
         entity.setId("queue123");
 
@@ -105,7 +106,7 @@ public class EmailQueueFacadeTest {
     }
 
     @Test
-    void testFindFirstMail_Found() {
+    void testFindFirstMail_Found() throws FinderException {
         EmailQueueEntity entity = new EmailQueueEntity();
         entity.setId("queue123");
 
@@ -125,7 +126,7 @@ public class EmailQueueFacadeTest {
     }
 
     @Test
-    void testFindFirstMail_NotFound() {
+    void testFindFirstMail_NotFound() throws FinderException {
         when(emailQueueService.findFirstMail()).thenReturn(Optional.empty());
 
         Optional<EmailQueueDto> result = emailQueueFacade.findFirstMail();
@@ -137,7 +138,7 @@ public class EmailQueueFacadeTest {
     }
 
     @Test
-    void testFindByHistory() {
+    void testFindByHistory() throws FinderException {
         String historyId = "history123";
         EmailQueueEntity entity = new EmailQueueEntity();
         entity.setId("queue123");
@@ -159,7 +160,7 @@ public class EmailQueueFacadeTest {
     }
 
     @Test
-    void testFindByDependentHistory() {
+    void testFindByDependentHistory() throws FinderException {
         String historyId = "history123";
         EmailQueueEntity entity = new EmailQueueEntity();
         entity.setId("queue123");

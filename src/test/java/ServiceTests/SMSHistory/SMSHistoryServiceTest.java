@@ -5,6 +5,8 @@ import cz.inspire.sms.entity.SMSHistoryEntity;
 import cz.inspire.sms.repository.SMSHistoryRepository;
 import cz.inspire.sms.service.SMSHistoryService;
 import jakarta.ejb.CreateException;
+import jakarta.ejb.FinderException;
+import jakarta.ejb.RemoveException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -49,7 +51,7 @@ public class SMSHistoryServiceTest {
         smsHistoryService.create(entity);
 
         verify(smsHistoryService, times(1)).create(entity);
-        verify(smsHistoryRepository, times(1)).save(entity);
+        verify(smsHistoryRepository, times(1)).insert(entity);
     }
 
     @Test
@@ -61,7 +63,7 @@ public class SMSHistoryServiceTest {
                 Arrays.asList("MoreRecipient1", "MoreRecipient2"),
                 true
         );
-        doThrow(new RuntimeException("Database failure")).when(smsHistoryRepository).save(entity);
+        doThrow(new RuntimeException("Database failure")).when(smsHistoryRepository).insert(entity);
 
         assertThrows(CreateException.class, () -> smsHistoryService.create(entity));
 
@@ -69,7 +71,7 @@ public class SMSHistoryServiceTest {
     }
 
     @Test
-    void testFindByDate_Success() {
+    void testFindByDate_Success() throws FinderException {
         Timestamp from = new Timestamp(System.currentTimeMillis());
         Timestamp to = new Timestamp(System.currentTimeMillis() + 10000);
 
@@ -88,7 +90,7 @@ public class SMSHistoryServiceTest {
     }
 
     @Test
-    void testFindByDateAutomatic_Success() {
+    void testFindByDateAutomatic_Success() throws FinderException {
         Timestamp from = new Timestamp(System.currentTimeMillis());
         Timestamp to = new Timestamp(System.currentTimeMillis() + 10000);
         boolean automatic = true;
@@ -139,7 +141,7 @@ public class SMSHistoryServiceTest {
     }
 
     @Test
-    void testRemove_Success() throws SystemException {
+    void testRemove_Success() throws RemoveException {
         SMSHistoryEntity entity = new SMSHistoryEntity(
                 "1", new Date(), "Test Message",
                 Arrays.asList("Group1", "Group2"),
@@ -155,7 +157,7 @@ public class SMSHistoryServiceTest {
     }
 
     @Test
-    void testRemove_Failure() throws SystemException {
+    void testRemove_Failure() throws RemoveException {
         SMSHistoryEntity entity = new SMSHistoryEntity(
                 "1", new Date(), "Test Message",
                 Arrays.asList("Group1", "Group2"),
@@ -165,7 +167,7 @@ public class SMSHistoryServiceTest {
         );
         doThrow(new RuntimeException("Database failure")).when(smsHistoryRepository).delete(entity);
 
-        assertThrows(SystemException.class, () -> smsHistoryService.delete(entity));
+        assertThrows(RemoveException.class, () -> smsHistoryService.delete(entity));
 
         verify(smsHistoryService, times(1)).delete(entity);
     }

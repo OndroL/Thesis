@@ -5,6 +5,7 @@ import cz.inspire.template.repository.PrintTemplateRepository;
 import cz.inspire.template.service.PrintTemplateService;
 import cz.inspire.enterprise.exception.SystemException;
 import jakarta.ejb.CreateException;
+import jakarta.ejb.RemoveException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -40,13 +41,13 @@ public class PrintTemplateServiceTest {
         printTemplateService.create(entity);
 
         verify(printTemplateService, times(1)).create(entity);
-        verify(printTemplateRepository, times(1)).save(entity);
+        verify(printTemplateRepository, times(1)).insert(entity);
     }
 
     @Test
     void testCreate_Failure() throws CreateException {
         PrintTemplateEntity entity = new PrintTemplateEntity("1", "Sample Content", 1, "TemplateName", "FileName");
-        doThrow(new RuntimeException("Database failure")).when(printTemplateRepository).save(entity);
+        doThrow(new RuntimeException("Database failure")).when(printTemplateRepository).insert(entity);
 
         assertThrows(CreateException.class, () -> printTemplateService.create(entity));
 
@@ -74,7 +75,7 @@ public class PrintTemplateServiceTest {
     }
 
     @Test
-    void testRemove_Success() throws SystemException {
+    void testRemove_Success() throws RemoveException {
         PrintTemplateEntity entity = new PrintTemplateEntity("1", "Sample Content", 1, "TemplateName", "FileName");
 
         printTemplateService.delete(entity);
@@ -84,11 +85,11 @@ public class PrintTemplateServiceTest {
     }
 
     @Test
-    void testRemove_Failure() throws SystemException {
+    void testRemove_Failure() throws RemoveException {
         PrintTemplateEntity entity = new PrintTemplateEntity("1", "Sample Content", 1, "TemplateName", "FileName");
         doThrow(new RuntimeException("Database failure")).when(printTemplateRepository).delete(entity);
 
-        assertThrows(SystemException.class, () -> printTemplateService.delete(entity));
+        assertThrows(RemoveException.class, () -> printTemplateService.delete(entity));
 
         verify(printTemplateService, times(1)).delete(entity);
     }

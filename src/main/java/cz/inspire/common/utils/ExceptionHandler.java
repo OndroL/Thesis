@@ -12,11 +12,23 @@ public class ExceptionHandler {
         try {
             return action.get();
         } catch (NoResultException e) {
-            throw new ObjectNotFoundException("No results found during " + operation + ": " + e.getMessage() + " Error stack :" + e);
+            ObjectNotFoundException ex = new ObjectNotFoundException(
+                    "No result found (Operation: " + operation + ") - Cause: " + e.getMessage()
+            );
+            ex.initCause(e); // Preserve stack trace
+            throw ex;
         } catch (NonUniqueResultException e) {
-            throw new FinderException("Multiple results found during " + operation + ": " + e.getMessage() + " Error stack :" + e);
+            FinderException ex = new FinderException(
+                    "Multiple results found (Operation: " + operation + ") - Cause: " + e.getMessage()
+            );
+            ex.initCause(e); // Preserve stack trace
+            throw ex;
         } catch (Exception e) {
-            throw new FinderException("Unexpected error during " + operation + ": " + e.getMessage() + " Error stack :" + e);
+            FinderException ex = new FinderException(
+                    "Unexpected error (Operation: " + operation + ") - Cause: " + e.getMessage()
+            );
+            ex.initCause(e); // Preserve stack trace
+            throw ex;
         }
     }
 }

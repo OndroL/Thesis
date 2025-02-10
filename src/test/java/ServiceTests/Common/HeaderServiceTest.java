@@ -5,7 +5,6 @@ import cz.inspire.common.repository.HeaderRepository;
 import cz.inspire.common.service.HeaderService;
 import cz.inspire.enterprise.exception.SystemException;
 import jakarta.ejb.CreateException;
-import jakarta.ejb.DuplicateKeyException;
 import jakarta.ejb.FinderException;
 import jakarta.ejb.RemoveException;
 import org.junit.jupiter.api.BeforeEach;
@@ -44,13 +43,13 @@ public class HeaderServiceTest {
         headerService.create(entity);
 
         verify(headerService, times(1)).create(entity);
-        verify(headerRepository, times(1)).save(entity);
+        verify(headerRepository, times(1)).insert(entity);
     }
 
     @Test
     void testCreate_Failure() throws CreateException {
         HeaderEntity entity = new HeaderEntity("1", 42, 7);
-        doThrow(new RuntimeException("Database failure")).when(headerRepository).save(entity);
+        doThrow(new RuntimeException("Database failure")).when(headerRepository).insert(entity);
 
         assertThrows(CreateException.class, () -> headerService.create(entity));
 
@@ -78,7 +77,7 @@ public class HeaderServiceTest {
     }
 
     @Test
-    void testRemove_Success() throws SystemException {
+    void testRemove_Success() throws RemoveException {
         HeaderEntity entity = new HeaderEntity("1", 42, 7);
 
         headerService.delete(entity);
@@ -88,17 +87,17 @@ public class HeaderServiceTest {
     }
 
     @Test
-    void testRemove_Failure() throws SystemException, RemoveException {
+    void testRemove_Failure() throws RemoveException {
         HeaderEntity entity = new HeaderEntity("1", 42, 7);
         doThrow(new RuntimeException("Database failure")).when(headerRepository).delete(entity);
 
-        assertThrows(SystemException.class, () -> headerService.delete(entity));
+        assertThrows(RemoveException.class, () -> headerService.delete(entity));
 
         verify(headerService, times(1)).delete(entity);
     }
 
     @Test
-    void testFindValidAttributes() throws FinderException, DuplicateKeyException {
+    void testFindValidAttributes() throws FinderException {
         List<HeaderEntity> expectedList = Arrays.asList(
                 new HeaderEntity("1", 42, 7),
                 new HeaderEntity("2", 24, 9)

@@ -7,6 +7,7 @@ import cz.inspire.common.repository.NastaveniRepository;
 import cz.inspire.common.service.NastaveniService;
 import cz.inspire.enterprise.exception.SystemException;
 import jakarta.ejb.CreateException;
+import jakarta.ejb.RemoveException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -53,14 +54,14 @@ public class NastaveniServiceTest {
         nastaveniService.create(entity);
 
         verify(nastaveniService, times(1)).create(entity);
-        verify(nastaveniRepository, times(1)).save(entity);
+        verify(nastaveniRepository, times(1)).insert(entity);
     }
 
     @Test
     void testCreate_Failure() throws CreateException {
         JsonNode value = createJsonValue("{\"key\":\"value1\"}");
         NastaveniEntity entity = new NastaveniEntity("key1", value);
-        doThrow(new RuntimeException("Database failure")).when(nastaveniRepository).save(entity);
+        doThrow(new RuntimeException("Database failure")).when(nastaveniRepository).insert(entity);
 
         assertThrows(CreateException.class, () -> nastaveniService.create(entity));
 
@@ -90,7 +91,7 @@ public class NastaveniServiceTest {
     }
 
     @Test
-    void testRemove_Success() throws SystemException {
+    void testRemove_Success() throws RemoveException {
         JsonNode value = createJsonValue("{\"key\":\"value1\"}");
         NastaveniEntity entity = new NastaveniEntity("key1", value);
 
@@ -101,12 +102,12 @@ public class NastaveniServiceTest {
     }
 
     @Test
-    void testRemove_Failure() throws SystemException {
+    void testRemove_Failure() throws RemoveException {
         JsonNode value = createJsonValue("{\"key\":\"value1\"}");
         NastaveniEntity entity = new NastaveniEntity("key1", value);
         doThrow(new RuntimeException("Database failure")).when(nastaveniRepository).delete(entity);
 
-        assertThrows(SystemException.class, () -> nastaveniService.delete(entity));
+        assertThrows(RemoveException.class, () -> nastaveniService.delete(entity));
 
         verify(nastaveniService, times(1)).delete(entity);
     }

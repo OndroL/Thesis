@@ -141,7 +141,7 @@ public class GeneratedAttachmentFacadeTest {
     }
 
     @Test
-    void testFindByEmailAndHistory() {
+    void testFindByEmailAndHistory() throws FinderException {
         String historyId = "history123";
         String email = "user@example.com";
         GeneratedAttachmentEntity entity = new GeneratedAttachmentEntity();
@@ -164,7 +164,7 @@ public class GeneratedAttachmentFacadeTest {
     }
 
     @Test
-    void testFindByHistory() {
+    void testFindByHistory() throws FinderException {
         String historyId = "history123";
         GeneratedAttachmentEntity entity = new GeneratedAttachmentEntity();
         entity.setId("attachment123");
@@ -186,7 +186,7 @@ public class GeneratedAttachmentFacadeTest {
     }
 
     @Test
-    void testFindByEmailAndHistoryAndTemplate() {
+    void testFindByEmailAndHistoryAndTemplate() throws FinderException {
         String historyId = "history123";
         String email = "user@example.com";
         String templateId = "template123";

@@ -122,15 +122,15 @@ public class EmailHistoryFacade {
         return dto;
     }
 
-    public List<EmailHistoryDto> findAll() {
+    public List<EmailHistoryDto> findAll() throws FinderException {
         return emailHistoryService.findAll().stream().map(this::mapToDto).toList();
     }
 
-    public List<EmailHistoryDto> findAll(int offset, int count) {
+    public List<EmailHistoryDto> findAll(int offset, int count) throws FinderException {
         return emailHistoryService.findAll(offset, count).stream().map(this::mapToDto).toList();
     }
 
-    public List<EmailHistoryDto> findByDate(Date dateFrom, Date dateTo, int offset, int count) {
+    public List<EmailHistoryDto> findByDate(Date dateFrom, Date dateTo, int offset, int count) throws FinderException {
         return emailHistoryService.findByDate(dateFrom, dateTo, offset, count).stream().map(this::mapToDto).toList();
     }
 

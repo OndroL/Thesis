@@ -7,6 +7,7 @@ import cz.inspire.sms.mapper.SMSHistoryMapper;
 import cz.inspire.sms.service.SMSHistoryService;
 import cz.inspire.sms.utils.SMSHistoryUtil;
 import jakarta.ejb.CreateException;
+import jakarta.ejb.FinderException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -134,7 +135,7 @@ public class SMSHistoryFacadeTest {
     }
 
     @Test
-    void testFindByDate() {
+    void testFindByDate() throws FinderException {
         Date from = new Date();
         Date to = new Date();
         List<SMSHistoryEntity> entities = Arrays.asList(
@@ -152,7 +153,7 @@ public class SMSHistoryFacadeTest {
     }
 
     @Test
-    void testFindByDateAutomatic() {
+    void testFindByDateAutomatic() throws FinderException {
         Date from = new Date();
         Date to = new Date();
         boolean automatic = true;

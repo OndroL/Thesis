@@ -3,6 +3,7 @@ package ServiceTests.Email;
 import cz.inspire.email.entity.GeneratedAttachmentEntity;
 import cz.inspire.email.repository.GeneratedAttachmentRepository;
 import cz.inspire.email.service.GeneratedAttachmentService;
+import jakarta.ejb.FinderException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -29,7 +30,7 @@ public class GeneratedAttachmentServiceTest {
     }
 
     @Test
-    void testFindByEmailAndHistory_Success() {
+    void testFindByEmailAndHistory_Success() throws FinderException {
         String historyId = "history1";
         String email = "user@example.com";
 
@@ -49,7 +50,7 @@ public class GeneratedAttachmentServiceTest {
     }
 
     @Test
-    void testFindByHistory_Success() {
+    void testFindByHistory_Success() throws FinderException {
         String historyId = "history1";
 
         List<GeneratedAttachmentEntity> expectedAttachments = List.of(
@@ -67,7 +68,7 @@ public class GeneratedAttachmentServiceTest {
     }
 
     @Test
-    void testFindByEmailAndHistoryAndTemplate_Success() {
+    void testFindByEmailAndHistoryAndTemplate_Success() throws FinderException {
         String historyId = "history1";
         String email = "user@example.com";
         String templateId = "template1";

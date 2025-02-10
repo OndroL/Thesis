@@ -5,6 +5,7 @@ import cz.inspire.common.facade.MenaFacade;
 import cz.inspire.common.mapper.MenaMapper;
 import cz.inspire.common.entity.MenaEntity;
 import cz.inspire.common.service.MenaService;
+import jakarta.ejb.FinderException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -50,7 +51,7 @@ public class MenaFacadeTest {
     }
 
     @Test
-    void testFindByCode() {
+    void testFindByCode() throws FinderException {
         String code = "USD";
         List<MenaEntity> entities = Arrays.asList(
                 new MenaEntity("1", "USD", "123.45;67.89", 840, 1, 1),
@@ -76,7 +77,7 @@ public class MenaFacadeTest {
     }
 
     @Test
-    void testFindByCodeNum() {
+    void testFindByCodeNum() throws FinderException {
         int codeNum = 840;
         List<MenaEntity> entities = Arrays.asList(
                 new MenaEntity("1", "USD", "123.45;67.89", 840, 1, 1),
@@ -102,7 +103,7 @@ public class MenaFacadeTest {
     }
 
     @Test
-    void testFindAll() {
+    void testFindAll() throws FinderException {
         List<MenaEntity> entities = Arrays.asList(
                 new MenaEntity("1", "USD", "123.45;67.89", 840, 1, 1),
                 new MenaEntity("2", "EUR", "987.65;43.21", 978, 0, 1)

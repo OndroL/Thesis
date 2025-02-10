@@ -5,6 +5,8 @@ import cz.inspire.common.repository.MenaRepository;
 import cz.inspire.common.service.MenaService;
 import cz.inspire.enterprise.exception.SystemException;
 import jakarta.ejb.CreateException;
+import jakarta.ejb.FinderException;
+import jakarta.ejb.RemoveException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -13,7 +15,6 @@ import org.mockito.MockitoAnnotations;
 import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Stream;
 
@@ -42,13 +43,13 @@ public class MenaServiceTest {
         menaService.create(entity);
 
         verify(menaService, times(1)).create(entity);
-        verify(menaRepository, times(1)).save(entity);
+        verify(menaRepository, times(1)).insert(entity);
     }
 
     @Test
     void testCreate_Failure() throws CreateException {
         MenaEntity entity = new MenaEntity("1", "USD", "123,456", 840, 1, 1);
-        doThrow(new RuntimeException("Database failure")).when(menaRepository).save(entity);
+        doThrow(new RuntimeException("Database failure")).when(menaRepository).insert(entity);
 
         assertThrows(CreateException.class, () -> menaService.create(entity));
 
@@ -76,7 +77,7 @@ public class MenaServiceTest {
     }
 
     @Test
-    void testRemove_Success() throws SystemException {
+    void testRemove_Success() throws RemoveException {
         MenaEntity entity = new MenaEntity("1", "USD", "123,456", 840, 1, 1);
 
         menaService.delete(entity);
@@ -86,17 +87,17 @@ public class MenaServiceTest {
     }
 
     @Test
-    void testRemove_Failure() throws SystemException {
+    void testRemove_Failure() throws RemoveException {
         MenaEntity entity = new MenaEntity("1", "USD", "123,456", 840, 1, 1);
         doThrow(new RuntimeException("Database failure")).when(menaRepository).delete(entity);
 
-        assertThrows(SystemException.class, () -> menaService.delete(entity));
+        assertThrows(RemoveException.class, () -> menaService.delete(entity));
 
         verify(menaService, times(1)).delete(entity);
     }
 
     @Test
-    void testFindAll() {
+    void testFindAll() throws FinderException {
         Stream<MenaEntity> stream = Stream.of(
                 new MenaEntity("1", "USD", "123,456", 840, 1, 1),
                 new MenaEntity("2", "EUR", "789", 978, 0, 0)
@@ -114,7 +115,7 @@ public class MenaServiceTest {
 
 
     @Test
-    void testFindByCode() {
+    void testFindByCode() throws FinderException {
         List<MenaEntity> expectedList = List.of(new MenaEntity("1", "USD", "123,456", 840, 1, 1));
         when(menaRepository.findByCode("USD")).thenReturn(expectedList);
 
@@ -127,7 +128,7 @@ public class MenaServiceTest {
     }
 
     @Test
-    void testFindByCodeNum() {
+    void testFindByCodeNum() throws FinderException {
         List<MenaEntity> expectedList = List.of(new MenaEntity("1", "USD", "123,456", 840, 1, 1));
         when(menaRepository.findByCodeNum(840)).thenReturn(expectedList);
 
