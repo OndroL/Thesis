@@ -6,6 +6,7 @@ import cz.inspire.email.mapper.EmailQueueMapper;
 import cz.inspire.email.service.EmailQueueService;
 import cz.inspire.email.utils.EmailQueueUtil;
 import jakarta.ejb.CreateException;
+import jakarta.ejb.FinderException;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import org.apache.logging.log4j.LogManager;
@@ -17,9 +18,9 @@ import java.util.Optional;
 @ApplicationScoped
 public class EmailQueueFacade {
     @Inject
-    private EmailQueueService emailQueueService;
+    EmailQueueService emailQueueService;
     @Inject
-    private EmailQueueMapper emailQueueMapper;
+    EmailQueueMapper emailQueueMapper;
 
     Logger logger = LogManager.getLogger(EmailQueueFacade.class);
 
@@ -43,26 +44,26 @@ public class EmailQueueFacade {
         return emailQueueMapper.toDto(entity);
     }
 
-    public List<EmailQueueDto> findAll() {
+    public List<EmailQueueDto> findAll() throws FinderException {
         return emailQueueService.findAll().stream()
                 .map(this::mapToDto).toList();
     }
 
-    public List<EmailQueueDto> findAll(int offset, int count) {
+    public List<EmailQueueDto> findAll(int offset, int count) throws FinderException {
         return emailQueueService.findAll(offset, count).stream()
                 .map(this::mapToDto).toList();
     }
 
-    public Optional<EmailQueueDto> findFirstMail() {
+    public Optional<EmailQueueDto> findFirstMail() throws FinderException {
         return emailQueueService.findFirstMail().map(this::mapToDto);
     }
 
-    public List<EmailQueueDto> findByHistory(String historyId) {
+    public List<EmailQueueDto> findByHistory(String historyId) throws FinderException {
         return emailQueueService.findByHistory(historyId).stream()
                 .map(this::mapToDto).toList();
     }
 
-    public List<EmailQueueDto> findByDependentHistory(String historyId) {
+    public List<EmailQueueDto> findByDependentHistory(String historyId) throws FinderException {
         return emailQueueService.findByDependentHistory(historyId).stream()
                 .map(this::mapToDto).toList();
     }

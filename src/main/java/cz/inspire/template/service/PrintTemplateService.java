@@ -6,7 +6,6 @@ import cz.inspire.template.repository.PrintTemplateRepository;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 
-import java.util.Optional;
 
 @ApplicationScoped
 public class PrintTemplateService extends BaseService<PrintTemplateEntity, String, PrintTemplateRepository> {
@@ -17,9 +16,5 @@ public class PrintTemplateService extends BaseService<PrintTemplateEntity, Strin
     @Inject
     public PrintTemplateService(PrintTemplateRepository repository) {
         super(repository);
-    }
-
-    public Optional<PrintTemplateEntity> findById(String templateId) {
-        return repository.findById(templateId);
     }
 }

@@ -6,8 +6,10 @@ import cz.inspire.license.mapper.LicenseMapper;
 import cz.inspire.license.service.LicenseService;
 import cz.inspire.license.utils.LicenseUtil;
 import jakarta.ejb.CreateException;
+import jakarta.ejb.FinderException;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
+import java.util.List;
 
 @ApplicationScoped
 public class LicenseFacade {
@@ -33,4 +35,8 @@ public class LicenseFacade {
     public LicenseDto mapToDto(LicenseEntity entity) { return licenseMapper.toDto(entity); }
 
     public LicenseEntity mapToEntity(LicenseDto dto) { return licenseMapper.toEntity(dto); }
+
+    public List<LicenseDto> findAll() throws FinderException {
+        return licenseService.findAll().stream().map(this::mapToDto).toList();
+    }
 }

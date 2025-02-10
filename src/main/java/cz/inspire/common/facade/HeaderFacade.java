@@ -4,6 +4,8 @@ import cz.inspire.common.dto.HeaderDto;
 import cz.inspire.common.mapper.HeaderMapper;
 import cz.inspire.common.service.HeaderService;
 import jakarta.ejb.CreateException;
+import jakarta.ejb.DuplicateKeyException;
+import jakarta.ejb.FinderException;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 
@@ -28,7 +30,7 @@ public class HeaderFacade {
     }
 
     // Typo (missing 't' in Attributes) in old bean signature="java.util.Collection findValidAtributes()"
-    public List<HeaderDto> findValidAtributes() {
+    public List<HeaderDto> findValidAtributes() throws FinderException, DuplicateKeyException {
         return headerService.findValidAttributes().stream().map(headerMapper::toDto).toList();
     }
 
