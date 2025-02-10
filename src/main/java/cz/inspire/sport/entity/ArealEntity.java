@@ -15,6 +15,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.util.List;
+import java.util.Map;
 
 @AllArgsConstructor
 @Setter
@@ -30,7 +31,7 @@ public class ArealEntity {
 
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
     @JoinColumn(name = "areal")
-    private List<ArealLocEntity> localeData;
+    private Map<String, ArealLocEntity> localeData;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "nadrazeny_areal", referencedColumnName = "id")

@@ -67,7 +67,7 @@ public class InstructorEntity {
     private int googleCalendarNotificationBefore;
 
     @OneToMany(mappedBy = "instructor")
-    private List<SportInstructorEntity> sportInstructors;
+    private Set<SportInstructorEntity> sportInstructors;
 
     @ManyToMany
     @JoinTable(
@@ -75,7 +75,7 @@ public class InstructorEntity {
             joinColumns = @JoinColumn(name = "instructor_id"),
             inverseJoinColumns = @JoinColumn(name = "activity_id")
     )
-    private List<ActivityEntity> activities;
+    private Set<ActivityEntity> activities;
 
     @Transient
     private Set<SportDto> sportSet;

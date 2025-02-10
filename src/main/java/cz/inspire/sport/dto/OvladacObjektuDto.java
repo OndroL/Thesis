@@ -5,13 +5,14 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.io.Serializable;
 import java.util.List;
 
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
 @Setter
-public class OvladacObjektuDto {
+public class OvladacObjektuDto implements Serializable {
     private String id;
     private String idOvladace;
     private Boolean manual;

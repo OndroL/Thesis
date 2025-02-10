@@ -5,11 +5,13 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.io.Serializable;
+
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
 @Setter
-public class PodminkaRezervaceDto {
+public class PodminkaRezervaceDto implements Serializable {
     private String id;
     private String name;
     private long priorita;

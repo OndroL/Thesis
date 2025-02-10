@@ -5,18 +5,19 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.util.Collection;
+import java.io.Serializable;
+import java.util.List;
 
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
 @Setter
-public class ActivityDto {
+public class ActivityDto implements Serializable {
     private String id;
     private String name;
     private String description;
     private int index;
     private String iconId;
-    private Collection<InstructorDto> instructors;
-    private Collection<SportDto> sports;
+    private List<InstructorDto> instructors;
+    private List<SportDto> sports;
 }

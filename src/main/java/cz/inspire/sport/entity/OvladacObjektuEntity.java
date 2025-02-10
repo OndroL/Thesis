@@ -9,6 +9,8 @@ import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.annotations.JdbcTypeCode;
+import org.hibernate.type.SqlTypes;
 
 import java.util.List;
 
@@ -23,8 +25,9 @@ public class OvladacObjektuEntity {
     private String id;
     @Column
     private String idOvladace;
-    @Column
-    private String cislaZapojeni;
+    @JdbcTypeCode(SqlTypes.JSON)
+    @Column(columnDefinition = "jsonb")
+    private List<Integer> cislaZapojeni;
     @Column
     private Boolean manual;
     @Column
@@ -33,9 +36,6 @@ public class OvladacObjektuEntity {
     private int delkaSepnutiPoKonci;
     @Column
     private int zapnutiPredZacatkem;
-    //This means that, attribute cislaZapojeniList is not persisted in DB as it is in Bean
-    @Transient
-    private List<Integer> cislaZapojeniList;
     @Column
     private String objektId;
 }

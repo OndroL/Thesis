@@ -5,13 +5,14 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.io.Serializable;
 import java.util.Map;
 
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
 @Setter
-public class SportKategorieDto {
+public class SportKategorieDto implements Serializable {
     private String id;
     private String multisportFacilityId;
     private String multisportServiceUUID;

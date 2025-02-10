@@ -19,6 +19,8 @@ import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.type.SqlTypes;
 
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 @AllArgsConstructor
 @Setter
@@ -98,7 +100,7 @@ public class ObjektEntity {
 
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
     @JoinColumn(name = "objekt")
-    private List<ObjektLocEntity> localeData;
+    private Map<String, ObjektLocEntity> localeData;
 
     @OneToMany(mappedBy = "objekt")
     private List<ObjektSportEntity> objektSports;
@@ -115,8 +117,8 @@ public class ObjektEntity {
             joinColumns = @JoinColumn(name = "objekt"),
             inverseJoinColumns = @JoinColumn(name = "nadobjekt")
     )
-    private List<ObjektEntity> nadobjekty;
+    private Set<ObjektEntity> nadobjekty;
 
     @ManyToMany(mappedBy = "nadobjekty")
-    private List<ObjektEntity> podobjekty;
+    private Set<ObjektEntity> podobjekty;
 }

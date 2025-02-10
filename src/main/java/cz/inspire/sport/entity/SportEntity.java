@@ -21,6 +21,7 @@ import org.hibernate.type.SqlTypes;
 
 import java.awt.Color;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 @AllArgsConstructor
@@ -80,7 +81,7 @@ public class SportEntity {
 
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
     @JoinColumn(name = "sport")
-    private List<SportLocEntity> localeData;
+    private Map<String, SportLocEntity> localeData;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "sport_kategorie", referencedColumnName = "id")

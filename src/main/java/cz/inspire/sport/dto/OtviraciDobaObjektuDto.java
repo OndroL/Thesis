@@ -6,13 +6,14 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.io.Serializable;
 import java.util.Date;
 
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
 @Setter
-public class OtviraciDobaObjektuDto {
+public class OtviraciDobaObjektuDto implements Serializable {
     private String objektId;
     private Date platnostOd;
     private OtviraciDoba otviraciDoba;
