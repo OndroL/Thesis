@@ -22,7 +22,7 @@ import java.util.List;
 @Table(name = "ovladac_objektu")
 public class OvladacObjektuEntity {
     @Id
-    private String id;
+    protected String id;
     @Column
     private String idOvladace;
     @JdbcTypeCode(SqlTypes.JSON)

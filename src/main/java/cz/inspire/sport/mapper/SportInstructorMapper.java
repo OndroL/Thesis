@@ -11,8 +11,8 @@ import org.mapstruct.MappingConstants;
 public interface SportInstructorMapper {
 
     // Map DTO to Entity
-    @Mapping(target = "sport", source = "sport", ignore = true)
-    @Mapping(target = "instructor", source = "instructor", ignore = true)
+    @Mapping(target = "sport", source = "sportId", ignore = true)
+    @Mapping(target = "instructor", source = "instructorId", ignore = true)
     SportInstructorEntity toEntity(SportInstructorDto dto);
 
     // Map Entity to DTO

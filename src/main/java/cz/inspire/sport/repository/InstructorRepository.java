@@ -14,24 +14,24 @@ public interface InstructorRepository extends CrudRepository<InstructorEntity, S
     @Query("SELECT i FROM InstructorEntity i ORDER BY i.index ASC")
     List<InstructorEntity> findAllOrdered();
 
-    @Query("SELECT i FROM InstructorEntity i WHERE i.deleted = ?1 ORDER BY i.index ASC")
+    @Query("SELECT i FROM InstructorEntity i WHERE i.deleted = :deleted ORDER BY i.index ASC")
     List<InstructorEntity> findAll(Limit limit, boolean deleted);
 
     @Query("""
         SELECT i FROM InstructorEntity i
         JOIN i.activities a
-        WHERE a.id = ?1 AND i.deleted = ?2
+        WHERE a.id = :activityId AND i.deleted = :deleted
         ORDER BY i.index ASC
     """)
     List<InstructorEntity> findAllByActivity(String activityId, Limit limit, boolean deleted);
 
-    @Query("SELECT COUNT(i.id) FROM InstructorEntity i WHERE i.deleted = ?1")
+    @Query("SELECT COUNT(i.id) FROM InstructorEntity i WHERE i.deleted = :deleted")
     Long countInstructors(boolean deleted);
 
     @Query("""
         SELECT COUNT(i.id) FROM InstructorEntity i
         JOIN i.activities a
-        WHERE a.id = ?1 AND i.deleted = ?2
+        WHERE a.id = :activityId AND i.deleted = :deleted
     """)
     Long countInstructorsByActivity(String activityId, boolean deleted);
 }

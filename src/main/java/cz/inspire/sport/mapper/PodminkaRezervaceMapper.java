@@ -10,7 +10,7 @@ import org.mapstruct.MappingConstants;
 public interface PodminkaRezervaceMapper {
 
     // Map DTO to Entity
-    @Mapping(target = "objekt", source = "objekt", ignore = true)
+    @Mapping(target = "objekt", source = "objektId", ignore = true)
     PodminkaRezervaceEntity toEntity(PodminkaRezervaceDto dto);
 
     // Map Entity to DTO

@@ -16,7 +16,7 @@ public interface ObjektRepository extends CrudRepository<ObjektEntity, String> {
     @Query("""
         SELECT o FROM ObjektEntity o
         JOIN o.localeData loc
-        WHERE o.areal.id = ?1 AND loc.jazyk = ?2
+        WHERE o.areal.id = :arealId AND loc.jazyk = :jazyk
         ORDER BY loc.nazev
     """)
     List<ObjektEntity> findByAreal(String arealId, String jazyk);
@@ -24,7 +24,7 @@ public interface ObjektRepository extends CrudRepository<ObjektEntity, String> {
     @Query("""
         SELECT o FROM ObjektEntity o
         JOIN o.localeData loc
-        WHERE o.areal.id = ?1 AND loc.jazyk = ?2 AND FUNCTION('is_base_objekt', o.id) = TRUE
+        WHERE o.areal.id = :arealId AND loc.jazyk = :jazyk AND FUNCTION('is_base_objekt', o.id) = TRUE
               AND o.primyVstup = FALSE
         ORDER BY loc.nazev
     """)
@@ -33,7 +33,7 @@ public interface ObjektRepository extends CrudRepository<ObjektEntity, String> {
     @Query("""
         SELECT o FROM ObjektEntity o
         JOIN o.localeData loc
-        WHERE o.areal.id = ?1 AND loc.jazyk = ?2
+        WHERE o.areal.id = :arealId AND loc.jazyk = :jazyk
         ORDER BY loc.nazev
     """)
     List<ObjektEntity> findByAreal(String arealId, String jazyk, Limit limit);
@@ -41,7 +41,7 @@ public interface ObjektRepository extends CrudRepository<ObjektEntity, String> {
     @Query("""
         SELECT o FROM ObjektEntity o
         JOIN o.localeData loc
-        WHERE o.typRezervace = ?1 AND loc.jazyk = ?2
+        WHERE o.typRezervace = :typRezervace AND loc.jazyk = :jazyk
         ORDER BY loc.nazev
     """)
     List<ObjektEntity> findByTypRezervace(Integer typRezervace, String jazyk);
@@ -49,7 +49,7 @@ public interface ObjektRepository extends CrudRepository<ObjektEntity, String> {
     @Query("""
         SELECT o FROM ObjektEntity o
         JOIN o.localeData loc
-        WHERE o.areal.id = ?1 AND loc.jazyk = ?2 AND FUNCTION('is_base_objekt', o.id) = TRUE
+        WHERE o.areal.id = :arealId AND loc.jazyk = :jazyk AND FUNCTION('is_base_objekt', o.id) = TRUE
               AND o.primyVstup = FALSE
         ORDER BY loc.nazev
     """)
@@ -59,7 +59,7 @@ public interface ObjektRepository extends CrudRepository<ObjektEntity, String> {
         SELECT o FROM ObjektEntity o
         JOIN o.localeData loc
         JOIN o.objektSports sport
-        WHERE loc.jazyk = ?2 AND sport.sport.id = ?1
+        WHERE loc.jazyk = :jazyk AND sport.sport.id = :sportId
         ORDER BY loc.nazev
     """)
     List<ObjektEntity> findBySport(String sportId, String jazyk);
@@ -67,7 +67,7 @@ public interface ObjektRepository extends CrudRepository<ObjektEntity, String> {
     @Query("""
         SELECT o FROM ObjektEntity o
         JOIN o.localeData loc
-        WHERE loc.jazyk = ?1 AND o.primyVstup = ?2
+        WHERE loc.jazyk = :jazyk AND o.primyVstup = :primyVstup
         ORDER BY loc.nazev
     """)
     List<ObjektEntity> findByPrimyVstup(String jazyk, boolean primyVstup);
@@ -75,12 +75,12 @@ public interface ObjektRepository extends CrudRepository<ObjektEntity, String> {
     @Query("""
         SELECT o FROM ObjektEntity o
         JOIN o.localeData loc
-        WHERE loc.jazyk = ?1 AND o.primyVstup = ?2
+        WHERE loc.jazyk = :jazyk AND o.primyVstup = :primyVstup
         ORDER BY loc.nazev
     """)
     List<ObjektEntity> findByPrimyVstup(String jazyk, Limit limit, boolean primyVstup);
 
-    @Query("SELECT o.id FROM ObjektEntity o WHERE o.areal.id = ?1")
+    @Query("SELECT o.id FROM ObjektEntity o WHERE o.areal.id = :arealId")
     List<String> findObjektIdsOfAreal(String arealId);
 
 }
