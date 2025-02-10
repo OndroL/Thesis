@@ -62,10 +62,8 @@ public class FilesystemMigrator implements Migrator {
                     String key = rs.getString(primaryKey);
                     byte[] valueBytes = rs.getBytes(originalColumnName);
 
-                    String finalJsonValue = null;
-
                     // Handle filesystem migration
-                    finalJsonValue = handleFilesystemMigration(tableName, key, valueBytes, targetConfig);
+                    String finalJsonValue = handleFilesystemMigration(tableName, key, valueBytes, targetConfig);
 
                     // Set parameters for UPDATE and add to batch
                     if (finalJsonValue != null) {
@@ -105,15 +103,13 @@ public class FilesystemMigrator implements Migrator {
             Object obj = JBossDeserializer.deserialize(valueBytes);
             if (!(obj instanceof Map)) {
                 if (obj != null) {
-                    logger.info("Table '{}', Key '{}': Expected a Map for attachments, but found {}", tableName, key, obj != null ? obj.getClass().getName() : "null");
+                    logger.info("Table '{}', Key '{}': Expected a Map for attachments, but found {}", tableName, key, obj.getClass().getName());
                 }
-                // Fallback JSON with empty array
-                return "[]";
+                return "[]"; // Return empty list in JSON format
             }
 
             Map<String, byte[]> attachmentsMap = (Map<String, byte[]>) obj;
-
-            List<Map<String, String>> attachmentsList = new ArrayList<>();
+            List<cz.inspire.migration.utils.File> attachmentsList = new ArrayList<>();
 
             for (Map.Entry<String, byte[]> entry : attachmentsMap.entrySet()) {
                 String fileName = entry.getKey();
@@ -126,12 +122,9 @@ public class FilesystemMigrator implements Migrator {
 
                 // Ensure the base directory exists
                 File baseDir = new File(baseDirPath);
-                if (!baseDir.exists()) {
-                    boolean dirsCreated = baseDir.mkdirs();
-                    if (!dirsCreated) {
-                        logger.error("Failed to create directories for path '{}'.", BASE_DIR);
-                        continue; // Skip this attachment
-                    }
+                if (!baseDir.exists() && !baseDir.mkdirs()) {
+                    logger.error("Failed to create directories for path '{}'.", baseDirPath);
+                    continue; // Skip this attachment
                 }
 
                 // Write file to filesystem
@@ -144,10 +137,7 @@ public class FilesystemMigrator implements Migrator {
                 }
 
                 // Add to attachments list
-                Map<String, String> attachmentEntry = new HashMap<>();
-                attachmentEntry.put("FileName", fileName);
-                attachmentEntry.put("FilePath", filePath);
-                attachmentsList.add(attachmentEntry);
+                attachmentsList.add(new cz.inspire.migration.utils.File(fileName, filePath));
             }
 
             // Convert attachments list to JSON
@@ -157,10 +147,10 @@ public class FilesystemMigrator implements Migrator {
             return attachmentsJson;
         } catch (Exception e) {
             logger.error("Table '{}', Key '{}': Failed to process attachments.", tableName, key, e);
-            // Fallback JSON with empty array
-            return "[]";
+            return "[]"; // Fallback to empty array
         }
     }
+
 
     /**
      * Executes the batch of updates and handles exceptions.

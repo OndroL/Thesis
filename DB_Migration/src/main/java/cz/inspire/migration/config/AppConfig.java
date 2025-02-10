@@ -1,5 +1,6 @@
 package cz.inspire.migration.config;
 
+import lombok.Getter;
 import org.yaml.snakeyaml.Yaml;
 import org.yaml.snakeyaml.constructor.Constructor;
 import org.yaml.snakeyaml.LoaderOptions;
@@ -9,6 +10,7 @@ import java.io.InputStream;
 import java.util.List;
 import java.util.Properties;
 
+@Getter
 public class AppConfig {
     private final String dbHost;
     private final int dbPort;
@@ -46,13 +48,4 @@ public class AppConfig {
             this.tables = migrationConfig.getTables();
         }
     }
-
-    // Getters
-    public String getDbHost() { return dbHost; }
-    public int getDbPort() { return dbPort; }
-    public String getDbName() { return dbName; }
-    public String getDbUser() { return dbUser; }
-    public String getDbPassword() { return dbPassword; }
-    public int getMigrationBatchSize() { return migrationBatchSize; }
-    public List<TableConfig> getTables() { return tables; }
 }
