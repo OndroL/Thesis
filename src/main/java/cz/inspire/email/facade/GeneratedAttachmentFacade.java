@@ -10,6 +10,7 @@ import cz.inspire.email.utils.GeneratedAttachmentUtil;
 import cz.inspire.template.entity.PrintTemplateEntity;
 import cz.inspire.template.service.PrintTemplateService;
 import jakarta.ejb.CreateException;
+import jakarta.ejb.FinderException;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import org.apache.logging.log4j.LogManager;
@@ -24,9 +25,9 @@ public class GeneratedAttachmentFacade {
     @Inject
     GeneratedAttachmentMapper generatedAttachmentMapper;
     @Inject
-    private EmailHistoryService emailHistoryService;
+    EmailHistoryService emailHistoryService;
     @Inject
-    private PrintTemplateService printTemplateService;
+    PrintTemplateService printTemplateService;
 
     Logger logger = LogManager.getLogger(GeneratedAttachmentFacade.class);
 
@@ -41,9 +42,7 @@ public class GeneratedAttachmentFacade {
 
             GeneratedAttachmentEntity entity = generatedAttachmentMapper.toEntity(dto);
 
-            EmailHistoryEntity emailEntity = emailHistoryService.findById(dto.getEmailHistoryId())
-                            .orElseThrow(() -> new CreateException("Couldn't find EmailHistoryEntity with id : " + dto.getEmailHistoryId() +
-                                    " while trying to create GeneratedAttachmentEntity"));
+            EmailHistoryEntity emailEntity = emailHistoryService.findByPrimaryKey(dto.getEmailHistoryId());
 
             entity.setEmailHistory(emailEntity);
 
@@ -56,7 +55,8 @@ public class GeneratedAttachmentFacade {
             return entity.getId();
 
         } catch (Exception e) {
-            throw new CreateException();
+            logger.error("Failed to create GeneratedAttachmentEntity : ", e);
+            throw new CreateException("Failed to create GeneratedAttachmentEntity : " + e);
         }
     }
 
@@ -64,9 +64,7 @@ public class GeneratedAttachmentFacade {
     public void setPrintTemplate(GeneratedAttachmentEntity entity, GeneratedAttachmentDto dto) throws CreateException {
         try {
             if (dto.getPrintTemplateId() != null) {
-                PrintTemplateEntity localTemplate = printTemplateService.findById(dto.getPrintTemplateId())
-                        .orElseThrow(() -> new CreateException("Couldn't find PrintTemplateEntity with id: " + dto.getPrintTemplateId() +
-                                " while trying to create generatedAttachment with id : " + entity.getId()));
+                PrintTemplateEntity localTemplate = printTemplateService.findByPrimaryKey(dto.getPrintTemplateId());
                 entity.setPrintTemplate(localTemplate);
             }
         } catch (Exception e) {
@@ -79,15 +77,15 @@ public class GeneratedAttachmentFacade {
         return generatedAttachmentMapper.toDto(entity);
     }
 
-    public List<GeneratedAttachmentDto> findByEmailAndHistory(String historyId, String email) {
+    public List<GeneratedAttachmentDto> findByEmailAndHistory(String historyId, String email) throws FinderException {
         return generatedAttachmentService.findByEmailAndHistory(historyId, email).stream().map(this::mapToDto).toList();
     }
 
-    public List<GeneratedAttachmentDto> findByHistory(String historyId) {
+    public List<GeneratedAttachmentDto> findByHistory(String historyId) throws FinderException {
         return generatedAttachmentService.findByHistory(historyId).stream().map(this::mapToDto).toList();
     }
 
-    public List<GeneratedAttachmentDto> findByEmailAndHistoryAndTemplate(String historyId, String email, String templateId) {
+    public List<GeneratedAttachmentDto> findByEmailAndHistoryAndTemplate(String historyId, String email, String templateId) throws FinderException {
         return generatedAttachmentService.findByEmailAndHistoryAndTemplate(historyId, email, templateId).stream()
                 .map(this::mapToDto).toList();
     }

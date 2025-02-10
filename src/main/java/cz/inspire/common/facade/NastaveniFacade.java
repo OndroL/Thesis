@@ -5,6 +5,7 @@ import cz.inspire.common.mapper.NastaveniMapper;
 import cz.inspire.common.entity.NastaveniEntity;
 import cz.inspire.common.service.NastaveniService;
 import jakarta.ejb.CreateException;
+import jakarta.ejb.FinderException;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 
@@ -19,7 +20,7 @@ public class NastaveniFacade {
 
     public String create(String key, Serializable value) throws CreateException {
         try {
-            nastaveniService.create(new NastaveniEntity(key, value));
+            nastaveniService.create(nastaveniMapper.toEntity(new NastaveniDto(key, value)));
             /// Even that the docs in old Bean said return type to be primary key of the new instance
             /// It is set to return null
             return null;
@@ -27,17 +28,12 @@ public class NastaveniFacade {
             throw new CreateException();
         }
     }
-    
-//    public void save(NastaveniDto dto) throws SystemException {
-//        NastaveniEntity entity = nastaveniMapper.toEntity(dto);
-//        nastaveniService.save(entity);
-//    }
 
     public NastaveniDto mapToDto(NastaveniEntity entity) {
         return nastaveniMapper.toDto(entity);
     }
     
-    public NastaveniDto findByPK(String nastaveniId) {
-        return nastaveniMapper.toDto(nastaveniService.findByPK(nastaveniId).orElse(null));
+    public NastaveniDto findByPrimaryKey(String nastaveniId) throws FinderException {
+        return nastaveniMapper.toDto(nastaveniService.findByPrimaryKey(nastaveniId));
     }
 }

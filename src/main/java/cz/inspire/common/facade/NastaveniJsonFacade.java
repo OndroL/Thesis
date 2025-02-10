@@ -5,6 +5,7 @@ import cz.inspire.common.mapper.NastaveniJsonMapper;
 import cz.inspire.common.entity.NastaveniJsonEntity;
 import cz.inspire.common.service.NastaveniJsonService;
 import jakarta.ejb.CreateException;
+import jakarta.ejb.FinderException;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 
@@ -39,5 +40,9 @@ public class NastaveniJsonFacade {
 
     public NastaveniJsonDto mapToDto(NastaveniJsonEntity entity) {
         return nastaveniJsonMapper.toDto(entity);
+    }
+
+    public NastaveniJsonDto findByPrimaryKey(String id) throws FinderException {
+        return mapToDto(nastaveniJsonService.findByPrimaryKey(id));
     }
 }

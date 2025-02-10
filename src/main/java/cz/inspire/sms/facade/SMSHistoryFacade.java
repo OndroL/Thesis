@@ -6,6 +6,7 @@ import cz.inspire.sms.mapper.SMSHistoryMapper;
 import cz.inspire.sms.service.SMSHistoryService;
 import cz.inspire.sms.utils.SMSHistoryUtil;
 import jakarta.ejb.CreateException;
+import jakarta.ejb.FinderException;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 
@@ -15,9 +16,9 @@ import java.util.List;
 @ApplicationScoped
 public class SMSHistoryFacade {
     @Inject
-    private SMSHistoryService smsHistoryService;
+    SMSHistoryService smsHistoryService;
     @Inject
-    private SMSHistoryMapper smsHistoryMapper;
+    SMSHistoryMapper smsHistoryMapper;
 
     public String create(SMSHistoryDto dto) throws CreateException {
         try {
@@ -36,9 +37,9 @@ public class SMSHistoryFacade {
 
     public SMSHistoryDto mapToDto(SMSHistoryEntity entity) { return smsHistoryMapper.toDto(entity); }
 
-    public List<SMSHistoryEntity> findByDate(Date dateFrom, Date dateTo) { return smsHistoryService.findByDate(dateFrom, dateTo); }
+    public List<SMSHistoryEntity> findByDate(Date dateFrom, Date dateTo) throws FinderException { return smsHistoryService.findByDate(dateFrom, dateTo); }
 
-    public List<SMSHistoryEntity> findByDateAutomatic(Date dateFrom, Date dateTo, boolean automatic) {
+    public List<SMSHistoryEntity> findByDateAutomatic(Date dateFrom, Date dateTo, boolean automatic) throws FinderException {
         return smsHistoryService.findByDateAutomatic(dateFrom, dateTo, automatic) ;}
 }
 

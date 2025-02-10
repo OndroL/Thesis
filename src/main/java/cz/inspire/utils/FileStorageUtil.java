@@ -4,7 +4,6 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.Map;
 import java.util.UUID;
 
 public class FileStorageUtil {
@@ -15,16 +14,22 @@ public class FileStorageUtil {
         this.rootDirectory = rootDirectory;
     }
 
-    public Map<String, String> saveFile(byte[] fileData, String originalFileName, String subDirectory) throws IOException {
+    public File saveFile(byte[] fileData, String originalFileName, String subDirectory) throws IOException {
+        // Generate a unique file name
         String uniqueName = UUID.randomUUID().toString();
         String filePath = rootDirectory + "/" + subDirectory + "/" + uniqueName;
+
+        // Ensure the directory exists
         Path directoryPath = Paths.get(rootDirectory + "/" + subDirectory);
-        Files.createDirectories(directoryPath); // Ensure the directory exists
+        Files.createDirectories(directoryPath);
 
-        Files.write(Paths.get(filePath), fileData); // Save the file
+        // Write the file data
+        Files.write(Paths.get(filePath), fileData);
 
-        return Map.of("FilePath", filePath, "FileName", originalFileName); // Return file metadata
+        // Return a File object with metadata
+        return new File(originalFileName, filePath);
     }
+
 
     public byte[] readFile(String filePath) throws IOException {
         return Files.readAllBytes(Paths.get(filePath)); // Read file as bytes
