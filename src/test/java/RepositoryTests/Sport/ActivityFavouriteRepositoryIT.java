@@ -12,8 +12,8 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -37,7 +37,7 @@ public class ActivityFavouriteRepositoryIT {
 
     @Test
     public void testSaveAndFindById() {
-        ActivityFavouriteEntity entity = new ActivityFavouriteEntity("ID-001", "ZK-001", "ACT-001", 5, new Date());
+        ActivityFavouriteEntity entity = new ActivityFavouriteEntity("ID-001", "ZK-001", "ACT-001", 5, LocalDateTime.now());
         activityFavouriteRepository.save(entity);
 
         Optional<ActivityFavouriteEntity> retrieved = activityFavouriteRepository.findById("ID-001");
@@ -49,7 +49,7 @@ public class ActivityFavouriteRepositoryIT {
 
     @Test
     public void testUpdateEntity() {
-        ActivityFavouriteEntity entity = new ActivityFavouriteEntity("ID-002", "ZK-002", "ACT-002", 3, new Date());
+        ActivityFavouriteEntity entity = new ActivityFavouriteEntity("ID-002", "ZK-002", "ACT-002", 3, LocalDateTime.now());
         activityFavouriteRepository.save(entity);
 
         entity.setPocet(10);
@@ -62,7 +62,7 @@ public class ActivityFavouriteRepositoryIT {
 
     @Test
     public void testDeleteEntity() {
-        ActivityFavouriteEntity entity = new ActivityFavouriteEntity("ID-003", "ZK-003", "ACT-003", 7, new Date());
+        ActivityFavouriteEntity entity = new ActivityFavouriteEntity("ID-003", "ZK-003", "ACT-003", 7, LocalDateTime.now());
         activityFavouriteRepository.save(entity);
 
         activityFavouriteRepository.deleteById("ID-003");
@@ -72,9 +72,9 @@ public class ActivityFavouriteRepositoryIT {
 
     @Test
     public void testFindByZakaznik() {
-        ActivityFavouriteEntity e1 = new ActivityFavouriteEntity("ID-004", "ZK-004", "ACT-004", 4, new Date());
-        ActivityFavouriteEntity e2 = new ActivityFavouriteEntity("ID-005", "ZK-004", "ACT-005", 6, new Date());
-        ActivityFavouriteEntity e3 = new ActivityFavouriteEntity("ID-006", "ZK-004", "ACT-006", 2, new Date());
+        ActivityFavouriteEntity e1 = new ActivityFavouriteEntity("ID-004", "ZK-004", "ACT-004", 4, LocalDateTime.now());
+        ActivityFavouriteEntity e2 = new ActivityFavouriteEntity("ID-005", "ZK-004", "ACT-005", 6, LocalDateTime.now());
+        ActivityFavouriteEntity e3 = new ActivityFavouriteEntity("ID-006", "ZK-004", "ACT-006", 2, LocalDateTime.now());
 
         activityFavouriteRepository.save(e1);
         activityFavouriteRepository.save(e2);
@@ -87,7 +87,7 @@ public class ActivityFavouriteRepositoryIT {
 
     @Test
     public void testFindByZakaznikAktivita() {
-        ActivityFavouriteEntity entity = new ActivityFavouriteEntity("ID-007", "ZK-005", "ACT-007", 8, new Date());
+        ActivityFavouriteEntity entity = new ActivityFavouriteEntity("ID-007", "ZK-005", "ACT-007", 8, LocalDateTime.now());
         activityFavouriteRepository.save(entity);
 
         Optional<ActivityFavouriteEntity> found = activityFavouriteRepository.findByZakaznikAktivita("ZK-005", "ACT-007");
