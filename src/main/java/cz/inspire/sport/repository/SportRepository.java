@@ -31,7 +31,7 @@ public interface SportRepository extends CrudRepository<SportEntity, String> {
         WHERE s.nadrazenySport.id = ?1 AND loc.jazyk = ?2
         ORDER BY loc.nazev
     """)
-    List<SportEntity> findByParent(String parentId, String jazyk, Limit limit);
+    List<SportEntity> findByParentWithLimit(String parentId, String jazyk, Limit limit);
 
     @Query("""
         SELECT s FROM SportEntity s
@@ -61,7 +61,7 @@ public interface SportRepository extends CrudRepository<SportEntity, String> {
         WHERE s.nadrazenySport IS NULL AND loc.jazyk = ?1
         ORDER BY loc.nazev
     """)
-    List<SportEntity> findRoot(String jazyk, Limit limit);
+    List<SportEntity> findRootWithLimit(String jazyk, Limit limit);
 
     @Query("""
         SELECT s FROM SportEntity s

@@ -36,7 +36,7 @@ public interface ArealRepository extends CrudRepository<ArealEntity, String> {
         WHERE a.nadrazenyAreal.id = ?1 AND loc.jazyk = ?2
         ORDER BY loc.nazev
     """)
-    List<ArealEntity> findByParent(String parentId, String jazyk, Limit limit);
+    List<ArealEntity> findByParentWithLimit(String parentId, String jazyk, Limit limit);
 
     @Query("""
         SELECT a FROM ArealEntity a
@@ -44,7 +44,7 @@ public interface ArealRepository extends CrudRepository<ArealEntity, String> {
         WHERE a.nadrazenyAreal IS NULL AND loc.jazyk = ?1
         ORDER BY loc.nazev
     """)
-    List<ArealEntity> findRoot(String jazyk, Limit limit);
+    List<ArealEntity> findRootWithLimit(String jazyk, Limit limit);
 
     @Query("""
         SELECT a FROM ArealEntity a

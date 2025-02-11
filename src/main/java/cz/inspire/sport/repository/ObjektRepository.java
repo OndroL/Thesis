@@ -36,7 +36,7 @@ public interface ObjektRepository extends CrudRepository<ObjektEntity, String> {
         WHERE o.areal.id = :arealId AND loc.jazyk = :jazyk
         ORDER BY loc.nazev
     """)
-    List<ObjektEntity> findByAreal(String arealId, String jazyk, Limit limit);
+    List<ObjektEntity> findByArealWithLimit(String arealId, String jazyk, Limit limit);
 
     @Query("""
         SELECT o FROM ObjektEntity o
@@ -53,7 +53,7 @@ public interface ObjektRepository extends CrudRepository<ObjektEntity, String> {
               AND o.primyVstup = FALSE
         ORDER BY loc.nazev
     """)
-    List<ObjektEntity> findBaseByAreal(String arealId, String jazyk, Limit limit);
+    List<ObjektEntity> findBaseByArealWithLimit(String arealId, String jazyk, Limit limit);
 
     @Query("""
         SELECT o FROM ObjektEntity o
@@ -78,7 +78,7 @@ public interface ObjektRepository extends CrudRepository<ObjektEntity, String> {
         WHERE loc.jazyk = :jazyk AND o.primyVstup = :primyVstup
         ORDER BY loc.nazev
     """)
-    List<ObjektEntity> findByPrimyVstup(String jazyk, Limit limit, boolean primyVstup);
+    List<ObjektEntity> findByPrimyVstupWithLimit(String jazyk, Limit limit, boolean primyVstup);
 
     @Query("SELECT o.id FROM ObjektEntity o WHERE o.areal.id = :arealId")
     List<String> findObjektIdsOfAreal(String arealId);
