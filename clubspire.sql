@@ -1115,7 +1115,7 @@ CREATE TABLE public.instructor (
     phonenumber text,
     info text,
     color text,
-    photo bytea,
+    photo jsonb,
     deleted boolean NOT NULL,
     index integer,
     googlecalendarid text,
@@ -1435,7 +1435,7 @@ ALTER TABLE public.nasledne_douctovani OWNER TO postgres;
 
 CREATE TABLE public.nastaveni (
     key text NOT NULL,
-    value bytea
+    value jsonb
 );
 
 
@@ -1801,8 +1801,8 @@ CREATE TABLE public.objekt (
     delkarezervacenasobkem integer,
     vicestavovy boolean,
     stav integer,
-    reservationstart bytea,
-    reservationfinish bytea,
+    reservationstart jsonb,
+    reservationfinish jsonb,
     odcitatprocedury boolean DEFAULT false,
     rezervacenatokeny boolean DEFAULT false,
     rucniuzavrenivstupu boolean DEFAULT false,
@@ -1913,7 +1913,7 @@ ALTER TABLE public.odvod OWNER TO postgres;
 
 CREATE TABLE public.omezeni_rezervaci (
     objektid text NOT NULL,
-    omezeni bytea
+    omezeni jsonb
 );
 
 
@@ -1972,7 +1972,7 @@ ALTER TABLE public.osoba OWNER TO postgres;
 CREATE TABLE public.otviraci_doba (
     objektid text NOT NULL,
     platnostod timestamp without time zone NOT NULL,
-    otviracidoba bytea
+    otviracidoba jsonb
 );
 
 
@@ -1988,7 +1988,7 @@ CREATE TABLE public.ovladac_objektu (
     manual boolean,
     automat boolean,
     zapnutipredzacatkem integer NOT NULL,
-    cislazapojeni text,
+    cislazapojeni jsonb,
     objektid text,
     delkasepnutipokonci integer DEFAULT 0 NOT NULL
 );
@@ -3034,14 +3034,14 @@ CREATE TABLE public.sport (
     sazbanaosobu boolean NOT NULL,
     sazbanacas integer,
     podsportycount integer NOT NULL,
-    sazbystorna bytea,
+    sazbystorna jsonb,
     nadrazeny_sport text,
     mindelkarezervace integer,
     maxdelkarezervace integer,
     objednavkazaplniobjekt boolean NOT NULL,
     delkarezervacenasobkem integer,
-    barvapopredi bytea,
-    barvapozadi bytea,
+    barvapopredi jsonb,
+    barvapozadi jsonb,
     zobrazittext boolean NOT NULL,
     navazujici_sport text,
     navrezervaceoffset integer,
