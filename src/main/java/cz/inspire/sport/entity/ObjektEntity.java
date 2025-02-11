@@ -11,6 +11,7 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.JoinTable;
+import jakarta.persistence.MapKey;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -100,12 +101,14 @@ public class ObjektEntity {
 
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
     @JoinColumn(name = "objekt")
+    @MapKey(name="id")
     private Map<String, ObjektLocEntity> localeData;
 
     @OneToMany(mappedBy = "objekt")
     private List<ObjektSportEntity> objektSports;
 
-    @OneToMany(mappedBy = "objektId", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
+    @JoinColumn(name = "objektId")
     private List<OvladacObjektuEntity> ovladaceObjektu;
 
     @OneToMany(mappedBy = "objekt")

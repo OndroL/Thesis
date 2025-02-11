@@ -12,6 +12,7 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.Transient;
+import jakarta.persistence.MapKey;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -19,7 +20,6 @@ import lombok.Setter;
 import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.type.SqlTypes;
 
-import java.awt.Color;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -60,10 +60,12 @@ public class SportEntity {
     private Boolean objednavkaZaplniObjekt;
     @Column
     private Integer delkaRezervaceNasobkem;
-    @Column
-    private Color barvaPopredi;
-    @Column
-    private Color barvaPozadi;
+    @JdbcTypeCode(SqlTypes.JSON)
+    @Column(columnDefinition = "jsonb")
+    private String barvaPopredi;
+    @JdbcTypeCode(SqlTypes.JSON)
+    @Column(columnDefinition = "jsonb")
+    private String barvaPozadi;
     @Column
     private Boolean zobrazitText;
     @Column
@@ -81,6 +83,7 @@ public class SportEntity {
 
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
     @JoinColumn(name = "sport")
+    @MapKey(name="id")
     private Map<String, SportLocEntity> localeData;
 
     @ManyToOne(fetch = FetchType.LAZY)
