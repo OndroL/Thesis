@@ -14,8 +14,8 @@ import java.util.Map;
 @Setter
 public class SportKategorieDto implements Serializable {
     private String id;
-    private String multisportFacilityId;
-    private String multisportServiceUUID;
+    private String multiSportFacilityId;
+    private String multiSportServiceUUID;
     private String nadrazenaKategorieId;
     private Map<String, SportKategorieLocDto> localeData;
 }

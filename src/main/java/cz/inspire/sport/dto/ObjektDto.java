@@ -45,7 +45,7 @@ public class ObjektDto implements Serializable {
     private Integer zruseniRezervacePredZacatkem;
     private Map<String, ObjektLocDto> localeData;
     private ArealDto areal;
-    private List<ObjektSportDto> objektSport;
+    private List<ObjektSportDto> objektSports;
     private List<OvladacObjektuDto> ovladaceObjektu;
     private List<PodminkaRezervaceDto> podminkyRezervaci;
     private Set<String> nadobjekty;
