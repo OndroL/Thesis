@@ -9,7 +9,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.util.Date;
+import java.time.LocalDateTime;
 
 @AllArgsConstructor
 @Setter
@@ -27,5 +27,5 @@ public class ActivityFavouriteEntity {
     @Column
     private int pocet;
     @Column
-    private Date datumPosledniZmeny;
+    private LocalDateTime datumPosledniZmeny;
 }

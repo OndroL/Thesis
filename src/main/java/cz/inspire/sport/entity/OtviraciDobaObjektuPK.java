@@ -8,7 +8,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.io.Serializable;
-import java.util.Date;
+import java.time.LocalDateTime;
 
 @AllArgsConstructor
 @Setter
@@ -18,5 +18,5 @@ import java.util.Date;
 @Embeddable
 public class OtviraciDobaObjektuPK implements Serializable {
     private String objektId;
-    private Date platnostOd;
+    private LocalDateTime platnostOd;
 }
