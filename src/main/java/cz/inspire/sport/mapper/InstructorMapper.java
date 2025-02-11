@@ -18,5 +18,6 @@ public interface InstructorMapper {
 
     // Map Entity to DTO
     @Mapping(target = "photo", ignore = true)
+    @Mapping(target = "sports", ignore = true)
     InstructorDto toDto(InstructorEntity entity);
 }
