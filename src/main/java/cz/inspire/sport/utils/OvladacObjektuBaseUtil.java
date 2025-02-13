@@ -65,23 +65,23 @@ public class OvladacObjektuBaseUtil {
         return decodedNums;
     }
     
-    public static List<Integer> decodeNumbersFromString(String encodedNums) {
-        List<Integer> decodedNums = new ArrayList<Integer>();
-        if (encodedNums == null || encodedNums.isEmpty()) {
-            return decodedNums;
-        }
-        String[] nums = encodedNums.split(CISLA_ZAPOJENI_DELIM);
-        for (String num : nums) {
-            try {
-                decodedNums.add(Math.abs(Integer.parseInt(num)));
-            } catch (NumberFormatException e) {
-                logger.warn("Cannot decode cislo zapojeni:" + num, e);
-            }
-        }
-        
-        
-        return decodedNums;
-    }
+//    public static List<Integer> decodeNumbersFromString(String encodedNums) {
+//        List<Integer> decodedNums = new ArrayList<Integer>();
+//        if (encodedNums == null || encodedNums.isEmpty()) {
+//            return decodedNums;
+//        }
+//        String[] nums = encodedNums.split(CISLA_ZAPOJENI_DELIM);
+//        for (String num : nums) {
+//            try {
+//                decodedNums.add(Math.abs(Integer.parseInt(num)));
+//            } catch (NumberFormatException e) {
+//                logger.warn("Cannot decode cislo zapojeni:" + num, e);
+//            }
+//        }
+//
+//
+//        return decodedNums;
+//    }
     
     public static long encodeNumbersToLong(List<Long> numbers) {
         if (numbers == null || numbers.isEmpty()) {
@@ -100,22 +100,22 @@ public class OvladacObjektuBaseUtil {
         return encodedNum;
     }
     
-    public static String encodeNumbersToString(List<Integer> numbers) {
-        if (numbers == null || numbers.isEmpty()) {
-            return "";
-        }
-        //remove duplicates
-        List<Integer> numsToEncode = new ArrayList<Integer>(new HashSet<Integer>(numbers));
-        StringBuilder sb = new StringBuilder();
-        Iterator<Integer> it = numsToEncode.iterator();
-        while (it.hasNext()) {
-            sb.append(it.next().toString());
-            if (it.hasNext()) {
-                sb.append(CISLA_ZAPOJENI_DELIM);
-            }
-        }
-        return sb.toString();
-    }
+//    public static String encodeNumbersToString(List<Integer> numbers) {
+//        if (numbers == null || numbers.isEmpty()) {
+//            return "";
+//        }
+//        //remove duplicates
+//        List<Integer> numsToEncode = new ArrayList<Integer>(new HashSet<Integer>(numbers));
+//        StringBuilder sb = new StringBuilder();
+//        Iterator<Integer> it = numsToEncode.iterator();
+//        while (it.hasNext()) {
+//            sb.append(it.next().toString());
+//            if (it.hasNext()) {
+//                sb.append(CISLA_ZAPOJENI_DELIM);
+//            }
+//        }
+//        return sb.toString();
+//    }
 //    public static void main(String... args) {
 //        System.out.println(Arrays.toString(decodeNumbersFromLong(encodeNumbersToLong(Arrays.asList(new Long(12),new Long(63),new Long(41)))).toArray()));
 //        System.out.println(encodeNumbersToString(Arrays.asList(1,2,3,89656)));
