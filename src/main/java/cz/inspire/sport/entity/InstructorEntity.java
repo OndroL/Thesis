@@ -1,7 +1,7 @@
 package cz.inspire.sport.entity;
 
 import cz.inspire.sport.dto.SportDto;
-import cz.inspire.utils.File;
+import cz.inspire.utils.FileAttributes;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
@@ -54,9 +54,7 @@ public class InstructorEntity {
     private String color;
     @JdbcTypeCode(SqlTypes.JSON)
     @Column(columnDefinition = "jsonb")
-    // File from cz.inspire.utils.File;
-    // Maybe rename to something else like FsFile
-    private List<File> photo;
+    private FileAttributes photo;
     @Column
     private Boolean deleted;
     @Column

@@ -3,7 +3,7 @@ package cz.inspire.email.service;
 import cz.inspire.common.service.BaseService;
 import cz.inspire.email.entity.EmailHistoryEntity;
 import cz.inspire.email.repository.EmailHistoryRepository;
-import cz.inspire.utils.File;
+import cz.inspire.utils.FileAttributes;
 import cz.inspire.utils.FileStorageUtil;
 import jakarta.data.Limit;
 import jakarta.ejb.FinderException;
@@ -39,21 +39,21 @@ public class EmailHistoryService extends BaseService<EmailHistoryEntity, String,
         super(repository);
     }
 
-    public List<File> saveAttachments(Map<String, byte[]> attachments) {
+    public List<FileAttributes> saveAttachments(Map<String, byte[]> attachments) {
         if (attachments == null || attachments.isEmpty()) {
             return Collections.emptyList();
         }
 
-        List<File> savedAttachments = new ArrayList<>();
+        List<FileAttributes> savedAttachments = new ArrayList<>();
 
         attachments.forEach((key, value) -> {
             try {
                 // Generate a valid file name if none is provided
                 String fileName = Optional.ofNullable(key).filter(name -> !name.isEmpty()).orElse(generateFileName());
                 // Save the file and get it back
-                File file = fileStorageUtil.saveFile(value, fileName, ATTACHMENTS_DIRECTORY);
+                FileAttributes fileAttributes = fileStorageUtil.saveFile(value, fileName, ATTACHMENTS_DIRECTORY);
                 // Add the file to List of attachments
-                savedAttachments.add(file);
+                savedAttachments.add(fileAttributes);
             } catch (IOException e) {
                 throw new RuntimeException("Failed to save attachment: " + key, e);
             }
