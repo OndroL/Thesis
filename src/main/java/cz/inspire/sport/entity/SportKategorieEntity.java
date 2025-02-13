@@ -9,14 +9,12 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.FetchType;
-import jakarta.persistence.MapKey;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.util.List;
-import java.util.Map;
 
 
 @AllArgsConstructor
@@ -42,8 +40,7 @@ public class SportKategorieEntity {
 
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
     @JoinColumn(name = "sportKategorie")
-    @MapKey(name="id")
-    private Map<String, SportKategorieLocEntity> localeData;
+    private List<SportKategorieLocEntity> localeData;
 
     @OneToMany(mappedBy = "sportKategorie")
     private List<SportEntity> cinnosti;

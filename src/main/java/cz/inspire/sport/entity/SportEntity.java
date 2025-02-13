@@ -12,7 +12,6 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.Transient;
-import jakarta.persistence.MapKey;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -21,7 +20,6 @@ import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.type.SqlTypes;
 
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 @AllArgsConstructor
@@ -83,8 +81,7 @@ public class SportEntity {
 
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
     @JoinColumn(name = "sport")
-    @MapKey(name="id")
-    private Map<String, SportLocEntity> localeData;
+    private List<SportLocEntity> localeData;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "sport_kategorie", referencedColumnName = "id")

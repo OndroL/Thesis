@@ -7,7 +7,6 @@ import jakarta.persistence.Table;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.JoinColumn;
-import jakarta.persistence.MapKey;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.FetchType;
 import lombok.AllArgsConstructor;
@@ -16,7 +15,6 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.util.List;
-import java.util.Map;
 
 @AllArgsConstructor
 @Setter
@@ -32,8 +30,7 @@ public class ArealEntity {
 
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
     @JoinColumn(name = "areal")
-    @MapKey(name = "id")
-    private Map<String, ArealLocEntity> localeData;
+    private List<ArealLocEntity> localeData;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "nadrazeny_areal", referencedColumnName = "id")
