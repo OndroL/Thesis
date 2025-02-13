@@ -30,6 +30,7 @@ public interface SportMapper {
     @Mapping(target = "objekty", ignore = true)
     @Mapping(target = "barvaPopredi", source = "barvaPopredi", qualifiedByName = "colorToJson")
     @Mapping(target = "barvaPozadi",  source = "barvaPozadi",  qualifiedByName = "colorToJson")
+    @Mapping(target = "localeData", source = "localeData", qualifiedByName = "mapLocaleDataToList")
     SportEntity toEntity(SportDto dto);
 
     // Map Entity to DTO
@@ -40,6 +41,7 @@ public interface SportMapper {
     @Mapping(target = "barvaPopredi", source = "barvaPopredi", qualifiedByName = "jsonToColor")
     @Mapping(target = "barvaPozadi",  source = "barvaPozadi",  qualifiedByName = "jsonToColor")
     @Mapping(target = "instructors", ignore = true)
+    @Mapping(target = "localeData", source = "localeData", qualifiedByName = "mapLocaleDataToMap")
     SportDto toDto(SportEntity entity);
 
 
