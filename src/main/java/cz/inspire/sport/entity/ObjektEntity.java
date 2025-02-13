@@ -11,7 +11,6 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.JoinTable;
-import jakarta.persistence.MapKey;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -20,7 +19,6 @@ import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.type.SqlTypes;
 
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 @AllArgsConstructor
@@ -58,10 +56,10 @@ public class ObjektEntity {
     private Integer stav;
     @JdbcTypeCode(SqlTypes.JSON)
     @Column(columnDefinition = "jsonb")
-    private Integer[] reservationStart;
+    private List<Integer> reservationStart;
     @JdbcTypeCode(SqlTypes.JSON)
     @Column(columnDefinition = "jsonb")
-    private Integer[] reservationFinish;
+    private List<Integer> reservationFinish;
     @Column
     private boolean odcitatProcedury;
     @Column
@@ -101,8 +99,7 @@ public class ObjektEntity {
 
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
     @JoinColumn(name = "objekt")
-    @MapKey(name="id")
-    private Map<String, ObjektLocEntity> localeData;
+    private List<ObjektLocEntity> localeData;
 
     @OneToMany(mappedBy = "objekt")
     private List<ObjektSportEntity> objektSports;
