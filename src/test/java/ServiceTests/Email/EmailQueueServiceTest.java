@@ -5,13 +5,14 @@ import cz.inspire.email.repository.EmailQueueRepository;
 import cz.inspire.email.service.EmailQueueService;
 import cz.inspire.enterprise.exception.SystemException;
 import jakarta.ejb.CreateException;
-import jakarta.data.Limit;
 import jakarta.ejb.FinderException;
 import jakarta.ejb.RemoveException;
+import jakarta.persistence.EntityManager;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.*;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.Date;
@@ -27,13 +28,16 @@ public class EmailQueueServiceTest {
     @Mock
     private EmailQueueRepository emailQueueRepository;
 
-    @Spy
+    @Mock
+    private EntityManager em;
+
     private EmailQueueService emailQueueService;
 
     @BeforeEach
     void setUp() {
         MockitoAnnotations.openMocks(this);
-        emailQueueService = spy(new EmailQueueService(emailQueueRepository));
+        emailQueueService = new EmailQueueService(emailQueueRepository);
+        emailQueueService.setEntityManager(em);
     }
 
     @Test
@@ -42,22 +46,27 @@ public class EmailQueueServiceTest {
                 "1", new Date(), "history1", "recipient@example.com", 1, false, "depHistory1"
         );
 
+        doNothing().when(em).persist(entity);
+        doNothing().when(em).flush();
+
         emailQueueService.create(entity);
 
-        verify(emailQueueService, times(1)).create(entity);
-        verify(emailQueueRepository, times(1)).insert(entity);
+        verify(em, times(1)).persist(entity);
+        verify(em, times(1)).flush();
     }
 
     @Test
-    void testCreate_Failure() throws CreateException {
+    void testCreate_Failure() {
         EmailQueueEntity entity = new EmailQueueEntity(
                 "1", new Date(), "history1", "recipient@example.com", 1, false, "depHistory1"
         );
-        doThrow(new RuntimeException("Database failure")).when(emailQueueRepository).insert(entity);
 
-        assertThrows(CreateException.class, () -> emailQueueService.create(entity));
+        doThrow(new RuntimeException("Database failure")).when(em).persist(entity);
 
-        verify(emailQueueService, times(1)).create(entity);
+        CreateException exception = assertThrows(CreateException.class, () -> emailQueueService.create(entity));
+        assertEquals("Failed to create EmailQueueEntity", exception.getMessage());
+
+        verify(em, times(1)).persist(entity);
     }
 
     @Test
@@ -66,22 +75,27 @@ public class EmailQueueServiceTest {
                 "1", new Date(), "history1", "recipient@example.com", 1, false, "depHistory1"
         );
 
+        when(em.merge(entity)).thenReturn(entity);
+        doNothing().when(em).flush();
+
         emailQueueService.update(entity);
 
-        verify(emailQueueService, times(1)).update(entity);
-        verify(emailQueueRepository, times(1)).save(entity);
+        verify(em, times(1)).merge(entity);
+        verify(em, times(1)).flush();
     }
 
     @Test
-    void testUpdate_Failure() throws SystemException {
+    void testUpdate_Failure() {
         EmailQueueEntity entity = new EmailQueueEntity(
                 "1", new Date(), "history1", "recipient@example.com", 1, false, "depHistory1"
         );
-        doThrow(new RuntimeException("Database failure")).when(emailQueueRepository).save(entity);
 
-        assertThrows(SystemException.class, () -> emailQueueService.update(entity));
+        doThrow(new RuntimeException("Database failure")).when(em).merge(entity);
 
-        verify(emailQueueService, times(1)).update(entity);
+        SystemException exception = assertThrows(SystemException.class, () -> emailQueueService.update(entity));
+        assertEquals("Failed to update EmailQueueEntity", exception.getMessage());
+
+        verify(em, times(1)).merge(entity);
     }
 
     @Test
@@ -90,22 +104,31 @@ public class EmailQueueServiceTest {
                 "1", new Date(), "history1", "recipient@example.com", 1, false, "depHistory1"
         );
 
+        when(em.merge(entity)).thenReturn(entity);
+        doNothing().when(em).remove(entity);
+        doNothing().when(em).flush();
+
         emailQueueService.delete(entity);
 
-        verify(emailQueueService, times(1)).delete(entity);
-        verify(emailQueueRepository, times(1)).delete(entity);
+        verify(em, times(1)).merge(entity);
+        verify(em, times(1)).remove(entity);
+        verify(em, times(1)).flush();
     }
 
     @Test
-    void testRemove_Failure() throws RemoveException {
+    void testRemove_Failure() {
         EmailQueueEntity entity = new EmailQueueEntity(
                 "1", new Date(), "history1", "recipient@example.com", 1, false, "depHistory1"
         );
-        doThrow(new RuntimeException("Database failure")).when(emailQueueRepository).delete(entity);
 
-        assertThrows(RemoveException.class, () -> emailQueueService.delete(entity));
+        when(em.merge(entity)).thenReturn(entity);
+        doThrow(new RuntimeException("Database failure")).when(em).remove(entity);
 
-        verify(emailQueueService, times(1)).delete(entity);
+        RemoveException exception = assertThrows(RemoveException.class, () -> emailQueueService.delete(entity));
+        assertEquals("Failed to remove EmailQueueEntity", exception.getMessage());
+
+        verify(em, times(1)).merge(entity);
+        verify(em, times(1)).remove(entity);
     }
 
     @Test
@@ -130,25 +153,25 @@ public class EmailQueueServiceTest {
                 new EmailQueueEntity("1", new Date(), "history1", "recipient1@example.com", 1, false, "depHistory1")
         );
 
-        when(emailQueueRepository.findAll(new Limit(1, 1))).thenReturn(entities);
+        when(emailQueueRepository.findAll(new jakarta.data.Limit(1, 1))).thenReturn(entities);
 
         List<EmailQueueEntity> result = emailQueueService.findAll(0, 1);
 
         assertNotNull(result);
         assertEquals(1, result.size());
-        verify(emailQueueRepository, times(1)).findAll(new Limit(1, 1));
+        verify(emailQueueRepository, times(1)).findAll(new jakarta.data.Limit(1, 1));
     }
 
     @Test
     void testFindFirstMail_Success() throws FinderException {
         EmailQueueEntity entity = new EmailQueueEntity("1", new Date(), "history1", "recipient@example.com", 1, false, "depHistory1");
-        when(emailQueueRepository.findFirstMail(Limit.of(1))).thenReturn(Optional.of(entity));
+        when(emailQueueRepository.findFirstMail(jakarta.data.Limit.of(1))).thenReturn(Optional.of(entity));
 
         Optional<EmailQueueEntity> result = emailQueueService.findFirstMail();
 
         assertTrue(result.isPresent());
         assertEquals("1", result.get().getId());
-        verify(emailQueueRepository, times(1)).findFirstMail(Limit.of(1));
+        verify(emailQueueRepository, times(1)).findFirstMail(jakarta.data.Limit.of(1));
     }
 
     @Test
@@ -179,5 +202,11 @@ public class EmailQueueServiceTest {
         assertNotNull(result);
         assertEquals(1, result.size());
         verify(emailQueueRepository, times(1)).findByDependentHistory("depHistory1");
+    }
+
+    @Test
+    void testDelete_NullEntity() {
+        RemoveException exception = assertThrows(RemoveException.class, () -> emailQueueService.delete(null));
+        assertEquals("Cannot delete null entity in EmailQueueEntity", exception.getMessage());
     }
 }

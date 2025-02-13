@@ -12,7 +12,7 @@ import cz.inspire.email.service.GeneratedAttachmentService;
 import cz.inspire.enterprise.exception.SystemException;
 import cz.inspire.template.entity.PrintTemplateEntity;
 import cz.inspire.template.service.PrintTemplateService;
-import cz.inspire.utils.File;
+import cz.inspire.utils.FileAttributes;
 import jakarta.ejb.CreateException;
 import jakarta.ejb.FinderException;
 import org.junit.jupiter.api.BeforeEach;
@@ -91,7 +91,7 @@ public class EmailHistoryFacadeTest {
         EmailHistoryEntity entity = new EmailHistoryEntity();
         entity.setId("email123");
         entity.setSent(true);
-        entity.setAttachments(List.of(new File("file1.pdf", "/path/file1.pdf")));
+        entity.setAttachments(List.of(new FileAttributes("file1.pdf", "/path/file1.pdf")));
 
         EmailHistoryDto expectedDto = new EmailHistoryDto();
         expectedDto.setId("email123");

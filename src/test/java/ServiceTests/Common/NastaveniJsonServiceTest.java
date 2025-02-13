@@ -6,12 +6,12 @@ import cz.inspire.common.service.NastaveniJsonService;
 import cz.inspire.enterprise.exception.SystemException;
 import jakarta.ejb.CreateException;
 import jakarta.ejb.RemoveException;
+import jakarta.persistence.EntityManager;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -23,72 +23,100 @@ public class NastaveniJsonServiceTest {
     @Mock
     private NastaveniJsonRepository nastaveniJsonRepository;
 
-    @Spy
+    @Mock
+    private EntityManager em;
+
     private NastaveniJsonService nastaveniJsonService;
 
     @BeforeEach
     void setUp() {
         MockitoAnnotations.openMocks(this);
-        nastaveniJsonService = spy(new NastaveniJsonService(nastaveniJsonRepository));
+        nastaveniJsonService = new NastaveniJsonService(nastaveniJsonRepository);
+        nastaveniJsonService.setEntityManager(em);
     }
 
     @Test
     void testCreate_Success() throws CreateException {
         NastaveniJsonEntity entity = new NastaveniJsonEntity("key1", "value1");
 
+        doNothing().when(em).persist(entity);
+        doNothing().when(em).flush();
+
         nastaveniJsonService.create(entity);
 
-        verify(nastaveniJsonService, times(1)).create(entity);
-        verify(nastaveniJsonRepository, times(1)).insert(entity);
+        verify(em, times(1)).persist(entity);
+        verify(em, times(1)).flush();
     }
 
     @Test
-    void testCreate_Failure() throws CreateException {
+    void testCreate_Failure() {
         NastaveniJsonEntity entity = new NastaveniJsonEntity("key1", "value1");
-        doThrow(new RuntimeException("Database failure")).when(nastaveniJsonRepository).insert(entity);
 
-        assertThrows(CreateException.class, () -> nastaveniJsonService.create(entity));
+        doThrow(new RuntimeException("Database failure")).when(em).persist(entity);
 
-        verify(nastaveniJsonService, times(1)).create(entity);
+        CreateException exception = assertThrows(CreateException.class, () -> nastaveniJsonService.create(entity));
+        assertEquals("Failed to create NastaveniJsonEntity", exception.getMessage());
+
+        verify(em, times(1)).persist(entity);
     }
 
     @Test
     void testUpdate_Success() throws SystemException {
         NastaveniJsonEntity entity = new NastaveniJsonEntity("key1", "value1");
 
+        when(em.merge(entity)).thenReturn(entity);
+        doNothing().when(em).flush();
+
         nastaveniJsonService.update(entity);
 
-        verify(nastaveniJsonService, times(1)).update(entity);
-        verify(nastaveniJsonRepository, times(1)).save(entity);
+        verify(em, times(1)).merge(entity);
+        verify(em, times(1)).flush();
     }
 
     @Test
-    void testUpdate_Failure() throws SystemException {
+    void testUpdate_Failure() {
         NastaveniJsonEntity entity = new NastaveniJsonEntity("key1", "value1");
-        doThrow(new RuntimeException("Database failure")).when(nastaveniJsonRepository).save(entity);
 
-        assertThrows(SystemException.class, () -> nastaveniJsonService.update(entity));
+        doThrow(new RuntimeException("Database failure")).when(em).merge(entity);
 
-        verify(nastaveniJsonService, times(1)).update(entity);
+        SystemException exception = assertThrows(SystemException.class, () -> nastaveniJsonService.update(entity));
+        assertEquals("Failed to update NastaveniJsonEntity", exception.getMessage());
+
+        verify(em, times(1)).merge(entity);
     }
 
     @Test
     void testRemove_Success() throws RemoveException {
         NastaveniJsonEntity entity = new NastaveniJsonEntity("key1", "value1");
 
+        when(em.merge(entity)).thenReturn(entity);
+        doNothing().when(em).remove(entity);
+        doNothing().when(em).flush();
+
         nastaveniJsonService.delete(entity);
 
-        verify(nastaveniJsonService, times(1)).delete(entity);
-        verify(nastaveniJsonRepository, times(1)).delete(entity);
+        verify(em, times(1)).merge(entity);
+        verify(em, times(1)).remove(entity);
+        verify(em, times(1)).flush();
     }
 
     @Test
-    void testRemove_Failure() throws RemoveException {
+    void testRemove_Failure() {
         NastaveniJsonEntity entity = new NastaveniJsonEntity("key1", "value1");
-        doThrow(new RuntimeException("Database failure")).when(nastaveniJsonRepository).delete(entity);
 
-        assertThrows(RemoveException.class, () -> nastaveniJsonService.delete(entity));
+        when(em.merge(entity)).thenReturn(entity);
+        doThrow(new RuntimeException("Database failure")).when(em).remove(entity);
 
-        verify(nastaveniJsonService, times(1)).delete(entity);
+        RemoveException exception = assertThrows(RemoveException.class, () -> nastaveniJsonService.delete(entity));
+        assertEquals("Failed to remove NastaveniJsonEntity", exception.getMessage());
+
+        verify(em, times(1)).merge(entity);
+        verify(em, times(1)).remove(entity);
+    }
+
+    @Test
+    void testDelete_NullEntity() {
+        RemoveException exception = assertThrows(RemoveException.class, () -> nastaveniJsonService.delete(null));
+        assertEquals("Cannot delete null entity in NastaveniJsonEntity", exception.getMessage());
     }
 }
