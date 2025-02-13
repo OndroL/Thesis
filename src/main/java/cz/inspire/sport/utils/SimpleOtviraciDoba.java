@@ -1,5 +1,6 @@
 package cz.inspire.sport.utils;
 
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import cz.inspire.sport.entity.SportEntity;
 import cz.inspire.utils.PeriodOfTime;
 
@@ -10,7 +11,7 @@ import java.util.TreeMap;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-
+@JsonTypeInfo(use = JsonTypeInfo.Id.CLASS, property = "@class")
 public class SimpleOtviraciDoba implements OtviraciDoba {
 
     private final SortedMap<PeriodOfTime, SportEntity> oteviraciDobaMap;

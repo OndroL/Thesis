@@ -1,7 +1,12 @@
 package cz.inspire.sport.entity;
 
 import cz.inspire.sport.utils.OtviraciDoba;
-import jakarta.persistence.*;
+import cz.inspire.sport.utils.OtviraciDobaConverter;
+import jakarta.persistence.Entity;
+import jakarta.persistence.EmbeddedId;
+import jakarta.persistence.Table;
+import jakarta.persistence.Column;
+import jakarta.persistence.Convert;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -22,5 +27,6 @@ public class OtviraciDobaObjektuEntity {
 
     @JdbcTypeCode(SqlTypes.JSON)
     @Column(columnDefinition = "jsonb")
+    @Convert(converter = OtviraciDobaConverter.class)
     private OtviraciDoba otviraciDoba;
 }

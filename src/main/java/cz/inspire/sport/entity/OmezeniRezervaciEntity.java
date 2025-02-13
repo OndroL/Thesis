@@ -1,10 +1,8 @@
 package cz.inspire.sport.entity;
 
 import cz.inspire.sport.utils.OtviraciDoba;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import cz.inspire.sport.utils.OtviraciDobaConverter;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -23,6 +21,7 @@ public class OmezeniRezervaciEntity implements Serializable {
     private String objektId;
     @JdbcTypeCode(SqlTypes.JSON)
     @Column(columnDefinition = "jsonb")
+    @Convert(converter = OtviraciDobaConverter.class)
     private OtviraciDoba omezeni;
 }
 
