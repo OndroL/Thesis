@@ -1,17 +1,13 @@
 package RepositoryTests.Sport;
 
+import RepositoryTests.DatabaseCleaner;
 import cz.inspire.sport.entity.ActivityEntity;
 import cz.inspire.sport.repository.ActivityRepository;
 import io.quarkus.test.junit.QuarkusTest;
-import jakarta.enterprise.context.control.ActivateRequestContext;
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.TestInstance;
+import org.junit.jupiter.api.*;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -23,14 +19,12 @@ public class ActivityRepositoryIT {
     @Inject
     ActivityRepository activityRepository;
 
+    @Inject
+    DatabaseCleaner databaseCleaner;
+
     @BeforeAll
-    @ActivateRequestContext
-    public void clearDatabase() {
-        List<ActivityEntity> allEntities = new ArrayList<>();
-        activityRepository.findAll().forEach(allEntities::add);
-        if (!allEntities.isEmpty()) {
-            activityRepository.deleteAll(allEntities);
-        }
+    public void clearActivityTable() {
+        databaseCleaner.clearTable(ActivityEntity.class, true);
     }
 
     @Test
