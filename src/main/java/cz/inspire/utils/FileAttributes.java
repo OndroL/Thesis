@@ -9,7 +9,7 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class File {
+public class FileAttributes {
     private String fileName;
     private String filePath;
 }

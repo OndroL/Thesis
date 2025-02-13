@@ -12,7 +12,7 @@ import cz.inspire.email.utils.EmailHistoryUtil;
 import cz.inspire.email.utils.GeneratedAttachmentUtil;
 import cz.inspire.template.entity.PrintTemplateEntity;
 import cz.inspire.template.service.PrintTemplateService;
-import cz.inspire.utils.File;
+import cz.inspire.utils.FileAttributes;
 import jakarta.ejb.CreateException;
 import jakarta.ejb.FinderException;
 import jakarta.enterprise.context.ApplicationScoped;
@@ -49,7 +49,7 @@ public class EmailHistoryFacade {
             EmailHistoryEntity entity = emailHistoryMapper.toEntity(dto);
 
             if (dto.getAttachments() != null && !dto.getAttachments().isEmpty()) {
-                List<File> savedAttachments = emailHistoryService.saveAttachments(dto.getAttachments());
+                List<FileAttributes> savedAttachments = emailHistoryService.saveAttachments(dto.getAttachments());
                 entity.setAttachments(savedAttachments); // Save as JSONB
             }
             emailHistoryService.create(entity);

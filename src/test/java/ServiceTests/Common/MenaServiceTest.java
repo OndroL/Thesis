@@ -7,15 +7,16 @@ import cz.inspire.enterprise.exception.SystemException;
 import jakarta.ejb.CreateException;
 import jakarta.ejb.FinderException;
 import jakarta.ejb.RemoveException;
+import jakarta.persistence.EntityManager;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -27,73 +28,95 @@ public class MenaServiceTest {
     @Mock
     private MenaRepository menaRepository;
 
-    @Spy
+    @Mock
+    private EntityManager em;
+
     private MenaService menaService;
 
     @BeforeEach
     void setUp() {
         MockitoAnnotations.openMocks(this);
-        menaService = spy(new MenaService(menaRepository));
+        menaService = new MenaService(menaRepository);
+        menaService.setEntityManager(em);
     }
 
     @Test
     void testCreate_Success() throws CreateException {
         MenaEntity entity = new MenaEntity("1", "USD", "123,456", 840, 1, 1);
 
+        doNothing().when(em).persist(entity);
+        doNothing().when(em).flush();
+
         menaService.create(entity);
 
-        verify(menaService, times(1)).create(entity);
-        verify(menaRepository, times(1)).insert(entity);
+        verify(em, times(1)).persist(entity);
+        verify(em, times(1)).flush();
     }
 
     @Test
-    void testCreate_Failure() throws CreateException {
+    void testCreate_Failure() {
         MenaEntity entity = new MenaEntity("1", "USD", "123,456", 840, 1, 1);
-        doThrow(new RuntimeException("Database failure")).when(menaRepository).insert(entity);
 
-        assertThrows(CreateException.class, () -> menaService.create(entity));
+        doThrow(new RuntimeException("Database failure")).when(em).persist(entity);
 
-        verify(menaService, times(1)).create(entity);
+        CreateException exception = assertThrows(CreateException.class, () -> menaService.create(entity));
+        assertEquals("Failed to create MenaEntity", exception.getMessage());
+
+        verify(em, times(1)).persist(entity);
     }
 
     @Test
     void testUpdate_Success() throws SystemException {
         MenaEntity entity = new MenaEntity("1", "USD", "123,456", 840, 1, 1);
 
+        when(em.merge(entity)).thenReturn(entity);
+        doNothing().when(em).flush();
+
         menaService.update(entity);
 
-        verify(menaService, times(1)).update(entity);
-        verify(menaRepository, times(1)).save(entity);
+        verify(em, times(1)).merge(entity);
+        verify(em, times(1)).flush();
     }
 
     @Test
-    void testUpdate_Failure() throws SystemException {
+    void testUpdate_Failure() {
         MenaEntity entity = new MenaEntity("1", "USD", "123,456", 840, 1, 1);
-        doThrow(new RuntimeException("Database failure")).when(menaRepository).save(entity);
 
-        assertThrows(SystemException.class, () -> menaService.update(entity));
+        doThrow(new RuntimeException("Database failure")).when(em).merge(entity);
 
-        verify(menaService, times(1)).update(entity);
+        SystemException exception = assertThrows(SystemException.class, () -> menaService.update(entity));
+        assertEquals("Failed to update MenaEntity", exception.getMessage());
+
+        verify(em, times(1)).merge(entity);
     }
 
     @Test
     void testRemove_Success() throws RemoveException {
         MenaEntity entity = new MenaEntity("1", "USD", "123,456", 840, 1, 1);
 
+        when(em.merge(entity)).thenReturn(entity);
+        doNothing().when(em).remove(entity);
+        doNothing().when(em).flush();
+
         menaService.delete(entity);
 
-        verify(menaService, times(1)).delete(entity);
-        verify(menaRepository, times(1)).delete(entity);
+        verify(em, times(1)).merge(entity);
+        verify(em, times(1)).remove(entity);
+        verify(em, times(1)).flush();
     }
 
     @Test
-    void testRemove_Failure() throws RemoveException {
+    void testRemove_Failure() {
         MenaEntity entity = new MenaEntity("1", "USD", "123,456", 840, 1, 1);
-        doThrow(new RuntimeException("Database failure")).when(menaRepository).delete(entity);
 
-        assertThrows(RemoveException.class, () -> menaService.delete(entity));
+        when(em.merge(entity)).thenReturn(entity);
+        doThrow(new RuntimeException("Database failure")).when(em).remove(entity);
 
-        verify(menaService, times(1)).delete(entity);
+        RemoveException exception = assertThrows(RemoveException.class, () -> menaService.delete(entity));
+        assertEquals("Failed to remove MenaEntity", exception.getMessage());
+
+        verify(em, times(1)).merge(entity);
+        verify(em, times(1)).remove(entity);
     }
 
     @Test
@@ -109,10 +132,35 @@ public class MenaServiceTest {
 
         assertNotNull(result);
         assertEquals(2, result.size());
-        assertEquals("USD", result.getFirst().getKod());
+        assertEquals("USD", result.get(0).getKod());
         verify(menaRepository, times(1)).findAll();
     }
 
+    @Test
+    void testFindByPrimaryKey_Found() throws FinderException {
+        String entityId = "1";
+        MenaEntity entity = new MenaEntity(entityId, "USD", "123,456", 840, 1, 1);
+
+        when(menaRepository.findById(entityId)).thenReturn(Optional.of(entity));
+
+        MenaEntity result = menaService.findByPrimaryKey(entityId);
+
+        assertNotNull(result);
+        assertEquals(entityId, result.getId());
+        verify(menaRepository, times(1)).findById(entityId);
+    }
+
+    @Test
+    void testFindByPrimaryKey_NotFound() {
+        String entityId = "1";
+
+        when(menaRepository.findById(entityId)).thenReturn(Optional.empty());
+
+        FinderException exception = assertThrows(FinderException.class, () -> menaService.findByPrimaryKey(entityId));
+        assertEquals("Failed to find MenaEntity with primary key: " + entityId, exception.getMessage());
+
+        verify(menaRepository, times(1)).findById(entityId);
+    }
 
     @Test
     void testFindByCode() throws FinderException {
@@ -123,7 +171,7 @@ public class MenaServiceTest {
 
         assertNotNull(result);
         assertEquals(1, result.size());
-        assertEquals("USD", result.getFirst().getKod());
+        assertEquals("USD", result.get(0).getKod());
         verify(menaRepository, times(1)).findByCode("USD");
     }
 
@@ -136,7 +184,13 @@ public class MenaServiceTest {
 
         assertNotNull(result);
         assertEquals(1, result.size());
-        assertEquals(840, result.getFirst().getKodNum());
+        assertEquals(840, result.get(0).getKodNum());
         verify(menaRepository, times(1)).findByCodeNum(840);
+    }
+
+    @Test
+    void testDelete_NullEntity() {
+        RemoveException exception = assertThrows(RemoveException.class, () -> menaService.delete(null));
+        assertEquals("Cannot delete null entity in MenaEntity", exception.getMessage());
     }
 }

@@ -7,12 +7,12 @@ import cz.inspire.sms.service.SMSHistoryService;
 import jakarta.ejb.CreateException;
 import jakarta.ejb.FinderException;
 import jakarta.ejb.RemoveException;
+import jakarta.persistence.EntityManager;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.sql.Timestamp;
@@ -29,13 +29,16 @@ public class SMSHistoryServiceTest {
     @Mock
     private SMSHistoryRepository smsHistoryRepository;
 
-    @Spy
+    @Mock
+    private EntityManager em;
+
     private SMSHistoryService smsHistoryService;
 
     @BeforeEach
     void setUp() {
         MockitoAnnotations.openMocks(this);
-        smsHistoryService = spy(new SMSHistoryService(smsHistoryRepository));
+        smsHistoryService = new SMSHistoryService(smsHistoryRepository);
+        smsHistoryService.setEntityManager(em);
     }
 
     @Test
@@ -48,14 +51,17 @@ public class SMSHistoryServiceTest {
                 true
         );
 
+        doNothing().when(em).persist(entity);
+        doNothing().when(em).flush();
+
         smsHistoryService.create(entity);
 
-        verify(smsHistoryService, times(1)).create(entity);
-        verify(smsHistoryRepository, times(1)).insert(entity);
+        verify(em, times(1)).persist(entity);
+        verify(em, times(1)).flush();
     }
 
     @Test
-    void testCreate_Failure() throws CreateException {
+    void testCreate_Failure() {
         SMSHistoryEntity entity = new SMSHistoryEntity(
                 "1", new Date(), "Test Message",
                 Arrays.asList("Group1", "Group2"),
@@ -63,11 +69,91 @@ public class SMSHistoryServiceTest {
                 Arrays.asList("MoreRecipient1", "MoreRecipient2"),
                 true
         );
-        doThrow(new RuntimeException("Database failure")).when(smsHistoryRepository).insert(entity);
 
-        assertThrows(CreateException.class, () -> smsHistoryService.create(entity));
+        doThrow(new RuntimeException("Database failure")).when(em).persist(entity);
 
-        verify(smsHistoryService, times(1)).create(entity);
+        CreateException exception = assertThrows(CreateException.class, () -> smsHistoryService.create(entity));
+        assertEquals("Failed to create SMSHistoryEntity", exception.getMessage());
+
+        verify(em, times(1)).persist(entity);
+    }
+
+    @Test
+    void testUpdate_Success() throws SystemException {
+        SMSHistoryEntity entity = new SMSHistoryEntity(
+                "1", new Date(), "Test Message",
+                Arrays.asList("Group1", "Group2"),
+                Arrays.asList("Recipient1", "Recipient2"),
+                Arrays.asList("MoreRecipient1", "MoreRecipient2"),
+                true
+        );
+
+        when(em.merge(entity)).thenReturn(entity);
+        doNothing().when(em).flush();
+
+        smsHistoryService.update(entity);
+
+        verify(em, times(1)).merge(entity);
+        verify(em, times(1)).flush();
+    }
+
+    @Test
+    void testUpdate_Failure() {
+        SMSHistoryEntity entity = new SMSHistoryEntity(
+                "1", new Date(), "Test Message",
+                Arrays.asList("Group1", "Group2"),
+                Arrays.asList("Recipient1", "Recipient2"),
+                Arrays.asList("MoreRecipient1", "MoreRecipient2"),
+                true
+        );
+
+        doThrow(new RuntimeException("Database failure")).when(em).merge(entity);
+
+        SystemException exception = assertThrows(SystemException.class, () -> smsHistoryService.update(entity));
+        assertEquals("Failed to update SMSHistoryEntity", exception.getMessage());
+
+        verify(em, times(1)).merge(entity);
+    }
+
+    @Test
+    void testRemove_Success() throws RemoveException {
+        SMSHistoryEntity entity = new SMSHistoryEntity(
+                "1", new Date(), "Test Message",
+                Arrays.asList("Group1", "Group2"),
+                Arrays.asList("Recipient1", "Recipient2"),
+                Arrays.asList("MoreRecipient1", "MoreRecipient2"),
+                true
+        );
+
+        when(em.merge(entity)).thenReturn(entity);
+        doNothing().when(em).remove(entity);
+        doNothing().when(em).flush();
+
+        smsHistoryService.delete(entity);
+
+        verify(em, times(1)).merge(entity);
+        verify(em, times(1)).remove(entity);
+        verify(em, times(1)).flush();
+    }
+
+    @Test
+    void testRemove_Failure() {
+        SMSHistoryEntity entity = new SMSHistoryEntity(
+                "1", new Date(), "Test Message",
+                Arrays.asList("Group1", "Group2"),
+                Arrays.asList("Recipient1", "Recipient2"),
+                Arrays.asList("MoreRecipient1", "MoreRecipient2"),
+                true
+        );
+
+        when(em.merge(entity)).thenReturn(entity);
+        doThrow(new RuntimeException("Database failure")).when(em).remove(entity);
+
+        RemoveException exception = assertThrows(RemoveException.class, () -> smsHistoryService.delete(entity));
+        assertEquals("Failed to remove SMSHistoryEntity", exception.getMessage());
+
+        verify(em, times(1)).merge(entity);
+        verify(em, times(1)).remove(entity);
     }
 
     @Test
@@ -109,66 +195,8 @@ public class SMSHistoryServiceTest {
     }
 
     @Test
-    void testUpdate_Success() throws SystemException {
-        SMSHistoryEntity entity = new SMSHistoryEntity(
-                "1", new Date(), "Test Message",
-                Arrays.asList("Group1", "Group2"),
-                Arrays.asList("Recipient1", "Recipient2"),
-                Arrays.asList("MoreRecipient1", "MoreRecipient2"),
-                true
-        );
-
-        smsHistoryService.update(entity);
-
-        verify(smsHistoryService, times(1)).update(entity);
-        verify(smsHistoryRepository, times(1)).save(entity);
-    }
-
-    @Test
-    void testUpdate_Failure() throws SystemException {
-        SMSHistoryEntity entity = new SMSHistoryEntity(
-                "1", new Date(), "Test Message",
-                Arrays.asList("Group1", "Group2"),
-                Arrays.asList("Recipient1", "Recipient2"),
-                Arrays.asList("MoreRecipient1", "MoreRecipient2"),
-                true
-        );
-        doThrow(new RuntimeException("Database failure")).when(smsHistoryRepository).save(entity);
-
-        assertThrows(SystemException.class, () -> smsHistoryService.update(entity));
-
-        verify(smsHistoryService, times(1)).update(entity);
-    }
-
-    @Test
-    void testRemove_Success() throws RemoveException {
-        SMSHistoryEntity entity = new SMSHistoryEntity(
-                "1", new Date(), "Test Message",
-                Arrays.asList("Group1", "Group2"),
-                Arrays.asList("Recipient1", "Recipient2"),
-                Arrays.asList("MoreRecipient1", "MoreRecipient2"),
-                true
-        );
-
-        smsHistoryService.delete(entity);
-
-        verify(smsHistoryService, times(1)).delete(entity);
-        verify(smsHistoryRepository, times(1)).delete(entity);
-    }
-
-    @Test
-    void testRemove_Failure() throws RemoveException {
-        SMSHistoryEntity entity = new SMSHistoryEntity(
-                "1", new Date(), "Test Message",
-                Arrays.asList("Group1", "Group2"),
-                Arrays.asList("Recipient1", "Recipient2"),
-                Arrays.asList("MoreRecipient1", "MoreRecipient2"),
-                true
-        );
-        doThrow(new RuntimeException("Database failure")).when(smsHistoryRepository).delete(entity);
-
-        assertThrows(RemoveException.class, () -> smsHistoryService.delete(entity));
-
-        verify(smsHistoryService, times(1)).delete(entity);
+    void testDelete_NullEntity() {
+        RemoveException exception = assertThrows(RemoveException.class, () -> smsHistoryService.delete(null));
+        assertEquals("Cannot delete null entity in SMSHistoryEntity", exception.getMessage());
     }
 }

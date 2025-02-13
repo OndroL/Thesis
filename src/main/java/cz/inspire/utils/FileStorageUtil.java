@@ -14,7 +14,7 @@ public class FileStorageUtil {
         this.rootDirectory = rootDirectory;
     }
 
-    public File saveFile(byte[] fileData, String originalFileName, String subDirectory) throws IOException {
+    public FileAttributes saveFile(byte[] fileData, String originalFileName, String subDirectory) throws IOException {
         // Generate a unique file name
         String uniqueName = UUID.randomUUID().toString();
         String filePath = rootDirectory + "/" + subDirectory + "/" + uniqueName;
@@ -27,7 +27,7 @@ public class FileStorageUtil {
         Files.write(Paths.get(filePath), fileData);
 
         // Return a File object with metadata
-        return new File(originalFileName, filePath);
+        return new FileAttributes(originalFileName, filePath);
     }
 
 

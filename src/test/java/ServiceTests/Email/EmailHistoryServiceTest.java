@@ -4,21 +4,23 @@ import cz.inspire.email.entity.EmailHistoryEntity;
 import cz.inspire.email.repository.EmailHistoryRepository;
 import cz.inspire.email.service.EmailHistoryService;
 import cz.inspire.enterprise.exception.SystemException;
-import cz.inspire.utils.File;
+import cz.inspire.utils.FileAttributes;
 import cz.inspire.utils.FileStorageUtil;
 import jakarta.ejb.CreateException;
 import jakarta.ejb.FinderException;
 import jakarta.ejb.RemoveException;
+import jakarta.persistence.EntityManager;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.*;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.io.IOException;
+import java.lang.reflect.Field;
 import java.sql.Timestamp;
 import java.util.*;
-import java.lang.reflect.Field;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
@@ -32,18 +34,20 @@ public class EmailHistoryServiceTest {
     @Mock
     private FileStorageUtil fileStorageUtil;
 
-    @Spy
+    @Mock
+    private EntityManager em;
+
     private EmailHistoryService emailHistoryService;
 
     @BeforeEach
-    void setUp() throws Exception {
+    void setUp() throws IllegalAccessException, NoSuchFieldException {
         MockitoAnnotations.openMocks(this);
-        emailHistoryService = spy(new EmailHistoryService(emailHistoryRepository));
+        emailHistoryService = new EmailHistoryService(emailHistoryRepository);
+        emailHistoryService.setEntityManager(em);
         Field fileStorageUtilField = EmailHistoryService.class.getDeclaredField("fileStorageUtil");
         fileStorageUtilField.setAccessible(true);
         fileStorageUtilField.set(emailHistoryService, fileStorageUtil);
     }
-
 
     @Test
     void testCreate_Success() throws CreateException {
@@ -53,24 +57,29 @@ public class EmailHistoryServiceTest {
                 true, false, new ArrayList<>(), false, new ArrayList<>()
         );
 
+        doNothing().when(em).persist(entity);
+        doNothing().when(em).flush();
+
         emailHistoryService.create(entity);
 
-        verify(emailHistoryService, times(1)).create(entity);
-        verify(emailHistoryRepository, times(1)).insert(entity);
+        verify(em, times(1)).persist(entity);
+        verify(em, times(1)).flush();
     }
 
     @Test
-    void testCreate_Failure() throws CreateException {
+    void testCreate_Failure() {
         EmailHistoryEntity entity = new EmailHistoryEntity(
                 "1", new Date(), "Test Email", "Test Subject",
                 List.of("Group1"), List.of("Recipient1"), List.of("MoreRecipient1"),
                 true, false, new ArrayList<>(), false, new ArrayList<>()
         );
-        doThrow(new RuntimeException("Database failure")).when(emailHistoryRepository).insert(entity);
 
-        assertThrows(CreateException.class, () -> emailHistoryService.create(entity));
+        doThrow(new RuntimeException("Database failure")).when(em).persist(entity);
 
-        verify(emailHistoryService, times(1)).create(entity);
+        CreateException exception = assertThrows(CreateException.class, () -> emailHistoryService.create(entity));
+        assertEquals("Failed to create EmailHistoryEntity", exception.getMessage());
+
+        verify(em, times(1)).persist(entity);
     }
 
     @Test
@@ -81,24 +90,29 @@ public class EmailHistoryServiceTest {
                 true, false, new ArrayList<>(), false, new ArrayList<>()
         );
 
+        when(em.merge(entity)).thenReturn(entity);
+        doNothing().when(em).flush();
+
         emailHistoryService.update(entity);
 
-        verify(emailHistoryService, times(1)).update(entity);
-        verify(emailHistoryRepository, times(1)).save(entity);
+        verify(em, times(1)).merge(entity);
+        verify(em, times(1)).flush();
     }
 
     @Test
-    void testUpdate_Failure() throws SystemException {
+    void testUpdate_Failure() {
         EmailHistoryEntity entity = new EmailHistoryEntity(
                 "1", new Date(), "Updated Email", "Updated Subject",
                 List.of("Group1"), List.of("Recipient1"), List.of("MoreRecipient1"),
                 true, false, new ArrayList<>(), false, new ArrayList<>()
         );
-        doThrow(new RuntimeException("Database failure")).when(emailHistoryRepository).save(entity);
 
-        assertThrows(SystemException.class, () -> emailHistoryService.update(entity));
+        doThrow(new RuntimeException("Database failure")).when(em).merge(entity);
 
-        verify(emailHistoryService, times(1)).update(entity);
+        SystemException exception = assertThrows(SystemException.class, () -> emailHistoryService.update(entity));
+        assertEquals("Failed to update EmailHistoryEntity", exception.getMessage());
+
+        verify(em, times(1)).merge(entity);
     }
 
     @Test
@@ -109,24 +123,33 @@ public class EmailHistoryServiceTest {
                 true, false, new ArrayList<>(), false, new ArrayList<>()
         );
 
+        when(em.merge(entity)).thenReturn(entity);
+        doNothing().when(em).remove(entity);
+        doNothing().when(em).flush();
+
         emailHistoryService.delete(entity);
 
-        verify(emailHistoryService, times(1)).delete(entity);
-        verify(emailHistoryRepository, times(1)).delete(entity);
+        verify(em, times(1)).merge(entity);
+        verify(em, times(1)).remove(entity);
+        verify(em, times(1)).flush();
     }
 
     @Test
-    void testRemove_Failure() throws RemoveException {
+    void testRemove_Failure() {
         EmailHistoryEntity entity = new EmailHistoryEntity(
                 "1", new Date(), "Test Email", "Test Subject",
                 List.of("Group1"), List.of("Recipient1"), List.of("MoreRecipient1"),
                 true, false, new ArrayList<>(), false, new ArrayList<>()
         );
-        doThrow(new RuntimeException("Database failure")).when(emailHistoryRepository).delete(entity);
 
-        assertThrows(RemoveException.class, () -> emailHistoryService.delete(entity));
+        when(em.merge(entity)).thenReturn(entity);
+        doThrow(new RuntimeException("Database failure")).when(em).remove(entity);
 
-        verify(emailHistoryService, times(1)).delete(entity);
+        RemoveException exception = assertThrows(RemoveException.class, () -> emailHistoryService.delete(entity));
+        assertEquals("Failed to remove EmailHistoryEntity", exception.getMessage());
+
+        verify(em, times(1)).merge(entity);
+        verify(em, times(1)).remove(entity);
     }
 
     @Test
@@ -175,6 +198,59 @@ public class EmailHistoryServiceTest {
     }
 
     @Test
+    void testDelete_NullEntity() {
+        RemoveException exception = assertThrows(RemoveException.class, () -> emailHistoryService.delete(null));
+        assertEquals("Cannot delete null entity in EmailHistoryEntity", exception.getMessage());
+    }
+
+    @Test
+    void testSaveAttachments_EmptyInput() throws IOException {
+        Map<String, byte[]> attachments = new HashMap<>();
+
+        List<FileAttributes> savedAttachments = emailHistoryService.saveAttachments(attachments);
+
+        assertNotNull(savedAttachments);
+        assertTrue(savedAttachments.isEmpty());
+        verify(fileStorageUtil, never()).saveFile(any(), any(), any());
+    }
+
+    @Test
+    void testSaveAttachments_Failure() throws IOException {
+        Map<String, byte[]> attachments = new HashMap<>();
+        attachments.put("file1.pdf", new byte[]{1, 2, 3});
+
+        doThrow(new IOException("File system error")).when(fileStorageUtil).saveFile(any(), any(), any());
+
+        RuntimeException exception = assertThrows(RuntimeException.class, () -> emailHistoryService.saveAttachments(attachments));
+        assertTrue(exception.getMessage().contains("Failed to save attachment: file1.pdf")); // Allow partial match
+
+        verify(fileStorageUtil, times(1)).saveFile(any(), any(), any());
+    }
+
+
+    @Test
+    void testReadFile_Failure() throws IOException {
+        String filePath = "FILE_SYSTEM/attachments/file1.pdf";
+
+        // Mock the behavior to throw an IOException
+        doThrow(new IOException("File not found")).when(fileStorageUtil).readFile(eq(filePath));
+
+        IOException exception = assertThrows(IOException.class, () -> emailHistoryService.readFile(filePath));
+        assertEquals("File not found", exception.getMessage());
+
+        verify(fileStorageUtil, times(1)).readFile(eq(filePath));
+    }
+
+
+    @Test
+    void testGenerateFileName() {
+        String fileName = EmailHistoryService.generateFileName();
+
+        assertNotNull(fileName);
+        assertTrue(fileName.matches("voucher-\\d{1,2}-\\d{1,2}-\\d{4}\\.pdf"));
+    }
+
+    @Test
     void testSaveAttachments_Success() throws IOException {
         Map<String, byte[]> attachments = new HashMap<>();
         attachments.put("file1.pdf", new byte[]{1, 2, 3});
@@ -183,19 +259,19 @@ public class EmailHistoryServiceTest {
         String rootDirectory = "FILE_SYSTEM";
         String subDirectory = "attachments";
 
-
         doAnswer(invocation -> {
-            invocation.getArgument(0);
             String fileName = invocation.getArgument(1);
             String subDir = invocation.getArgument(2);
+
+            assertEquals(subDirectory, subDir); // Ensuring correct argument is passed
 
             // Generate a UUID-based filename dynamically (as the service does)
             String savedPath = rootDirectory + "/" + subDir + "/" + UUID.randomUUID();
 
-            return new File(fileName, savedPath);
+            return new FileAttributes(fileName, savedPath);
         }).when(fileStorageUtil).saveFile(any(), any(), eq(subDirectory));
 
-        List<File> result = emailHistoryService.saveAttachments(attachments);
+        List<FileAttributes> result = emailHistoryService.saveAttachments(attachments);
 
         assertNotNull(result);
         assertEquals(2, result.size());
@@ -203,17 +279,22 @@ public class EmailHistoryServiceTest {
         verify(fileStorageUtil, times(2)).saveFile(any(), any(), eq(subDirectory));
     }
 
+
     @Test
     void testReadFile_Success() throws IOException {
         byte[] fileContent = new byte[]{1, 2, 3};  // Mocked file content
 
         String rootDirectory = "FILE_SYSTEM";
         String subDirectory = "attachments";
-
-        when(fileStorageUtil.readFile(argThat(path -> path.startsWith(rootDirectory + "/" + subDirectory))))
-                .thenReturn(fileContent);
-
         String generatedFilePath = rootDirectory + "/" + subDirectory + "/" + UUID.randomUUID();
+
+        when(fileStorageUtil.readFile(anyString()))
+                .thenAnswer(invocation -> {
+                    String requestedPath = invocation.getArgument(0);
+                    assertTrue(requestedPath.startsWith(rootDirectory + "/" + subDirectory),
+                            "Path should start with: " + rootDirectory + "/" + subDirectory);
+                    return fileContent;
+                });
 
         byte[] result = emailHistoryService.readFile(generatedFilePath);
 

@@ -2,7 +2,7 @@ package RepositoryTests.Email;
 
 import cz.inspire.email.entity.EmailHistoryEntity;
 import cz.inspire.email.repository.EmailHistoryRepository;
-import cz.inspire.utils.File;
+import cz.inspire.utils.FileAttributes;
 import io.quarkus.test.junit.QuarkusTest;
 import jakarta.data.Limit;
 import jakarta.enterprise.context.control.ActivateRequestContext;
@@ -42,8 +42,8 @@ public class EmailHistoryRepositoryIT {
      */
     @Test
     public void testSaveAndFindById() {
-        List<File> attachments = List.of(
-                new File("attachment.pdf", "FILE_SYSTEM/attachments/68057fc4-91a4-46bd-8229-7f770530a644")
+        List<FileAttributes> attachments = List.of(
+                new FileAttributes("attachment.pdf", "FILE_SYSTEM/attachments/68057fc4-91a4-46bd-8229-7f770530a644")
         );
 
         EmailHistoryEntity entity = new EmailHistoryEntity(
@@ -122,7 +122,7 @@ public class EmailHistoryRepositoryIT {
         entity.setText("Updated content");
         entity.setSubject("Updated Subject");
         entity.setSent(true);
-        entity.setAttachments(List.of(new File("updated.pdf", "http://example.com/updated.pdf")));
+        entity.setAttachments(List.of(new FileAttributes("updated.pdf", "http://example.com/updated.pdf")));
         emailHistoryRepository.save(entity);
 
         Optional<EmailHistoryEntity> updated = emailHistoryRepository.findById("EMAIL-004");
@@ -157,9 +157,9 @@ public class EmailHistoryRepositoryIT {
     @Test
     public void testSaveAndRetrieveFiles() {
         // Correct List<File> format
-        List<File> attachments = List.of(
-                new File("photo1.jpg", "FILE_SYSTEM/photos/1234-5678"),
-                new File("document.pdf", "FILE_SYSTEM/attachments/abcd-efgh")
+        List<FileAttributes> attachments = List.of(
+                new FileAttributes("photo1.jpg", "FILE_SYSTEM/photos/1234-5678"),
+                new FileAttributes("document.pdf", "FILE_SYSTEM/attachments/abcd-efgh")
         );
 
         // Create and save EmailHistoryEntity
@@ -177,9 +177,9 @@ public class EmailHistoryRepositoryIT {
         Assertions.assertNotNull(retrieved.get().getAttachments(), "Files should not be null.");
 
         // Check that both files are stored correctly
-        List<File> retrievedFiles = retrieved.get().getAttachments();
-        Assertions.assertEquals(2, retrievedFiles.size(), "Files count should match.");
-        Assertions.assertEquals("photo1.jpg", retrievedFiles.getFirst().getFileName(), "First file name should match.");
-        Assertions.assertEquals("FILE_SYSTEM/photos/1234-5678", retrievedFiles.getFirst().getFilePath(), "First file path should match.");
+        List<FileAttributes> retrievedFileAttributes = retrieved.get().getAttachments();
+        Assertions.assertEquals(2, retrievedFileAttributes.size(), "Files count should match.");
+        Assertions.assertEquals("photo1.jpg", retrievedFileAttributes.getFirst().getFileName(), "First file name should match.");
+        Assertions.assertEquals("FILE_SYSTEM/photos/1234-5678", retrievedFileAttributes.getFirst().getFilePath(), "First file path should match.");
     }
 }
