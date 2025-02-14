@@ -7,6 +7,7 @@ import jakarta.data.repository.Query;
 import jakarta.data.repository.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface ArealRepository extends CrudRepository<ArealEntity, String> {
@@ -50,7 +51,7 @@ public interface ArealRepository extends CrudRepository<ArealEntity, String> {
         SELECT a FROM ArealEntity a
         WHERE a.id = ?1 AND FUNCTION('areal_isChild', ?2, ?1) = TRUE
     """)
-    ArealEntity findIfChild(String childId, String parentId);
+    Optional<ArealEntity> findIfChild(String childId, String parentId);
 
     @Query("SELECT a.id FROM ArealEntity a WHERE a.nadrazenyAreal.id = ?1")
     List<String> findArealIdsByParent(String arealId);

@@ -114,10 +114,11 @@ public class ArealRepositoryIT {
         em.persist(child);
         em.flush();
 
-        ArealEntity found = arealRepository.findIfChild("ID-011", "ID-010");
+        Optional<ArealEntity> found = arealRepository.findIfChild("ID-011", "ID-010");
 
+        Assertions.assertTrue(found.isPresent());
         Assertions.assertNotNull(found, "Expected to find child ArealEntity.");
-        Assertions.assertEquals("ID-011", found.getId(), "Expected found entity to be ID-011.");
+        Assertions.assertEquals("ID-011", found.get().getId(), "Expected found entity to be ID-011.");
     }
 
     @Test
