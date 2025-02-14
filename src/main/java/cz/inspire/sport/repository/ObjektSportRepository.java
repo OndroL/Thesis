@@ -19,6 +19,9 @@ public interface ObjektSportRepository extends CrudRepository<ObjektSportEntity,
     """)
     List<ObjektSportEntity> findByObjekt(String objektId);
 
+    /**
+     * This to methods below are necessary because of Embedded pk
+     */
     @Override
     @Query("""
         SELECT o

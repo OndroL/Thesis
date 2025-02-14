@@ -34,7 +34,7 @@ public interface OtviraciDobaObjektuRepository extends CrudRepository<OtviraciDo
         WHERE o.id.objektId = :objektId AND o.id.platnostOd <= :day
         ORDER BY o.id.platnostOd DESC
     """)
-    OtviraciDobaObjektuEntity findCurrent(String objektId, LocalDateTime day);
+    Optional<OtviraciDobaObjektuEntity> findCurrent(String objektId, LocalDateTime day);
 
     @Query("""
         SELECT o FROM OtviraciDobaObjektuEntity o
@@ -50,7 +50,9 @@ public interface OtviraciDobaObjektuRepository extends CrudRepository<OtviraciDo
     """)
     List<LocalDateTime> getCurrentIdsByObjectAndDay(String objektId, LocalDateTime day);
 
-
+    /**
+     * This to methods below are necessary because of Embedded pk
+     */
     @Override
     @Query("""
         SELECT o
