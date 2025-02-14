@@ -179,7 +179,7 @@ class BaseServiceTest {
     }
 
     @Test
-    void testFindById_Found() {
+    void testFindById_Found() throws FinderException {
         String entityId = "123";
         TestEntity entity = new TestEntity(entityId);
 
@@ -193,7 +193,7 @@ class BaseServiceTest {
     }
 
     @Test
-    void testFindById_NotFound() {
+    void testFindById_NotFound() throws FinderException {
         String entityId = "123";
 
         when(repository.findById(entityId)).thenReturn(Optional.empty());
