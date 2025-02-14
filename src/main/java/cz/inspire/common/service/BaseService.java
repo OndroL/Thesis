@@ -50,7 +50,7 @@ public abstract class BaseService<E, PK extends Serializable, R extends CrudRepo
                 ));
     }
 
-    public Optional<E> findById(PK pk) {
+    public Optional<E> findById(PK pk) throws FinderException {
         if (pk == null) {
             return Optional.empty();
         }
