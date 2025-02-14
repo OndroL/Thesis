@@ -131,7 +131,7 @@ public class HeaderServiceTest {
 
         assertNotNull(result);
         assertEquals(2, result.size());
-        assertEquals("1", result.get(0).getId());
+        assertEquals("1", result.getFirst().getId());
         verify(headerRepository, times(1)).findValidAttributes();
     }
 
@@ -162,7 +162,7 @@ public class HeaderServiceTest {
     }
 
     @Test
-    void testFindById_Found() {
+    void testFindById_Found() throws FinderException {
         String entityId = "1";
         HeaderEntity entity = new HeaderEntity(entityId, 42, 7);
 
@@ -176,7 +176,7 @@ public class HeaderServiceTest {
     }
 
     @Test
-    void testFindById_NotFound() {
+    void testFindById_NotFound() throws FinderException {
         String entityId = "1";
 
         when(headerRepository.findById(entityId)).thenReturn(Optional.empty());

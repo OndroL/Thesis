@@ -132,7 +132,7 @@ public class MenaServiceTest {
 
         assertNotNull(result);
         assertEquals(2, result.size());
-        assertEquals("USD", result.get(0).getKod());
+        assertEquals("USD", result.getFirst().getKod());
         verify(menaRepository, times(1)).findAll();
     }
 
@@ -171,7 +171,7 @@ public class MenaServiceTest {
 
         assertNotNull(result);
         assertEquals(1, result.size());
-        assertEquals("USD", result.get(0).getKod());
+        assertEquals("USD", result.getFirst().getKod());
         verify(menaRepository, times(1)).findByCode("USD");
     }
 
@@ -184,7 +184,7 @@ public class MenaServiceTest {
 
         assertNotNull(result);
         assertEquals(1, result.size());
-        assertEquals(840, result.get(0).getKodNum());
+        assertEquals(840, result.getFirst().getKodNum());
         verify(menaRepository, times(1)).findByCodeNum(840);
     }
 

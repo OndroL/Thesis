@@ -5,6 +5,7 @@ import cz.inspire.template.repository.PrintTemplateRepository;
 import cz.inspire.template.service.PrintTemplateService;
 import cz.inspire.enterprise.exception.SystemException;
 import jakarta.ejb.CreateException;
+import jakarta.ejb.FinderException;
 import jakarta.ejb.RemoveException;
 import jakarta.persistence.EntityManager;
 import org.junit.jupiter.api.BeforeEach;
@@ -117,7 +118,7 @@ public class PrintTemplateServiceTest {
     }
 
     @Test
-    void testFindById_Success() {
+    void testFindById_Success() throws FinderException {
         PrintTemplateEntity expectedEntity = new PrintTemplateEntity("1", "Sample Content", 1, "TemplateName", "FileName");
         when(printTemplateRepository.findById("1")).thenReturn(Optional.of(expectedEntity));
 
@@ -129,7 +130,7 @@ public class PrintTemplateServiceTest {
     }
 
     @Test
-    void testFindById_NotFound() {
+    void testFindById_NotFound() throws FinderException {
         when(printTemplateRepository.findById("1")).thenReturn(Optional.empty());
 
         Optional<PrintTemplateEntity> result = printTemplateService.findById("1");

@@ -186,7 +186,7 @@ public class EmailHistoryServiceTest {
     }
 
     @Test
-    void testFindById_Success() {
+    void testFindById_Success() throws FinderException {
         EmailHistoryEntity entity = new EmailHistoryEntity("1", new Date(), "Email 1", "Subject 1", List.of(), List.of(), List.of(), true, false, List.of(), false, List.of());
         when(emailHistoryRepository.findById("1")).thenReturn(Optional.of(entity));
 
@@ -222,7 +222,7 @@ public class EmailHistoryServiceTest {
         doThrow(new IOException("File system error")).when(fileStorageUtil).saveFile(any(), any(), any());
 
         RuntimeException exception = assertThrows(RuntimeException.class, () -> emailHistoryService.saveAttachments(attachments));
-        assertTrue(exception.getMessage().contains("Failed to save attachment: file1.pdf")); // Allow partial match
+        assertTrue(exception.getMessage().contains("Failed to save attachment: file1.pdf"));
 
         verify(fileStorageUtil, times(1)).saveFile(any(), any(), any());
     }
@@ -232,7 +232,6 @@ public class EmailHistoryServiceTest {
     void testReadFile_Failure() throws IOException {
         String filePath = "FILE_SYSTEM/attachments/file1.pdf";
 
-        // Mock the behavior to throw an IOException
         doThrow(new IOException("File not found")).when(fileStorageUtil).readFile(eq(filePath));
 
         IOException exception = assertThrows(IOException.class, () -> emailHistoryService.readFile(filePath));
@@ -263,9 +262,8 @@ public class EmailHistoryServiceTest {
             String fileName = invocation.getArgument(1);
             String subDir = invocation.getArgument(2);
 
-            assertEquals(subDirectory, subDir); // Ensuring correct argument is passed
+            assertEquals(subDirectory, subDir);
 
-            // Generate a UUID-based filename dynamically (as the service does)
             String savedPath = rootDirectory + "/" + subDir + "/" + UUID.randomUUID();
 
             return new FileAttributes(fileName, savedPath);
@@ -282,7 +280,7 @@ public class EmailHistoryServiceTest {
 
     @Test
     void testReadFile_Success() throws IOException {
-        byte[] fileContent = new byte[]{1, 2, 3};  // Mocked file content
+        byte[] fileContent = new byte[]{1, 2, 3};
 
         String rootDirectory = "FILE_SYSTEM";
         String subDirectory = "attachments";
