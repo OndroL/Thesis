@@ -29,42 +29,46 @@ public class OtviraciDobaObjektuService extends BaseService<OtviraciDobaObjektuE
     public List<OtviraciDobaObjektuEntity> findByObjekt(String objektId) throws FinderException {
         return wrapDBException(
                 () -> repository.findByObjekt(objektId),
-                "Error retrieving valid attributes from OtviraciDobaObjektuEntity"
+                "Error retrieving OtviraciDobaObjektuEntity records for objektId=" + objektId
         );
     }
 
     public List<OtviraciDobaObjektuEntity> findByObjektWithLimit(String objektId, int offset, int count) throws FinderException {
         return wrapDBException(
                 () -> repository.findByObjektWithLimit(objektId, Limit.range(offset + 1, count)),
-                "Error retrieving valid attributes from OtviraciDobaObjektuEntity"
+                "Error retrieving OtviraciDobaObjektuEntity records for objektId=" + objektId +
+                        " with pagination (offset + 1 = " + offset + ", count = " + count + ")"
         );
     }
 
     public Optional<OtviraciDobaObjektuEntity> findCurrent(String objektId, Date day) throws FinderException {
+        LocalDateTime localDateTime = LocalDateTime.ofInstant(day.toInstant(), ZoneOffset.UTC);
         return wrapDBException(
-                () -> repository.findCurrent(objektId, LocalDateTime.ofInstant(day.toInstant(), ZoneOffset.UTC)),
-                "Error retrieving valid attributes from OtviraciDobaObjektuEntity"
+                () -> repository.findCurrent(objektId, localDateTime),
+                "Error retrieving current OtviraciDobaObjektuEntity record for objektId=" + objektId + ", date=" + localDateTime
         );
     }
 
     public List<OtviraciDobaObjektuEntity> findAfter(String objektId, Date day) throws FinderException {
+        LocalDateTime localDateTime = LocalDateTime.ofInstant(day.toInstant(), ZoneOffset.UTC);
         return wrapDBException(
-                () -> repository.findAfter(objektId, LocalDateTime.ofInstant(day.toInstant(), ZoneOffset.UTC)),
-                "Error retrieving valid attributes from OtviraciDobaObjektuEntity"
+                () -> repository.findAfter(objektId, localDateTime),
+                "Error retrieving OtviraciDobaObjektuEntity records after date=" + localDateTime + " for objektId=" + objektId
         );
     }
 
     public List<LocalDateTime> getCurrentIdsByObjectAndDay(String objektId, Date day) throws FinderException {
+        LocalDateTime localDateTime = LocalDateTime.ofInstant(day.toInstant(), ZoneOffset.UTC);
         return wrapDBException(
-                () -> repository.getCurrentIdsByObjectAndDay(objektId, LocalDateTime.ofInstant(day.toInstant(), ZoneOffset.UTC)),
-                "Error retrieving valid attributes from OtviraciDobaObjektuEntity"
+                () -> repository.getCurrentIdsByObjectAndDay(objektId, localDateTime),
+                "Error retrieving current OtviraciDobaObjektuEntity IDs for objektId=" + objektId + ", date=" + localDateTime
         );
     }
 
     public Optional<OtviraciDobaObjektuEntity> findById(OtviraciDobaObjektuPK pk) throws FinderException {
         return wrapDBException(
                 () -> repository.findById(pk),
-                "Error retrieving valid attributes from ObjektSportEntity"
+                "Error retrieving OtviraciDobaObjektuEntity record for primary key=" + pk
         );
     }
 
@@ -74,7 +78,7 @@ public class OtviraciDobaObjektuService extends BaseService<OtviraciDobaObjektuE
                     repository.deleteById(pk);
                     return null;
                 },
-                "Error deleting ObjektSportEntity record for primary key=" + pk
+                "Error deleting OtviraciDobaObjektuEntity record for primary key=" + pk
         );
     }
 }
