@@ -122,7 +122,7 @@ public class ArealRepositoryIT {
     }
 
     @Test
-    public void testFindArealIdsByParent() {
+    public void testGetArealIdsByParent() {
         ArealEntity parent = new ArealEntity("ID-012", 2, createLocaleData("LOC-012", "en", "Parent Complex", "Main complex"), null, new ArrayList<>(), new ArrayList<>());
         ArealEntity child1 = new ArealEntity("ID-013", 1, createLocaleData("LOC-013", "en", "Child Complex 1", "Sub complex 1"), parent, new ArrayList<>(), new ArrayList<>());
         ArealEntity child2 = new ArealEntity("ID-014", 1, createLocaleData("LOC-014", "en", "Child Complex 2", "Sub complex 2"), parent, new ArrayList<>(), new ArrayList<>());
@@ -132,7 +132,7 @@ public class ArealRepositoryIT {
         em.persist(child2);
         em.flush();
 
-        List<String> results = arealRepository.findArealIdsByParent("ID-012");
+        List<String> results = arealRepository.getArealIdsByParent("ID-012");
 
         Assertions.assertEquals(2, results.size(), "Expected 2 child areas.");
     }

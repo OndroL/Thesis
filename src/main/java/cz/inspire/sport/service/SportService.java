@@ -21,10 +21,10 @@ public class SportService extends BaseService<SportEntity, String, SportReposito
         super(repository);
     }
 
-    public List<SportEntity> findAllOrdered() throws FinderException {
+    public List<SportEntity> findAll() throws FinderException {
         return wrapDBException(
                 () -> repository.findAllOrdered(),
-                "Error retrieving all SportEntity records in ordered manner"
+                "Error retrieving all SportEntity records in ordered manner by Id"
         );
     }
 
@@ -35,7 +35,7 @@ public class SportService extends BaseService<SportEntity, String, SportReposito
         );
     }
 
-    public List<SportEntity> findByParentWithLimit(String parentId, String jazyk, int offset, int count) throws FinderException {
+    public List<SportEntity> findByParent(String parentId, String jazyk, int offset, int count) throws FinderException {
         return wrapDBException(
                 () -> repository.findByParentWithLimit(parentId, jazyk, Limit.range(offset + 1, count)),
                 "Error retrieving SportEntity records for parentId=" + parentId + ", jazyk=" + jazyk +
@@ -66,7 +66,7 @@ public class SportService extends BaseService<SportEntity, String, SportReposito
         );
     }
 
-    public List<SportEntity> findRootWithLimit(String jazyk, int offset, int count) throws FinderException {
+    public List<SportEntity> findRoot(String jazyk, int offset, int count) throws FinderException {
         return wrapDBException(
                 () -> repository.findRootWithLimit(jazyk, Limit.range(offset + 1, count)),
                 "Error retrieving root SportEntity records for jazyk=" + jazyk +

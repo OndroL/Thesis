@@ -82,7 +82,7 @@ public class OtviraciDobaObjektuRepositoryIT {
         em.persist(entity);
         em.flush();
 
-        Optional<OtviraciDobaObjektuEntity> result = otviraciDobaObjektuRepository.findCurrent("OBJ-003", now);
+        Optional<OtviraciDobaObjektuEntity> result = otviraciDobaObjektuRepository.findCurrent("OBJ-003", now, Limit.range(1,1));
 
         assertTrue(result.isPresent());
         assertEquals("OBJ-003", result.get().getId().getObjektId());

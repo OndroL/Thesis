@@ -15,6 +15,10 @@ import java.util.Optional;
 
 @Repository
 public interface OtviraciDobaObjektuRepository extends CrudRepository<OtviraciDobaObjektuEntity, OtviraciDobaObjektuPK> {
+
+    @Query("SELECT o FROM OtviraciDobaObjektuEntity o ORDER BY o.id.objektId")
+    List<OtviraciDobaObjektuEntity> findAllOrdered();
+
     @Query("""
         SELECT o FROM OtviraciDobaObjektuEntity o
         WHERE o.id.objektId = :objektId
@@ -34,7 +38,7 @@ public interface OtviraciDobaObjektuRepository extends CrudRepository<OtviraciDo
         WHERE o.id.objektId = :objektId AND o.id.platnostOd <= :day
         ORDER BY o.id.platnostOd DESC
     """)
-    Optional<OtviraciDobaObjektuEntity> findCurrent(String objektId, LocalDateTime day);
+    Optional<OtviraciDobaObjektuEntity> findCurrent(String objektId, LocalDateTime day, Limit limit);
 
     @Query("""
         SELECT o FROM OtviraciDobaObjektuEntity o

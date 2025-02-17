@@ -21,10 +21,10 @@ public class SportKategorieService extends BaseService<SportKategorieEntity, Str
         super(repository);
     }
 
-    public List<SportKategorieEntity> findAllOrdered() throws FinderException {
+    public List<SportKategorieEntity> findAll() throws FinderException {
         return wrapDBException(
                 () -> repository.findAllOrdered(),
-                "Error retrieving all SportKategorieEntity records in ordered manner"
+                "Error retrieving all SportKategorieEntity records in ordered manner by SportKategorieLocNazev"
         );
     }
 

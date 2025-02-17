@@ -20,10 +20,10 @@ public class ArealService extends BaseService<ArealEntity, String, ArealReposito
     @Inject
     public ArealService(ArealRepository repository) {super(repository);}
 
-    public List<ArealEntity> findAllOrdered() throws FinderException {
+    public List<ArealEntity> findAll() throws FinderException {
         return wrapDBException(
                 () -> repository.findAllOrdered(),
-                "Error retrieving all ArealEntity records in ordered manner"
+                "Error retrieving all ArealEntity records in ordered manner by ArealEntity Id"
         );
     }
 
@@ -41,7 +41,7 @@ public class ArealService extends BaseService<ArealEntity, String, ArealReposito
         );
     }
 
-    public List<ArealEntity> findByParentWithLimit(String parentId, String jazyk, int offset, int count) throws FinderException {
+    public List<ArealEntity> findByParent(String parentId, String jazyk, int offset, int count) throws FinderException {
         return wrapDBException(
                 () -> repository.findByParentWithLimit(parentId, jazyk, Limit.range(offset + 1, count)),
                 "Error retrieving ArealEntity records by parentId=" + parentId + ", jazyk=" + jazyk +
@@ -49,7 +49,7 @@ public class ArealService extends BaseService<ArealEntity, String, ArealReposito
         );
     }
 
-    public List<ArealEntity> findRootWithLimit(String jazyk, int offset, int count) throws FinderException {
+    public List<ArealEntity> findRoot(String jazyk, int offset, int count) throws FinderException {
         return wrapDBException(
                 () -> repository.findRootWithLimit(jazyk, Limit.range(offset + 1, count)),
                 "Error retrieving root ArealEntity records for jazyk=" + jazyk +
@@ -64,9 +64,9 @@ public class ArealService extends BaseService<ArealEntity, String, ArealReposito
         );
     }
 
-    public List<String> findArealIdsByParent(String arealId) throws FinderException {
+    public List<String> getArealIdsByParent(String arealId) throws FinderException {
         return wrapDBException(
-                () -> repository.findArealIdsByParent(arealId),
+                () -> repository.getArealIdsByParent(arealId),
                 "Error retrieving ArealEntity IDs by parentId=" + arealId
         );
     }

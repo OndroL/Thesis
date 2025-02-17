@@ -21,10 +21,10 @@ public class PodminkaRezervaceService extends BaseService<PodminkaRezervaceEntit
         super(repository);
     }
 
-    public List<PodminkaRezervaceEntity> findAllOrdered() throws FinderException {
+    public List<PodminkaRezervaceEntity> findAll() throws FinderException {
         return wrapDBException(
                 () -> repository.findAllOrdered(),
-                "Error retrieving all PodminkaRezervaceEntity records in ordered manner"
+                "Error retrieving all PodminkaRezervaceEntity records in ordered manner by priorita"
         );
     }
 

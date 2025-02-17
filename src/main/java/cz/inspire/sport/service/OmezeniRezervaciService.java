@@ -3,7 +3,12 @@ package cz.inspire.sport.service;
 import cz.inspire.common.service.BaseService;
 import cz.inspire.sport.entity.OmezeniRezervaciEntity;
 import cz.inspire.sport.repository.OmezeniRezervaciRepository;
+import jakarta.ejb.FinderException;
 import jakarta.inject.Inject;
+
+import java.util.List;
+
+import static cz.inspire.common.utils.ExceptionHandler.wrapDBException;
 
 public class OmezeniRezervaciService extends BaseService<OmezeniRezervaciEntity, String, OmezeniRezervaciRepository> {
     public OmezeniRezervaciService() {
@@ -14,4 +19,10 @@ public class OmezeniRezervaciService extends BaseService<OmezeniRezervaciEntity,
         super(repository);
     }
 
+    public List<OmezeniRezervaciEntity> findAll() throws FinderException {
+        return wrapDBException(
+                () -> repository.findAllOrdered(),
+                "Error retrieving all OmezeniRezervaciEntity records in ordered manner by objektId"
+        );
+    }
 }

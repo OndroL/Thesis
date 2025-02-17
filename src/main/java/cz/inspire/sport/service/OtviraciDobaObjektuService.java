@@ -26,6 +26,13 @@ public class OtviraciDobaObjektuService extends BaseService<OtviraciDobaObjektuE
         super(repository);
     }
 
+    public List<OtviraciDobaObjektuEntity> findAll() throws FinderException {
+        return wrapDBException(
+                () -> repository.findAllOrdered(),
+                "Error retrieving all OtviraciDobaObjektuEntity records in ordered manner by objektId in embeddedId"
+        );
+    }
+
     public List<OtviraciDobaObjektuEntity> findByObjekt(String objektId) throws FinderException {
         return wrapDBException(
                 () -> repository.findByObjekt(objektId),
@@ -33,7 +40,7 @@ public class OtviraciDobaObjektuService extends BaseService<OtviraciDobaObjektuE
         );
     }
 
-    public List<OtviraciDobaObjektuEntity> findByObjektWithLimit(String objektId, int offset, int count) throws FinderException {
+    public List<OtviraciDobaObjektuEntity> findByObjekt(String objektId, int offset, int count) throws FinderException {
         return wrapDBException(
                 () -> repository.findByObjektWithLimit(objektId, Limit.range(offset + 1, count)),
                 "Error retrieving OtviraciDobaObjektuEntity records for objektId=" + objektId +
@@ -44,7 +51,7 @@ public class OtviraciDobaObjektuService extends BaseService<OtviraciDobaObjektuE
     public Optional<OtviraciDobaObjektuEntity> findCurrent(String objektId, Date day) throws FinderException {
         LocalDateTime localDateTime = LocalDateTime.ofInstant(day.toInstant(), ZoneOffset.UTC);
         return wrapDBException(
-                () -> repository.findCurrent(objektId, localDateTime),
+                () -> repository.findCurrent(objektId, localDateTime, Limit.range(1,1)),
                 "Error retrieving current OtviraciDobaObjektuEntity record for objektId=" + objektId + ", date=" + localDateTime
         );
     }

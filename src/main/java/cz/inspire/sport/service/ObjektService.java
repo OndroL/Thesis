@@ -20,10 +20,10 @@ public class ObjektService extends BaseService<ObjektEntity, String, ObjektRepos
     public ObjektService(ObjektRepository repository) { super(repository); }
 
 
-    public List<ObjektEntity> findAllOrdered() throws FinderException {
+    public List<ObjektEntity> findAll() throws FinderException {
         return wrapDBException(
                 () -> repository.findAllOrdered(),
-                "Error retrieving all ObjektEntity records in ordered manner"
+                "Error retrieving all ObjektEntity records in ordered manner by Id"
         );
     }
 
@@ -41,7 +41,7 @@ public class ObjektService extends BaseService<ObjektEntity, String, ObjektRepos
         );
     }
 
-    public List<ObjektEntity> findByArealWithLimit(String arealId, String jazyk, int offset, int count) throws FinderException {
+    public List<ObjektEntity> findByAreal(String arealId, String jazyk, int offset, int count) throws FinderException {
         return wrapDBException(
                 () -> repository.findByArealWithLimit(arealId, jazyk, Limit.range(offset + 1, count)),
                 "Error retrieving ObjektEntity records for arealId=" + arealId + ", jazyk=" + jazyk +
@@ -56,7 +56,7 @@ public class ObjektService extends BaseService<ObjektEntity, String, ObjektRepos
         );
     }
 
-    public List<ObjektEntity> findBaseByArealWithLimit(String arealId, String jazyk, int offset, int count) throws FinderException {
+    public List<ObjektEntity> findBaseByAreal(String arealId, String jazyk, int offset, int count) throws FinderException {
         return wrapDBException(
                 () -> repository.findBaseByArealWithLimit(arealId, jazyk, Limit.range(offset + 1, count)),
                 "Error retrieving base ObjektEntity records for arealId=" + arealId + ", jazyk=" + jazyk +
@@ -78,7 +78,7 @@ public class ObjektService extends BaseService<ObjektEntity, String, ObjektRepos
         );
     }
 
-    public List<ObjektEntity> findByPrimyVstupWithLimit(String jazyk, int offset, int count, boolean primyVstup) throws FinderException {
+    public List<ObjektEntity> findByPrimyVstup(String jazyk, int offset, int count, boolean primyVstup) throws FinderException {
         return wrapDBException(
                 () -> repository.findByPrimyVstupWithLimit(jazyk, Limit.range(offset + 1, count), primyVstup),
                 "Error retrieving ObjektEntity records for jazyk=" + jazyk + ", primyVstup=" + primyVstup +

@@ -21,10 +21,10 @@ public class InstructorService extends BaseService<InstructorEntity, String, Ins
         super(repository);
     }
 
-    public List<InstructorEntity> findAllOrdered() throws FinderException {
+    public List<InstructorEntity> findAll() throws FinderException {
         return wrapDBException(
                 () -> repository.findAllOrdered(),
-                "Error retrieving all InstructorEntity records in ordered manner"
+                "Error retrieving all InstructorEntity records in ordered manner by index"
         );
     }
 

@@ -21,7 +21,7 @@ public class ActivityService extends BaseService<ActivityEntity, String, Activit
         super(repository);
     }
 
-    public List<ActivityEntity> findAllOrdered() throws FinderException {
+    public List<ActivityEntity> findAll() throws FinderException {
         return wrapDBException(
                 () -> repository.findAllOrdered(),
                 "Error retrieving all ActivityEntity records in ordered manner"
@@ -32,6 +32,14 @@ public class ActivityService extends BaseService<ActivityEntity, String, Activit
         return wrapDBException(
                 () -> repository.findAll(Limit.range(offset + 1, count)),
                 "Error retrieving paginated ActivityEntity records (offset + 1 = " + offset + ", count = " + count + ")"
+        );
+    }
+
+    public List<ActivityEntity> findAllByInstructor(String instructorId, int offset, int count) throws FinderException {
+        return wrapDBException(
+                () -> repository.findAllByInstructor(instructorId, Limit.range(offset + 1, count)),
+                "Error retrieving all paginated ActivityEntity records by instructorId = " + instructorId +
+                        " (offset + 1 = " + offset + ", count = " + count + ")"
         );
     }
 

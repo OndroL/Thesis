@@ -54,7 +54,7 @@ public interface ArealRepository extends CrudRepository<ArealEntity, String> {
     Optional<ArealEntity> findIfChild(String childId, String parentId);
 
     @Query("SELECT a.id FROM ArealEntity a WHERE a.nadrazenyAreal.id = ?1")
-    List<String> findArealIdsByParent(String arealId);
+    List<String> getArealIdsByParent(String arealId);
 
 }
 
