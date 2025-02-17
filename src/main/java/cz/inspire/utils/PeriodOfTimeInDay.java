@@ -9,6 +9,7 @@
 package cz.inspire.utils;
 
 import java.util.Date;
+import java.util.Objects;
 
 /**
 * PeriodOfTimeInDay
@@ -45,5 +46,19 @@ public class PeriodOfTimeInDay implements Comparable, java.io.Serializable {
 
     public void setDate(Date date) {
         this.date = date;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        PeriodOfTimeInDay that = (PeriodOfTimeInDay) o;
+        return Objects.equals(date, that.date) &&
+                Objects.equals(periodOfTime, that.periodOfTime);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(date, periodOfTime);
     }
 }

@@ -10,6 +10,8 @@
 
 package cz.inspire.utils;
 
+import java.util.Objects;
+
 /**
  * Objekt reprezentuje casovy interval.
  *
@@ -47,10 +49,11 @@ public class PeriodOfTime implements Comparable, java.io.Serializable {
 
     @Override
     public boolean equals(Object o) {
-        if ( !(o instanceof PeriodOfTime)) return false;
-        PeriodOfTime cInt = (PeriodOfTime) o;
-        if (o == null) return false;
-        return (begin.equals(cInt.begin)) && (end.equals(cInt.end));
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        PeriodOfTime that = (PeriodOfTime) o;
+        return Objects.equals(begin, that.begin) &&
+                Objects.equals(end, that.end);
     }
     
     /** Getter for property begin.
@@ -115,7 +118,6 @@ public class PeriodOfTime implements Comparable, java.io.Serializable {
 
     @Override
     public int hashCode() {
-        int retValue = begin.hashCode() + end.hashCode();
-        return retValue;
+        return Objects.hash(begin, end);
     }
 }
