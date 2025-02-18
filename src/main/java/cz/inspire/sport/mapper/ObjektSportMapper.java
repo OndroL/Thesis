@@ -12,14 +12,14 @@ import org.mapstruct.Named;
 public interface ObjektSportMapper {
 
     // Map DTO to Entity
-    @Mapping(target = "embeddedPK", source = ".", qualifiedByName = "mapDtoToPK")
+    @Mapping(target = "embeddedId", source = ".", qualifiedByName = "mapDtoToPK")
     @Mapping(target = "sport", ignore = true)
     @Mapping(target = "objekt", ignore = true)
     ObjektSportEntity toEntity(ObjektSportDto dto);
 
     // Map Entity to DTO
-    @Mapping(target = "id", source = "embeddedPK.id")
-    @Mapping(target = "index", source = "embeddedPK.index")
+    @Mapping(target = "id", source = "embeddedId.id")
+    @Mapping(target = "index", source = "embeddedId.index")
     @Mapping(target = "sportId", source = "sport.id")
     @Mapping(target = "objektId", source = "objekt.id")
     ObjektSportDto toDto(ObjektSportEntity entity);

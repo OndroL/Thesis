@@ -15,14 +15,14 @@ import java.util.Date;
 public interface OtviraciDobaObjektuMapper {
 
     // Map DTO to Entity
-    @Mapping(target = "id.objektId",   source = "objektId")
-    @Mapping(target = "id.platnostOd", source = "platnostOd", qualifiedByName = "dateToLocalDateTime")
+    @Mapping(target = "embeddedId.objektId",   source = "objektId")
+    @Mapping(target = "embeddedId.platnostOd", source = "platnostOd", qualifiedByName = "dateToLocalDateTime")
     @Mapping(target = "otviraciDoba",  source = "otviraciDoba")
     OtviraciDobaObjektuEntity toEntity(OtviraciDobaObjektuDto dto);
 
     // Map Entity to DTO
-    @Mapping(target = "objektId",   source = "id.objektId")
-    @Mapping(target = "platnostOd", source = "id.platnostOd", qualifiedByName = "localDateTimeToDate")
+    @Mapping(target = "objektId",   source = "embeddedId.objektId")
+    @Mapping(target = "platnostOd", source = "embeddedId.platnostOd", qualifiedByName = "localDateTimeToDate")
     @Mapping(target = "otviraciDoba", source = "otviraciDoba")
     OtviraciDobaObjektuDto toDto(OtviraciDobaObjektuEntity entity);
 

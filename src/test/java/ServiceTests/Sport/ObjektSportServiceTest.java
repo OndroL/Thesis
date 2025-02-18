@@ -79,7 +79,7 @@ public class ObjektSportServiceTest {
         Optional<ObjektSportEntity> result = objektSportService.findById(pk);
 
         assertTrue(result.isPresent());
-        assertEquals(pk, result.get().getEmbeddedPK());
+        assertEquals(pk, result.get().getEmbeddedId());
         verify(objektSportRepository, times(1)).findById(eq(pk));
     }
 
@@ -93,40 +93,5 @@ public class ObjektSportServiceTest {
 
         assertFalse(result.isPresent());
         verify(objektSportRepository, times(1)).findById(eq(pk));
-    }
-
-    @Test
-    void testFindById_Failure() {
-        ObjektSportPK pk = new ObjektSportPK("sport1", 1);
-
-        when(objektSportRepository.findById(eq(pk))).thenThrow(new RuntimeException("Database error"));
-
-        FinderException exception = assertThrows(FinderException.class, () -> objektSportService.findById(pk));
-        assertTrue(exception.getMessage().contains("Error retrieving valid attributes from ObjektSportEntity"));
-
-        verify(objektSportRepository, times(1)).findById(eq(pk));
-    }
-
-    @Test
-    void testDeleteById_Success() {
-        ObjektSportPK pk = new ObjektSportPK("sport1", 1);
-
-        doNothing().when(objektSportRepository).deleteById(pk);
-
-        assertDoesNotThrow(() -> objektSportService.deleteById(pk));
-
-        verify(objektSportRepository, times(1)).deleteById(eq(pk));
-    }
-
-    @Test
-    void testDeleteById_Failure() {
-        ObjektSportPK pk = new ObjektSportPK("sport1", 1);
-
-        doThrow(new RuntimeException("Database error")).when(objektSportRepository).deleteById(eq(pk));
-
-        FinderException exception = assertThrows(FinderException.class, () -> objektSportService.deleteById(pk));
-        assertTrue(exception.getMessage().contains("Error deleting ObjektSportEntity record"));
-
-        verify(objektSportRepository, times(1)).deleteById(eq(pk));
     }
 }

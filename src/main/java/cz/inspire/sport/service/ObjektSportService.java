@@ -9,7 +9,6 @@ import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 
 import java.util.List;
-import java.util.Optional;
 
 import static cz.inspire.common.utils.ExceptionHandler.wrapDBException;
 
@@ -28,23 +27,6 @@ public class ObjektSportService extends BaseService<ObjektSportEntity, ObjektSpo
         return wrapDBException(
                 () -> repository.findByObjekt(objektId),
                 "Error retrieving valid attributes from ObjektSportEntity"
-        );
-    }
-
-    public Optional<ObjektSportEntity> findById(ObjektSportPK pk) throws FinderException {
-        return wrapDBException(
-                () -> repository.findById(pk),
-                "Error retrieving valid attributes from ObjektSportEntity"
-        );
-    }
-
-    public void deleteById(ObjektSportPK pk) throws FinderException {
-        wrapDBException(
-                () -> {
-                    repository.deleteById(pk);
-                    return null;
-                },
-                "Error deleting ObjektSportEntity record for primary key=" + pk
         );
     }
 }

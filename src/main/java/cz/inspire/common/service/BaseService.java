@@ -44,7 +44,7 @@ public abstract class BaseService<E, PK extends Serializable, R extends CrudRepo
         if (pk == null) {
             throw new FinderException("Primary key cannot be null for " + getEntityType());
         }
-        return repository.findById(pk)
+        return findById(pk)
                 .orElseThrow(() -> new FinderException(
                         "Failed to find " + getEntityType() + " with primary key: " + pk
                 ));
@@ -54,7 +54,10 @@ public abstract class BaseService<E, PK extends Serializable, R extends CrudRepo
         if (pk == null) {
             return Optional.empty();
         }
-        return repository.findById(pk);
+        return wrapDBException(
+                () -> repository.findById(pk),
+                "Failed to find " + getEntityType() + " with primary key: " + pk
+        );
     }
 
     public void create(E entity) throws CreateException {

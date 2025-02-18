@@ -166,29 +166,6 @@ public class OtviraciDobaObjektuServiceTest {
     }
 
     @Test
-    void testDeleteById_Success() {
-        OtviraciDobaObjektuPK pk = new OtviraciDobaObjektuPK("objekt123", LocalDateTime.now());
-
-        doNothing().when(repository).deleteById(pk);
-
-        assertDoesNotThrow(() -> service.deleteById(pk));
-
-        verify(repository, times(1)).deleteById(eq(pk));
-    }
-
-    @Test
-    void testDeleteById_Failure() {
-        OtviraciDobaObjektuPK pk = new OtviraciDobaObjektuPK("objekt123", LocalDateTime.now());
-
-        doThrow(new RuntimeException("Database error")).when(repository).deleteById(eq(pk));
-
-        FinderException exception = assertThrows(FinderException.class, () -> service.deleteById(pk));
-        assertTrue(exception.getMessage().contains("Error deleting OtviraciDobaObjektuEntity record"));
-
-        verify(repository, times(1)).deleteById(eq(pk));
-    }
-
-    @Test
     void testGetCurrentIdsByObjectAndDay_Success() throws FinderException {
         String objektId = "objekt123";
         Date day = new Date();

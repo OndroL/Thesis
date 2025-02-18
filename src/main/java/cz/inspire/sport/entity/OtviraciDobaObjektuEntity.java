@@ -23,7 +23,7 @@ import org.hibernate.type.SqlTypes;
 @Table(name = "otviraci_doba")
 public class OtviraciDobaObjektuEntity {
     @EmbeddedId
-    private OtviraciDobaObjektuPK id;
+    private OtviraciDobaObjektuPK embeddedId;
 
     @JdbcTypeCode(SqlTypes.JSON)
     @Column(columnDefinition = "jsonb")

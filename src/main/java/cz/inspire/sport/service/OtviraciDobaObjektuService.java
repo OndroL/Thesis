@@ -73,21 +73,4 @@ public class OtviraciDobaObjektuService extends BaseService<OtviraciDobaObjektuE
                 "Error retrieving current OtviraciDobaObjektuEntity IDs for objektId=" + objektId + ", date=" + localDateTime
         );
     }
-
-    public Optional<OtviraciDobaObjektuEntity> findById(OtviraciDobaObjektuPK pk) throws FinderException {
-        return wrapDBException(
-                () -> repository.findById(pk),
-                "Error retrieving OtviraciDobaObjektuEntity record for primary key=" + pk
-        );
-    }
-
-    public void deleteById(OtviraciDobaObjektuPK pk) throws FinderException {
-        wrapDBException(
-                () -> {
-                    repository.deleteById(pk);
-                    return null;
-                },
-                "Error deleting OtviraciDobaObjektuEntity record for primary key=" + pk
-        );
-    }
 }

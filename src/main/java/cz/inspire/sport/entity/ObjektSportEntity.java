@@ -20,7 +20,7 @@ import lombok.Setter;
 @Table(name = "objekt_sport")
 public class ObjektSportEntity {
     @EmbeddedId
-    protected ObjektSportPK embeddedPK;
+    private ObjektSportPK embeddedId;
 
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "sport", referencedColumnName = "id", nullable = false)

@@ -16,52 +16,59 @@ import java.util.Optional;
 @Repository
 public interface OtviraciDobaObjektuRepository extends CrudRepository<OtviraciDobaObjektuEntity, OtviraciDobaObjektuPK> {
 
-    @Query("SELECT o FROM OtviraciDobaObjektuEntity o ORDER BY o.id.objektId")
+    @Query("SELECT o FROM OtviraciDobaObjektuEntity o ORDER BY o.embeddedId.objektId")
     List<OtviraciDobaObjektuEntity> findAllOrdered();
 
     @Query("""
         SELECT o FROM OtviraciDobaObjektuEntity o
-        WHERE o.id.objektId = :objektId
-        ORDER BY o.id.platnostOd DESC
+        WHERE o.embeddedId.objektId = :objektId
+        ORDER BY o.embeddedId.platnostOd DESC
     """)
     List<OtviraciDobaObjektuEntity> findByObjekt(String objektId);
 
     @Query("""
         SELECT o FROM OtviraciDobaObjektuEntity o
-        WHERE o.id.objektId = :objektId
-        ORDER BY o.id.platnostOd DESC
+        WHERE o.embeddedId.objektId = :objektId
+        ORDER BY o.embeddedId.platnostOd DESC
     """)
     List<OtviraciDobaObjektuEntity> findByObjektWithLimit(String objektId, Limit limit);
 
     @Query("""
         SELECT o FROM OtviraciDobaObjektuEntity o
-        WHERE o.id.objektId = :objektId AND o.id.platnostOd <= :day
-        ORDER BY o.id.platnostOd DESC
+        WHERE o.embeddedId.objektId = :objektId AND o.embeddedId.platnostOd <= :day
+        ORDER BY o.embeddedId.platnostOd DESC
     """)
     Optional<OtviraciDobaObjektuEntity> findCurrent(String objektId, LocalDateTime day, Limit limit);
 
     @Query("""
         SELECT o FROM OtviraciDobaObjektuEntity o
-        WHERE o.id.objektId = :objektId AND o.id.platnostOd >= :day
-        ORDER BY o.id.platnostOd DESC
+        WHERE o.embeddedId.objektId = :objektId AND o.embeddedId.platnostOd >= :day
+        ORDER BY o.embeddedId.platnostOd DESC
     """)
     List<OtviraciDobaObjektuEntity> findAfter(String objektId, LocalDateTime day);
 
     @Query("""
-        SELECT o.id.platnostOd FROM OtviraciDobaObjektuEntity o
-        WHERE o.id.objektId = :objektId AND o.id.platnostOd <= :day
-        ORDER BY o.id.platnostOd DESC
+        SELECT o.embeddedId.platnostOd FROM OtviraciDobaObjektuEntity o
+        WHERE o.embeddedId.objektId = :objektId AND o.embeddedId.platnostOd <= :day
+        ORDER BY o.embeddedId.platnostOd DESC
     """)
     List<LocalDateTime> getCurrentIdsByObjectAndDay(String objektId, LocalDateTime day);
 
     /**
-     * This to methods below are necessary because of Embedded pk
+     * These method overrides are necessary because the entity uses an embedded primary key (`@EmbeddedId`).
+     * <p>
+     * The default `findById` and `deleteById` methods inherited from `CrudRepository` expect a simple
+     * primary key field named `id`. However, in `ObjektSportEntity`, the primary key is an **embedded key**
+     * (`@EmbeddedId OtviraciDobaObjektuEntity embeddedId`), which Spring Data/Jakarta Data does not automatically recognize.
+     * <p>
+     * Without explicitly defining these methods, Spring Data will throw an error stating that it cannot find
+     * a matching field named `id(this)` for the inherited methods.
      */
     @Override
     @Query("""
         SELECT o
         FROM OtviraciDobaObjektuEntity o
-        WHERE o.id = :pk
+        WHERE o.embeddedId = :pk
     """)
     Optional<OtviraciDobaObjektuEntity> findById(@Param("pk") OtviraciDobaObjektuPK pk);
 
@@ -69,7 +76,7 @@ public interface OtviraciDobaObjektuRepository extends CrudRepository<OtviraciDo
     @Query("""
         DELETE
         FROM OtviraciDobaObjektuEntity o
-        WHERE o.id = :pk
+        WHERE o.embeddedId = :pk
     """)
     void deleteById(@Param("pk") OtviraciDobaObjektuPK pk);
 }
