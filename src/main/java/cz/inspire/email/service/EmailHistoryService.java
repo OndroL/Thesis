@@ -78,7 +78,7 @@ public class EmailHistoryService extends BaseService<EmailHistoryEntity, String,
     public List<EmailHistoryEntity> findAll() throws FinderException {
         return wrapDBException(
                 () -> repository.findAllOrdered(),
-                "Error retrieving all EmailHistoryEntity records (Ordered)"
+                "Error retrieving all EmailHistoryEntity records, Ordered by date"
         );
     }
 

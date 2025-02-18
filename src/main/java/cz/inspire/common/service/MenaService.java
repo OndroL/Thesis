@@ -22,11 +22,11 @@ public class MenaService extends BaseService<MenaEntity, String, MenaRepository>
     }
 
     public List<MenaEntity> findByCode(String code) throws FinderException {
-        return wrapDBException(() -> repository.findByCode(code), "Failed to find MenaEntity by Code");
+        return wrapDBException(() -> repository.findByCode(code), "Failed to find MenaEntity by Code = " + code );
     }
 
     public List<MenaEntity> findByCodeNum(int codeNum) throws FinderException {
-        return wrapDBException(() ->repository.findByCodeNum(codeNum), "Failed to find MenaEntity by CodeNum");
+        return wrapDBException(() ->repository.findByCodeNum(codeNum), "Failed to find MenaEntity by KodNum = " + codeNum);
     }
 
 }

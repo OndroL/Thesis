@@ -103,9 +103,9 @@ public class OtviraciDobaObjektuServiceTest {
 
         when(repository.findCurrent(eq(objektId), any(), any())).thenReturn(Optional.of(expectedEntity));
 
-        Optional<OtviraciDobaObjektuEntity> result = service.findCurrent(objektId, day);
+        OtviraciDobaObjektuEntity result = service.findCurrent(objektId, day);
 
-        assertTrue(result.isPresent());
+        assertNotNull(result);
         verify(repository, times(1)).findCurrent(eq(objektId), any(), any());
     }
 

@@ -7,7 +7,6 @@ import jakarta.data.repository.Query;
 import jakarta.data.repository.Repository;
 
 import java.util.List;
-import java.util.Optional;
 
 /**
  * TODO : Test all Queries from SequenceBean
@@ -44,14 +43,5 @@ public interface SequenceRepository extends CrudRepository<SequenceEntity,String
         ORDER BY s.name
         """)
     List<SequenceEntity> findByType(int type, Limit limit);
-
-    /**
-     * This query is here only for test purposes of stornoSeq relationship
-     */
-    @Query("""
-        SELECT s FROM SequenceEntity s
-        WHERE s.name = ?1
-        """)
-    Optional<SequenceEntity> findById(String id);
 }
 

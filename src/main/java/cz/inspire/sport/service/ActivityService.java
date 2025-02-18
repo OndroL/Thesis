@@ -26,7 +26,7 @@ public class ActivityService extends BaseService<ActivityEntity, String, Activit
     public List<ActivityEntity> findAll() throws FinderException {
         return wrapDBException(
                 () -> repository.findAllOrdered(),
-                "Error retrieving all ActivityEntity records in ordered manner"
+                "Error retrieving all ActivityEntity, Ordered by index"
         );
     }
 

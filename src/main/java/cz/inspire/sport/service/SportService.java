@@ -26,21 +26,21 @@ public class SportService extends BaseService<SportEntity, String, SportReposito
     public List<SportEntity> findAll() throws FinderException {
         return wrapDBException(
                 () -> repository.findAllOrdered(),
-                "Error retrieving all SportEntity records in ordered manner by Id"
+                "Error retrieving all SportEntity records, Ordered by Id"
         );
     }
 
     public List<SportEntity> findByParent(String parentId, String jazyk) throws FinderException {
         return wrapDBException(
                 () -> repository.findByParent(parentId, jazyk),
-                "Error retrieving SportEntity records for parentId=" + parentId + ", jazyk=" + jazyk
+                "Error retrieving SportEntity records for parentId = " + parentId + ", jazyk = " + jazyk
         );
     }
 
     public List<SportEntity> findByParent(String parentId, String jazyk, int offset, int count) throws FinderException {
         return wrapDBException(
                 () -> repository.findByParentWithLimit(parentId, jazyk, Limit.range(offset + 1, count)),
-                "Error retrieving SportEntity records for parentId=" + parentId + ", jazyk=" + jazyk +
+                "Error retrieving SportEntity records for parentId = " + parentId + ", jazyk = " + jazyk +
                 " with pagination (offset + 1 = " + offset + ", count = " + count + ")"
         );
     }
@@ -48,7 +48,7 @@ public class SportService extends BaseService<SportEntity, String, SportReposito
     public List<SportEntity> findByCategory(String kategorieId, int offset, int count) throws FinderException {
         return wrapDBException(
                 () -> repository.findByCategory(kategorieId, Limit.range(offset + 1, count)),
-                "Error retrieving SportEntity records for kategorieId=" + kategorieId +
+                "Error retrieving SportEntity records for kategorieId = " + kategorieId +
                 " with pagination (offset + 1 = " + offset + ", count = " + count + ")"
         );
     }
@@ -56,7 +56,7 @@ public class SportService extends BaseService<SportEntity, String, SportReposito
     public List<SportEntity> findByZbozi(String zboziId, int offset, int count) throws FinderException {
         return wrapDBException(
                 () -> repository.findByZbozi(zboziId, Limit.range(offset + 1, count)),
-                "Error retrieving SportEntity records for zboziId=" + zboziId +
+                "Error retrieving SportEntity records for zboziId = " + zboziId +
                 " with pagination (offset + 1 = " + offset + ", count = " + count + ")"
         );
     }
@@ -64,14 +64,14 @@ public class SportService extends BaseService<SportEntity, String, SportReposito
     public List<SportEntity> findRoot(String jazyk) throws FinderException {
         return wrapDBException(
                 () -> repository.findRoot(jazyk),
-                "Error retrieving root SportEntity records for jazyk=" + jazyk
+                "Error retrieving root SportEntity records for jazyk = " + jazyk
         );
     }
 
     public List<SportEntity> findRoot(String jazyk, int offset, int count) throws FinderException {
         return wrapDBException(
                 () -> repository.findRootWithLimit(jazyk, Limit.range(offset + 1, count)),
-                "Error retrieving root SportEntity records for jazyk=" + jazyk +
+                "Error retrieving root SportEntity records for jazyk = " + jazyk +
                 " with pagination (offset + 1 = " + offset + ", count = " + count + ")"
         );
     }
@@ -94,35 +94,35 @@ public class SportService extends BaseService<SportEntity, String, SportReposito
     public Long countAllByCategory(String categoryId) throws FinderException {
         return wrapDBException(
                 () -> repository.countAllByCategory(categoryId),
-                "Error retrieving count of SportEntity records for categoryId=" + categoryId
+                "Error retrieving count of SportEntity records for categoryId = " + categoryId
         );
     }
 
     public Long countAllByParentAndLanguage(String parentId, String language) throws FinderException {
         return wrapDBException(
                 () -> repository.countAllByParentAndLanguage(parentId, language),
-                "Error retrieving count of SportEntity records for parentId=" + parentId + ", language=" + language
+                "Error retrieving count of SportEntity records for parentId = " + parentId + ", language = " + language
         );
     }
 
     public List<String> getAllIdsByParentAndLanguage(String parentId, String language) throws FinderException {
         return wrapDBException(
                 () -> repository.getAllIdsByParentAndLanguage(parentId, language),
-                "Error retrieving SportEntity IDs for parentId=" + parentId + ", language=" + language
+                "Error retrieving SportEntity IDs for parentId = " + parentId + ", language = " + language
         );
     }
 
     public Long countRootByLanguage(String language) throws FinderException {
         return wrapDBException(
                 () -> repository.countRootByLanguage(language),
-                "Error retrieving count of root SportEntity records for language=" + language
+                "Error retrieving count of root SportEntity records for language = " + language
         );
     }
 
     public List<String> getRootIdsByLanguage(String language) throws FinderException {
         return wrapDBException(
                 () -> repository.getRootIdsByLanguage(language),
-                "Error retrieving root SportEntity IDs for language=" + language
+                "Error retrieving root SportEntity IDs for language = " + language
         );
     }
 }

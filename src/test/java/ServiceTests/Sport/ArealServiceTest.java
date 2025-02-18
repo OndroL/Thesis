@@ -128,9 +128,9 @@ public class ArealServiceTest {
 
         when(arealRepository.findIfChild(eq(childId), eq(parentId))).thenReturn(expectedEntity);
 
-        Optional<ArealEntity> result = arealService.findIfChild(childId, parentId);
+        ArealEntity result = arealService.findIfChild(childId, parentId);
 
-        assertTrue(result.isPresent());
+        assertNotNull(result);
         verify(arealRepository, times(1)).findIfChild(eq(childId), eq(parentId));
     }
 
@@ -141,9 +141,9 @@ public class ArealServiceTest {
 
         when(arealRepository.findIfChild(eq(childId), eq(parentId))).thenReturn(Optional.empty());
 
-        Optional<ArealEntity> result = arealService.findIfChild(childId, parentId);
+        ArealEntity result = arealService.findIfChild(childId, parentId);
 
-        assertFalse(result.isPresent());
+        assertNotNull(result);
         verify(arealRepository, times(1)).findIfChild(eq(childId), eq(parentId));
     }
 

@@ -26,7 +26,7 @@ public class SportKategorieService extends BaseService<SportKategorieEntity, Str
     public List<SportKategorieEntity> findAll() throws FinderException {
         return wrapDBException(
                 () -> repository.findAllOrdered(),
-                "Error retrieving all SportKategorieEntity records in ordered manner by SportKategorieLocNazev"
+                "Error retrieving all SportKategorieEntity records, Ordered by SportKategorieLocNazev"
         );
     }
 
@@ -40,7 +40,7 @@ public class SportKategorieService extends BaseService<SportKategorieEntity, Str
     public List<SportKategorieEntity> findAllByNadrazenaKategorie(String nadrazenaKategorieId) throws FinderException {
         return wrapDBException(
                 () -> repository.findAllByNadrazenaKategorie(nadrazenaKategorieId),
-                "Error retrieving SportKategorieEntity records for nadrazenaKategorieId=" + nadrazenaKategorieId
+                "Error retrieving SportKategorieEntity records for nadrazenaKategorieId = " + nadrazenaKategorieId
         );
     }
 
@@ -54,7 +54,7 @@ public class SportKategorieService extends BaseService<SportKategorieEntity, Str
     public List<SportKategorieEntity> findAllByMultisportFacilityId(String multisportFacilityId) throws FinderException {
         return wrapDBException(
                 () -> repository.findAllByMultisportFacilityId(multisportFacilityId),
-                "Error retrieving SportKategorieEntity records for multisportFacilityId=" + multisportFacilityId
+                "Error retrieving SportKategorieEntity records for multisportFacilityId = " + multisportFacilityId
         );
     }
 
@@ -75,7 +75,7 @@ public class SportKategorieService extends BaseService<SportKategorieEntity, Str
     public Long countByNadrazenaKategorie(String nadrazenaKategorieId) throws FinderException {
         return wrapDBException(
                 () -> repository.countByNadrazenaKategorie(nadrazenaKategorieId),
-                "Error retrieving count of SportKategorieEntity records for nadrazenaKategorieId=" + nadrazenaKategorieId
+                "Error retrieving count of SportKategorieEntity records for nadrazenaKategorieId = " + nadrazenaKategorieId
         );
     }
 }

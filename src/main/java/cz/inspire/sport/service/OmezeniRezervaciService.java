@@ -24,7 +24,7 @@ public class OmezeniRezervaciService extends BaseService<OmezeniRezervaciEntity,
     public List<OmezeniRezervaciEntity> findAll() throws FinderException {
         return wrapDBException(
                 () -> repository.findAllOrdered(),
-                "Error retrieving all OmezeniRezervaciEntity records in ordered manner by objektId"
+                "Error retrieving all OmezeniRezervaciEntity records, Ordered by objektId"
         );
     }
 }

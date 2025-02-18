@@ -27,14 +27,14 @@ public class SMSHistoryService extends BaseService<SMSHistoryEntity, String, SMS
     public List<SMSHistoryEntity> findByDate(Date from, Date to) throws FinderException {
         return wrapDBException(
                 () -> repository.findByDate(new Timestamp(from.getTime()), new Timestamp(to.getTime())),
-                "Error retrieving SMSHistoryEntity records by date range (from=" + from + ", to=" + to + ")"
+                "Error retrieving SMSHistoryEntity records by date range (from = " + from + ", to = " + to + ")"
         );
     }
 
     public List<SMSHistoryEntity> findByDateAutomatic(Date from, Date to, boolean automatic) throws FinderException {
         return wrapDBException(
                 () -> repository.findByDateAutomatic(new Timestamp(from.getTime()), new Timestamp(to.getTime()), automatic),
-                "Error retrieving SMSHistoryEntity records by date range and automatic flag (from=" + from + ", to=" + to + ", automatic=" + automatic + ")"
+                "Error retrieving SMSHistoryEntity records by date range and automatic flag (from = " + from + ", to = " + to + ", automatic = " + automatic + ")"
         );
     }
 }

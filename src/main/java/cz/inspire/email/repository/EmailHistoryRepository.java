@@ -8,7 +8,6 @@ import jakarta.data.Limit;
 
 import java.sql.Timestamp;
 import java.util.List;
-import java.util.Optional;
 
 @Repository
 public interface EmailHistoryRepository extends CrudRepository<EmailHistoryEntity,String> {
@@ -20,7 +19,4 @@ public interface EmailHistoryRepository extends CrudRepository<EmailHistoryEntit
 
     @Query("SELECT p FROM EmailHistoryEntity p WHERE (p.date >= ?1) AND (p.date <= ?2) AND (p.sent = true) ORDER BY p.date DESC")
     List<EmailHistoryEntity> findByDate(Timestamp dateFrom, Timestamp dateTo, Limit limit);
-
-    @Query("SELECT p FROM EmailHistoryEntity p WHERE p.id = ?1")
-    Optional<EmailHistoryEntity> findById(String emailHistoryId);
 }

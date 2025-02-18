@@ -25,14 +25,14 @@ public class OvladacObjektuService extends BaseService<OvladacObjektuEntity, Str
     public List<OvladacObjektuEntity> findWithOvladacObjektu(String idOvladace) throws FinderException {
         return wrapDBException(
                 () -> repository.findWithOvladacObjektu(idOvladace),
-                "Error retrieving OvladacObjektuEntity records for idOvladace=" + idOvladace
+                "Error retrieving OvladacObjektuEntity records for idOvladace = " + idOvladace
         );
     }
 
     public List<OvladacObjektuEntity> findByObjekt(String objektId) throws FinderException {
         return wrapDBException(
                 () -> repository.findByObjekt(objektId),
-                "Error retrieving OvladacObjektuEntity records for objektId=" + objektId
+                "Error retrieving OvladacObjektuEntity records for objektId = " + objektId
         );
     }
 }

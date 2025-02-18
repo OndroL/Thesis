@@ -46,7 +46,7 @@ public class InstructorService extends BaseService<InstructorEntity, String, Ins
     public List<InstructorEntity> findAll() throws FinderException {
         return wrapDBException(
                 () -> repository.findAllOrdered(),
-                "Error retrieving all InstructorEntity records in ordered manner by index"
+                "Error retrieving all InstructorEntity records, Ordered by index"
         );
     }
 
@@ -61,7 +61,7 @@ public class InstructorService extends BaseService<InstructorEntity, String, Ins
     public List<InstructorEntity> findAllByActivity(String activityId, int offset, int count, boolean deleted) throws FinderException {
         return wrapDBException(
                 () -> repository.findAllByActivity(activityId, Limit.range(offset + 1, count), deleted),
-                "Error retrieving InstructorEntity records by activityId=" + activityId +
+                "Error retrieving InstructorEntity records by activityId = " + activityId +
                         " with pagination (offset + 1 = " + offset + ", count = " + count + ", deleted = " + deleted + ")"
         );
     }
@@ -76,7 +76,7 @@ public class InstructorService extends BaseService<InstructorEntity, String, Ins
     public Long countInstructorsByActivity(String activityId, boolean deleted) throws FinderException {
         return wrapDBException(
                 () -> repository.countInstructorsByActivity(activityId, deleted),
-                "Error retrieving count of InstructorEntity records by activityId=" + activityId +
+                "Error retrieving count of InstructorEntity records by activityId = " + activityId +
                         " (deleted = " + deleted + ")"
         );
     }

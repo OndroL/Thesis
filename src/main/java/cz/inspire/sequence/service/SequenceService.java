@@ -26,28 +26,30 @@ public class SequenceService extends BaseService<SequenceEntity, String, Sequenc
     public List<SequenceEntity> findAll() throws FinderException {
         return wrapDBException(
                 () -> repository.findAllOrdered(),
-                "Error retrieving all SequenceEntity records (Ordered)"
+                "Error retrieving all SequenceEntity, Ordered by name"
         );
     }
    /*
     public Optional<SequenceEntity> findBySkladType(String skladId, int type) throws FinderException {
         return wrapDBException(
-                () -> repository.findBySkladType(skladId, type),
+                () -> repository.findBySkladType(skladId, type).orElseThrow(() -> new NoResultException("No SequenceEntity found" +
+                        " by sklad type (skladId=" + skladId + ", type=" + type + ")"),
                 "Error retrieving SequenceEntity by sklad type (skladId=" + skladId + ", type=" + type + ")"
         );
     }
 
     public Optional<SequenceEntity> findByPokladnaType(String pokladnaId, int type) throws FinderException {
         return wrapDBException(
-                () -> repository.findByPokladnaType(pokladnaId, type),
-                "Error retrieving SequenceEntity by pokladna type (pokladnaId=" + pokladnaId + ", type=" + type + ")"
+                () -> repository.findByPokladnaType(pokladnaId, type).orElseThrow(() -> new NoResultException("No SequenceEntity found" +
+                        " by pokladna type (pokladnaId = " + pokladnaId + ", type = " + type + ")"),
+                "Error retrieving SequenceEntity by pokladna type (pokladnaId = " + pokladnaId + ", type = " + type + ")"
         );
     }
 */
     public List<SequenceEntity> findByType(int type, int offset, int limit) throws FinderException {
         return wrapDBException(
                 () -> repository.findByType(type, new Limit(limit, offset + 1)),
-                "Error retrieving SequenceEntity by type (type=" + type + ", offset=" + offset + ", limit=" + limit + ")"
+                "Error retrieving SequenceEntity by type (type = " + type + ", offset = " + offset + ", limit = " + limit + ")"
         );
     }
 }

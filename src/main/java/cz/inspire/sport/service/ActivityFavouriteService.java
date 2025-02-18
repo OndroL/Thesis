@@ -24,17 +24,18 @@ public class ActivityFavouriteService extends BaseService<ActivityFavouriteEntit
     public List<ActivityFavouriteEntity> findByZakaznik(String zakaznikId, int offset, int count) throws FinderException {
         return wrapDBException(
                 () -> repository.findByZakaznik(zakaznikId, Limit.range(offset + 1, count)),
-                "Error retrieving ActivityFavouriteEntity records for zakaznikId=" + zakaznikId +
-                        " with pagination (offset + 1 =" + offset + ", count=" + count + ")"
+                "Error retrieving ActivityFavouriteEntity records for zakaznikId = " + zakaznikId +
+                        " with pagination (offset + 1 = " + offset + ", count = " + count + ")"
         );
     }
 
     public ActivityFavouriteEntity findByZakaznikAktivita(String zakaznikId, String activityId) throws FinderException {
         return wrapDBException(() ->
                         repository.findByZakaznikAktivita(zakaznikId, activityId)
-                                .orElseThrow(NoResultException::new),
-                "Error retrieving ActivityFavouriteEntity record for zakaznikId=" + zakaznikId +
-                        " and activityId=" + activityId
+                                .orElseThrow(() -> new NoResultException("No ActivityFavouriteEntity for zakaznikId = "
+                                        + zakaznikId + " and activityId = " + activityId)),
+                "Error retrieving ActivityFavouriteEntity record for zakaznikId = " + zakaznikId +
+                        " and activityId = " + activityId
         );
     }
 

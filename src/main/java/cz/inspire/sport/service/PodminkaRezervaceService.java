@@ -26,7 +26,7 @@ public class PodminkaRezervaceService extends BaseService<PodminkaRezervaceEntit
     public List<PodminkaRezervaceEntity> findAll() throws FinderException {
         return wrapDBException(
                 () -> repository.findAllOrdered(),
-                "Error retrieving all PodminkaRezervaceEntity records in ordered manner by priorita"
+                "Error retrieving all PodminkaRezervaceEntity records, Ordered by priorita"
         );
     }
 
@@ -40,7 +40,7 @@ public class PodminkaRezervaceService extends BaseService<PodminkaRezervaceEntit
     public List<PodminkaRezervaceEntity> findByObjekt(String objektId, int offset, int count) throws FinderException {
         return wrapDBException(
                 () -> repository.findByObjekt(objektId, Limit.range(offset + 1, count)),
-                "Error retrieving PodminkaRezervaceEntity records for objektId=" + objektId +
+                "Error retrieving PodminkaRezervaceEntity records for objektId = " + objektId +
                 " with pagination (offset + 1 = " + offset + ", count = " + count + ")"
         );
     }
@@ -48,7 +48,7 @@ public class PodminkaRezervaceService extends BaseService<PodminkaRezervaceEntit
     public Long countAllByObject(String objektId) throws FinderException {
         return wrapDBException(
                 () -> repository.countAllByObject(objektId),
-                "Error retrieving count of PodminkaRezervaceEntity records for objektId=" + objektId
+                "Error retrieving count of PodminkaRezervaceEntity records for objektId = " + objektId
         );
     }
 
@@ -62,7 +62,7 @@ public class PodminkaRezervaceService extends BaseService<PodminkaRezervaceEntit
     public List<String> getObjectIdsByReservationConditionObject(String objektRezervaceId) throws FinderException {
         return wrapDBException(
                 () -> repository.getObjectIdsByReservationConditionObject(objektRezervaceId),
-                "Error retrieving object IDs from PodminkaRezervaceEntity for objektRezervaceId=" + objektRezervaceId
+                "Error retrieving object IDs from PodminkaRezervaceEntity for objektRezervaceId = " + objektRezervaceId
         );
     }
 

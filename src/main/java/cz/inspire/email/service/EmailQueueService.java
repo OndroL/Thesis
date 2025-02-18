@@ -27,14 +27,14 @@ public class EmailQueueService extends BaseService<EmailQueueEntity, String, Ema
     public List<EmailQueueEntity> findAll() throws FinderException {
         return wrapDBException(
                 () -> repository.findAllOrdered(),
-                "Error retrieving all EmailQueueEntity records (Ordered)"
+                "Error retrieving all EmailQueueEntity records, Ordered by created"
         );
     }
 
     public List<EmailQueueEntity> findAll(int offset, int count) throws FinderException {
         return wrapDBException(
                 () -> repository.findAll(new Limit(count, offset + 1)),
-                "Error retrieving paginated EmailQueueEntity records (offset=" + offset + ", count=" + count + ")"
+                "Error retrieving paginated EmailQueueEntity records (offset = " + offset + ", count = " + count + ")"
         );
     }
 
@@ -48,14 +48,14 @@ public class EmailQueueService extends BaseService<EmailQueueEntity, String, Ema
     public List<EmailQueueEntity> findByHistory(String historyId) throws FinderException {
         return wrapDBException(
                 () -> repository.findByHistory(historyId),
-                "Error retrieving EmailQueueEntity by history (historyId=" + historyId + ")"
+                "Error retrieving EmailQueueEntity by history (historyId = " + historyId + ")"
         );
     }
 
     public List<EmailQueueEntity> findByDependentHistory(String historyId) throws FinderException {
         return wrapDBException(
                 () -> repository.findByDependentHistory(historyId),
-                "Error retrieving EmailQueueEntity by dependent history (historyId=" + historyId + ")"
+                "Error retrieving EmailQueueEntity by dependent history (historyId = " + historyId + ")"
         );
     }
 }

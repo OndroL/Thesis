@@ -25,21 +25,22 @@ public class GeneratedAttachmentService extends BaseService<GeneratedAttachmentE
     public List<GeneratedAttachmentEntity> findByEmailAndHistory(String historyId, String email) throws FinderException {
         return wrapDBException(
                 () -> repository.findByEmailAndHistory(historyId, email),
-                "Error retrieving GeneratedAttachmentEntity by email and history (historyId=" + historyId + ", email=" + email + ")"
+                "Error retrieving GeneratedAttachmentEntity by email and history (historyId = " + historyId + ", email = " + email + ")"
         );
     }
 
     public List<GeneratedAttachmentEntity> findByHistory(String historyId) throws FinderException {
         return wrapDBException(
                 () -> repository.findByHistory(historyId),
-                "Error retrieving GeneratedAttachmentEntity by history (historyId=" + historyId + ")"
+                "Error retrieving GeneratedAttachmentEntity by history (historyId = " + historyId + ")"
         );
     }
 
     public List<GeneratedAttachmentEntity> findByEmailAndHistoryAndTemplate(String historyId, String email, String templateId) throws FinderException {
         return wrapDBException(
                 () -> repository.findByEmailAndHistoryAndTemplate(historyId, email, templateId),
-                "Error retrieving GeneratedAttachmentEntity by email, history, and template (historyId=" + historyId + ", email=" + email + ", templateId=" + templateId + ")"
+                "Error retrieving GeneratedAttachmentEntity by email, history, and template (historyId = " + historyId
+                        + ", email = " + email + ", templateId = " + templateId + ")"
         );
     }
 }

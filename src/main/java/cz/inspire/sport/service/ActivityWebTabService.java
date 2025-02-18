@@ -25,21 +25,21 @@ public class ActivityWebTabService extends BaseService<ActivityWebTabEntity, Str
     public List<ActivityWebTabEntity> findBySport(String sportId) throws FinderException {
         return wrapDBException(
                 () -> repository.findBySport(sportId),
-                "Error retrieving ActivityWebTabEntity records by sportId=" + sportId
+                "Error retrieving ActivityWebTabEntity records by sportId = " + sportId
         );
     }
 
     public List<ActivityWebTabEntity> findByActivity(String activityId) throws FinderException {
         return wrapDBException(
                 () -> repository.findByActivity(activityId),
-                "Error retrieving ActivityWebTabEntity records by activityId=" + activityId
+                "Error retrieving ActivityWebTabEntity records by activityId = " + activityId
         );
     }
 
     public List<ActivityWebTabEntity> findByObject(String objectId) throws FinderException {
         return wrapDBException(
                 () -> repository.findByObject(objectId),
-                "Error retrieving ActivityWebTabEntity records by objectId=" + objectId
+                "Error retrieving ActivityWebTabEntity records by objectId = " + objectId
         );
     }
 }

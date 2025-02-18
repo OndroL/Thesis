@@ -111,9 +111,9 @@ public class SportInstructorServiceTest {
 
         when(repository.findBySportAndInstructor(eq(sportId), eq(instructorId))).thenReturn(Optional.of(expectedEntity));
 
-        Optional<SportInstructorEntity> result = service.findBySportAndInstructor(sportId, instructorId);
+        SportInstructorEntity result = service.findBySportAndInstructor(sportId, instructorId);
 
-        assertTrue(result.isPresent());
+        assertNotNull(result);
         verify(repository, times(1)).findBySportAndInstructor(eq(sportId), eq(instructorId));
     }
 
@@ -163,9 +163,9 @@ public class SportInstructorServiceTest {
 
         when(repository.findBySportWithoutInstructor(eq(sportId))).thenReturn(Optional.of(expectedEntity));
 
-        Optional<SportInstructorEntity> result = service.findBySportWithoutInstructor(sportId);
+        SportInstructorEntity result = service.findBySportWithoutInstructor(sportId);
 
-        assertTrue(result.isPresent());
+        assertNotNull(result);
         verify(repository, times(1)).findBySportWithoutInstructor(eq(sportId));
     }
 

@@ -25,7 +25,7 @@ public class LicenseService extends BaseService<LicenseEntity, String, LicenseRe
     public List<LicenseEntity> findAll() throws FinderException {
         return wrapDBException(
                 () -> repository.findAllOrdered(),
-                "Error retrieving all LicenseEntity records (Ordered)"
+                "Error retrieving all LicenseEntity records, Ordered by createdDate"
         );
     }
 }
