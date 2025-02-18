@@ -4,11 +4,11 @@ import cz.inspire.license.dto.LicenseDto;
 import cz.inspire.license.entity.LicenseEntity;
 import cz.inspire.license.mapper.LicenseMapper;
 import cz.inspire.license.service.LicenseService;
-import cz.inspire.license.utils.LicenseUtil;
 import jakarta.ejb.CreateException;
 import jakarta.ejb.FinderException;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
+
 import java.util.List;
 
 @ApplicationScoped
@@ -21,9 +21,6 @@ public class LicenseFacade {
     public String create(LicenseDto dto) throws CreateException {
         try {
             LicenseEntity entity = licenseMapper.toEntity(dto);
-            if (entity.getId() == null) {
-                entity.setId(LicenseUtil.generateGUID(entity));
-            }
             licenseService.create(entity);
 
             return entity.getId();

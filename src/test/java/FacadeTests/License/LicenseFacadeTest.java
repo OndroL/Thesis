@@ -5,7 +5,6 @@ import cz.inspire.license.entity.LicenseEntity;
 import cz.inspire.license.facade.LicenseFacade;
 import cz.inspire.license.mapper.LicenseMapper;
 import cz.inspire.license.service.LicenseService;
-import cz.inspire.license.utils.LicenseUtil;
 import jakarta.ejb.CreateException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

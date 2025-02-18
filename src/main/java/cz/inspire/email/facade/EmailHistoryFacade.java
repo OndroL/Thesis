@@ -8,8 +8,6 @@ import cz.inspire.email.mapper.EmailHistoryMapper;
 import cz.inspire.email.mapper.GeneratedAttachmentMapper;
 import cz.inspire.email.service.EmailHistoryService;
 import cz.inspire.email.service.GeneratedAttachmentService;
-import cz.inspire.email.utils.EmailHistoryUtil;
-import cz.inspire.email.utils.GeneratedAttachmentUtil;
 import cz.inspire.template.entity.PrintTemplateEntity;
 import cz.inspire.template.service.PrintTemplateService;
 import cz.inspire.utils.FileAttributes;
@@ -43,9 +41,6 @@ public class EmailHistoryFacade {
 
     public String create(EmailHistoryDto dto) throws CreateException {
         try {
-            if (dto.getId() == null) {
-                dto.setId(EmailHistoryUtil.generateGUID(dto));
-            }
             EmailHistoryEntity entity = emailHistoryMapper.toEntity(dto);
 
             if (dto.getAttachments() != null && !dto.getAttachments().isEmpty()) {
@@ -70,9 +65,6 @@ public class EmailHistoryFacade {
         if (dto.getGeneratedAttachments() != null && !dto.getGeneratedAttachments().isEmpty()) {
             try {
                 for (GeneratedAttachmentDto gadDto : dto.getGeneratedAttachments()) {
-                    if(gadDto.getId() == null){
-                        gadDto.setId(GeneratedAttachmentUtil.generateGUID(gadDto));
-                    }
                     GeneratedAttachmentEntity gadEntity = generatedAttachmentMapper.toEntity(gadDto);
 
                     generatedAttachmentService.create(gadEntity);

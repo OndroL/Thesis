@@ -4,7 +4,6 @@ import cz.inspire.sms.dto.SMSHistoryDto;
 import cz.inspire.sms.entity.SMSHistoryEntity;
 import cz.inspire.sms.mapper.SMSHistoryMapper;
 import cz.inspire.sms.service.SMSHistoryService;
-import cz.inspire.sms.utils.SMSHistoryUtil;
 import jakarta.ejb.CreateException;
 import jakarta.ejb.FinderException;
 import jakarta.enterprise.context.ApplicationScoped;
@@ -22,9 +21,6 @@ public class SMSHistoryFacade {
 
     public String create(SMSHistoryDto dto) throws CreateException {
         try {
-            if (dto.getId() == null) {
-                dto.setId(SMSHistoryUtil.generateGUID(dto));
-            }
             SMSHistoryEntity entity = smsHistoryMapper.toEntity(dto);
 
             smsHistoryService.create(entity);

@@ -4,7 +4,6 @@ import cz.inspire.email.dto.EmailQueueDto;
 import cz.inspire.email.entity.EmailQueueEntity;
 import cz.inspire.email.mapper.EmailQueueMapper;
 import cz.inspire.email.service.EmailQueueService;
-import cz.inspire.email.utils.EmailQueueUtil;
 import jakarta.ejb.CreateException;
 import jakarta.ejb.FinderException;
 import jakarta.enterprise.context.ApplicationScoped;
@@ -26,10 +25,6 @@ public class EmailQueueFacade {
 
     public String create(EmailQueueDto dto) throws CreateException {
         try {
-            if (dto.getId() == null) {
-                dto.setId(EmailQueueUtil.generateGUID(dto));
-            }
-
             EmailQueueEntity entity = emailQueueMapper.toEntity(dto);
 
             emailQueueService.create(entity);

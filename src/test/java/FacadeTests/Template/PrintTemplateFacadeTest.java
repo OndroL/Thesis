@@ -5,7 +5,6 @@ import cz.inspire.template.entity.PrintTemplateEntity;
 import cz.inspire.template.facade.PrintTemplateFacade;
 import cz.inspire.template.mapper.PrintTemplateMapper;
 import cz.inspire.template.service.PrintTemplateService;
-import cz.inspire.template.utils.PrintTemplateUtil;
 import jakarta.ejb.CreateException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

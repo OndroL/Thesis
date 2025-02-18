@@ -5,7 +5,6 @@ import cz.inspire.sequence.dto.SequenceDto;
 import cz.inspire.sequence.entity.SequenceEntity;
 import cz.inspire.sequence.mapper.SequenceMapper;
 import cz.inspire.sequence.service.SequenceService;
-import cz.inspire.sequence.utils.SequenceUtil;
 import jakarta.ejb.CreateException;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
@@ -31,9 +30,6 @@ public class SequenceFacade {
 
     public String create(SequenceDto dto) throws CreateException {
         try {
-            if (dto.getName() == null) {
-                dto.setName(SequenceUtil.generateGUID(dto));
-            }
             SequenceEntity entity = sequenceMapper.toEntity(dto);
             sequenceService.create(entity);
             entity = toEntityWithRelationships(dto);

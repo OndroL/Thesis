@@ -6,7 +6,6 @@ import cz.inspire.email.entity.GeneratedAttachmentEntity;
 import cz.inspire.email.mapper.GeneratedAttachmentMapper;
 import cz.inspire.email.service.EmailHistoryService;
 import cz.inspire.email.service.GeneratedAttachmentService;
-import cz.inspire.email.utils.GeneratedAttachmentUtil;
 import cz.inspire.template.entity.PrintTemplateEntity;
 import cz.inspire.template.service.PrintTemplateService;
 import jakarta.ejb.CreateException;
@@ -36,10 +35,6 @@ public class GeneratedAttachmentFacade {
     // Difference in logic is with searching for EmailHistory by its Id
     public String create(GeneratedAttachmentDto dto) throws CreateException {
         try {
-            if (dto.getId() == null) {
-               dto.setId(GeneratedAttachmentUtil.generateGUID(dto));
-            }
-
             GeneratedAttachmentEntity entity = generatedAttachmentMapper.toEntity(dto);
 
             EmailHistoryEntity emailEntity = emailHistoryService.findByPrimaryKey(dto.getEmailHistoryId());

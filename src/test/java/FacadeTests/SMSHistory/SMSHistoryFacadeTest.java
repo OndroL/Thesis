@@ -5,7 +5,6 @@ import cz.inspire.sms.entity.SMSHistoryEntity;
 import cz.inspire.sms.facade.SMSHistoryFacade;
 import cz.inspire.sms.mapper.SMSHistoryMapper;
 import cz.inspire.sms.service.SMSHistoryService;
-import cz.inspire.sms.utils.SMSHistoryUtil;
 import jakarta.ejb.CreateException;
 import jakarta.ejb.FinderException;
 import org.junit.jupiter.api.BeforeEach;
@@ -68,7 +67,7 @@ public class SMSHistoryFacadeTest {
 
         when(smsHistoryMapper.toEntity(dto)).thenReturn(entity);
         doAnswer(invocation -> {
-            entity.setId(SMSHistoryUtil.generateGUID(dto));
+            entity.setId(.generateGUID(dto));
             return null;
         }).when(smsHistoryService).create(entity);
 
