@@ -5,6 +5,7 @@ import cz.inspire.sport.entity.ObjektSportEntity;
 import cz.inspire.sport.entity.ObjektSportPK;
 import cz.inspire.sport.repository.ObjektSportRepository;
 import jakarta.ejb.FinderException;
+import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 
 import java.util.List;
@@ -12,6 +13,7 @@ import java.util.Optional;
 
 import static cz.inspire.common.utils.ExceptionHandler.wrapDBException;
 
+@ApplicationScoped
 public class ObjektSportService extends BaseService<ObjektSportEntity, ObjektSportPK, ObjektSportRepository> {
 
     public ObjektSportService() {

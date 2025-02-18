@@ -5,6 +5,7 @@ import cz.inspire.sport.entity.ArealEntity;
 import cz.inspire.sport.repository.ArealRepository;
 import jakarta.data.Limit;
 import jakarta.ejb.FinderException;
+import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 
 import java.util.List;
@@ -12,6 +13,7 @@ import java.util.Optional;
 
 import static cz.inspire.common.utils.ExceptionHandler.wrapDBException;
 
+@ApplicationScoped
 public class ArealService extends BaseService<ArealEntity, String, ArealRepository> {
 
     public ArealService() {

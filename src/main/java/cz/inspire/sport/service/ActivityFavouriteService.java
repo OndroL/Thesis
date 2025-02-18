@@ -5,13 +5,15 @@ import cz.inspire.sport.entity.ActivityFavouriteEntity;
 import cz.inspire.sport.repository.ActivityFavouriteRepository;
 import jakarta.data.Limit;
 import jakarta.ejb.FinderException;
+import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
+import jakarta.persistence.NoResultException;
 
 import java.util.List;
-import java.util.Optional;
 
 import static cz.inspire.common.utils.ExceptionHandler.wrapDBException;
 
+@ApplicationScoped
 public class ActivityFavouriteService extends BaseService<ActivityFavouriteEntity, String, ActivityFavouriteRepository> {
     public ActivityFavouriteService(){
     }
@@ -27,12 +29,15 @@ public class ActivityFavouriteService extends BaseService<ActivityFavouriteEntit
         );
     }
 
-    public Optional<ActivityFavouriteEntity> findByZakaznikAktivita(String zakaznikId, String activityId) throws FinderException {
-        return wrapDBException(
-                () -> repository.findByZakaznikAktivita(zakaznikId, activityId),
+    public ActivityFavouriteEntity findByZakaznikAktivita(String zakaznikId, String activityId) throws FinderException {
+        return wrapDBException(() ->
+                        repository.findByZakaznikAktivita(zakaznikId, activityId)
+                                .orElseThrow(NoResultException::new),
                 "Error retrieving ActivityFavouriteEntity record for zakaznikId=" + zakaznikId +
                         " and activityId=" + activityId
         );
     }
+
+
 
 }

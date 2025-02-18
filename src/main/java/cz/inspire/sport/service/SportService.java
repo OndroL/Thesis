@@ -5,12 +5,14 @@ import cz.inspire.sport.entity.SportEntity;
 import cz.inspire.sport.repository.SportRepository;
 import jakarta.data.Limit;
 import jakarta.ejb.FinderException;
+import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 
 import java.util.List;
 
 import static cz.inspire.common.utils.ExceptionHandler.wrapDBException;
 
+@ApplicationScoped
 public class SportService extends BaseService<SportEntity, String, SportRepository> {
 
     public SportService() {

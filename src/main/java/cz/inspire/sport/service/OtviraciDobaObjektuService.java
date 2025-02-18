@@ -6,6 +6,7 @@ import cz.inspire.sport.entity.OtviraciDobaObjektuPK;
 import cz.inspire.sport.repository.OtviraciDobaObjektuRepository;
 import jakarta.data.Limit;
 import jakarta.ejb.FinderException;
+import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 
 import java.time.LocalDateTime;
@@ -16,6 +17,7 @@ import java.util.Optional;
 
 import static cz.inspire.common.utils.ExceptionHandler.wrapDBException;
 
+@ApplicationScoped
 public class OtviraciDobaObjektuService extends BaseService<OtviraciDobaObjektuEntity, OtviraciDobaObjektuPK, OtviraciDobaObjektuRepository> {
 
     public OtviraciDobaObjektuService() {
