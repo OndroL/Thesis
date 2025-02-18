@@ -50,7 +50,7 @@ public class InstructorPhotoIT {
     @Order(1)
     @Test
     public void testSaveInstructorPhoto() throws IOException {
-        FileAttributes savedFile = instructorService.savePhoto(defaultPhoto, "John", "Doe");
+        FileAttributes savedFile = instructorService.savePhoto(defaultPhoto, "INS-100");
         assertNotNull(savedFile, "Saved FileAttributes should not be null");
 
         InstructorEntity instructor = new InstructorEntity(

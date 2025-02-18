@@ -146,15 +146,14 @@ public class InstructorServiceTest {
     @Test
     void testSavePhoto_Success() throws IOException {
         byte[] photoData = new byte[]{1, 2, 3};
-        String firstName = "John";
-        String lastName = "Doe";
+        String id = "1";
 
-        FileAttributes expectedFile = new FileAttributes(firstName + lastName + ".png", "FILE_SYSTEM/photos/" + firstName + lastName + ".png");
+        FileAttributes expectedFile = new FileAttributes(id + ".png", "FILE_SYSTEM/photos/" + id + ".png");
 
         InstructorService spyService = spy(instructorService);
-        doReturn(expectedFile).when(spyService).savePhoto(photoData, firstName, lastName);
+        doReturn(expectedFile).when(spyService).savePhoto(photoData, id);
 
-        FileAttributes result = spyService.savePhoto(photoData, firstName, lastName);
+        FileAttributes result = spyService.savePhoto(photoData, id);
 
         assertNotNull(result);
         assertEquals(expectedFile.getFilePath(), result.getFilePath());
@@ -163,14 +162,13 @@ public class InstructorServiceTest {
     @Test
     void testSavePhoto_Failure() {
         byte[] photoData = new byte[]{1, 2, 3};
-        String firstName = "John";
-        String lastName = "Doe";
+        String id = "1";
 
         InstructorService spyService = spy(instructorService);
         try {
-            doThrow(new IOException("File save error")).when(spyService).savePhoto(photoData, firstName, lastName);
+            doThrow(new IOException("File save error")).when(spyService).savePhoto(photoData, id);
 
-            IOException exception = assertThrows(IOException.class, () -> spyService.savePhoto(photoData, firstName, lastName));
+            IOException exception = assertThrows(IOException.class, () -> spyService.savePhoto(photoData, id));
             assertTrue(exception.getMessage().contains("File save error"));
         } catch (IOException e) {
             fail("Unexpected IOException");

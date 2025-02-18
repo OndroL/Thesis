@@ -25,13 +25,13 @@ public class InstructorService extends BaseService<InstructorEntity, String, Ins
     public InstructorService() {
     }
 
-    public FileAttributes savePhoto(byte[] photo, String firstName, String lastName) throws IOException {
+    public FileAttributes savePhoto(byte[] photo, String id) throws IOException {
         if (photo == null || photo.length == 0) {
             /// We can use here some default profile photo, if it's not handled in FrontEnd,
             /// but it is probably more efficient to do it on side of FrontEnd than in BackEnd
             return null;
         }
-        return fileStorageUtil.saveFile(photo, firstName + lastName + ".png", ATTACHMENTS_DIRECTORY);
+        return fileStorageUtil.saveFile(photo, "instructorID : " + id, ATTACHMENTS_DIRECTORY);
     }
 
     public byte[] readFile(String filePath) throws IOException {
