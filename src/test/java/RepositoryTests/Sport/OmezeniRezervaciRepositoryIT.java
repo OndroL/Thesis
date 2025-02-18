@@ -4,10 +4,7 @@ import RepositoryTests.DatabaseCleaner;
 import cz.inspire.sport.entity.OmezeniRezervaciEntity;
 import cz.inspire.sport.entity.SportEntity;
 import cz.inspire.sport.repository.OmezeniRezervaciRepository;
-import cz.inspire.utils.PeriodOfTime;
-import cz.inspire.utils.RozsirenaTydenniOtviraciDoba;
-import cz.inspire.utils.TimeOfDay;
-import cz.inspire.utils.TydeniOtviraciDoba;
+import cz.inspire.utils.*;
 import io.quarkus.test.junit.QuarkusTest;
 import jakarta.enterprise.context.control.ActivateRequestContext;
 import jakarta.inject.Inject;
@@ -255,4 +252,29 @@ public class OmezeniRezervaciRepositoryIT {
         assertTrue(retrievedIds.contains(sport2.getId()));
     }
 
+    @Test
+    @Order(7)
+    void testSaveAndRetrieve_PeriodOfTime() {
+        SportEntity sport = new SportEntity("SP-016", 1, "ZB-016", "SK-016", 180, true, 90, true, 20, null, 45, 200, true, 30, null, null, true, true, 15, 120, 3, 7, 40, null, null, null, null, null, null, null, null, null);
+        em.persist(sport);
+
+        TydeniOtviraciDoba otviraciDoba = new TydeniOtviraciDoba();
+        PeriodOfTime period = new PeriodOfTime(new TimeOfDay(9, 0), new TimeOfDay(12, 0));
+        otviraciDoba.addOtevreno(period, 1, sport.getId());
+
+        OmezeniRezervaciEntity entity = new OmezeniRezervaciEntity("OBJ-016", otviraciDoba);
+        em.persist(entity);
+        em.flush();
+
+        Optional<OmezeniRezervaciEntity> result = omezeniRezervaciRepository.findById("OBJ-016");
+        assertTrue(result.isPresent());
+
+        TydeniOtviraciDoba retrievedDoba = (TydeniOtviraciDoba) result.get().getOmezeni();
+        assertNotNull(retrievedDoba);
+
+        SortedMap<PeriodOfTime, String> retrievedMap = retrievedDoba.getOtevreno(1);
+        assertNotNull(retrievedMap);
+        assertTrue(retrievedMap.containsKey(period));
+        assertEquals(sport.getId(), retrievedMap.get(period));
+    }
 }
