@@ -1,16 +1,13 @@
 package cz.inspire.sms.entity;
 
-import jakarta.enterprise.context.Dependent;
-
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
-
-import lombok.AllArgsConstructor;
-import lombok.Getter;
+import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.type.SqlTypes;
 
@@ -18,15 +15,13 @@ import java.util.Date;
 import java.util.List;
 
 
-@AllArgsConstructor
-@Setter
-@Getter
-@Dependent
+@Data
 @NoArgsConstructor
 @Entity
 @Table(name="sms_history")
 public class SMSHistoryEntity {
     @Id
+    @GeneratedValue(strategy = GenerationType.UUID)
     private String id;
 
     @Column

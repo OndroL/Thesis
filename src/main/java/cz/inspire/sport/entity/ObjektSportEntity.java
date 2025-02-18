@@ -1,20 +1,16 @@
 package cz.inspire.sport.entity;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.EmbeddedId;
 import jakarta.persistence.Entity;
-import jakarta.persistence.Table;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.CascadeType;
 import jakarta.persistence.FetchType;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.Table;
+import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 
-@AllArgsConstructor
-@Setter
-@Getter
+@Data
 @NoArgsConstructor
 @Entity
 @Table(name = "objekt_sport")

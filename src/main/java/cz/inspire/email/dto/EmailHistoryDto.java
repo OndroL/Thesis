@@ -1,21 +1,15 @@
 package cz.inspire.email.dto;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
+import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
-import lombok.EqualsAndHashCode;
 
 import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
-@EqualsAndHashCode
+@Data
 @NoArgsConstructor
-@AllArgsConstructor
-@Getter
-@Setter
 public class EmailHistoryDto implements Serializable {
     private String id;
     private Date date;

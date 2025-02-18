@@ -1,17 +1,13 @@
 package cz.inspire.sport.dto;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
+import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 
 import java.io.Serializable;
 import java.util.Set;
 
+@Data
 @NoArgsConstructor
-@AllArgsConstructor
-@Getter
-@Setter
 public class InstructorDto implements Serializable {
     private String id;
     private String firstName;
@@ -32,10 +28,4 @@ public class InstructorDto implements Serializable {
     private int googleCalendarNotificationBefore;
     private Set<ActivityDto> activities;
     private Set<SportDto> sports;
-
-    /**
-     * Added for ActivityBean getDetails functionality
-     */
-    public InstructorDto(String id, String firstName, String lastName, String color) {
-    }
 }

@@ -1,19 +1,13 @@
 package cz.inspire.common.dto;
 
-import java.io.Serializable;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
+import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
-import lombok.EqualsAndHashCode;
 
+import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.List;
 
-@EqualsAndHashCode
-@Getter
-@Setter
-@AllArgsConstructor
+@Data
 @NoArgsConstructor
 public class MenaDto implements Serializable {
     private String id;

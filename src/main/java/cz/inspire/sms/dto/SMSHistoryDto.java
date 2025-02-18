@@ -1,19 +1,13 @@
 package cz.inspire.sms.dto;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
+import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
-import lombok.EqualsAndHashCode;
 
 import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
 
-@EqualsAndHashCode
-@Getter
-@Setter
-@AllArgsConstructor
+@Data
 @NoArgsConstructor
 public class SMSHistoryDto implements Serializable {
     private String id;

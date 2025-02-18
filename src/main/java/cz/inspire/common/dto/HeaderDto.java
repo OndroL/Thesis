@@ -1,16 +1,11 @@
 package cz.inspire.common.dto;
 
-import java.io.Serializable;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
+import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
-import lombok.EqualsAndHashCode;
 
-@EqualsAndHashCode
-@Getter
-@Setter
-@AllArgsConstructor
+import java.io.Serializable;
+
+@Data
 @NoArgsConstructor
 public class HeaderDto implements Serializable {
     private String id;

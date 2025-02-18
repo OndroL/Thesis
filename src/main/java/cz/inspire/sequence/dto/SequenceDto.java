@@ -1,17 +1,11 @@
 package cz.inspire.sequence.dto;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
+import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
-import lombok.EqualsAndHashCode;
 
 import java.io.Serializable;
 
-@EqualsAndHashCode
-@Getter
-@Setter
-@AllArgsConstructor
+@Data
 @NoArgsConstructor
 public class SequenceDto implements Serializable {
     private String name;

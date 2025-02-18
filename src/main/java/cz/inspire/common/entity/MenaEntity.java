@@ -4,28 +4,32 @@ import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.GeneratedValue;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.Data;
 
-@AllArgsConstructor
-@Setter
-@Getter
+@Data
 @NoArgsConstructor
 @Entity
 @Table(name="mena")
 public class MenaEntity {
     @Id
+    @GeneratedValue(strategy = GenerationType.UUID)
     private String id;
+
     @Column
     private String kod;
+
     @Column
     private String vycetka;
+
     @Column
     private int kodNum;
+
     @Column
     private int zaokrouhleniHotovost;
+
     @Column
     private int zaokrouhleniKarta;
 }

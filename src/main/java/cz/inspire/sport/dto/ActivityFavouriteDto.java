@@ -1,17 +1,13 @@
 package cz.inspire.sport.dto;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
+import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 
 import java.io.Serializable;
 import java.util.Date;
 
+@Data
 @NoArgsConstructor
-@AllArgsConstructor
-@Getter
-@Setter
 public class ActivityFavouriteDto implements Serializable {
     private String id;
     private String zakaznikId;

@@ -1,21 +1,19 @@
 package cz.inspire.sport.entity;
 
 import jakarta.persistence.Embeddable;
-import lombok.AllArgsConstructor;
-import lombok.Setter;
-import lombok.Getter;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.EqualsAndHashCode;
 
 import java.io.Serializable;
 
-@AllArgsConstructor
-@Setter
-@Getter
+@Data
 @NoArgsConstructor
-@EqualsAndHashCode
 @Embeddable
 public class ObjektSportPK implements Serializable {
+    @GeneratedValue(strategy = GenerationType.UUID)
     private String id;
+
     private int index;
 }

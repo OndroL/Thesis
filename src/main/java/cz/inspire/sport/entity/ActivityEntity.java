@@ -2,25 +2,24 @@ package cz.inspire.sport.entity;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.Table;
-import jakarta.persistence.OneToMany;
 import jakarta.persistence.ManyToMany;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.Table;
+import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 
 import java.util.List;
 
-@AllArgsConstructor
-@Setter
-@Getter
+@Data
 @NoArgsConstructor
 @Entity
 @Table(name="activity")
 public class ActivityEntity {
     @Id
+    @GeneratedValue(strategy = GenerationType.UUID)
     private String id;
     @Column
     private String name;
