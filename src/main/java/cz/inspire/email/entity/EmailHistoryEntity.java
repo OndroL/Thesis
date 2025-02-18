@@ -9,6 +9,7 @@ import jakarta.persistence.OneToMany;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.GeneratedValue;
+import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import lombok.Data;
 import org.hibernate.annotations.JdbcTypeCode;
@@ -19,6 +20,7 @@ import java.util.List;
 
 
 @Data
+@AllArgsConstructor
 @NoArgsConstructor
 @Entity
 @Table(name="email_history")

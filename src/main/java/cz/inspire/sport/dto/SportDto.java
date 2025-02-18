@@ -1,6 +1,7 @@
 package cz.inspire.sport.dto;
 
 import cz.inspire.sport.utils.SazbaStorna;
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -11,6 +12,7 @@ import java.util.Map;
 import java.util.Set;
 
 @Data
+@AllArgsConstructor
 @NoArgsConstructor
 public class SportDto implements Serializable {
     private String id;
