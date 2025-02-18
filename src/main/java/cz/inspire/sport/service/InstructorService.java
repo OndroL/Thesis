@@ -27,7 +27,7 @@ public class InstructorService extends BaseService<InstructorEntity, String, Ins
 
     public FileAttributes savePhoto(byte[] photo, String firstName, String lastName) throws IOException {
         if (photo == null || photo.length == 0) {
-            /// We can use here some default profile photo here if it's not handled in FrontEnd,
+            /// We can use here some default profile photo, if it's not handled in FrontEnd,
             /// but it is probably more efficient to do it on side of FrontEnd than in BackEnd
             return null;
         }
