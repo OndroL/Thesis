@@ -18,7 +18,7 @@ import java.util.*;
 
 @QuarkusTest
 @Transactional
-@TestInstance(TestInstance.Lifecycle.PER_CLASS) // Allows non-static @BeforeAll
+@TestInstance(TestInstance.Lifecycle.PER_CLASS)
 public class EmailHistoryRepositoryIT {
 
     @Inject
@@ -118,7 +118,6 @@ public class EmailHistoryRepositoryIT {
                 List.of(), false, false, new ArrayList<>(), false, new ArrayList<>());
         emailHistoryRepository.save(entity);
 
-        // Update email content and subject
         entity.setText("Updated content");
         entity.setSubject("Updated Subject");
         entity.setSent(true);
@@ -156,27 +155,23 @@ public class EmailHistoryRepositoryIT {
      */
     @Test
     public void testSaveAndRetrieveFiles() {
-        // Correct List<File> format
         List<FileAttributes> attachments = List.of(
                 new FileAttributes("photo1.jpg", "FILE_SYSTEM/photos/1234-5678"),
                 new FileAttributes("document.pdf", "FILE_SYSTEM/attachments/abcd-efgh")
         );
 
-        // Create and save EmailHistoryEntity
         EmailHistoryEntity entity = new EmailHistoryEntity();
         entity.setId("EMAIL-007");
         entity.setSubject("Test Subject");
         entity.setText("File test email");
-        entity.setAttachments(attachments); // Store as JSON array
+        entity.setAttachments(attachments);
 
         emailHistoryRepository.save(entity);
 
-        // Retrieve from database
         Optional<EmailHistoryEntity> retrieved = emailHistoryRepository.findById("EMAIL-007");
         Assertions.assertTrue(retrieved.isPresent(), "Entity should be present in repository.");
         Assertions.assertNotNull(retrieved.get().getAttachments(), "Files should not be null.");
 
-        // Check that both files are stored correctly
         List<FileAttributes> retrievedFileAttributes = retrieved.get().getAttachments();
         Assertions.assertEquals(2, retrievedFileAttributes.size(), "Files count should match.");
         Assertions.assertEquals("photo1.jpg", retrievedFileAttributes.getFirst().getFileName(), "First file name should match.");
