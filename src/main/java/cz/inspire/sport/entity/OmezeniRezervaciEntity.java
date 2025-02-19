@@ -5,8 +5,6 @@ import cz.inspire.sport.utils.OtviraciDobaConverter;
 import jakarta.persistence.Column;
 import jakarta.persistence.Convert;
 import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
@@ -24,7 +22,6 @@ import java.io.Serializable;
 @Table(name = "omezeni_rezervaci")
 public class OmezeniRezervaciEntity implements Serializable {
     @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
     private String objektId;
 
     @JdbcTypeCode(SqlTypes.JSON)

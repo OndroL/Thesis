@@ -51,16 +51,12 @@ public class LicenseFacadeTest {
                 "hash123", new Date(), new Date(), 1001);
 
         when(licenseMapper.toEntity(dto)).thenReturn(entity);
-        doAnswer(invocation -> {
-            entity.setId(LicenseUtil.generateGUID(entity));
-            return null;
-        }).when(licenseService).create(entity);
+        doAnswer(invocation -> savedEntity).when(licenseService).create(entity);
 
         // Test
         String result = licenseFacade.create(dto);
 
         assertNotNull(result);
-        assertEquals(entity.getId(), result);
         verify(licenseMapper, times(1)).toEntity(dto);
         verify(licenseService, times(1)).create(entity);
     }

@@ -48,11 +48,11 @@ public class SportLocRepositoryIT {
     @Test
     @Order(1)
     void testCreateSportLoc() {
-        SportLocEntity sportLoc = createSportLoc("sport-001", "cs", "Fotbal", "Popis fotbalu");
+        SportLocEntity sportLoc = createSportLoc(null, "cs", "Fotbal", "Popis fotbalu");
         em.persist(sportLoc);
         em.flush();
 
-        SportLocEntity result = em.find(SportLocEntity.class, "sport-001");
+        SportLocEntity result = em.find(SportLocEntity.class, sportLoc.getId());
         assertNotNull(result);
         assertEquals("Fotbal", result.getNazev());
     }
@@ -60,11 +60,11 @@ public class SportLocRepositoryIT {
     @Test
     @Order(2)
     void testFindById() {
-        SportLocEntity sportLoc = createSportLoc("sport-002", "en", "Basketball", "Basketball description");
+        SportLocEntity sportLoc = createSportLoc(null, "en", "Basketball", "Basketball description");
         em.persist(sportLoc);
         em.flush();
 
-        SportLocEntity result = sportLocRepository.findById("sport-002").orElse(null);
+        SportLocEntity result = sportLocRepository.findById(sportLoc.getId()).orElse(null);
         assertNotNull(result);
         assertEquals("Basketball", result.getNazev());
     }
@@ -72,8 +72,8 @@ public class SportLocRepositoryIT {
     @Test
     @Order(3)
     void testFindAll() {
-        SportLocEntity sportLoc1 = createSportLoc("sport-003", "cs", "Hokej", "Popis hokeje");
-        SportLocEntity sportLoc2 = createSportLoc("sport-004", "cs", "Tenis", "Popis tenisu");
+        SportLocEntity sportLoc1 = createSportLoc(null, "cs", "Hokej", "Popis hokeje");
+        SportLocEntity sportLoc2 = createSportLoc(null, "cs", "Tenis", "Popis tenisu");
         em.persist(sportLoc1);
         em.persist(sportLoc2);
         em.flush();
@@ -86,30 +86,30 @@ public class SportLocRepositoryIT {
     @Test
     @Order(4)
     void testDeleteById() {
-        SportLocEntity sportLoc = createSportLoc("sport-005", "cs", "Plavání", "Popis plavání");
+        SportLocEntity sportLoc = createSportLoc(null, "cs", "Plavání", "Popis plavání");
         em.persist(sportLoc);
         em.flush();
 
         em.remove(sportLoc);
         em.flush();
 
-        Optional<SportLocEntity> result = sportLocRepository.findById("sport-005");
+        Optional<SportLocEntity> result = sportLocRepository.findById(sportLoc.getId());
         assertFalse(result.isPresent());
     }
 
     @Test
     @Order(5)
     void testUpdateSportLoc() {
-        SportLocEntity sportLoc = createSportLoc("sport-006", "cs", "Volejbal", "Popis volejbalu");
+        SportLocEntity sportLoc = createSportLoc(null, "cs", "Volejbal", "Popis volejbalu");
         em.persist(sportLoc);
         em.flush();
 
-        SportLocEntity updated = em.find(SportLocEntity.class, "sport-006");
+        SportLocEntity updated = em.find(SportLocEntity.class, sportLoc.getId());
         updated.setNazev("Beach Volejbal");
         em.merge(updated);
         em.flush();
 
-        SportLocEntity result = em.find(SportLocEntity.class, "sport-006");
+        SportLocEntity result = em.find(SportLocEntity.class, sportLoc.getId());
         assertNotNull(result);
         assertEquals("Beach Volejbal", result.getNazev());
     }

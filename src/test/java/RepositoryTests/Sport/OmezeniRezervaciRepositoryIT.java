@@ -43,7 +43,7 @@ public class OmezeniRezervaciRepositoryIT {
     void testSaveAndRetrieve_TydeniOtviraciDoba() {
         TydeniOtviraciDoba otviraciDoba = new TydeniOtviraciDoba();
 
-        SportEntity sport = new SportEntity("SP-008", 1, "ZB-008", "SK-008", 180, true, 90, true, 20, null, 45, 200, true, 30, null, null, true, true, 15, 120, 3, 7, 40, null, null, null, null, null, null, null, null, null);
+        SportEntity sport = new SportEntity(null, 1, "ZB-008", "SK-008", 180, true, 90, true, 20, null, 45, 200, true, 30, null, null, true, true, 15, 120, 3, 7, 40, null, null, null, null, null, null, null, null, null);
         em.persist(sport);
 
         PeriodOfTime period = new PeriodOfTime(new TimeOfDay(9, 0), new TimeOfDay(12, 0));
@@ -73,7 +73,7 @@ public class OmezeniRezervaciRepositoryIT {
     void testDelete_TydeniOtviraciDoba() {
         TydeniOtviraciDoba otviraciDoba = new TydeniOtviraciDoba();
 
-        SportEntity sport = new SportEntity("SP-009", 1, "ZB-009", "SK-009", 190, true, 100, true, 25, null, 50, 210, true, 35, null, null, true, true, 18, 130, 3, 8, 50, null, null, null, null, null, null, null, null, null);
+        SportEntity sport = new SportEntity(null, 1, "ZB-009", "SK-009", 190, true, 100, true, 25, null, 50, 210, true, 35, null, null, true, true, 18, 130, 3, 8, 50, null, null, null, null, null, null, null, null, null);
         em.persist(sport);
 
         PeriodOfTime period = new PeriodOfTime(new TimeOfDay(10, 0), new TimeOfDay(13, 0));
@@ -98,8 +98,8 @@ public class OmezeniRezervaciRepositoryIT {
     void testSaveMultipleEntriesForSameDay() {
         TydeniOtviraciDoba otviraciDoba = new TydeniOtviraciDoba();
 
-        SportEntity sport1 = new SportEntity("SP-010", 1, "ZB-010", "SK-010", 200, true, 80, true, 30, null, 60, 220, true, 40, null, null, true, true, 20, 150, 4, 9, 55, null, null, null, null, null, null, null, null, null);
-        SportEntity sport2 = new SportEntity("SP-011", 1, "ZB-011", "SK-011", 210, true, 85, true, 35, null, 70, 230, true, 45, null, null, true, true, 22, 160, 5, 10, 60, null, null, null, null, null, null, null, null, null);
+        SportEntity sport1 = new SportEntity(null, 1, "ZB-010", "SK-010", 200, true, 80, true, 30, null, 60, 220, true, 40, null, null, true, true, 20, 150, 4, 9, 55, null, null, null, null, null, null, null, null, null);
+        SportEntity sport2 = new SportEntity(null, 1, "ZB-011", "SK-011", 210, true, 85, true, 35, null, 70, 230, true, 45, null, null, true, true, 22, 160, 5, 10, 60, null, null, null, null, null, null, null, null, null);
         em.persist(sport1);
         em.persist(sport2);
 
@@ -131,7 +131,7 @@ public class OmezeniRezervaciRepositoryIT {
     @Order(4)
     void testUpdateOpeningHours() {
 
-        SportEntity sport = new SportEntity("SP-012", 1, "ZB-012", "SK-012", 220, true, 95, true, 40, null, 80, 240, true, 50, null, null, true, true, 25, 170, 6, 11, 65, null, null, null, null, null, null, null, null, null);
+        SportEntity sport = new SportEntity(null, 1, "ZB-012", "SK-012", 220, true, 95, true, 40, null, 80, 240, true, 50, null, null, true, true, 25, 170, 6, 11, 65, null, null, null, null, null, null, null, null, null);
         em.persist(sport);
         TydeniOtviraciDoba otviraciDoba = new TydeniOtviraciDoba(sport.getClass());
 
@@ -176,7 +176,7 @@ public class OmezeniRezervaciRepositoryIT {
     @Test
     @Order(5)
     void testRemoveOpeningHourEntry() {
-        SportEntity sport = new SportEntity("SP-013", 1, "ZB-013", "SK-013", 230, true, 100, true, 50, null, 90, 250, true, 55, null, null, true, true, 28, 180, 7, 12, 70, null, null, null, null, null, null, null, null, null);
+        SportEntity sport = new SportEntity(null, 1, "ZB-013", "SK-013", 230, true, 100, true, 50, null, 90, 250, true, 55, null, null, true, true, 28, 180, 7, 12, 70, null, null, null, null, null, null, null, null, null);
         em.persist(sport);
 
         TydeniOtviraciDoba otviraciDoba = new TydeniOtviraciDoba(sport.getClass());
@@ -217,8 +217,8 @@ public class OmezeniRezervaciRepositoryIT {
     void testSaveMultipleSportsForSameTimeSlot() {
         RozsirenaTydenniOtviraciDoba otviraciDoba = new RozsirenaTydenniOtviraciDoba();
 
-        SportEntity sport1 = new SportEntity("SP-014", 1, "ZB-014", "SK-014", 260, true, 120, true, 70, null, 110, 280, true, 75, null, null, true, true, 35, 200, 9, 14, 85, null, null, null, null, null, null, null, null, null);
-        SportEntity sport2 = new SportEntity("SP-015", 1, "ZB-015", "SK-015", 270, true, 125, true, 75, null, 115, 290, true, 80, null, null, true, true, 38, 210, 10, 15, 90, null, null, null, null, null, null, null, null, null);
+        SportEntity sport1 = new SportEntity(null, 1, "ZB-014", "SK-014", 260, true, 120, true, 70, null, 110, 280, true, 75, null, null, true, true, 35, 200, 9, 14, 85, null, null, null, null, null, null, null, null, null);
+        SportEntity sport2 = new SportEntity(null, 1, "ZB-015", "SK-015", 270, true, 125, true, 75, null, 115, 290, true, 80, null, null, true, true, 38, 210, 10, 15, 90, null, null, null, null, null, null, null, null, null);
         em.persist(sport1);
         em.persist(sport2);
 
@@ -255,7 +255,7 @@ public class OmezeniRezervaciRepositoryIT {
     @Test
     @Order(7)
     void testSaveAndRetrieve_PeriodOfTime() {
-        SportEntity sport = new SportEntity("SP-016", 1, "ZB-016", "SK-016", 180, true, 90, true, 20, null, 45, 200, true, 30, null, null, true, true, 15, 120, 3, 7, 40, null, null, null, null, null, null, null, null, null);
+        SportEntity sport = new SportEntity(null, 1, "ZB-016", "SK-016", 180, true, 90, true, 20, null, 45, 200, true, 30, null, null, true, true, 15, 120, 3, 7, 40, null, null, null, null, null, null, null, null, null);
         em.persist(sport);
 
         TydeniOtviraciDoba otviraciDoba = new TydeniOtviraciDoba();

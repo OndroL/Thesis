@@ -56,7 +56,7 @@ public class ActivityServiceTest {
         when(activityRepository.findAllOrdered()).thenThrow(new RuntimeException("Database error"));
 
         FinderException exception = assertThrows(FinderException.class, () -> activityService.findAll());
-        assertTrue(exception.getMessage().contains("Error retrieving all ActivityEntity records"));
+        assertTrue(exception.getMessage().contains("Error retrieving all ActivityEntity, Ordered by index"));
 
         verify(activityRepository, times(1)).findAllOrdered();
     }

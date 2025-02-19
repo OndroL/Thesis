@@ -50,12 +50,12 @@ public class PodminkaRezervaceRepositoryIT {
     @Test
     @Order(1)
     void testFindAllOrdered() {
-        ObjektEntity objekt = createObjekt("Objekt-001");
+        ObjektEntity objekt = createObjekt(null);
         em.persist(objekt);
 
-        PodminkaRezervaceEntity entity1 = createPodminkaRezervace("PR-001", 3, "RZ-001", objekt);
-        PodminkaRezervaceEntity entity2 = createPodminkaRezervace("PR-002", 1, "RZ-002", objekt);
-        PodminkaRezervaceEntity entity3 = createPodminkaRezervace("PR-003", 2, "RZ-003", objekt);
+        PodminkaRezervaceEntity entity1 = createPodminkaRezervace(null, 3, "RZ-001", objekt);
+        PodminkaRezervaceEntity entity2 = createPodminkaRezervace(null, 1, "RZ-002", objekt);
+        PodminkaRezervaceEntity entity3 = createPodminkaRezervace(null, 2, "RZ-003", objekt);
 
         em.persist(entity1);
         em.persist(entity2);
@@ -66,20 +66,20 @@ public class PodminkaRezervaceRepositoryIT {
 
         assertNotNull(result);
         assertEquals(3, result.size());
-        assertEquals("PR-002", result.get(0).getId());
-        assertEquals("PR-003", result.get(1).getId());
-        assertEquals("PR-001", result.get(2).getId());
+        assertEquals(entity2.getId(), result.get(0).getId());
+        assertEquals(entity3.getId(), result.get(1).getId());
+        assertEquals(entity1.getId(), result.get(2).getId());
     }
 
     @Test
     @Order(2)
     void testFindAllWithLimit() {
-        ObjektEntity objekt = createObjekt("Objekt-002");
+        ObjektEntity objekt = createObjekt(null);
         em.persist(objekt);
 
-        PodminkaRezervaceEntity entity1 = createPodminkaRezervace("PR-004", 3, "RZ-004", objekt);
-        PodminkaRezervaceEntity entity2 = createPodminkaRezervace("PR-005", 1, "RZ-005", objekt);
-        PodminkaRezervaceEntity entity3 = createPodminkaRezervace("PR-006", 2, "RZ-006", objekt);
+        PodminkaRezervaceEntity entity1 = createPodminkaRezervace(null, 3, "RZ-004", objekt);
+        PodminkaRezervaceEntity entity2 = createPodminkaRezervace(null, 1, "RZ-005", objekt);
+        PodminkaRezervaceEntity entity3 = createPodminkaRezervace(null, 2, "RZ-006", objekt);
 
         em.persist(entity1);
         em.persist(entity2);
@@ -95,16 +95,16 @@ public class PodminkaRezervaceRepositoryIT {
     @Test
     @Order(3)
     void testFindByObjektWithLimit() {
-        ObjektEntity objekt = createObjekt("Objekt-003");
+        ObjektEntity objekt = createObjekt(null);
         em.persist(objekt);
 
-        PodminkaRezervaceEntity entity1 = createPodminkaRezervace("PR-007", 1, "RZ-007", objekt);
-        PodminkaRezervaceEntity entity2 = createPodminkaRezervace("PR-008", 2, "RZ-008", objekt);
+        PodminkaRezervaceEntity entity1 = createPodminkaRezervace(null, 1, "RZ-007", objekt);
+        PodminkaRezervaceEntity entity2 = createPodminkaRezervace(null, 2, "RZ-008", objekt);
         em.persist(entity1);
         em.persist(entity2);
         em.flush();
 
-        List<PodminkaRezervaceEntity> result = podminkaRezervaceRepository.findByObjekt("Objekt-003", Limit.of(1));
+        List<PodminkaRezervaceEntity> result = podminkaRezervaceRepository.findByObjekt(objekt.getId(), Limit.of(1));
 
         assertNotNull(result);
         assertEquals(1, result.size());
@@ -113,16 +113,16 @@ public class PodminkaRezervaceRepositoryIT {
     @Test
     @Order(4)
     void testCountAllByObject() {
-        ObjektEntity objekt = createObjekt("Objekt-004");
+        ObjektEntity objekt = createObjekt(null);
         em.persist(objekt);
 
-        PodminkaRezervaceEntity entity1 = createPodminkaRezervace("PR-009", 1, "RZ-009", objekt);
-        PodminkaRezervaceEntity entity2 = createPodminkaRezervace("PR-010", 2, "RZ-010", objekt);
+        PodminkaRezervaceEntity entity1 = createPodminkaRezervace(null, 1, "RZ-009", objekt);
+        PodminkaRezervaceEntity entity2 = createPodminkaRezervace(null, 2, "RZ-010", objekt);
         em.persist(entity1);
         em.persist(entity2);
         em.flush();
 
-        Long count = podminkaRezervaceRepository.countAllByObject("Objekt-004");
+        Long count = podminkaRezervaceRepository.countAllByObject(objekt.getId());
 
         assertEquals(2, count);
     }
@@ -132,8 +132,8 @@ public class PodminkaRezervaceRepositoryIT {
     void testCountAll() {
         Long initialCount = podminkaRezervaceRepository.countAll();
 
-        ObjektEntity objekt = createObjekt("Objekt-005");
-        PodminkaRezervaceEntity entity = createPodminkaRezervace("PR-011", 3, "RZ-011", objekt);
+        ObjektEntity objekt = createObjekt(null);
+        PodminkaRezervaceEntity entity = createPodminkaRezervace(null, 3, "RZ-011", objekt);
 
         em.persist(objekt);
         em.persist(entity);
@@ -146,10 +146,10 @@ public class PodminkaRezervaceRepositoryIT {
     @Test
     @Order(6)
     void testGetObjectIdsByReservationConditionObject() {
-        ObjektEntity objekt = createObjekt("Objekt-006");
+        ObjektEntity objekt = createObjekt(null);
         em.persist(objekt);
 
-        PodminkaRezervaceEntity entity = createPodminkaRezervace("PR-012", 2, "RZ-012", objekt);
+        PodminkaRezervaceEntity entity = createPodminkaRezervace(null, 2, "RZ-012", objekt);
         em.persist(entity);
         em.flush();
 
@@ -157,17 +157,17 @@ public class PodminkaRezervaceRepositoryIT {
 
         assertNotNull(result);
         assertEquals(1, result.size());
-        assertEquals("Objekt-006", result.getFirst());
+        assertEquals(objekt.getId(), result.getFirst());
     }
 
     @Test
     @Order(7)
     void testGetMaxPriority() {
-        ObjektEntity objekt = createObjekt("Objekt-007");
+        ObjektEntity objekt = createObjekt(null);
         em.persist(objekt);
 
-        PodminkaRezervaceEntity entity1 = createPodminkaRezervace("PR-013", 5, "RZ-013", objekt);
-        PodminkaRezervaceEntity entity2 = createPodminkaRezervace("PR-014", 10, "RZ-014", objekt);
+        PodminkaRezervaceEntity entity1 = createPodminkaRezervace(null, 5, "RZ-013", objekt);
+        PodminkaRezervaceEntity entity2 = createPodminkaRezervace(null, 10, "RZ-014", objekt);
         em.persist(entity1);
         em.persist(entity2);
         em.flush();

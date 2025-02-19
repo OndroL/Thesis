@@ -60,7 +60,8 @@ public class GeneratedAttachmentFacadeTest {
 
         when(generatedAttachmentMapper.toEntity(dto)).thenReturn(entity);
         when(emailHistoryService.findByPrimaryKey("history123")).thenReturn(emailHistory);
-        doNothing().when(generatedAttachmentService).create(entity);
+
+        when(generatedAttachmentService.create(any(GeneratedAttachmentEntity.class))).thenReturn(entity);
         doNothing().when(generatedAttachmentService).update(entity);
 
         String result = generatedAttachmentFacade.create(dto);

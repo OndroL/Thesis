@@ -23,7 +23,7 @@ public class SMSHistoryFacade {
         try {
             SMSHistoryEntity entity = smsHistoryMapper.toEntity(dto);
 
-            smsHistoryService.create(entity);
+            entity = smsHistoryService.create(entity);
 
             return entity.getId();
         } catch (Exception e) {

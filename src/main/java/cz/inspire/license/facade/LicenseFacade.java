@@ -21,7 +21,8 @@ public class LicenseFacade {
     public String create(LicenseDto dto) throws CreateException {
         try {
             LicenseEntity entity = licenseMapper.toEntity(dto);
-            licenseService.create(entity);
+
+            entity = licenseService.create(entity);
 
             return entity.getId();
         } catch (Exception e) {

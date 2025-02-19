@@ -20,7 +20,7 @@ public class PrintTemplateFacade {
         try {
             PrintTemplateEntity entity = printTemplateMapper.toEntity(dto);
 
-            printTemplateService.create(entity);
+            entity = printTemplateService.create(entity);
 
             return entity.getId();
 

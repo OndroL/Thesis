@@ -42,11 +42,11 @@ public class OvladacObjektuRepositoryIT {
     @Test
     @Order(1)
     void testSaveAndFindById() {
-        OvladacObjektuEntity entity = createOvladacObjektu("OV-001", "OVL-001", "OBJ-001");
+        OvladacObjektuEntity entity = createOvladacObjektu(null, "OVL-001", "OBJ-001");
         em.persist(entity);
         em.flush();
 
-        Optional<OvladacObjektuEntity> result = ovladacObjektuRepository.findById("OV-001");
+        Optional<OvladacObjektuEntity> result = ovladacObjektuRepository.findById(entity.getId());
 
         assertTrue(result.isPresent());
         assertEquals("OVL-001", result.get().getIdOvladace());
@@ -55,8 +55,8 @@ public class OvladacObjektuRepositoryIT {
     @Test
     @Order(2)
     void testFindWithOvladacObjektu() {
-        OvladacObjektuEntity entity1 = createOvladacObjektu("OV-002", "OVL-002", "OBJ-002");
-        OvladacObjektuEntity entity2 = createOvladacObjektu("OV-003", "OVL-002", "OBJ-003");
+        OvladacObjektuEntity entity1 = createOvladacObjektu(null, "OVL-002", "OBJ-002");
+        OvladacObjektuEntity entity2 = createOvladacObjektu(null, "OVL-002", "OBJ-003");
         em.persist(entity1);
         em.persist(entity2);
         em.flush();
@@ -70,7 +70,7 @@ public class OvladacObjektuRepositoryIT {
     @Test
     @Order(3)
     void testFindByObjekt() {
-        OvladacObjektuEntity entity = createOvladacObjektu("OV-004", "OVL-003", "OBJ-004");
+        OvladacObjektuEntity entity = createOvladacObjektu(null, "OVL-003", "OBJ-004");
         em.persist(entity);
         em.flush();
 
@@ -78,23 +78,23 @@ public class OvladacObjektuRepositoryIT {
 
         assertNotNull(result);
         assertEquals(1, result.size());
-        assertEquals("OV-004", result.getFirst().getId());
+        assertEquals(entity.getId(), result.getFirst().getId());
     }
 
     @Test
     @Order(4)
     void testDeleteEntity() {
-        OvladacObjektuEntity entity = createOvladacObjektu("OV-005", "OVL-004", "OBJ-005");
+        OvladacObjektuEntity entity = createOvladacObjektu(null, "OVL-004", "OBJ-005");
         em.persist(entity);
         em.flush();
 
-        Optional<OvladacObjektuEntity> result = ovladacObjektuRepository.findById("OV-005");
+        Optional<OvladacObjektuEntity> result = ovladacObjektuRepository.findById(entity.getId());
         assertTrue(result.isPresent());
 
         em.remove(entity);
         em.flush();
 
-        result = ovladacObjektuRepository.findById("OV-005");
+        result = ovladacObjektuRepository.findById(entity.getId());
         assertFalse(result.isPresent());
     }
 }

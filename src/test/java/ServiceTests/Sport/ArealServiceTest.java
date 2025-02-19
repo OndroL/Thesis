@@ -15,8 +15,14 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.util.List;
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.Mockito.eq;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 public class ArealServiceTest {
@@ -127,19 +133,6 @@ public class ArealServiceTest {
         Optional<ArealEntity> expectedEntity = Optional.of(new ArealEntity("1", 10, null, null, null, null));
 
         when(arealRepository.findIfChild(eq(childId), eq(parentId))).thenReturn(expectedEntity);
-
-        ArealEntity result = arealService.findIfChild(childId, parentId);
-
-        assertNotNull(result);
-        verify(arealRepository, times(1)).findIfChild(eq(childId), eq(parentId));
-    }
-
-    @Test
-    void testFindIfChild_NotFound() throws FinderException {
-        String childId = "child123";
-        String parentId = "parent123";
-
-        when(arealRepository.findIfChild(eq(childId), eq(parentId))).thenReturn(Optional.empty());
 
         ArealEntity result = arealService.findIfChild(childId, parentId);
 

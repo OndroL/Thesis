@@ -18,13 +18,24 @@ import jakarta.ejb.FinderException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.*;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
 
 import java.util.List;
 import java.util.Map;
 
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.Mockito.any;
+import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 
 @ExtendWith(org.mockito.junit.jupiter.MockitoExtension.class)
@@ -62,7 +73,7 @@ public class EmailHistoryFacadeTest {
         entity.setId("email123");
 
         when(emailHistoryMapper.toEntity(dto)).thenReturn(entity);
-        doNothing().when(emailHistoryService).create(entity);
+        when(emailHistoryService.create(any(EmailHistoryEntity.class))).thenReturn(entity);
         doNothing().when(emailHistoryService).update(entity);
 
         String result = emailHistoryFacade.create(dto);

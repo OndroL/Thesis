@@ -41,10 +41,7 @@ public class PrintTemplateFacadeTest {
         PrintTemplateEntity savedEntity = new PrintTemplateEntity("generated-id", "Content", 1, "TemplateName", "FileName");
 
         when(printTemplateMapper.toEntity(dto)).thenReturn(entity);
-        doAnswer(invocation -> {
-            entity.setId(PrintTemplateUtil.generateGUID(entity)); // Mimic GUID generation
-            return null;
-        }).when(printTemplateService).create(entity);
+        doAnswer(invocation -> savedEntity).when(printTemplateService).create(entity);
 
         // Invoke and verify
         String result = printTemplateFacade.create(dto);

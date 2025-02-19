@@ -1,6 +1,8 @@
 package RepositoryTests.Email;
 
+import RepositoryTests.DatabaseCleaner;
 import cz.inspire.email.entity.EmailHistoryEntity;
+import cz.inspire.email.entity.GeneratedAttachmentEntity;
 import cz.inspire.email.repository.EmailHistoryRepository;
 import cz.inspire.utils.FileAttributes;
 import io.quarkus.test.junit.QuarkusTest;
@@ -14,7 +16,11 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 
 import java.sql.Timestamp;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Date;
+import java.util.List;
+import java.util.Optional;
 
 @QuarkusTest
 @Transactional
@@ -24,17 +30,17 @@ public class EmailHistoryRepositoryIT {
     @Inject
     EmailHistoryRepository emailHistoryRepository;
 
+    @Inject
+    DatabaseCleaner databaseCleaner;
+
     /**
      * Clears the database before tests to ensure isolation.
      */
     @BeforeAll
     @ActivateRequestContext
     public void clearDatabase() {
-        List<EmailHistoryEntity> allEntities = new ArrayList<>();
-        emailHistoryRepository.findAll().forEach(allEntities::add);
-        if (!allEntities.isEmpty()) {
-            emailHistoryRepository.deleteAll(allEntities);
-        }
+        databaseCleaner.clearTable(EmailHistoryEntity.class, true);
+        databaseCleaner.clearTable(GeneratedAttachmentEntity.class, true);
     }
 
     /**

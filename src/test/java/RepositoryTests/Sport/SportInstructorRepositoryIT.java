@@ -52,16 +52,16 @@ public class SportInstructorRepositoryIT {
     @Test
     @Order(1)
     void testFindBySport() {
-        SportEntity sport = createSport("Sport-001");
-        InstructorEntity instructor = createInstructor("Instructor-001");
-        SportInstructorEntity entity = createSportInstructor("SI-001", sport, instructor);
+        SportEntity sport = createSport(null);
+        InstructorEntity instructor = createInstructor(null);
+        SportInstructorEntity entity = createSportInstructor(null, sport, instructor);
 
         em.persist(sport);
         em.persist(instructor);
         em.persist(entity);
         em.flush();
 
-        List<SportInstructorEntity> result = sportInstructorRepository.findBySport("Sport-001");
+        List<SportInstructorEntity> result = sportInstructorRepository.findBySport(sport.getId());
 
         assertNotNull(result);
         assertEquals(1, result.size());
@@ -70,16 +70,16 @@ public class SportInstructorRepositoryIT {
     @Test
     @Order(2)
     void testFindByInstructor() {
-        SportEntity sport = createSport("Sport-002");
-        InstructorEntity instructor = createInstructor("Instructor-002");
-        SportInstructorEntity entity = createSportInstructor("SI-002", sport, instructor);
+        SportEntity sport = createSport(null);
+        InstructorEntity instructor = createInstructor(null);
+        SportInstructorEntity entity = createSportInstructor(null, sport, instructor);
 
         em.persist(sport);
         em.persist(instructor);
         em.persist(entity);
         em.flush();
 
-        List<SportInstructorEntity> result = sportInstructorRepository.findByInstructor("Instructor-002");
+        List<SportInstructorEntity> result = sportInstructorRepository.findByInstructor(instructor.getId());
 
         assertNotNull(result);
         assertEquals(1, result.size());
@@ -88,16 +88,16 @@ public class SportInstructorRepositoryIT {
     @Test
     @Order(3)
     void testFindBySportAndInstructor() {
-        SportEntity sport = createSport("Sport-003");
-        InstructorEntity instructor = createInstructor("Instructor-003");
-        SportInstructorEntity entity = createSportInstructor("SI-003", sport, instructor);
+        SportEntity sport = createSport(null);
+        InstructorEntity instructor = createInstructor(null);
+        SportInstructorEntity entity = createSportInstructor(null, sport, instructor);
 
         em.persist(sport);
         em.persist(instructor);
         em.persist(entity);
         em.flush();
 
-        Optional<SportInstructorEntity> result = sportInstructorRepository.findBySportAndInstructor("Sport-003", "Instructor-003");
+        Optional<SportInstructorEntity> result = sportInstructorRepository.findBySportAndInstructor(sport.getId(), instructor.getId());
 
         assertTrue(result.isPresent());
     }
@@ -105,14 +105,14 @@ public class SportInstructorRepositoryIT {
     @Test
     @Order(4)
     void testFindBySportWithoutInstructor() {
-        SportEntity sport = createSport("Sport-004");
-        SportInstructorEntity entity = new SportInstructorEntity("SI-004", "Activity-004", "OldSport-004", false, sport, null);
+        SportEntity sport = createSport(null);
+        SportInstructorEntity entity = new SportInstructorEntity(null, "Activity-004", "OldSport-004", false, sport, null);
 
         em.persist(sport);
         em.persist(entity);
         em.flush();
 
-        Optional<SportInstructorEntity> result = sportInstructorRepository.findBySportWithoutInstructor("Sport-004");
+        Optional<SportInstructorEntity> result = sportInstructorRepository.findBySportWithoutInstructor(sport.getId());
 
         assertTrue(result.isPresent());
     }
@@ -120,9 +120,9 @@ public class SportInstructorRepositoryIT {
     @Test
     @Order(5)
     void testFindByActivity() {
-        SportEntity sport = createSport("Sport-005");
-        InstructorEntity instructor = createInstructor("Instructor-005");
-        SportInstructorEntity entity = createSportInstructor("SI-005", sport, instructor);
+        SportEntity sport = createSport(null);
+        InstructorEntity instructor = createInstructor(null);
+        SportInstructorEntity entity = createSportInstructor(null, sport, instructor);
 
         em.persist(sport);
         em.persist(instructor);
@@ -138,16 +138,16 @@ public class SportInstructorRepositoryIT {
     @Test
     @Order(6)
     void testCountSportInstructors() {
-        SportEntity sport = createSport("Sport-006");
-        InstructorEntity instructor = createInstructor("Instructor-006");
-        SportInstructorEntity entity = createSportInstructor("SI-006", sport, instructor);
+        SportEntity sport = createSport(null);
+        InstructorEntity instructor = createInstructor(null);
+        SportInstructorEntity entity = createSportInstructor(null, sport, instructor);
 
         em.persist(sport);
         em.persist(instructor);
         em.persist(entity);
         em.flush();
 
-        Long count = sportInstructorRepository.countSportInstructors("Sport-006");
+        Long count = sportInstructorRepository.countSportInstructors(sport.getId());
 
         assertEquals(1, count);
     }

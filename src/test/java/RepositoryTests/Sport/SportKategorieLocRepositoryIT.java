@@ -41,11 +41,11 @@ public class SportKategorieLocRepositoryIT {
     @Test
     @Order(1)
     void testSaveAndFindById() {
-        SportKategorieLocEntity entity = createSportKategorieLoc("SKL-001", "cs", "Fotbal", "Popis fotbalu");
+        SportKategorieLocEntity entity = createSportKategorieLoc(null, "cs", "Fotbal", "Popis fotbalu");
         em.persist(entity);
         em.flush();
 
-        Optional<SportKategorieLocEntity> result = sportKategorieLocRepository.findById("SKL-001");
+        Optional<SportKategorieLocEntity> result = sportKategorieLocRepository.findById(entity.getId());
 
         assertTrue(result.isPresent());
         assertEquals("Fotbal", result.get().getNazev());
@@ -54,11 +54,11 @@ public class SportKategorieLocRepositoryIT {
     @Test
     @Order(2)
     void testDeleteEntity() {
-        SportKategorieLocEntity entity = createSportKategorieLoc("SKL-002", "en", "Basketball", "Description of basketball");
+        SportKategorieLocEntity entity = createSportKategorieLoc(null, "en", "Basketball", "Description of basketball");
         em.persist(entity);
         em.flush();
 
-        Optional<SportKategorieLocEntity> result = sportKategorieLocRepository.findById("SKL-002");
+        Optional<SportKategorieLocEntity> result = sportKategorieLocRepository.findById(entity.getId());
         assertTrue(result.isPresent());
 
         em.remove(entity);

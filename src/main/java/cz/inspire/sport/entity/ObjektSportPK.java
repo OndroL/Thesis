@@ -16,6 +16,5 @@ import java.io.Serializable;
 public class ObjektSportPK implements Serializable {
     @GeneratedValue(strategy = GenerationType.UUID)
     private String id;
-
     private int index;
 }

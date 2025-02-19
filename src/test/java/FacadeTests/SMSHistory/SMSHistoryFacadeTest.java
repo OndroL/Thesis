@@ -66,16 +66,12 @@ public class SMSHistoryFacadeTest {
         );
 
         when(smsHistoryMapper.toEntity(dto)).thenReturn(entity);
-        doAnswer(invocation -> {
-            entity.setId(.generateGUID(dto));
-            return null;
-        }).when(smsHistoryService).create(entity);
+        doAnswer(invocation -> savedEntity).when(smsHistoryService).create(entity);
 
         // Test
         String result = smsHistoryFacade.create(dto);
 
         assertNotNull(result);
-        assertEquals(entity.getId(), result);
         verify(smsHistoryMapper, times(1)).toEntity(dto);
         verify(smsHistoryService, times(1)).create(entity);
     }

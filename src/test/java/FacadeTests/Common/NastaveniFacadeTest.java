@@ -10,12 +10,21 @@ import jakarta.ejb.FinderException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.*;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
 
 import java.io.Serializable;
 
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.Mockito.any;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @ExtendWith(org.mockito.junit.jupiter.MockitoExtension.class)
 public class NastaveniFacadeTest {
@@ -42,7 +51,7 @@ public class NastaveniFacadeTest {
         NastaveniEntity entity = new NastaveniEntity(key, null);
 
         when(nastaveniMapper.toEntity(dto)).thenReturn(entity);
-        doNothing().when(nastaveniService).create(entity);
+        when(nastaveniService.create(any(NastaveniEntity.class))).thenReturn(entity);
 
         String result = nastaveniFacade.create(key, value);
 

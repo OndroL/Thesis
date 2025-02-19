@@ -44,7 +44,7 @@ public class EmailQueueFacadeTest {
         entity.setId("queue123");
 
         when(emailQueueMapper.toEntity(dto)).thenReturn(entity);
-        doNothing().when(emailQueueService).create(entity);
+        when(emailQueueService.create(any(EmailQueueEntity.class))).thenReturn(entity);
 
         String result = emailQueueFacade.create(dto);
 

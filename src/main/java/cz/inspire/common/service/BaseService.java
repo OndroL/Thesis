@@ -2,20 +2,20 @@ package cz.inspire.common.service;
 
 import com.google.common.reflect.TypeToken;
 import cz.inspire.enterprise.exception.SystemException;
-import jakarta.persistence.EntityExistsException;
-import jakarta.ejb.RemoveException;
 import jakarta.data.repository.CrudRepository;
-import jakarta.ejb.DuplicateKeyException;
 import jakarta.ejb.CreateException;
-import java.io.Serializable;
-import java.util.List;
-import java.util.Optional;
-
+import jakarta.ejb.DuplicateKeyException;
 import jakarta.ejb.FinderException;
+import jakarta.ejb.RemoveException;
+import jakarta.persistence.EntityExistsException;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+
+import java.io.Serializable;
+import java.util.List;
+import java.util.Optional;
 
 import static cz.inspire.common.utils.ExceptionHandler.wrapDBException;
 
@@ -60,10 +60,11 @@ public abstract class BaseService<E, PK extends Serializable, R extends CrudRepo
         );
     }
 
-    public void create(E entity) throws CreateException {
+    public E create(E entity) throws CreateException {
         try {
             em.persist(entity);
             em.flush();
+            return entity;
         } catch (EntityExistsException e) {
             logger.error("Failed to create " + getEntityType() + " already exists.", e);
             throw new DuplicateKeyException("Failed to create " + getEntityType() + " already exists.");
