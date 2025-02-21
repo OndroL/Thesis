@@ -19,6 +19,7 @@ public class ActivityWebTabEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private String id;
+    // This columns should have relationships (sportId, activityId, objectId)
     @Column
     private String sportId;
     @Column

@@ -14,15 +14,17 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
-import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.type.SqlTypes;
 
 import java.util.List;
 import java.util.Set;
 
-@Data
+@Getter
+@Setter
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
@@ -132,7 +134,7 @@ public class ObjektEntity {
     @JoinColumn(name = "objekt")
     private List<ObjektLocEntity> localeData;
 
-    @OneToMany(mappedBy = "objekt")
+    @OneToMany(mappedBy = "objekt", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<ObjektSportEntity> objektSports;
 
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
@@ -148,8 +150,8 @@ public class ObjektEntity {
             joinColumns = @JoinColumn(name = "objekt"),
             inverseJoinColumns = @JoinColumn(name = "nadobjekt")
     )
-    private Set<ObjektEntity> nadobjekty;
+    private Set<ObjektEntity> nadObjekty;
 
-    @ManyToMany(mappedBy = "nadobjekty")
-    private Set<ObjektEntity> podobjekty;
+    @ManyToMany(mappedBy = "nadObjekty")
+    private Set<ObjektEntity> podObjekty;
 }

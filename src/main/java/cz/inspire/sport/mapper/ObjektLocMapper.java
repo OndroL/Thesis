@@ -24,13 +24,13 @@ public interface ObjektLocMapper {
 
     @Named("mapLocaleDataToList")
     default List<ObjektLocEntity> mapLocaleDataToList(Map<String, ObjektLocDto> locData) {
-        if (locData.isEmpty()) return Collections.emptyList();
+        if (locData == null || locData.isEmpty()) return Collections.emptyList();
         return new ArrayList<>(locData.values().stream().map(this::toEntity).toList());
     }
 
     @Named("mapLocaleDataToMap")
     default Map<String, ObjektLocDto> mapLocaleDataToMap(List<ObjektLocEntity> locData) {
-        if (locData.isEmpty()) return Collections.emptyMap();
+        if (locData == null || locData.isEmpty()) return Collections.emptyMap();
         return locData.stream()
                 .map(this::toDto)
                 .collect(Collectors.toMap(ObjektLocDto::getJazyk, Function.identity()));

@@ -10,6 +10,7 @@ import jakarta.ejb.RemoveException;
 import jakarta.persistence.EntityExistsException;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
+import jakarta.transaction.Transactional;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -19,6 +20,7 @@ import java.util.Optional;
 
 import static cz.inspire.common.utils.ExceptionHandler.wrapDBException;
 
+@Transactional //Delete if necessary, I needed it to handle LazyInitializationException on detached entities while testing
 public abstract class BaseService<E, PK extends Serializable, R extends CrudRepository<E, PK>> {
 
     private Logger logger;
@@ -38,6 +40,18 @@ public abstract class BaseService<E, PK extends Serializable, R extends CrudRepo
 
     public List<E> findAll() throws FinderException {
         return wrapDBException(() -> repository.findAll().toList(), "Failed to findAll for " + getEntityType());
+    }
+
+    public E findByIdWithEntityManager(PK pk) throws FinderException {
+        if (pk == null) {
+            throw new FinderException("Primary key cannot be null");
+        }
+        // fetch the detached entity
+        E detached = repository.findById(pk)
+                .orElseThrow(() -> new FinderException("Failed to find " + getEntityType() + " with primary key: " + pk));
+        // explicitly attach it to the current session
+        E managed = em.merge(detached);
+        return managed;
     }
 
     public E findByPrimaryKey(PK pk) throws FinderException {
@@ -74,10 +88,11 @@ public abstract class BaseService<E, PK extends Serializable, R extends CrudRepo
         }
     }
 
-    public void update(E entity) throws SystemException {
+    public E update(E entity) throws SystemException {
         try {
             em.merge(entity);
             em.flush();
+            return entity;
         } catch (Exception e) {
             logger.error("Failed to update " + getEntityType(), e);
             throw new SystemException("Failed to update " + getEntityType(), e);

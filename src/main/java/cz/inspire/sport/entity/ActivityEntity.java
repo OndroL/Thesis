@@ -23,12 +23,16 @@ public class ActivityEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private String id;
+
     @Column
     private String name;
+
     @Column
     private String description;
+
     @Column
     private int index;
+
     @Column
     private String iconId;
 

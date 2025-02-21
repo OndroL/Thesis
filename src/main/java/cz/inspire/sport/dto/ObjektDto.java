@@ -43,11 +43,11 @@ public class ObjektDto implements Serializable {
     private Integer zruseniRezervacePredZacatkem;
     private Map<String, ObjektLocDto> localeData;
     private ArealDto areal;
-    private List<ObjektSportDto> objektSports;
+    private List<SportDto> sports;
     private List<OvladacObjektuDto> ovladaceObjektu;
     private List<PodminkaRezervaceDto> podminkyRezervaci;
-    private Set<String> nadobjekty;
-    private Set<String> podobjekty;
+    private Set<String> nadObjekty;
+    private Set<String> podObjekty;
     private String googleCalendarId;
     private boolean googleCalendarNotification;
     private int googleCalendarNotificationBefore;

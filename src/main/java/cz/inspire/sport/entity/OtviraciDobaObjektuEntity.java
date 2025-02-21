@@ -21,6 +21,7 @@ import org.hibernate.type.SqlTypes;
 @Table(name = "otviraci_doba")
 public class OtviraciDobaObjektuEntity {
     @EmbeddedId
+    // Eventually add @OneToOne Relationship or move omezeni column into ObjektEntity
     private OtviraciDobaObjektuPK embeddedId;
 
     @JdbcTypeCode(SqlTypes.JSON)

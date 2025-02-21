@@ -24,13 +24,13 @@ public interface SportLocMapper {
 
     @Named("mapLocaleDataToList")
     default List<SportLocEntity> mapLocaleDataToList(Map<String, SportLocDto> locData) {
-        if (locData.isEmpty()) return Collections.emptyList();
+        if (locData == null || locData.isEmpty()) return Collections.emptyList();
         return new ArrayList<>(locData.values().stream().map(this::toEntity).toList());
     }
 
     @Named("mapLocaleDataToMap")
     default Map<String, SportLocDto> mapLocaleDataToMap(List<SportLocEntity> locData) {
-        if (locData.isEmpty()) return Collections.emptyMap();
+        if (locData == null || locData.isEmpty()) return Collections.emptyMap();
         return locData.stream()
                 .map(this::toDto)
                 .collect(Collectors.toMap(SportLocDto::getJazyk, Function.identity()));

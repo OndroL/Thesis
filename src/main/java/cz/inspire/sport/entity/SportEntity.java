@@ -128,7 +128,7 @@ public class SportEntity {
     @OneToMany(mappedBy = "sport")
     private List<SportInstructorEntity> sportInstructors;
 
-    @OneToMany(mappedBy = "sport")
+    @OneToMany(mappedBy = "sport", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<ObjektSportEntity> objekty;
 
     @Transient

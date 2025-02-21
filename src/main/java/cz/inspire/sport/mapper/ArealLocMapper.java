@@ -23,13 +23,13 @@ public interface ArealLocMapper {
 
     @Named("mapLocaleDataToList")
     default List<ArealLocEntity> mapLocaleDataToList(Map<String, ArealLocDto> locData) {
-        if (locData.isEmpty()) return Collections.emptyList();
+        if (locData == null || locData.isEmpty()) return Collections.emptyList();
         return locData.values().stream().map(this::toEntity).toList();
     }
 
     @Named("mapLocaleDataToMap")
     default Map<String, ArealLocDto> mapLocaleDataToMap(List<ArealLocEntity> locData) {
-        if (locData.isEmpty()) return Collections.emptyMap();
+        if (locData == null || locData.isEmpty()) return Collections.emptyMap();
         return locData.stream()
                 .map(this::toDto)
                 .collect(Collectors.toMap(ArealLocDto::getJazyk, Function.identity()));

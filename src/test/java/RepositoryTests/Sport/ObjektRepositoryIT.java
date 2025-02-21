@@ -45,10 +45,6 @@ public class ObjektRepositoryIT {
         em.flush();
     }
 
-    /**
-     * Create a new ObjektEntity without assigning a manual ID.
-     * Let JPA generate the ID (assuming @GeneratedValue is on ObjektEntity).
-     */
     private ObjektEntity createObjekt(ArealEntity areal, Boolean primyVstup, int typRezervace) {
         Random rand = new Random();
 
@@ -61,9 +57,6 @@ public class ObjektRepositoryIT {
         return objekt;
     }
 
-    /**
-     * Same idea for ArealEntity: let JPA generate the ID.
-     */
     private ArealEntity createAreal() {
         Random rand = new Random();
 

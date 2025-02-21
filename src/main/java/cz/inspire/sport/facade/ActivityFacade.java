@@ -3,14 +3,18 @@ package cz.inspire.sport.facade;
 import cz.inspire.sport.dto.ActivityDto;
 import cz.inspire.sport.dto.InstructorDto;
 import cz.inspire.sport.entity.ActivityEntity;
+import cz.inspire.sport.entity.ActivityWebTabEntity;
 import cz.inspire.sport.entity.InstructorEntity;
+import cz.inspire.sport.entity.SportEntity;
 import cz.inspire.sport.mapper.ActivityMapper;
 import cz.inspire.sport.service.ActivityService;
+import cz.inspire.sport.service.ActivityWebTabService;
 import cz.inspire.sport.service.InstructorService;
 import jakarta.ejb.CreateException;
 import jakarta.ejb.FinderException;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
+import cz.inspire.enterprise.exception.ApplicationException;
 
 import java.util.HashSet;
 import java.util.List;
@@ -25,6 +29,8 @@ public class ActivityFacade {
     ActivityMapper activityMapper;
     @Inject
     InstructorService instructorService;
+    @Inject
+    ActivityWebTabService activityWebTabService;
 
     public ActivityDto create(ActivityDto dto) throws CreateException {
         try {
@@ -59,14 +65,56 @@ public class ActivityFacade {
         }
     }
 
-    public void update(ActivityDto dto) throws Exception {
+    // Call from ActivityController method - updateActivity(ActivityDetails details) -> Set<LocalInstructor> instructors = ActivityFacade.update(dto);
+    public Set<InstructorEntity> update(ActivityDto dto) throws Exception {
         try {
+            ActivityEntity entity = activityService.findByPrimaryKey(dto.getId());
 
+            Set<InstructorEntity> instructors = new HashSet<>();
+            if (entity.getInstructors() != null) {
+                instructors.addAll(entity.getInstructors());
+            }
+            entity = activityService.update(activityMapper.toEntity(dto));
+            if (entity.getInstructors() != null) {
+                instructors.addAll(entity.getInstructors());
+            }
+            return instructors;
 
-        } catch (Exception e) {
+        } catch (FinderException e) {
+            throw new FinderException("Failed to update ActivityEntity. " + e);
+        }catch (Exception e) {
             throw new Exception("Failed to update ActivityEntity with id : " + dto.getId(), e);
         }
     }
+
+    public void delete(String id) throws Exception {
+        try {
+            ActivityEntity entity = activityService.findByPrimaryKey(id);
+            List<SportEntity> sports = entity.getSports();
+
+            if (sports != null && !sports.isEmpty()) {
+                throw new ApplicationException("ActivityEntity [" + id + "] cannot be removed. "
+                        + "It is associated with " + sports.size() + " sports."
+                );
+            }
+
+            activityService.delete(entity);
+
+            List<ActivityWebTabEntity> webTabEntities = activityWebTabService.findByActivity(id);
+            for (ActivityWebTabEntity webTab : webTabEntities) {
+                activityWebTabService.delete(webTab);
+            }
+
+        } catch (FinderException e) {
+            throw new FinderException("Failed to delete ActivityEntity. " + e);
+        } catch (Exception e) {
+            throw new Exception("Failed to update ActivityEntity with id : " + id, e);
+        }
+    }
+
+    // ActivityDetails getActivity(String id) -> use return ActivityFacade.findById(String id) in tryCatch block
+    // same for rest of finders/getters
+
 
 
 

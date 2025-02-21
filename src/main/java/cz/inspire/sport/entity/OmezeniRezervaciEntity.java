@@ -22,6 +22,7 @@ import java.io.Serializable;
 @Table(name = "omezeni_rezervaci")
 public class OmezeniRezervaciEntity implements Serializable {
     @Id
+    // Eventually add @OneToOne Relationship or move omezeni column into ObjektEntity
     private String objektId;
 
     @JdbcTypeCode(SqlTypes.JSON)

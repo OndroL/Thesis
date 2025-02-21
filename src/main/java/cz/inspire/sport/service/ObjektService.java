@@ -2,12 +2,14 @@ package cz.inspire.sport.service;
 
 import cz.inspire.common.service.BaseService;
 import cz.inspire.sport.entity.ObjektEntity;
+import cz.inspire.sport.entity.ObjektSportEntity;
 import cz.inspire.sport.repository.ObjektRepository;
 import jakarta.data.Limit;
 import jakarta.ejb.FinderException;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 
+import java.util.Comparator;
 import java.util.List;
 
 import static cz.inspire.common.utils.ExceptionHandler.wrapDBException;
@@ -87,4 +89,7 @@ public class ObjektService extends BaseService<ObjektEntity, String, ObjektRepos
                         " with pagination (offset + 1 = " + offset + ", count = " + count + ")"
         );
     }
+
+    private static final Comparator<ObjektSportEntity> OBJEKT_SPORT_COMPARATOR =
+            Comparator.comparingInt(entity -> entity.getEmbeddedId().getIndex());
 }

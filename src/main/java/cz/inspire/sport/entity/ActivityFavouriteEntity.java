@@ -21,12 +21,17 @@ public class ActivityFavouriteEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private String id;
+
+    // This two columns should have relationships to ZakaznikEntity and ActivityEntity
     @Column
     private String zakaznikId;
+
     @Column
     private String activityId;
+
     @Column
     private int pocet;
+
     @Column
     private LocalDateTime datumPosledniZmeny;
 }
