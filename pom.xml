@@ -188,14 +188,12 @@
             <scope>provided</scope>
         </dependency>
 
-
         <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-api</artifactId>
             <version>2.0.6</version>
             <scope>compile</scope>
         </dependency>
-
 
         <dependency>
             <groupId>io.quarkus</groupId>
@@ -293,9 +291,18 @@
                 <artifactId>maven-compiler-plugin</artifactId>
                 <version>${maven-compiler-plugin.version}</version>
                 <configuration>
+                    <excludes>
+                        <exclude>META-INF/services/javax.annotation.processing.Processor</exclude>
+                        <exclude>META-INF/services/jakarta.annotation.processing.Processor</exclude>
+                    </excludes>
                     <source>21</source>
                     <target>21</target>
                     <annotationProcessorPaths>
+                        <annotationProcessorPath>
+                            <groupId>cz.inspire</groupId>
+                            <artifactId>Thesis</artifactId>
+                            <version>${project.version}</version>
+                        </annotationProcessorPath>
                         <annotationProcessorPath>
                             <groupId>org.projectlombok</groupId>
                             <artifactId>lombok</artifactId>

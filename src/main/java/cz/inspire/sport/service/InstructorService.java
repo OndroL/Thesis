@@ -11,7 +11,7 @@ import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 
 import java.io.IOException;
-import java.util.*;
+import java.util.List;
 
 import static cz.inspire.common.utils.ExceptionHandler.wrapDBException;
 

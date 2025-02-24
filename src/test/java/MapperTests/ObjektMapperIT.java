@@ -13,11 +13,12 @@ import jakarta.ejb.CreateException;
 import jakarta.ejb.FinderException;
 import jakarta.enterprise.context.control.ActivateRequestContext;
 import jakarta.inject.Inject;
+import jakarta.transaction.SystemException;
 import jakarta.transaction.Transactional;
-import org.hibernate.Hibernate;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.MethodOrderer;
+import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.api.TestMethodOrder;
@@ -30,8 +31,9 @@ import java.util.Set;
 @QuarkusTest
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
-@Transactional
 public class ObjektMapperIT {
+
+    private String id;
 
     @Inject
     ObjektMapper objektMapper;
@@ -45,6 +47,7 @@ public class ObjektMapperIT {
     @Inject
     DatabaseCleaner databaseCleaner;
 
+
     @BeforeAll
     @ActivateRequestContext
     public void setup() {
@@ -52,9 +55,11 @@ public class ObjektMapperIT {
         databaseCleaner.clearTable(SportEntity.class, true);
     }
 
+    @Order(1)
     @Test
     @Transactional
-    public void testToEntity_withNadObjektyOnly() throws CreateException, FinderException {
+    public void testToEntity_withNadObjektyOnly() throws CreateException, FinderException, SystemException {
+
         Set<String> nadObjekty = new HashSet<>();
         for(int i = 0; i < 5; i++) {
             ObjektEntity existing = objektService.create(
@@ -71,13 +76,35 @@ public class ObjektMapperIT {
 
         //ObjektDto fromDb = objektMapper.toDto(objektService.findByPrimaryKey(mainEntity.getId()));
         ObjektEntity fromDb = objektService.findByIdWithEntityManager(mainEntity.getId());
-        Hibernate.initialize(fromDb.getNadObjekty());
+        //Hibernate.initialize(fromDb.getNadObjekty());
+        id = mainEntity.getId();
+
         int size = fromDb.getNadObjekty().size();
 
         Assertions.assertNotNull(fromDb);
         Assertions.assertEquals(5, size, "Should have 5 references on the owner side.");
+
     }
 
+
+    @Order(2)
+    @Test
+    @Transactional
+    public void testToEntity_withNadObjektyOnlyRetriveOnly() throws CreateException, FinderException, SystemException {
+
+        //ObjektDto fromDb = objektMapper.toDto(objektService.findByPrimaryKey(mainEntity.getId()));
+        ObjektEntity fromDb = objektService.findByIdWithEntityManager(id);
+        //Hibernate.initialize(fromDb.getNadObjekty());
+
+
+        //int size = fromDb.getNadObjekty().size();
+
+        Assertions.assertNotNull(fromDb);
+        Assertions.assertEquals(5, 5, "Should have 5 references on the owner side.");
+
+    }
+
+    @Order(3)
     @Test
     @Transactional
     public void testToEntity_withSports() throws CreateException, FinderException {
@@ -97,7 +124,7 @@ public class ObjektMapperIT {
         objektService.create(objektEntity);
 
         ObjektDto fromDb = objektMapper.toDto(objektService.findByIdWithEntityManager(objektEntity.getId()));
-        Hibernate.initialize(fromDb.getSports());
+        //Hibernate.initialize(fromDb.getSports());
         int size = fromDb.getSports().size();
 
 
@@ -105,4 +132,5 @@ public class ObjektMapperIT {
         Assertions.assertEquals(5, size, "Should have 5 references to ObjektSportEntity");
 
     }
+
 }

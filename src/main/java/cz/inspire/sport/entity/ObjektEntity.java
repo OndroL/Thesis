@@ -130,14 +130,14 @@ public class ObjektEntity {
     @JoinColumn(name = "areal")
     private ArealEntity areal;
 
-    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     @JoinColumn(name = "objekt")
     private List<ObjektLocEntity> localeData;
 
     @OneToMany(mappedBy = "objekt", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<ObjektSportEntity> objektSports;
 
-    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     @JoinColumn(name = "objektId")
     private List<OvladacObjektuEntity> ovladaceObjektu;
 

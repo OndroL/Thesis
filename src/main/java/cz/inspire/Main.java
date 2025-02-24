@@ -1,11 +1,21 @@
 package cz.inspire;
 
+import jakarta.ejb.CreateException;
+import jakarta.ejb.FinderException;
+import jakarta.transaction.HeuristicMixedException;
+import jakarta.transaction.HeuristicRollbackException;
+import jakarta.transaction.NotSupportedException;
+import jakarta.transaction.RollbackException;
+import jakarta.transaction.SystemException;
+
 public class Main {
+
+
     private static final int ONE_MILLION = 1000000; // 1-5 minutes, dependent on PC
     private static final int ONE_BILLION = 1000000000; // Do not use if you don't have ~5hours
     private static final int BATCH_SIZE = 1000;
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws FinderException, HeuristicRollbackException, SystemException, HeuristicMixedException, NotSupportedException, RollbackException, CreateException {
         ///StressTestOfUUID(); -- Do not run if you don't have free time and running DB
     }
 

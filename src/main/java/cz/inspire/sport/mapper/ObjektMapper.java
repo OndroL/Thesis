@@ -92,6 +92,7 @@ public abstract class ObjektMapper {
                 try {
                     ObjektEntity nadObj = objektRepository.findById(objektId)
                             .orElseThrow(() -> new FinderException("Failed to find nadObjekt with id : " + objektId));
+                    Hibernate.initialize(entity.getNadObjekty());
                     if (Hibernate.isInitialized(entity.getNadObjekty())) {
                         nadObjekty.add(nadObj);
                     }
@@ -109,7 +110,8 @@ public abstract class ObjektMapper {
                 try {
                     ObjektEntity podObj = objektRepository.findById(objektId)
                             .orElseThrow(() -> new FinderException("Failed to find podObjekt with id : " + objektId));
-                    if (Hibernate.isInitialized(entity.getNadObjekty())) {
+                    Hibernate.initialize(entity.getPodObjekty());
+                    if (Hibernate.isInitialized(entity.getPodObjekty())) {
                         podObjekty.add(podObj);
                     }
                 } catch (Exception ex) {
