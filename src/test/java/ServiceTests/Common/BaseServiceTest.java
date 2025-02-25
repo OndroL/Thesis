@@ -2,6 +2,7 @@ package ServiceTests.Common;
 
 import cz.inspire.common.service.BaseService;
 import cz.inspire.enterprise.exception.SystemException;
+import jakarta.data.repository.Repository;
 import jakarta.ejb.CreateException;
 import jakarta.ejb.DuplicateKeyException;
 import jakarta.ejb.FinderException;
@@ -35,7 +36,7 @@ class BaseServiceTest {
     private static class TestEntity implements Serializable {
         private String id;
     }
-
+    @Repository
     private interface TestRepository extends CrudRepository<TestEntity, String> {
     }
 

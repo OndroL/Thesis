@@ -130,7 +130,7 @@ public class ObjektEntity {
     @JoinColumn(name = "areal")
     private ArealEntity areal;
 
-    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
     @JoinColumn(name = "objekt")
     private List<ObjektLocEntity> localeData;
 

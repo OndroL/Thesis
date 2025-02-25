@@ -45,13 +45,6 @@ public abstract class BaseService<E, PK extends Serializable, R extends CrudRepo
             throw new FinderException("Primary key cannot be null");
         }
         return em.find((Class<E>) typeToken.getRawType(), pk);
-
-//        // fetch the detached entity
-//        E detached = repository.findById(pk)
-//                .orElseThrow(() -> new FinderException("Failed to find " + getEntityType() + " with primary key: " + pk));
-//        // explicitly attach it to the current session
-//        E managed = em.merge(detached);
-//        return managed;
     }
 
     public E findByPrimaryKey(PK pk) throws FinderException {
