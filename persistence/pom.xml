@@ -268,8 +268,6 @@
                 <artifactId>maven-compiler-plugin</artifactId>
                 <version>${maven-compiler-plugin.version}</version>
                 <configuration>
-                    <source>16</source>
-                    <target>16</target>
                     <proc>full</proc>
                     <annotationProcessorPaths>
                         <!-- Reference the repository processor module here -->
@@ -299,6 +297,8 @@
                             <version>${hibernate.version}</version>
                         </annotationProcessorPath>
                     </annotationProcessorPaths>
+                    <source>21</source>
+                    <target>21</target>
                 </configuration>
             </plugin>
             <plugin>

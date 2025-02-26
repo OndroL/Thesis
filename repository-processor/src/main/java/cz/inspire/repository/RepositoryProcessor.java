@@ -7,10 +7,9 @@ import com.squareup.javapoet.MethodSpec;
 import com.squareup.javapoet.TypeName;
 import com.squareup.javapoet.TypeSpec;
 import cz.inspire.repository.annotations.Limit;
-import cz.inspire.repository.annotations.MyRepository;
+import cz.inspire.repository.annotations.Repository;
 import cz.inspire.repository.annotations.Offset;
 import cz.inspire.repository.annotations.Query;
-import cz.inspire.repository.annotations.QueryParam;
 
 import javax.annotation.processing.AbstractProcessor;
 import javax.annotation.processing.ProcessingEnvironment;
@@ -38,7 +37,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-@SupportedAnnotationTypes("cz.inspire.repository.annotations.MyRepository")
+@SupportedAnnotationTypes("cz.inspire.repository.annotations.Repository")
 @SupportedSourceVersion(SourceVersion.RELEASE_21)
 public class RepositoryProcessor extends AbstractProcessor {
 
@@ -56,7 +55,7 @@ public class RepositoryProcessor extends AbstractProcessor {
 
     @Override
     public boolean process(Set<? extends TypeElement> annotations, RoundEnvironment roundEnv) {
-        for (Element element : roundEnv.getElementsAnnotatedWith(MyRepository.class)) {
+        for (Element element : roundEnv.getElementsAnnotatedWith(Repository.class)) {
             if (element.getKind() == ElementKind.INTERFACE) {
                 generateRepositoryImplementation((TypeElement) element);
             }
@@ -164,6 +163,34 @@ public class RepositoryProcessor extends AbstractProcessor {
         if (query != null) {
             // Query-based method.
             String jpql = query.value();
+
+            // Extract expected parameter names from the query using a regex.
+            java.util.regex.Pattern pattern = java.util.regex.Pattern.compile(":(\\w+)");
+            java.util.regex.Matcher matcher = pattern.matcher(jpql);
+            Set<String> expectedParams = new java.util.HashSet<>();
+            while (matcher.find()) {
+                expectedParams.add(matcher.group(1));
+            }
+
+            // Build a set of parameter names provided in the method.
+            Set<String> providedParams = new java.util.HashSet<>();
+            for (VariableElement param : method.getParameters()) {
+                if (param.getAnnotation(Limit.class) != null || param.getAnnotation(Offset.class) != null) {
+                    continue;
+                }
+                providedParams.add(param.getSimpleName().toString());
+            }
+
+            if (!expectedParams.equals(providedParams)) {
+                processingEnv.getMessager().printMessage(
+                        Diagnostic.Kind.ERROR,
+                        "Query parameter mismatch in method " + method.getSimpleName() +
+                                ". Expected: " + expectedParams +
+                                ", Found: " + providedParams,
+                        method);
+                return null; // Skip generation for this method.
+            }
+
             TypeMirror entityType = null;
             // If retType is List<T> or Optional<T>, extract T.
             TypeElement listEl = elementUtils.getTypeElement("java.util.List");
@@ -196,13 +223,12 @@ public class RepositoryProcessor extends AbstractProcessor {
                     inferred);
             for (VariableElement param : method.getParameters()) {
                 String name = param.getSimpleName().toString();
-                if (param.getAnnotation(QueryParam.class) != null) {
-                    QueryParam qp = param.getAnnotation(QueryParam.class);
-                    builder.addStatement("query.setParameter($S, $N)", qp.value(), name);
-                } else if (param.getAnnotation(Offset.class) != null) {
+                if (param.getAnnotation(Offset.class) != null) {
                     builder.addStatement("query.setFirstResult($N)", name);
                 } else if (param.getAnnotation(Limit.class) != null) {
                     builder.addStatement("query.setMaxResults($N)", name);
+                } else {
+                    builder.addStatement("query.setParameter($S, $N)", name, name);
                 }
             }
             String retStr = TypeName.get(subReturn).toString();
@@ -242,7 +268,12 @@ public class RepositoryProcessor extends AbstractProcessor {
                 case "delete": {
                     VariableElement param = method.getParameters().getFirst();
                     String pName = param.getSimpleName().toString();
-                    builder.addStatement("em.remove(em.merge($N))", pName)
+                    // Assume that every entity class has a method "getId()" to obtain its identifier.
+                    builder.addStatement("$T managed = em.getReference($T.class, $N.getId())",
+                                    TypeName.get(substituteType(param.asType(), typeMap)),
+                                    TypeName.get(substituteType(param.asType(), typeMap)),
+                                    pName)
+                            .addStatement("em.remove(managed)")
                             .addStatement("em.flush()");
                     break;
                 }

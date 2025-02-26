@@ -21,18 +21,15 @@
             <artifactId>javapoet</artifactId>
             <version>1.13.0</version>
         </dependency>
-        <!-- Lombok if needed -->
-        <dependency>
-            <groupId>org.projectlombok</groupId>
-            <artifactId>lombok</artifactId>
-            <version>1.18.30</version>
-            <scope>provided</scope>
-        </dependency>
         <!-- Annotation API -->
         <dependency>
             <groupId>jakarta.annotation</groupId>
             <artifactId>jakarta.annotation-api</artifactId>
             <version>2.1.1</version>
+        </dependency>
+        <dependency>
+            <groupId>org.jetbrains</groupId>
+            <artifactId>annotations</artifactId>
         </dependency>
         <!-- Include any additional dependencies required by your processor -->
     </dependencies>
