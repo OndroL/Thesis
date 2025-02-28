@@ -20,7 +20,7 @@ public class NastaveniJsonFacade {
         try {
             nastaveniJsonService.create(new NastaveniJsonEntity(key, value));
             /// Even that the docs in old Bean said return type to be primary key of the new instance
-            /// It is set to return null
+            /// It was set to return null
             return null;
         } catch (Exception e) {
             throw new CreateException();
@@ -31,7 +31,7 @@ public class NastaveniJsonFacade {
         try {
             nastaveniJsonService.create(nastaveniJsonMapper.toEntity(nastaveniJsonDto));
             /// Even that the docs in old Bean said return type to be primary key of the new instance
-            /// It is set to return null
+            /// It was set to return null
             return null;
         } catch (Exception e) {
             throw new CreateException();

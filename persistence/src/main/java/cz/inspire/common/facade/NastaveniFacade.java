@@ -22,7 +22,7 @@ public class NastaveniFacade {
         try {
             nastaveniService.create(nastaveniMapper.toEntity(new NastaveniDto(key, value)));
             /// Even that the docs in old Bean said return type to be primary key of the new instance
-            /// It is set to return null
+            /// It was set to return null
             return null;
         } catch (Exception e) {
             throw new CreateException();
