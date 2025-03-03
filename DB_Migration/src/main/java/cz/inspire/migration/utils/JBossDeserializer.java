@@ -16,6 +16,12 @@ public class JBossDeserializer {
             return null;
         }
 
+        // Check for Java serialization header (0xACED)
+        if (data.length < 2 || (data[0] & 0xFF) != 0xAC || (data[1] & 0xFF) != 0xED) {
+            // Data does not appear to be a Java-serialized object.
+            return data;
+        }
+
         try (ByteArrayInputStream bis = new ByteArrayInputStream(data);
              ObjectInputStream in = new ObjectInputStream(bis)) {
 

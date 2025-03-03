@@ -163,6 +163,20 @@ public class JsonbMigrator implements Migrator {
                     logger.error("Table '{}': Failed to process 'attributes' data. Setting column to NULL.", tableName, e);
                     return null; // Default to SQL NULL in case of errors
                 }
+
+            } else if ("jsonObject".equals(targetConfig)) {
+                try {
+                    String jsonValue = JsonConverter.toJson(deserializedObj);
+                    JsonNode valueNode = mapper.readTree(jsonValue);
+
+                    ObjectNode jsonNode = mapper.createObjectNode();
+                    jsonNode.set("Value", valueNode);
+
+                    return mapper.writeValueAsString(jsonNode);
+                } catch (Exception e) {
+                    logger.error("Table '{}': Failed to process 'jsonObject' data. Setting column to NULL.", tableName, e);
+                    return null; // Default to SQL NULL in case of errors
+                }
             } else {
                 // Default behavior for other cases
                 logger.warn("Unsupported targetConfig '{}' for table '{}', column '{}'. Returning basic Jsonb with Value.", targetConfig, tableName, originalColumnName);

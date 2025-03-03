@@ -39,3 +39,24 @@ tables:
       - name: attributes
         target: jsonb
         targetConfig: "attributes" # contains value and Key in jsonb (Map<String,Object>)
+  - name: instructor
+    primaryKey: id
+    columns:
+      - name: photo
+        target: filesystem
+        targetConfig: "photo" # base dir in FileSystem - rename to some number contains FileName and FilePath
+  - name: objekt
+    primaryKey: id
+    columns:
+      - name: reservationstart
+        target: jsonb
+        targetConfig: "list"
+      - name: reservationfinish
+        target: jsonb
+        targetConfig: "list"
+  - name: omezeni_rezervaci
+    primaryKey: objektId
+    columns:
+        - name: omezeni
+          target: jsonb
+          targetConfig: "jsonObject"

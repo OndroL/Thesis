@@ -2,6 +2,7 @@ package cz.inspire.migration.migrators;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import cz.inspire.migration.config.ColumnConfig;
+import cz.inspire.migration.utils.FileAttributes;
 import cz.inspire.migration.utils.JBossDeserializer;
 import cz.inspire.migration.utils.Migrator;
 import org.slf4j.Logger;
@@ -63,7 +64,7 @@ public class FilesystemMigrator implements Migrator {
                     byte[] valueBytes = rs.getBytes(originalColumnName);
 
                     // Handle filesystem migration
-                    String finalJsonValue = handleFilesystemMigration(tableName, key, valueBytes, targetConfig);
+                    String finalJsonValue = handleFilesystemMigration(tableName, key, valueBytes, targetConfig, originalColumnName);
 
                     // Set parameters for UPDATE and add to batch
                     if (finalJsonValue != null) {
@@ -97,25 +98,47 @@ public class FilesystemMigrator implements Migrator {
     /**
      * Handles migration for columns with target type 'filesystem'.
      */
-    private String handleFilesystemMigration(String tableName, String key, byte[] valueBytes, String targetConfig) {
+    private String handleFilesystemMigration(String tableName, String key, byte[] valueBytes, String targetConfig, String originalColumnName) {
         try {
-            // Deserialize the Map from bytea
+            // Deserialize the stored data.
             Object obj = JBossDeserializer.deserialize(valueBytes);
-            if (!(obj instanceof Map)) {
-                if (obj != null) {
-                    logger.info("Table '{}', Key '{}': Expected a Map for attachments, but found {}", tableName, key, obj.getClass().getName());
+
+            // For "attributes", we expect a Map.
+            if (Objects.equals(originalColumnName, "attributes")) {
+                if (!(obj instanceof Map)) {
+                    if (obj != null) {
+                        logger.info("Table '{}', Key '{}': Expected a Map for attachments, but found {}", tableName, key, obj.getClass().getName());
+                    }
+                    return "[]"; // Return empty list in JSON format
                 }
-                return "[]"; // Return empty list in JSON format
+            }
+            // For "photo", we might get a raw byte[] (PNG) instead of a Map.
+            else if (Objects.equals(originalColumnName, "photo")) {
+                if (obj instanceof byte[]) {
+                    // Wrap the raw PNG bytes into a Map for uniform processing.
+                    Map<String, byte[]> photoMap = new HashMap<>();
+                    photoMap.put("instructorID : " + key, (byte[]) obj);
+                    obj = photoMap;
+                } else if (obj == null) {
+                    return "{}"; // Return an empty JSON object as fallback
+                }
+            }
+            // Fallback: if no recognized type, return empty.
+            else {
+                if(obj == null) {
+                    return "[]";
+                }
             }
 
+            // Now process the data as a Map<String, byte[]>
             Map<String, byte[]> attachmentsMap = (Map<String, byte[]>) obj;
-            List<cz.inspire.migration.utils.File> attachmentsList = new ArrayList<>();
+            List<FileAttributes> attachmentsList = new ArrayList<>();
 
             for (Map.Entry<String, byte[]> entry : attachmentsMap.entrySet()) {
                 String fileName = entry.getKey();
                 byte[] fileData = entry.getValue();
 
-                // Generate unique identifier for filePath
+                // Generate a unique file path
                 String uniqueId = UUID.randomUUID().toString();
                 String baseDirPath = BASE_DIR + '/' + targetConfig + '/';
                 String filePath = baseDirPath + uniqueId;
@@ -127,7 +150,7 @@ public class FilesystemMigrator implements Migrator {
                     continue; // Skip this attachment
                 }
 
-                // Write file to filesystem
+                // Write the file to the filesystem
                 try (FileOutputStream fos = new FileOutputStream(filePath)) {
                     fos.write(fileData);
                     logger.debug("Table '{}', Key '{}': Stored attachment '{}' at '{}'.", tableName, key, fileName, filePath);
@@ -136,20 +159,34 @@ public class FilesystemMigrator implements Migrator {
                     continue; // Skip this attachment
                 }
 
-                // Add to attachments list
-                attachmentsList.add(new cz.inspire.migration.utils.File(fileName, filePath));
+                // Add file attributes to the list
+                attachmentsList.add(new FileAttributes(fileName, filePath));
             }
 
-            // Convert attachments list to JSON
-            String attachmentsJson = mapper.writeValueAsString(attachmentsList);
-            logger.debug("Table '{}', Key '{}': attachments_json: {}", tableName, key, attachmentsJson);
+            // Return JSON: if handling photo, return a single object; otherwise return the list.
+            String attachmentsJson;
+            if ("photo".equals(originalColumnName)) {
+                if (!attachmentsList.isEmpty()) {
+                    attachmentsJson = mapper.writeValueAsString(attachmentsList.get(0));
+                    if (attachmentsList.size() > 1) {
+                        logger.error("Table '{}', Key '{}': Photo has more than 1 object!", tableName, key);
+                    }
+                } else {
+                    attachmentsJson = "{}";
+                }
+            } else {
+                attachmentsJson = mapper.writeValueAsString(attachmentsList);
+            }
 
+            logger.debug("Table '{}', Key '{}': {}_json: {}", tableName, key, originalColumnName, attachmentsJson);
             return attachmentsJson;
         } catch (Exception e) {
-            logger.error("Table '{}', Key '{}': Failed to process attachments.", tableName, key, e);
+            logger.error("Table '{}', Key '{}': Failed to process files.", tableName, key, e);
             return "[]"; // Fallback to empty array
         }
     }
+
+
 
 
     /**
