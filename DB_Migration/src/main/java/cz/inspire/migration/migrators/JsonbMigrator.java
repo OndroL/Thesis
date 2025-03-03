@@ -10,7 +10,13 @@ import cz.inspire.migration.utils.Migrator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.sql.*;
+import java.awt.*;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.sql.Types;
 import java.util.Map;
 
 
@@ -26,6 +32,7 @@ public class JsonbMigrator implements Migrator {
         String targetConfig = columnConfig.getTargetConfig();
         readConn.setAutoCommit(true);
         writeConn.setAutoCommit(false);
+        Color color = null;
 
         if (targetConfig == null || targetConfig.isEmpty()) {
             logger.error("targetConfig is not defined for table '{}', column '{}'. Skipping.", tableName, originalColumnName);
@@ -133,39 +140,71 @@ public class JsonbMigrator implements Migrator {
 
             String targetConfig = columnConfig.getTargetConfig();
 
-            if ("list".equals(targetConfig)) {
-                // For "list" targetConfig, serialize the object as a JSON array
-                return JsonConverter.toJson(deserializedObj);
-            } else if ("nastaveni".equals(targetConfig)) {
-                // Build JSON for "nastaveni" case
-                String jsonValue = JsonConverter.toJson(deserializedObj);
-                JsonNode valueNode = mapper.readTree(jsonValue);
-
-                ObjectNode jsonNode = mapper.createObjectNode();
-                jsonNode.set("Value", valueNode);
-                jsonNode.put("ClassName", deserializedObj.getClass().getName());
-
-                return mapper.writeValueAsString(jsonNode);
-            } else if ("attributes".equals(targetConfig)) {
-                Map<String, Object> attributesMap;
-                try {
-                    // Assuming deserializedObj is already a compatible Map structure
-                    if (deserializedObj instanceof Map) {
-                        attributesMap = (Map<String, Object>) deserializedObj;
-                    } else {
-                        // Fallback: Convert the object into a Map using Jackson
-                        attributesMap = mapper.convertValue(deserializedObj, Map.class);
-                    }
-                    // Convert the Map to a JSON string
-                    return mapper.writeValueAsString(attributesMap);
-
-                } catch (Exception e) {
-                    logger.error("Table '{}': Failed to process 'attributes' data. Setting column to NULL.", tableName, e);
-                    return null; // Default to SQL NULL in case of errors
+            switch (targetConfig) {
+                case "list" -> {
+                    // For "list" targetConfig, serialize the object as a JSON array
+                    return JsonConverter.toJson(deserializedObj);
+                    // For "list" targetConfig, serialize the object as a JSON array
                 }
+                case "nastaveni" -> {
+                    // Build JSON for "nastaveni" case
+                    String jsonValue = JsonConverter.toJson(deserializedObj);
+                    JsonNode valueNode = mapper.readTree(jsonValue);
 
-            } else if ("jsonObject".equals(targetConfig)) {
-                try {
+                    ObjectNode jsonNode = mapper.createObjectNode();
+                    jsonNode.set("Value", valueNode);
+                    jsonNode.put("ClassName", deserializedObj.getClass().getName());
+
+                    return mapper.writeValueAsString(jsonNode);
+                }
+                case "attributes" -> {
+                    Map<String, Object> attributesMap;
+                    try {
+                        // Assuming deserializedObj is already a compatible Map structure
+                        if (deserializedObj instanceof Map) {
+                            attributesMap = (Map<String, Object>) deserializedObj;
+                        } else {
+                            // Fallback: Convert the object into a Map using Jackson
+                            attributesMap = mapper.convertValue(deserializedObj, Map.class);
+                        }
+                        // Convert the Map to a JSON string
+                        return mapper.writeValueAsString(attributesMap);
+
+                    } catch (Exception e) {
+                        logger.error("Table '{}': Failed to process 'attributes' data. Setting column to NULL.", tableName, e);
+                        return null; // Default to SQL NULL in case of errors
+                    }
+                }
+                case "jsonObject" -> {
+                    try {
+                        String jsonValue = JsonConverter.toJson(deserializedObj);
+                        JsonNode valueNode = mapper.readTree(jsonValue);
+
+                        return mapper.writeValueAsString(valueNode);
+                    } catch (Exception e) {
+                        logger.error("Table '{}': Failed to process 'jsonObject' data. Setting column to NULL.", tableName, e);
+                        return null; // Default to SQL NULL in case of errors
+                    }
+                }
+                case "color" -> {
+                    try {
+                        String jsonValue = JsonConverter.toJson(deserializedObj);
+                        JsonNode valueNode = mapper.readTree(jsonValue);
+                        ObjectNode smallerCollor = mapper.createObjectNode();
+                        smallerCollor.set("red", valueNode.findValue("red"));
+                        smallerCollor.set("blue", valueNode.findValue("blue"));
+                        smallerCollor.set("green", valueNode.findValue("green"));
+                        smallerCollor.set("alpha", valueNode.findValue("alpha"));
+
+                        return mapper.writeValueAsString(smallerCollor);
+                    } catch (Exception e) {
+                        logger.error("Table '{}': Failed to process 'jsonObject' data. Setting column to NULL.", tableName, e);
+                        return null; // Default to SQL NULL in case of errors
+                    }
+                }
+                case null, default -> {
+                    // Default behavior for other cases
+                    logger.warn("Unsupported targetConfig '{}' for table '{}', column '{}'. Returning basic Jsonb with Value.", targetConfig, tableName, originalColumnName);
                     String jsonValue = JsonConverter.toJson(deserializedObj);
                     JsonNode valueNode = mapper.readTree(jsonValue);
 
@@ -173,20 +212,7 @@ public class JsonbMigrator implements Migrator {
                     jsonNode.set("Value", valueNode);
 
                     return mapper.writeValueAsString(jsonNode);
-                } catch (Exception e) {
-                    logger.error("Table '{}': Failed to process 'jsonObject' data. Setting column to NULL.", tableName, e);
-                    return null; // Default to SQL NULL in case of errors
                 }
-            } else {
-                // Default behavior for other cases
-                logger.warn("Unsupported targetConfig '{}' for table '{}', column '{}'. Returning basic Jsonb with Value.", targetConfig, tableName, originalColumnName);
-                String jsonValue = JsonConverter.toJson(deserializedObj);
-                JsonNode valueNode = mapper.readTree(jsonValue);
-
-                ObjectNode jsonNode = mapper.createObjectNode();
-                jsonNode.set("Value", valueNode);
-
-                return mapper.writeValueAsString(jsonNode);
             }
         } catch (Exception e) {
             logger.error("Failed to build JSON for table '{}', column '{}'. Returning null.", tableName, originalColumnName, e);

@@ -18,21 +18,21 @@ tables:
       - name: morerecipients
         target: jsonb
         targetConfig: "list"
-  - name: email_history
-    primaryKey: id
-    columns:
-      - name: groups
-        target: jsonb
-        targetConfig: "list"
-      - name: recipients
-        target: jsonb
-        targetConfig: "list"
-      - name: morerecipients
-        target: jsonb
-        targetConfig: "list"
-      - name: attachments
-        target: filesystem
-        targetConfig: "attachments"  # base dir in FileSystem - rename to some number contains FileName and FilePath
+#  - name: email_history
+#    primaryKey: id
+#    columns:
+#      - name: groups
+#        target: jsonb
+#        targetConfig: "list"
+#      - name: recipients
+#        target: jsonb
+#        targetConfig: "list"
+#      - name: morerecipients
+#        target: jsonb
+#        targetConfig: "list"
+#      - name: attachments
+#        target: filesystem
+#        targetConfig: "attachments"  # base dir in FileSystem - rename to some number contains FileName and FilePath
   - name: generated_attachment
     primaryKey: id
     columns:
@@ -55,8 +55,32 @@ tables:
         target: jsonb
         targetConfig: "list"
   - name: omezeni_rezervaci
-    primaryKey: objektId
+    primaryKey: objektid
     columns:
         - name: omezeni
           target: jsonb
           targetConfig: "jsonObject"
+  - name : otviraci_doba
+    primaryKey: objektid
+    columns:
+        - name: otviracidoba
+          target: jsonb
+          targetConfig: "jsonObject"
+  - name: ovladac_objektu
+    primaryKey: id
+    columns:
+      - name: cislaZapojeni
+        target: jsonb
+        targetConfig: "list"
+  - name: sport
+    primaryKey: id
+    columns:
+      - name: sazbystorna
+        target: jsonb
+        targetConfig: "list"
+      - name: barvaPopredi
+        target: jsonb
+        targetConfig: "color"
+      - name: barvaPozadi
+        target: jsonb
+        targetConfig: "color"
