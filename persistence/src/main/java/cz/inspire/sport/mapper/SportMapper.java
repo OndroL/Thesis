@@ -1,5 +1,7 @@
 package cz.inspire.sport.mapper;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import cz.inspire.sport.dto.SportDto;
 import cz.inspire.sport.entity.SportEntity;
 import org.mapstruct.Mapper;
@@ -7,11 +9,8 @@ import org.mapstruct.Mapping;
 import org.mapstruct.MappingConstants;
 import org.mapstruct.Named;
 
-import java.awt.Color;
+import java.awt.*;
 import java.io.IOException;
-
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
 
 @Mapper(componentModel = MappingConstants.ComponentModel.JAKARTA_CDI,
         uses = {SportLocMapper.class, InstructorMapper.class, SportKategorieMapper.class, ActivityMapper.class})
@@ -52,10 +51,10 @@ public interface SportMapper {
         }
         try {
             JsonNode root = OBJECT_MAPPER.readTree(json); // parse the JSON
-            int r = root.path("r").asInt(0);
-            int g = root.path("g").asInt(0);
-            int b = root.path("b").asInt(0);
-            int a = root.path("a").asInt(255);
+            int r = root.path("red").asInt(0);
+            int g = root.path("green").asInt(0);
+            int b = root.path("blue").asInt(0);
+            int a = root.path("alpha").asInt(255);
             return new Color(r, g, b, a);
         } catch (IOException e) {
             throw new IllegalArgumentException("Invalid JSON for color: " + json, e);
@@ -67,10 +66,10 @@ public interface SportMapper {
             return null;
         }
         JsonNode node = OBJECT_MAPPER.createObjectNode()
-                .put("r", color.getRed())
-                .put("g", color.getGreen())
-                .put("b", color.getBlue())
-                .put("a", color.getAlpha());
+                .put("red", color.getRed())
+                .put("green", color.getGreen())
+                .put("blue", color.getBlue())
+                .put("alpha", color.getAlpha());
         return node.toString();
     }
 }

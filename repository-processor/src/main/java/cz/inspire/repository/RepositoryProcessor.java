@@ -7,9 +7,9 @@ import com.squareup.javapoet.MethodSpec;
 import com.squareup.javapoet.TypeName;
 import com.squareup.javapoet.TypeSpec;
 import cz.inspire.repository.annotations.Limit;
-import cz.inspire.repository.annotations.Repository;
 import cz.inspire.repository.annotations.Offset;
 import cz.inspire.repository.annotations.Query;
+import cz.inspire.repository.annotations.Repository;
 
 import javax.annotation.processing.AbstractProcessor;
 import javax.annotation.processing.ProcessingEnvironment;
@@ -36,6 +36,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 @SupportedAnnotationTypes("cz.inspire.repository.annotations.Repository")
 @SupportedSourceVersion(SourceVersion.RELEASE_21)
@@ -163,6 +165,23 @@ public class RepositoryProcessor extends AbstractProcessor {
         if (query != null) {
             // Query-based method.
             String jpql = query.value();
+            // For each method parameter, check if it is annotated with @Nullable.
+            for (VariableElement param : method.getParameters()) {
+                if (param.getAnnotation(jakarta.annotation.Nullable.class) != null) {
+                    String paramName = param.getSimpleName().toString();
+                    // This regex matches something like: fieldName = :paramName
+                    Pattern pattern = Pattern.compile("(\\S+)\\s*=\\s*:" + paramName);
+                    Matcher matcher = pattern.matcher(jpql);
+                    StringBuffer sb = new StringBuffer();
+                    while (matcher.find()) {
+                        String field = matcher.group(1);
+                        String replacement = "((:" + paramName + " IS NULL AND " + field + " IS NULL) OR " + field + " = :" + paramName + ")";
+                        matcher.appendReplacement(sb, replacement);
+                    }
+                    matcher.appendTail(sb);
+                    jpql = sb.toString();
+                }
+            }
 
             // Extract expected parameter names from the query using a regex.
             java.util.regex.Pattern pattern = java.util.regex.Pattern.compile(":(\\w+)");

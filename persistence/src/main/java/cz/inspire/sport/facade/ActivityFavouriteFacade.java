@@ -6,7 +6,6 @@ import cz.inspire.sport.mapper.ActivityFavouriteMapper;
 import cz.inspire.sport.service.ActivityFavouriteService;
 import jakarta.ejb.CreateException;
 import jakarta.ejb.FinderException;
-import jakarta.ejb.RemoveException;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 

@@ -6,16 +6,20 @@ import cz.inspire.sport.entity.SportKategorieEntity;
 import cz.inspire.sport.entity.SportLocEntity;
 import cz.inspire.sport.repository.SportRepository;
 import io.quarkus.test.junit.QuarkusTest;
+import jakarta.data.Limit;
 import jakarta.enterprise.context.control.ActivateRequestContext;
 import jakarta.inject.Inject;
 import jakarta.persistence.EntityManager;
 import jakarta.transaction.Transactional;
-import jakarta.data.Limit;
-import org.junit.jupiter.api.*;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Order;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInstance;
 
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 @Transactional
 @QuarkusTest
@@ -39,7 +43,7 @@ public class SportRepositoryIT {
     }
 
     private SportEntity createSport(String id, String name, SportKategorieEntity category, SportEntity parent) {
-        SportEntity sport = new SportEntity(id, 1, "ZB-001", "SK-001", 100, true, 60, true, 10, null, 30, 120, true, 15, null, null, true, true, 10, 90, 1, 5, 20, null, null, null, null, null, null, null, null, null);
+        SportEntity sport = new SportEntity(id, 1, "ZB-001", "SK-001", 100, true, 60, true, 10, null, 30, 120, true, 15,null, null, true, true, 10, 90, 1, 5, 20, null, null, null, null, null, null, null, null, null);
         sport.setSportKategorie(category);
         sport.setNadrazenySport(parent);
         sport.setLocaleData(List.of(new SportLocEntity(id, "cs", name, "Description " + name)));

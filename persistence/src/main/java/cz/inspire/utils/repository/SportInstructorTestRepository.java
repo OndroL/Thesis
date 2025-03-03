@@ -6,6 +6,7 @@ import cz.inspire.repository.annotations.Offset;
 import cz.inspire.repository.annotations.Query;
 import cz.inspire.repository.annotations.Repository;
 import cz.inspire.sport.entity.SportInstructorEntity;
+import jakarta.annotation.Nullable;
 
 import java.util.List;
 
@@ -16,7 +17,7 @@ public interface SportInstructorTestRepository extends BaseRepository<SportInstr
     List<SportInstructorEntity> findBySport(String sportId);
 
     @Query("SELECT s FROM SportInstructorEntity s WHERE s.instructor.id = :instructorId AND s.deleted = false")
-    List<SportInstructorEntity> findByInstructor(String instructorId);
+    List<SportInstructorEntity> findByInstructor(@Nullable String instructorId);
 
     @Query("""
        SELECT s FROM SportInstructorEntity s
@@ -24,7 +25,7 @@ public interface SportInstructorTestRepository extends BaseRepository<SportInstr
          AND s.instructor.id = :instructorId
          AND s.deleted = false
        """)
-    SportInstructorEntity findBySportAndInstructor(String sportId, String instructorId);
+    SportInstructorEntity findBySportAndInstructor(String sportId, @Nullable String instructorId);
 
     @Query("""
        SELECT s FROM SportInstructorEntity s
@@ -32,7 +33,7 @@ public interface SportInstructorTestRepository extends BaseRepository<SportInstr
          AND s.instructor.id = :instructorId
          AND s.deleted = false
        """)
-    SportInstructorEntity findBySportAndInstructorWithLimit(String sportId, String instructorId,
+    SportInstructorEntity findBySportAndInstructorWithLimit(@Nullable String sportId, String instructorId,
                                                                       @Limit int limit,
                                                                       @Offset int offset);
 
