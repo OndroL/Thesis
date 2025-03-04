@@ -22,4 +22,10 @@ public interface InstructorTestRepository extends BaseRepository<InstructorEntit
     ORDER BY i.index ASC
     """)
     List<InstructorEntity> findAllByActivity(String activityId, boolean deleted, @Offset int offset, @Limit int limit);
+
+    @Query("""
+    SELECT i FROM InstructorEntity i
+    ORDER BY i.index
+    """)
+    List<InstructorEntity> findAll();
 }

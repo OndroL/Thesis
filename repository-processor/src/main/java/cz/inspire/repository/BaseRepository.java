@@ -1,6 +1,7 @@
 package cz.inspire.repository;
 
 import java.io.Serializable;
+import java.util.List;
 
 public interface BaseRepository<E, PK extends Serializable> {
     E create(E entity);
@@ -10,4 +11,6 @@ public interface BaseRepository<E, PK extends Serializable> {
     void delete(E entity);
 
     E findById(PK id);
+
+    List<E> findAll();
 }

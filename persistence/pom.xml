@@ -230,6 +230,7 @@
             <groupId>cz.inspire</groupId>
             <artifactId>repository-processor</artifactId>
             <version>${project.version}</version>
+            <scope>compile</scope>
         </dependency>
     </dependencies>
 

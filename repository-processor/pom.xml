@@ -36,9 +36,7 @@
             <artifactId>jakarta.data-api</artifactId>
             <version>1.0.1</version>
         </dependency>
-
     </dependencies>
-
     <build>
         <plugins>
             <!-- Compiler plugin (annotation processing not required in processor module) -->

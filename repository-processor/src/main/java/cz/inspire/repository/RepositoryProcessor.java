@@ -165,6 +165,7 @@ public class RepositoryProcessor extends AbstractProcessor {
         if (query != null) {
             // Query-based method.
             String jpql = query.value();
+
             // For each method parameter, check if it is annotated with @Nullable.
             for (VariableElement param : method.getParameters()) {
                 if (param.getAnnotation(jakarta.annotation.Nullable.class) != null) {
@@ -302,6 +303,20 @@ public class RepositoryProcessor extends AbstractProcessor {
                     TypeElement entityEl = (TypeElement) typeUtils.asElement(substituteType(method.getReturnType(), typeMap));
                     ClassName inferred = ClassName.get(entityEl);
                     builder.addStatement("return em.find($T.class, $N)", inferred, pName);
+                    break;
+                }
+                case "findAll": {
+                    // Determine the entity type from the return type (List<E>).
+                    TypeParameterElement entityTypeParam = baseRepo.getTypeParameters().getFirst();
+                    TypeMirror entityType = typeMap.get(entityTypeParam);
+                    TypeElement entityEl = (TypeElement) typeUtils.asElement(entityType);
+                    ClassName inferred = ClassName.get(entityEl);
+                    String jpql = "SELECT e FROM " + entityEl.getSimpleName() + " e";
+                    builder.addStatement("$T query = em.createQuery($S, $T.class)",
+                            ClassName.get("jakarta.persistence", "TypedQuery"),
+                            jpql,
+                            inferred);
+                    builder.addStatement("return query.getResultList()");
                     break;
                 }
                 default:
