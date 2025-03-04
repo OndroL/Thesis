@@ -30,35 +30,35 @@ public class ActivityRepositoryIT {
     @Test
     public void testSaveAndFindById() {
         ActivityEntity entity = new ActivityEntity("ID-001", "Yoga", "Relaxing yoga session", 1, "icon1", null, null);
-        activityRepository.save(entity);
+        activityRepository.create(entity);
 
-        Optional<ActivityEntity> retrieved = activityRepository.findById("ID-001");
-        Assertions.assertTrue(retrieved.isPresent(), "Entity should be present in repository.");
-        Assertions.assertEquals("Yoga", retrieved.get().getName(), "Name should match.");
-        Assertions.assertEquals("Relaxing yoga session", retrieved.get().getDescription(), "Description should match.");
+        ActivityEntity retrieved = activityRepository.findById("ID-001");
+        Assertions.assertNotNull(retrieved, "Entity should be present in repository.");
+        Assertions.assertEquals("Yoga", retrieved.getName(), "Name should match.");
+        Assertions.assertEquals("Relaxing yoga session", retrieved.getDescription(), "Description should match.");
     }
 
     @Test
     public void testUpdateEntity() {
         ActivityEntity entity = new ActivityEntity("ID-002", "Pilates", "Core workout", 2, "icon2", null, null);
-        activityRepository.save(entity);
+        activityRepository.create(entity);
 
         entity.setDescription("Full-body workout");
-        activityRepository.save(entity);
+        activityRepository.create(entity);
 
-        Optional<ActivityEntity> updated = activityRepository.findById("ID-002");
-        Assertions.assertTrue(updated.isPresent(), "Entity should be present after update.");
-        Assertions.assertEquals("Full-body workout", updated.get().getDescription(), "Updated description should be correct.");
+        ActivityEntity updated = activityRepository.findById("ID-002");
+        Assertions.assertNotNull(updated, "Entity should be present after update.");
+        Assertions.assertEquals("Full-body workout", updated.getDescription(), "Updated description should be correct.");
     }
 
     @Test
     public void testDeleteEntity() {
         ActivityEntity entity = new ActivityEntity("ID-003", "Zumba", "Dance fitness", 3, "icon3", null, null);
-        activityRepository.save(entity);
+        activityRepository.create(entity);
 
         activityRepository.deleteById("ID-003");
-        Optional<ActivityEntity> deleted = activityRepository.findById("ID-003");
-        Assertions.assertFalse(deleted.isPresent(), "Entity should be deleted from repository.");
+        ActivityEntity deleted = activityRepository.findById("ID-003");
+        Assertions.assertNull(deleted, "Entity should be deleted from repository.");
     }
 
     @Test
@@ -66,8 +66,8 @@ public class ActivityRepositoryIT {
         ActivityEntity e1 = new ActivityEntity("ID-004", "Boxing", "High-intensity training", 5, "icon4", null, null);
         ActivityEntity e2 = new ActivityEntity("ID-005", "Swimming", "Water-based exercise", 4, "icon5", null, null);
 
-        activityRepository.save(e1);
-        activityRepository.save(e2);
+        activityRepository.create(e1);
+        activityRepository.create(e2);
 
         List<ActivityEntity> results = activityRepository.findAllOrdered();
         Assertions.assertEquals(2, results.size(), "Expected 2 activities in order.");
@@ -79,7 +79,7 @@ public class ActivityRepositoryIT {
     public void testCountActivities() {
         long countBefore = activityRepository.countActivities();
         ActivityEntity entity = new ActivityEntity("ID-006", "Running", "Outdoor jogging", 6, "icon6", null, null);
-        activityRepository.save(entity);
+        activityRepository.create(entity);
         long countAfter = activityRepository.countActivities();
 
         Assertions.assertEquals(countBefore + 1, countAfter, "Activity count should increase by 1.");

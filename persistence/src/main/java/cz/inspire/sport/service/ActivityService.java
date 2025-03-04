@@ -3,7 +3,6 @@ package cz.inspire.sport.service;
 import cz.inspire.common.service.BaseService;
 import cz.inspire.sport.entity.ActivityEntity;
 import cz.inspire.sport.repository.ActivityRepository;
-import jakarta.data.Limit;
 import jakarta.ejb.FinderException;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
@@ -32,16 +31,16 @@ public class ActivityService extends BaseService<ActivityEntity, String, Activit
 
     public List<ActivityEntity> findAll(int offset, int count) throws FinderException {
         return wrapDBException(
-                () -> repository.findAll(Limit.range(offset + 1, count)),
-                "Error retrieving paginated ActivityEntity records (offset + 1 = " + offset + ", count = " + count + ")"
+                () -> repository.findAll(count, offset),
+                "Error retrieving paginated ActivityEntity records (offset = " + offset + ", count = " + count + ")"
         );
     }
 
     public List<ActivityEntity> findAllByInstructor(String instructorId, int offset, int count) throws FinderException {
         return wrapDBException(
-                () -> repository.findAllByInstructor(instructorId, Limit.range(offset + 1, count)),
+                () -> repository.findAllByInstructor(instructorId, count, offset),
                 "Error retrieving all paginated ActivityEntity records by instructorId = " + instructorId +
-                        " (offset + 1 = " + offset + ", count = " + count + ")"
+                        " (offset = " + offset + ", count = " + count + ")"
         );
     }
 

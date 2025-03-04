@@ -56,10 +56,10 @@ public class OmezeniRezervaciRepositoryIT {
         em.persist(entity);
         em.flush();
 
-        Optional<OmezeniRezervaciEntity> result = omezeniRezervaciRepository.findById("OBJ-008");
+        OmezeniRezervaciEntity result = omezeniRezervaciRepository.findById("OBJ-008");
 
-        assertTrue(result.isPresent());
-        TydeniOtviraciDoba retrievedDoba = (TydeniOtviraciDoba) result.get().getOmezeni();
+        assertNotNull(result);
+        TydeniOtviraciDoba retrievedDoba = (TydeniOtviraciDoba) result.getOmezeni();
         assertNotNull(retrievedDoba);
 
         SortedMap<PeriodOfTime, String> retrievedMap = retrievedDoba.getOtevreno(Calendar.MONDAY);
@@ -83,14 +83,14 @@ public class OmezeniRezervaciRepositoryIT {
         em.persist(entity);
         em.flush();
 
-        Optional<OmezeniRezervaciEntity> result = omezeniRezervaciRepository.findById("OBJ-009");
-        assertTrue(result.isPresent());
+        OmezeniRezervaciEntity result = omezeniRezervaciRepository.findById("OBJ-009");
+        assertNotNull(result);
 
         em.remove(entity);
         em.flush();
 
         result = omezeniRezervaciRepository.findById("OBJ-009");
-        assertFalse(result.isPresent());
+        assertNull(result);
     }
 
     @Test
@@ -113,10 +113,10 @@ public class OmezeniRezervaciRepositoryIT {
         em.persist(entity);
         em.flush();
 
-        Optional<OmezeniRezervaciEntity> result = omezeniRezervaciRepository.findById("OBJ-010");
+        OmezeniRezervaciEntity result = omezeniRezervaciRepository.findById("OBJ-010");
 
-        assertTrue(result.isPresent());
-        TydeniOtviraciDoba retrievedDoba = (TydeniOtviraciDoba) result.get().getOmezeni();
+        assertNotNull(result);
+        TydeniOtviraciDoba retrievedDoba = (TydeniOtviraciDoba) result.getOmezeni();
         assertNotNull(retrievedDoba);
 
         SortedMap<PeriodOfTime, String> retrievedMap = retrievedDoba.getOtevreno(Calendar.WEDNESDAY);
@@ -145,10 +145,10 @@ public class OmezeniRezervaciRepositoryIT {
         em.flush();
 
         // Retrieve and update the opening hours
-        Optional<OmezeniRezervaciEntity> result = omezeniRezervaciRepository.findById("OBJ-012");
-        assertTrue(result.isPresent());
+        OmezeniRezervaciEntity result = omezeniRezervaciRepository.findById("OBJ-012");
+        assertNotNull(result);
 
-        TydeniOtviraciDoba retrievedDoba = (TydeniOtviraciDoba) result.get().getOmezeni();
+        TydeniOtviraciDoba retrievedDoba = (TydeniOtviraciDoba) result.getOmezeni();
         assertNotNull(retrievedDoba);
 
         retrievedDoba.updateOtevreno(oldPeriod, newPeriod, 1, sport.getId());
@@ -160,9 +160,9 @@ public class OmezeniRezervaciRepositoryIT {
 
         // Retrieve again and verify update
         result = omezeniRezervaciRepository.findById("OBJ-012");
-        assertTrue(result.isPresent());
+        assertNotNull(result);
 
-        retrievedDoba = (TydeniOtviraciDoba) result.get().getOmezeni();
+        retrievedDoba = (TydeniOtviraciDoba) result.getOmezeni();
         assertNotNull(retrievedDoba);
 
         SortedMap<PeriodOfTime, String> retrievedMap = retrievedDoba.getOtevreno(1);
@@ -189,10 +189,10 @@ public class OmezeniRezervaciRepositoryIT {
         em.flush();
 
         // Retrieve and delete the opening hours
-        Optional<OmezeniRezervaciEntity> result = omezeniRezervaciRepository.findById("OBJ-013");
-        assertTrue(result.isPresent());
+        OmezeniRezervaciEntity result = omezeniRezervaciRepository.findById("OBJ-013");
+        assertNotNull(result);
 
-        TydeniOtviraciDoba retrievedDoba = (TydeniOtviraciDoba) result.get().getOmezeni();
+        TydeniOtviraciDoba retrievedDoba = (TydeniOtviraciDoba) result.getOmezeni();
         assertNotNull(retrievedDoba);
 
         retrievedDoba.removeOtevreno(period, 4);
@@ -202,9 +202,9 @@ public class OmezeniRezervaciRepositoryIT {
 
         // Retrieve again and verify deletion
         result = omezeniRezervaciRepository.findById("OBJ-013");
-        assertTrue(result.isPresent());
+        assertNotNull(result);
 
-        retrievedDoba = (TydeniOtviraciDoba) result.get().getOmezeni();
+        retrievedDoba = (TydeniOtviraciDoba) result.getOmezeni();
         assertNotNull(retrievedDoba);
 
         SortedMap<PeriodOfTime, String> retrievedMap = retrievedDoba.getOtevreno(Calendar.FRIDAY);
@@ -236,10 +236,10 @@ public class OmezeniRezervaciRepositoryIT {
         em.persist(entity);
         em.flush();
 
-        Optional<OmezeniRezervaciEntity> result = omezeniRezervaciRepository.findById("OBJ-015");
+        OmezeniRezervaciEntity result = omezeniRezervaciRepository.findById("OBJ-015");
 
-        assertTrue(result.isPresent());
-        RozsirenaTydenniOtviraciDoba retrievedDoba = (RozsirenaTydenniOtviraciDoba) result.get().getOmezeni();
+        assertNotNull(result);
+        RozsirenaTydenniOtviraciDoba retrievedDoba = (RozsirenaTydenniOtviraciDoba) result.getOmezeni();
         assertNotNull(retrievedDoba);
 
         SortedMap<PeriodOfTime, List<String>> retrievedMap = retrievedDoba.getOtevreno(0);
@@ -266,10 +266,10 @@ public class OmezeniRezervaciRepositoryIT {
         em.persist(entity);
         em.flush();
 
-        Optional<OmezeniRezervaciEntity> result = omezeniRezervaciRepository.findById("OBJ-016");
-        assertTrue(result.isPresent());
+        OmezeniRezervaciEntity result = omezeniRezervaciRepository.findById("OBJ-016");
+        assertNotNull(result);
 
-        TydeniOtviraciDoba retrievedDoba = (TydeniOtviraciDoba) result.get().getOmezeni();
+        TydeniOtviraciDoba retrievedDoba = (TydeniOtviraciDoba) result.getOmezeni();
         assertNotNull(retrievedDoba);
 
         SortedMap<PeriodOfTime, String> retrievedMap = retrievedDoba.getOtevreno(1);

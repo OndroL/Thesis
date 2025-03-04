@@ -39,7 +39,7 @@ public class SportService extends BaseService<SportEntity, String, SportReposito
 
     public List<SportEntity> findByParent(String parentId, String jazyk, int offset, int count) throws FinderException {
         return wrapDBException(
-                () -> repository.findByParentWithLimit(parentId, jazyk, Limit.range(offset + 1, count)),
+                () -> repository.findByParentWithLimit(parentId, jazyk, count, offset),
                 "Error retrieving SportEntity records for parentId = " + parentId + ", jazyk = " + jazyk +
                 " with pagination (offset + 1 = " + offset + ", count = " + count + ")"
         );
@@ -47,7 +47,7 @@ public class SportService extends BaseService<SportEntity, String, SportReposito
 
     public List<SportEntity> findByCategory(String kategorieId, int offset, int count) throws FinderException {
         return wrapDBException(
-                () -> repository.findByCategory(kategorieId, Limit.range(offset + 1, count)),
+                () -> repository.findByCategory(kategorieId, count, offset),
                 "Error retrieving SportEntity records for kategorieId = " + kategorieId +
                 " with pagination (offset + 1 = " + offset + ", count = " + count + ")"
         );
@@ -55,7 +55,7 @@ public class SportService extends BaseService<SportEntity, String, SportReposito
 
     public List<SportEntity> findByZbozi(String zboziId, int offset, int count) throws FinderException {
         return wrapDBException(
-                () -> repository.findByZbozi(zboziId, Limit.range(offset + 1, count)),
+                () -> repository.findByZbozi(zboziId, count, offset),
                 "Error retrieving SportEntity records for zboziId = " + zboziId +
                 " with pagination (offset + 1 = " + offset + ", count = " + count + ")"
         );
@@ -70,7 +70,7 @@ public class SportService extends BaseService<SportEntity, String, SportReposito
 
     public List<SportEntity> findRoot(String jazyk, int offset, int count) throws FinderException {
         return wrapDBException(
-                () -> repository.findRootWithLimit(jazyk, Limit.range(offset + 1, count)),
+                () -> repository.findRootWithLimit(jazyk, count, offset),
                 "Error retrieving root SportEntity records for jazyk = " + jazyk +
                 " with pagination (offset + 1 = " + offset + ", count = " + count + ")"
         );
@@ -78,7 +78,7 @@ public class SportService extends BaseService<SportEntity, String, SportReposito
 
     public List<SportEntity> findCategoryRoot(int offset, int count) throws FinderException {
         return wrapDBException(
-                () -> repository.findCategoryRoot(Limit.range(offset + 1, count)),
+                () -> repository.findCategoryRoot(count, offset),
                 "Error retrieving root category SportEntity records" +
                 " with pagination (offset + 1 = " + offset + ", count = " + count + ")"
         );

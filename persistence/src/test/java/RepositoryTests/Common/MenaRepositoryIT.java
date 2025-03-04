@@ -13,7 +13,6 @@ import org.junit.jupiter.api.TestInstance;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 @QuarkusTest
 @Transactional
@@ -42,15 +41,15 @@ public class MenaRepositoryIT {
     @Test
     public void testSaveAndFindById() {
         MenaEntity entity = new MenaEntity("ID-001", "EUR", "Euro", 978, 0, 0);
-        menaRepository.save(entity);
+        menaRepository.create(entity);
 
-        Optional<MenaEntity> retrieved = menaRepository.findById("ID-001");
-        Assertions.assertTrue(retrieved.isPresent(), "Entity should be present in repository.");
-        Assertions.assertEquals("EUR", retrieved.get().getKod(), "Kod should match.");
-        Assertions.assertEquals("Euro", retrieved.get().getVycetka(), "Vycetka should match.");
-        Assertions.assertEquals(978, retrieved.get().getKodNum(), "KodNum should match.");
-        Assertions.assertEquals(0, retrieved.get().getZaokrouhleniHotovost(), "ZaokrouhleniHotovost should match.");
-        Assertions.assertEquals(0, retrieved.get().getZaokrouhleniKarta(), "ZaokrouhleniKarta should match.");
+        MenaEntity retrieved = menaRepository.findById("ID-001");
+        Assertions.assertNotNull(retrieved, "Entity should be present in repository.");
+        Assertions.assertEquals("EUR", retrieved.getKod(), "Kod should match.");
+        Assertions.assertEquals("Euro", retrieved.getVycetka(), "Vycetka should match.");
+        Assertions.assertEquals(978, retrieved.getKodNum(), "KodNum should match.");
+        Assertions.assertEquals(0, retrieved.getZaokrouhleniHotovost(), "ZaokrouhleniHotovost should match.");
+        Assertions.assertEquals(0, retrieved.getZaokrouhleniKarta(), "ZaokrouhleniKarta should match.");
     }
 
     /**
@@ -59,7 +58,7 @@ public class MenaRepositoryIT {
     @Test
     public void testUpdateEntity() {
         MenaEntity entity = new MenaEntity("ID-002", "USD", "US Dollar", 840, 1, 1);
-        menaRepository.save(entity);
+        menaRepository.create(entity);
 
         // Modify values
         entity.setKod("GBP");
@@ -67,15 +66,15 @@ public class MenaRepositoryIT {
         entity.setKodNum(826);
         entity.setZaokrouhleniHotovost(2);
         entity.setZaokrouhleniKarta(2);
-        menaRepository.save(entity);
+        menaRepository.create(entity);
 
-        Optional<MenaEntity> updated = menaRepository.findById("ID-002");
-        Assertions.assertTrue(updated.isPresent(), "Entity should still exist after update.");
-        Assertions.assertEquals("GBP", updated.get().getKod(), "Updated kod should be GBP.");
-        Assertions.assertEquals("British Pound", updated.get().getVycetka(), "Updated vycetka should be British Pound.");
-        Assertions.assertEquals(826, updated.get().getKodNum(), "Updated kodNum should be 826.");
-        Assertions.assertEquals(2, updated.get().getZaokrouhleniHotovost(), "Updated zaokrouhleniHotovost should be 2.");
-        Assertions.assertEquals(2, updated.get().getZaokrouhleniKarta(), "Updated zaokrouhleniKarta should be 2.");
+        MenaEntity updated = menaRepository.findById("ID-002");
+        Assertions.assertNotNull(updated, "Entity should still exist after update.");
+        Assertions.assertEquals("GBP", updated.getKod(), "Updated kod should be GBP.");
+        Assertions.assertEquals("British Pound", updated.getVycetka(), "Updated vycetka should be British Pound.");
+        Assertions.assertEquals(826, updated.getKodNum(), "Updated kodNum should be 826.");
+        Assertions.assertEquals(2, updated.getZaokrouhleniHotovost(), "Updated zaokrouhleniHotovost should be 2.");
+        Assertions.assertEquals(2, updated.getZaokrouhleniKarta(), "Updated zaokrouhleniKarta should be 2.");
     }
 
     /**
@@ -84,11 +83,11 @@ public class MenaRepositoryIT {
     @Test
     public void testDeleteEntity() {
         MenaEntity entity = new MenaEntity("ID-003", "JPY", "Japanese Yen", 392, 0, 0);
-        menaRepository.save(entity);
+        menaRepository.create(entity);
 
         menaRepository.deleteById("ID-003");
-        Optional<MenaEntity> deleted = menaRepository.findById("ID-003");
-        Assertions.assertFalse(deleted.isPresent(), "Entity should be deleted from repository.");
+        MenaEntity deleted = menaRepository.findById("ID-003");
+        Assertions.assertNull(deleted, "Entity should be deleted from repository.");
     }
 
     /**
@@ -100,9 +99,9 @@ public class MenaRepositoryIT {
         MenaEntity e2 = new MenaEntity("ID-005", "CZK", "Czech Koruna", 203, 0, 0);
         MenaEntity e3 = new MenaEntity("ID-006", "EUR", "Euro", 978, 0, 0);
 
-        menaRepository.save(e1);
-        menaRepository.save(e2);
-        menaRepository.save(e3);
+        menaRepository.create(e1);
+        menaRepository.create(e2);
+        menaRepository.create(e3);
 
         List<MenaEntity> czkEntities = menaRepository.findByCode("CZK");
         Assertions.assertEquals(2, czkEntities.size(), "Expected 2 CZK entities.");
@@ -118,9 +117,9 @@ public class MenaRepositoryIT {
         MenaEntity e2 = new MenaEntity("ID-008", "USD", "US Dollar", 840, 0, 0);
         MenaEntity e3 = new MenaEntity("ID-009", "GBP", "British Pound", 826, 2, 2);
 
-        menaRepository.save(e1);
-        menaRepository.save(e2);
-        menaRepository.save(e3);
+        menaRepository.create(e1);
+        menaRepository.create(e2);
+        menaRepository.create(e3);
 
         List<MenaEntity> usdEntities = menaRepository.findByCodeNum(840);
         Assertions.assertEquals(2, usdEntities.size(), "Expected 2 USD entities.");

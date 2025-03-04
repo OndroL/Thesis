@@ -2,7 +2,7 @@ package cz.inspire.common.service;
 
 import com.google.common.reflect.TypeToken;
 import cz.inspire.exception.SystemException;
-import jakarta.data.repository.CrudRepository;
+import cz.inspire.repository.BaseRepository;
 import jakarta.ejb.CreateException;
 import jakarta.ejb.DuplicateKeyException;
 import jakarta.ejb.FinderException;
@@ -19,7 +19,7 @@ import java.util.Optional;
 
 import static cz.inspire.common.utils.ExceptionHandler.wrapDBException;
 
-public abstract class BaseService<E, PK extends Serializable, R extends CrudRepository<E, PK>> {
+public abstract class BaseService<E, PK extends Serializable, R extends BaseRepository<E, PK>> {
 
     private Logger logger;
     protected R repository;
@@ -37,7 +37,7 @@ public abstract class BaseService<E, PK extends Serializable, R extends CrudRepo
     }
 
     public List<E> findAll() throws FinderException {
-        return wrapDBException(() -> repository.findAll().toList(), "Failed to findAll for " + getEntityType());
+        return wrapDBException(() -> repository.findAll(), "Failed to findAll for " + getEntityType());
     }
 
     public E findByIdWithEntityManager(PK pk) throws FinderException {
@@ -62,16 +62,14 @@ public abstract class BaseService<E, PK extends Serializable, R extends CrudRepo
             return Optional.empty();
         }
         return wrapDBException(
-                () -> repository.findById(pk),
+                () -> Optional.of(repository.findById(pk)),
                 "Failed to find " + getEntityType() + " with primary key: " + pk
         );
     }
 
     public E create(E entity) throws CreateException {
         try {
-            em.persist(entity);
-            em.flush();
-            return entity;
+            return repository.create(entity);
         } catch (EntityExistsException e) {
             logger.error("Failed to create " + getEntityType() + " already exists.", e);
             throw new DuplicateKeyException("Failed to create " + getEntityType() + " already exists.");
@@ -83,9 +81,7 @@ public abstract class BaseService<E, PK extends Serializable, R extends CrudRepo
 
     public E update(E entity) throws SystemException {
         try {
-            em.merge(entity);
-            em.flush();
-            return entity;
+            return repository.update(entity);
         } catch (Exception e) {
             logger.error("Failed to update " + getEntityType(), e);
             throw new SystemException("Failed to update " + getEntityType(), e);
@@ -97,8 +93,7 @@ public abstract class BaseService<E, PK extends Serializable, R extends CrudRepo
             throw new RemoveException("Cannot delete null entity in " + getEntityType());
         }
         try {
-            em.remove(em.merge(entity));
-            em.flush();
+            repository.delete(entity);
         } catch (Exception e) {
             logger.error("Failed to remove " + getEntityType(), e);
             throw new RemoveException("Failed to remove " + getEntityType());

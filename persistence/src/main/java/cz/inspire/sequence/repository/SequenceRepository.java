@@ -1,10 +1,11 @@
 package cz.inspire.sequence.repository;
 
+import cz.inspire.repository.BaseRepository;
+import cz.inspire.repository.annotations.Limit;
+import cz.inspire.repository.annotations.Offset;
 import cz.inspire.sequence.entity.SequenceEntity;
-import jakarta.data.Limit;
-import jakarta.data.repository.CrudRepository;
-import jakarta.data.repository.Query;
-import jakarta.data.repository.Repository;
+import cz.inspire.repository.annotations.Repository;
+import cz.inspire.repository.annotations.Query;
 
 import java.util.List;
 
@@ -12,7 +13,7 @@ import java.util.List;
  * TODO : Test all Queries from SequenceBean
  */
 @Repository
-public interface SequenceRepository extends CrudRepository<SequenceEntity,String> {
+public interface SequenceRepository extends BaseRepository<SequenceEntity,String> {
     @Query("""
         SELECT s FROM SequenceEntity s
         ORDER BY s.name
@@ -39,9 +40,9 @@ public interface SequenceRepository extends CrudRepository<SequenceEntity,String
 
     @Query("""
         SELECT s FROM SequenceEntity s
-        WHERE s.type = ?1
+        WHERE s.type = :type
         ORDER BY s.name
         """)
-    List<SequenceEntity> findByType(int type, Limit limit);
+    List<SequenceEntity> findByType(int type, @Limit int count, @Offset int offset);
 }
 

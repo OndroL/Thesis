@@ -1,9 +1,9 @@
 package cz.inspire.template.repository;
 
+import cz.inspire.repository.BaseRepository;
 import cz.inspire.template.entity.PrintTemplateEntity;
-import jakarta.data.repository.CrudRepository;
-import jakarta.data.repository.Repository;
+import cz.inspire.repository.annotations.Repository;
 
 @Repository
-public interface  PrintTemplateRepository extends CrudRepository<PrintTemplateEntity, String> {
+public interface  PrintTemplateRepository extends BaseRepository<PrintTemplateEntity, String> {
 }

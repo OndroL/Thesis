@@ -1,16 +1,17 @@
 package cz.inspire.common.repository;
 
 import cz.inspire.common.entity.MenaEntity;
-import jakarta.data.repository.CrudRepository;
-import jakarta.data.repository.Query;
-import jakarta.data.repository.Repository;
+import cz.inspire.repository.BaseRepository;
+import cz.inspire.repository.annotations.Repository;
+import cz.inspire.repository.annotations.Query;
+
 import java.util.List;
 
 @Repository
-public interface MenaRepository extends CrudRepository<MenaEntity,String> {
-    @Query("SELECT p FROM MenaEntity p WHERE p.kod = ?1")
+public interface MenaRepository extends BaseRepository<MenaEntity,String> {
+    @Query("SELECT p FROM MenaEntity p WHERE p.kod = :code")
     List<MenaEntity> findByCode(String code);
 
-    @Query("SELECT p FROM MenaEntity p WHERE p.kodNum = ?1")
+    @Query("SELECT p FROM MenaEntity p WHERE p.kodNum = :codeNum")
     List<MenaEntity> findByCodeNum(int codeNum);
 }

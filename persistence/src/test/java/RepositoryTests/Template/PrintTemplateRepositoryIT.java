@@ -44,14 +44,14 @@ public class PrintTemplateRepositoryIT {
         PrintTemplateEntity entity = new PrintTemplateEntity(
                 "TEMPLATE-001", "<html>Sample Template</html>", 1, "Invoice", "invoice.html");
 
-        printTemplateRepository.save(entity);
+        printTemplateRepository.create(entity);
 
-        Optional<PrintTemplateEntity> retrieved = printTemplateRepository.findById("TEMPLATE-001");
-        Assertions.assertTrue(retrieved.isPresent(), "Entity should be present in repository.");
-        Assertions.assertEquals("Invoice", retrieved.get().getTemplateName(), "Template name should match.");
-        Assertions.assertEquals("invoice.html", retrieved.get().getFileName(), "File name should match.");
-        Assertions.assertEquals(1, retrieved.get().getType(), "Type should match.");
-        Assertions.assertEquals("<html>Sample Template</html>", retrieved.get().getContent(), "Content should match.");
+        PrintTemplateEntity retrieved = printTemplateRepository.findById("TEMPLATE-001");
+        Assertions.assertNotNull(retrieved, "Entity should be present in repository.");
+        Assertions.assertEquals("Invoice", retrieved.getTemplateName(), "Template name should match.");
+        Assertions.assertEquals("invoice.html", retrieved.getFileName(), "File name should match.");
+        Assertions.assertEquals(1, retrieved.getType(), "Type should match.");
+        Assertions.assertEquals("<html>Sample Template</html>", retrieved.getContent(), "Content should match.");
     }
 
     /**
@@ -61,17 +61,17 @@ public class PrintTemplateRepositoryIT {
     public void testUpdateEntity() {
         PrintTemplateEntity entity = new PrintTemplateEntity(
                 "TEMPLATE-002", "<html>Old Content</html>", 2, "Report", "report.html");
-        printTemplateRepository.save(entity);
+        printTemplateRepository.create(entity);
 
         // Update template content and name
         entity.setContent("<html>Updated Content</html>");
         entity.setTemplateName("Updated Report");
-        printTemplateRepository.save(entity);
+        printTemplateRepository.create(entity);
 
-        Optional<PrintTemplateEntity> updated = printTemplateRepository.findById("TEMPLATE-002");
-        Assertions.assertTrue(updated.isPresent(), "Entity should still exist after update.");
-        Assertions.assertEquals("<html>Updated Content</html>", updated.get().getContent(), "Updated content should match.");
-        Assertions.assertEquals("Updated Report", updated.get().getTemplateName(), "Updated template name should match.");
+        PrintTemplateEntity updated = printTemplateRepository.findById("TEMPLATE-002");
+        Assertions.assertNotNull(updated, "Entity should still exist after update.");
+        Assertions.assertEquals("<html>Updated Content</html>", updated.getContent(), "Updated content should match.");
+        Assertions.assertEquals("Updated Report", updated.getTemplateName(), "Updated template name should match.");
     }
 
     /**
@@ -81,11 +81,11 @@ public class PrintTemplateRepositoryIT {
     public void testDeleteEntity() {
         PrintTemplateEntity entity = new PrintTemplateEntity(
                 "TEMPLATE-003", "<html>Template to Delete</html>", 3, "ToDelete", "delete.html");
-        printTemplateRepository.save(entity);
+        printTemplateRepository.create(entity);
 
         printTemplateRepository.deleteById("TEMPLATE-003");
-        Optional<PrintTemplateEntity> deleted = printTemplateRepository.findById("TEMPLATE-003");
-        Assertions.assertFalse(deleted.isPresent(), "Entity should be deleted from repository.");
+        PrintTemplateEntity deleted = printTemplateRepository.findById("TEMPLATE-003");
+        Assertions.assertNull(deleted, "Entity should be deleted from repository.");
     }
 
     /**
@@ -93,7 +93,7 @@ public class PrintTemplateRepositoryIT {
      */
     @Test
     public void testFindNonExistentEntity() {
-        Optional<PrintTemplateEntity> retrieved = printTemplateRepository.findById("NON_EXISTENT");
-        Assertions.assertFalse(retrieved.isPresent(), "Should return empty for non-existent entity.");
+        PrintTemplateEntity retrieved = printTemplateRepository.findById("NON_EXISTENT");
+        Assertions.assertNull(retrieved, "Should return empty for non-existent entity.");
     }
 }

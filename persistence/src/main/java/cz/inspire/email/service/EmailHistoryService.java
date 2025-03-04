@@ -5,7 +5,6 @@ import cz.inspire.email.entity.EmailHistoryEntity;
 import cz.inspire.email.repository.EmailHistoryRepository;
 import cz.inspire.utils.FileAttributes;
 import cz.inspire.utils.FileStorageUtil;
-import jakarta.data.Limit;
 import jakarta.ejb.FinderException;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
@@ -14,13 +13,12 @@ import java.io.IOException;
 import java.sql.Timestamp;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.Collections;
-import java.util.Date;
-import java.util.ArrayList;
-
 
 import static cz.inspire.common.utils.ExceptionHandler.wrapDBException;
 
@@ -84,17 +82,17 @@ public class EmailHistoryService extends BaseService<EmailHistoryEntity, String,
 
     public List<EmailHistoryEntity> findAll(int offset, int count) throws FinderException {
         return wrapDBException(
-                () -> repository.findAll(new Limit(count, offset + 1)),
-                "Error retrieving paginated EmailHistoryEntity records (offset + 1 =" + offset + ", count=" + count + ")"
+                () -> repository.findAll(count, offset),
+                "Error retrieving paginated EmailHistoryEntity records (offset =" + offset + ", count=" + count + ")"
         );
     }
 
     public List<EmailHistoryEntity> findByDate(Date dateFrom, Date dateTo, int offset, int count) throws FinderException {
         return wrapDBException(
                 () -> repository.findByDate(
-                        new Timestamp(dateFrom.getTime()), new Timestamp(dateTo.getTime()), new Limit(count, offset + 1)
+                        new Timestamp(dateFrom.getTime()), new Timestamp(dateTo.getTime()), count, offset
                 ),
-                "Error retrieving EmailHistoryEntity records by date range (from=" + dateFrom + ", to=" + dateTo + ", offset + 1 =" + offset + ", count=" + count + ")"
+                "Error retrieving EmailHistoryEntity records by date range (from=" + dateFrom + ", to=" + dateTo + ", offset =" + offset + ", count=" + count + ")"
         );
     }
 }

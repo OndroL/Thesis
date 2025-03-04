@@ -52,17 +52,17 @@ public class InstructorService extends BaseService<InstructorEntity, String, Ins
 
     public List<InstructorEntity> findAll(int offset, int count, boolean deleted) throws FinderException {
         return wrapDBException(
-                () -> repository.findAll(Limit.range(offset + 1, count), deleted),
-                "Error retrieving paginated InstructorEntity records (offset + 1 = " + offset +
+                () -> repository.findAll(count, offset, deleted),
+                "Error retrieving paginated InstructorEntity records (offset = " + offset +
                         ", count = " + count + ", deleted = " + deleted + ")"
         );
     }
 
     public List<InstructorEntity> findAllByActivity(String activityId, int offset, int count, boolean deleted) throws FinderException {
         return wrapDBException(
-                () -> repository.findAllByActivity(activityId, Limit.range(offset + 1, count), deleted),
+                () -> repository.findAllByActivity(activityId, count, offset, deleted),
                 "Error retrieving InstructorEntity records by activityId = " + activityId +
-                        " with pagination (offset + 1 = " + offset + ", count = " + count + ", deleted = " + deleted + ")"
+                        " with pagination (offset = " + offset + ", count = " + count + ", deleted = " + deleted + ")"
         );
     }
 

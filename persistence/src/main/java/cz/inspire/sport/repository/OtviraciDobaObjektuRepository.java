@@ -1,20 +1,19 @@
 package cz.inspire.sport.repository;
 
+import cz.inspire.repository.BaseRepository;
+import cz.inspire.repository.annotations.Limit;
+import cz.inspire.repository.annotations.Offset;
+import cz.inspire.repository.annotations.Query;
+import cz.inspire.repository.annotations.Repository;
 import cz.inspire.sport.entity.OtviraciDobaObjektuEntity;
 import cz.inspire.sport.entity.OtviraciDobaObjektuPK;
-import jakarta.data.Limit;
-import jakarta.data.repository.CrudRepository;
-import jakarta.data.repository.Param;
-import jakarta.data.repository.Query;
-import jakarta.data.repository.Repository;
-
 
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
 @Repository
-public interface OtviraciDobaObjektuRepository extends CrudRepository<OtviraciDobaObjektuEntity, OtviraciDobaObjektuPK> {
+public interface OtviraciDobaObjektuRepository extends BaseRepository<OtviraciDobaObjektuEntity, OtviraciDobaObjektuPK> {
 
     @Query("SELECT o FROM OtviraciDobaObjektuEntity o ORDER BY o.embeddedId.objektId")
     List<OtviraciDobaObjektuEntity> findAllOrdered();
@@ -31,14 +30,14 @@ public interface OtviraciDobaObjektuRepository extends CrudRepository<OtviraciDo
         WHERE o.embeddedId.objektId = :objektId
         ORDER BY o.embeddedId.platnostOd DESC
     """)
-    List<OtviraciDobaObjektuEntity> findByObjektWithLimit(String objektId, Limit limit);
+    List<OtviraciDobaObjektuEntity> findByObjektWithLimit(String objektId, @Limit int count, @Offset int offset);
 
     @Query("""
         SELECT o FROM OtviraciDobaObjektuEntity o
         WHERE o.embeddedId.objektId = :objektId AND o.embeddedId.platnostOd <= :day
         ORDER BY o.embeddedId.platnostOd DESC
     """)
-    Optional<OtviraciDobaObjektuEntity> findCurrent(String objektId, LocalDateTime day, Limit limit);
+    Optional<OtviraciDobaObjektuEntity> findCurrent(String objektId, LocalDateTime day, @Limit int count);
 
     @Query("""
         SELECT o FROM OtviraciDobaObjektuEntity o
@@ -64,19 +63,18 @@ public interface OtviraciDobaObjektuRepository extends CrudRepository<OtviraciDo
      * Without explicitly defining these methods, Spring Data will throw an error stating that it cannot find
      * a matching field named `id(this)` for the inherited methods.
      */
-    @Override
-    @Query("""
-        SELECT o
-        FROM OtviraciDobaObjektuEntity o
-        WHERE o.embeddedId = :pk
-    """)
-    Optional<OtviraciDobaObjektuEntity> findById(@Param("pk") OtviraciDobaObjektuPK pk);
-
-    @Override
-    @Query("""
-        DELETE
-        FROM OtviraciDobaObjektuEntity o
-        WHERE o.embeddedId = :pk
-    """)
-    void deleteById(@Param("pk") OtviraciDobaObjektuPK pk);
+//    @Override
+//    @Query("""
+//        SELECT o
+//        FROM OtviraciDobaObjektuEntity o
+//        WHERE o.embeddedId = :pk
+//    """)
+//    OtviraciDobaObjektuEntity findById(@Param("pk") OtviraciDobaObjektuPK pk);
+//
+//    @Query("""
+//        DELETE
+//        FROM OtviraciDobaObjektuEntity o
+//        WHERE o.embeddedId = :pk
+//    """)
+//    void deleteById(@Param("pk") OtviraciDobaObjektuPK pk);
 }

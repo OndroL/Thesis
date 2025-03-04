@@ -7,7 +7,6 @@ import cz.inspire.sport.entity.ObjektSportEntity;
 import cz.inspire.sport.entity.ObjektSportPK;
 import cz.inspire.sport.entity.SportEntity;
 import cz.inspire.sport.repository.ObjektRepository;
-import jakarta.ejb.FinderException;
 import jakarta.inject.Inject;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -90,14 +89,15 @@ public abstract class ObjektMapper {
             Set<ObjektEntity> nadObjekty = new HashSet<>();
             for (String objektId : dto.getNadObjekty()) {
                 try {
-                    ObjektEntity nadObj = objektRepository.findById(objektId)
-                            .orElseThrow(() -> new FinderException("Failed to find nadObjekt with id : " + objektId));
+                    ObjektEntity nadObj = objektRepository.findById(objektId);
+                            //.orElseThrow(() -> new FinderException("Failed to find nadObjekt with id : " + objektId));
                     Hibernate.initialize(entity.getNadObjekty());
                     if (Hibernate.isInitialized(entity.getNadObjekty())) {
                         nadObjekty.add(nadObj);
                     }
                 } catch (Exception ex) {
                     logger.error("Failed to set nadObjekt for ObjektEntity", ex);
+
                 }
             }
             entity.setNadObjekty(nadObjekty);
@@ -108,8 +108,8 @@ public abstract class ObjektMapper {
             Set<ObjektEntity> podObjekty = new HashSet<>();
             for (String objektId : dto.getPodObjekty()) {
                 try {
-                    ObjektEntity podObj = objektRepository.findById(objektId)
-                            .orElseThrow(() -> new FinderException("Failed to find podObjekt with id : " + objektId));
+                    ObjektEntity podObj = objektRepository.findById(objektId);
+                            //.orElseThrow(() -> new FinderException("Failed to find podObjekt with id : " + objektId));
                     Hibernate.initialize(entity.getPodObjekty());
                     if (Hibernate.isInitialized(entity.getPodObjekty())) {
                         podObjekty.add(podObj);

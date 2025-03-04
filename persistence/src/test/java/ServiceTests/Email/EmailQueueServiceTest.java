@@ -153,25 +153,25 @@ public class EmailQueueServiceTest {
                 new EmailQueueEntity("1", new Date(), "history1", "recipient1@example.com", 1, false, "depHistory1")
         );
 
-        when(emailQueueRepository.findAll(new jakarta.data.Limit(1, 1))).thenReturn(entities);
+        when(emailQueueRepository.findAll(1,1)).thenReturn(entities);
 
         List<EmailQueueEntity> result = emailQueueService.findAll(0, 1);
 
         assertNotNull(result);
         assertEquals(1, result.size());
-        verify(emailQueueRepository, times(1)).findAll(new jakarta.data.Limit(1, 1));
+        verify(emailQueueRepository, times(1)).findAll(1,1);
     }
 
     @Test
     void testFindFirstMail_Success() throws FinderException {
         EmailQueueEntity entity = new EmailQueueEntity("1", new Date(), "history1", "recipient@example.com", 1, false, "depHistory1");
-        when(emailQueueRepository.findFirstMail(jakarta.data.Limit.of(1))).thenReturn(Optional.of(entity));
+        when(emailQueueRepository.findFirstMail(1)).thenReturn(Optional.of(entity));
 
         Optional<EmailQueueEntity> result = emailQueueService.findFirstMail();
 
         assertTrue(result.isPresent());
         assertEquals("1", result.get().getId());
-        verify(emailQueueRepository, times(1)).findFirstMail(jakarta.data.Limit.of(1));
+        verify(emailQueueRepository, times(1)).findFirstMail(1);
     }
 
     @Test

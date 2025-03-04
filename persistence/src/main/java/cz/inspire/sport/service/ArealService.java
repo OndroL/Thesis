@@ -45,7 +45,7 @@ public class ArealService extends BaseService<ArealEntity, String, ArealReposito
 
     public List<ArealEntity> findByParent(String parentId, String jazyk, int offset, int count) throws FinderException {
         return wrapDBException(
-                () -> repository.findByParentWithLimit(parentId, jazyk, Limit.range(offset + 1, count)),
+                () -> repository.findByParentWithLimit(parentId, jazyk, count, offset),
                 "Error retrieving ArealEntity records by parentId = " + parentId + ", jazyk = " + jazyk +
                         " with pagination (offset + 1 = " + offset + ", count = " + count + ")"
         );
@@ -53,7 +53,7 @@ public class ArealService extends BaseService<ArealEntity, String, ArealReposito
 
     public List<ArealEntity> findRoot(String jazyk, int offset, int count) throws FinderException {
         return wrapDBException(
-                () -> repository.findRootWithLimit(jazyk, Limit.range(offset + 1, count)),
+                () -> repository.findRootWithLimit(jazyk, count, offset),
                 "Error retrieving root ArealEntity records for jazyk = " + jazyk +
                         " with pagination (offset + 1 = " + offset + ", count = " + count + ")"
         );

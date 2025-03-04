@@ -1,29 +1,30 @@
 package cz.inspire.sport.repository;
 
+import cz.inspire.repository.BaseRepository;
+import cz.inspire.repository.annotations.Offset;
 import cz.inspire.sport.entity.ActivityEntity;
-import jakarta.data.repository.CrudRepository;
-import jakarta.data.repository.Query;
-import jakarta.data.repository.Repository;
-import jakarta.data.Limit;
+import cz.inspire.repository.annotations.Limit;
+import cz.inspire.repository.annotations.Repository;
+import cz.inspire.repository.annotations.Query;
 
 import java.util.List;
 
 @Repository
-public interface ActivityRepository extends CrudRepository<ActivityEntity, String> {
+public interface ActivityRepository extends BaseRepository<ActivityEntity, String> {
 
     @Query("SELECT a FROM ActivityEntity a ORDER BY a.index ASC")
     List<ActivityEntity> findAllOrdered();
 
     @Query("SELECT a FROM ActivityEntity a ORDER BY a.index ASC")
-    List<ActivityEntity> findAll(Limit limit);
+    List<ActivityEntity> findAll(@Limit int count, @Offset int offset);
 
     @Query("""
         SELECT a FROM ActivityEntity a
         JOIN a.instructors i
-        WHERE i.id = ?1
+        WHERE i.id = :instructorId
         ORDER BY a.index ASC
     """)
-    List<ActivityEntity> findAllByInstructor(String instructorId, Limit limit);
+    List<ActivityEntity> findAllByInstructor(String instructorId, @Limit int count, @Offset int offset);
 
     @Query("SELECT COUNT(a.id) FROM ActivityEntity a")
     Long countActivities();
@@ -31,7 +32,7 @@ public interface ActivityRepository extends CrudRepository<ActivityEntity, Strin
     @Query("""
         SELECT COUNT(a.id) FROM ActivityEntity a
         JOIN a.instructors i
-        WHERE i.id = ?1
+        WHERE i.id = :instructorId
     """)
     Long countActivitiesByInstructor(String instructorId);
 }

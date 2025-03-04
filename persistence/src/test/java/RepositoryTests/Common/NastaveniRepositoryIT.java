@@ -3,8 +3,8 @@ package RepositoryTests.Common;
 import com.fasterxml.jackson.databind.JsonNode;
 import cz.inspire.common.dto.MenaDto;
 import cz.inspire.common.entity.NastaveniEntity;
-import cz.inspire.common.repository.NastaveniRepository;
 import cz.inspire.common.mapper.NastaveniMapper;
+import cz.inspire.common.repository.NastaveniRepository;
 import io.quarkus.test.junit.QuarkusTest;
 import jakarta.enterprise.context.control.ActivateRequestContext;
 import jakarta.inject.Inject;
@@ -18,7 +18,6 @@ import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 @QuarkusTest
 @Transactional
@@ -34,8 +33,7 @@ public class NastaveniRepositoryIT {
     @BeforeAll
     @ActivateRequestContext
     public void clearDatabase() {
-        List<NastaveniEntity> allEntities = new ArrayList<>();
-        nastaveniRepository.findAll().forEach(allEntities::add);
+        List<NastaveniEntity> allEntities = new ArrayList<>(nastaveniRepository.findAll());
         if (!allEntities.isEmpty()) {
            nastaveniRepository.deleteAll(allEntities);
         }
@@ -48,12 +46,12 @@ public class NastaveniRepositoryIT {
     public void testSaveAndFindByKey() {
         JsonNode jsonNode = NastaveniMapper.serializableToJsonNode("This is a string");
         NastaveniEntity entity = new NastaveniEntity("setting-1", jsonNode);
-        nastaveniRepository.save(entity);
+        nastaveniRepository.create(entity);
 
-        Optional<NastaveniEntity> retrieved = nastaveniRepository.findById("setting-1");
-        Assertions.assertTrue(retrieved.isPresent(), "Entity should be present in repository.");
+        NastaveniEntity retrieved = nastaveniRepository.findById("setting-1");
+        Assertions.assertNotNull(retrieved, "Entity should be present in repository.");
         Assertions.assertEquals("This is a string",
-                NastaveniMapper.jsonNodeToSerializable(retrieved.get().getValue()),
+                NastaveniMapper.jsonNodeToSerializable(retrieved.getValue()),
                 "Stored value should match.");
     }
 
@@ -70,22 +68,22 @@ public class NastaveniRepositoryIT {
         NastaveniEntity entityInteger = new NastaveniEntity("int-setting", jsonNodeInteger);
         NastaveniEntity entityBoolean = new NastaveniEntity("bool-setting", jsonNodeBoolean);
 
-        nastaveniRepository.save(entityString);
-        nastaveniRepository.save(entityInteger);
-        nastaveniRepository.save(entityBoolean);
+        nastaveniRepository.create(entityString);
+        nastaveniRepository.create(entityInteger);
+        nastaveniRepository.create(entityBoolean);
 
-        Optional<NastaveniEntity> retrievedStr = nastaveniRepository.findById("str-setting");
-        Optional<NastaveniEntity> retrievedInt = nastaveniRepository.findById("int-setting");
-        Optional<NastaveniEntity> retrievedBool = nastaveniRepository.findById("bool-setting");
+        NastaveniEntity retrievedStr = nastaveniRepository.findById("str-setting");
+        NastaveniEntity retrievedInt = nastaveniRepository.findById("int-setting");
+        NastaveniEntity retrievedBool = nastaveniRepository.findById("bool-setting");
 
         Assertions.assertEquals("Test String",
-                NastaveniMapper.jsonNodeToSerializable(retrievedStr.get().getValue()),
+                NastaveniMapper.jsonNodeToSerializable(retrievedStr.getValue()),
                 "String value should match.");
         Assertions.assertEquals(12345,
-                NastaveniMapper.jsonNodeToSerializable(retrievedInt.get().getValue()),
+                NastaveniMapper.jsonNodeToSerializable(retrievedInt.getValue()),
                 "Integer value should match.");
         Assertions.assertEquals(true,
-                NastaveniMapper.jsonNodeToSerializable(retrievedBool.get().getValue()),
+                NastaveniMapper.jsonNodeToSerializable(retrievedBool.getValue()),
                 "Boolean value should match.");
     }
 
@@ -96,17 +94,17 @@ public class NastaveniRepositoryIT {
     public void testUpdateEntity() {
         JsonNode initialValue = NastaveniMapper.serializableToJsonNode(10);
         NastaveniEntity entity = new NastaveniEntity("setting-2", initialValue);
-        nastaveniRepository.save(entity);
+        nastaveniRepository.create(entity);
 
         // Update the value
         JsonNode updatedValue = NastaveniMapper.serializableToJsonNode("Updated Value");
         entity.setValue(updatedValue);
-        nastaveniRepository.save(entity);
+        nastaveniRepository.create(entity);
 
-        Optional<NastaveniEntity> updated = nastaveniRepository.findById("setting-2");
-        Assertions.assertTrue(updated.isPresent(), "Entity should still exist after update.");
+        NastaveniEntity updated = nastaveniRepository.findById("setting-2");
+        Assertions.assertNull(updated, "Entity should still exist after update.");
         Assertions.assertEquals("Updated Value",
-                NastaveniMapper.jsonNodeToSerializable(updated.get().getValue()),
+                NastaveniMapper.jsonNodeToSerializable(updated.getValue()),
                 "Updated value should match.");
     }
 
@@ -117,11 +115,11 @@ public class NastaveniRepositoryIT {
     public void testDeleteEntity() {
         JsonNode jsonNode = NastaveniMapper.serializableToJsonNode(false);
         NastaveniEntity entity = new NastaveniEntity("setting-3", jsonNode);
-        nastaveniRepository.save(entity);
+        nastaveniRepository.create(entity);
 
         nastaveniRepository.deleteById("setting-3");
-        Optional<NastaveniEntity> deleted = nastaveniRepository.findById("setting-3");
-        Assertions.assertFalse(deleted.isPresent(), "Entity should be deleted from repository.");
+        NastaveniEntity deleted = nastaveniRepository.findById("setting-3");
+        Assertions.assertNull(deleted, "Entity should be deleted from repository.");
     }
 
     /**
@@ -129,8 +127,8 @@ public class NastaveniRepositoryIT {
      */
     @Test
     public void testFindNonExistentEntity() {
-        Optional<NastaveniEntity> retrieved = nastaveniRepository.findById("non-existent");
-        Assertions.assertFalse(retrieved.isPresent(), "Should return empty for non-existent entity.");
+        NastaveniEntity retrieved = nastaveniRepository.findById("non-existent");
+        Assertions.assertNull(retrieved, "Should return empty for non-existent entity.");
     }
 
     /**
@@ -143,14 +141,14 @@ public class NastaveniRepositoryIT {
         JsonNode jsonNode = NastaveniMapper.serializableToJsonNode(menaDto);
 
         NastaveniEntity nastaveniEntity = new NastaveniEntity("mena-setting", jsonNode);
-        nastaveniRepository.save(nastaveniEntity);
+        nastaveniRepository.create(nastaveniEntity);
 
         // Retrieve it from the database
-        Optional<NastaveniEntity> retrievedEntity = nastaveniRepository.findById("mena-setting");
-        Assertions.assertTrue(retrievedEntity.isPresent(), "Entity should be present in repository.");
+        NastaveniEntity retrievedEntity = nastaveniRepository.findById("mena-setting");
+        Assertions.assertNull(retrievedEntity, "Entity should be present in repository.");
 
         // Convert JsonNode back to MenaEntity
-        Serializable retrievedObject = NastaveniMapper.jsonNodeToSerializable(retrievedEntity.get().getValue());
+        Serializable retrievedObject = NastaveniMapper.jsonNodeToSerializable(retrievedEntity.getValue());
         Assertions.assertTrue(retrievedObject instanceof MenaDto, "Expected retrieved object to be a MenaEntity");
 
         // Verify all attributes match

@@ -13,7 +13,6 @@ import org.junit.jupiter.api.TestInstance;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 @Transactional
 @QuarkusTest
@@ -42,12 +41,12 @@ public class HeaderRepositoryIT {
     @Test
     public void testSaveAndFindById() {
         HeaderEntity entity = new HeaderEntity("ID-002", 456, 20);
-        headerRepository.save(entity);
+        headerRepository.create(entity);
 
-        Optional<HeaderEntity> retrieved = headerRepository.findById("ID-002");
-        Assertions.assertTrue(retrieved.isPresent(), "Entity should be present in repository.");
-        Assertions.assertEquals(456, retrieved.get().getField(), "Field value should match.");
-        Assertions.assertEquals(20, retrieved.get().getLocation(), "Location value should match.");
+        HeaderEntity retrieved = headerRepository.findById("ID-002");
+        Assertions.assertNotNull(retrieved, "Entity should be present in repository.");
+        Assertions.assertEquals(456, retrieved.getField(), "Field value should match.");
+        Assertions.assertEquals(20, retrieved.getLocation(), "Location value should match.");
     }
 
     /**
@@ -56,16 +55,16 @@ public class HeaderRepositoryIT {
     @Test
     public void testUpdateEntity() {
         HeaderEntity entity = new HeaderEntity("ID-003", 789, 30);
-        headerRepository.save(entity);
+        headerRepository.create(entity);
 
         entity.setField(111);
         entity.setLocation(40);
-        headerRepository.save(entity);
+        headerRepository.create(entity);
 
-        Optional<HeaderEntity> updated = headerRepository.findById("ID-003");
-        Assertions.assertTrue(updated.isPresent(), "Entity should be present after update.");
-        Assertions.assertEquals(111, updated.get().getField(), "Updated field value should be 111.");
-        Assertions.assertEquals(40, updated.get().getLocation(), "Updated location value should be 40.");
+        HeaderEntity updated = headerRepository.findById("ID-003");
+        Assertions.assertNotNull(updated, "Entity should be present after update.");
+        Assertions.assertEquals(111, updated.getField(), "Updated field value should be 111.");
+        Assertions.assertEquals(40, updated.getLocation(), "Updated location value should be 40.");
     }
 
     /**
@@ -74,11 +73,11 @@ public class HeaderRepositoryIT {
     @Test
     public void testDeleteEntity() {
         HeaderEntity entity = new HeaderEntity("ID-004", 222, 50);
-        headerRepository.save(entity);
+        headerRepository.create(entity);
 
         headerRepository.deleteById("ID-004");
-        Optional<HeaderEntity> deleted = headerRepository.findById("ID-004");
-        Assertions.assertFalse(deleted.isPresent(), "Entity should be deleted from repository.");
+        HeaderEntity deleted = headerRepository.findById("ID-004");
+        Assertions.assertNull(deleted, "Entity should be deleted from repository.");
     }
 
     /**
@@ -89,7 +88,7 @@ public class HeaderRepositoryIT {
         // Create a new entity
         HeaderEntity entity = new HeaderEntity("ID-001", 123, 10);
 
-        HeaderEntity saved = headerRepository.save(entity);
+        HeaderEntity saved = headerRepository.create(entity);
         Assertions.assertNotNull(saved, "Expected a non-null returned entity from save()");
 
         List<HeaderEntity> results = headerRepository.findValidAttributes();
@@ -116,10 +115,10 @@ public class HeaderRepositoryIT {
         HeaderEntity e3 = new HeaderEntity("ID-007", 30, 20);
         HeaderEntity e4 = new HeaderEntity("ID-008", 40, 40);
 
-        headerRepository.save(e1);
-        headerRepository.save(e2);
-        headerRepository.save(e3);
-        headerRepository.save(e4);
+        headerRepository.create(e1);
+        headerRepository.create(e2);
+        headerRepository.create(e3);
+        headerRepository.create(e4);
 
         List<HeaderEntity> validEntities = headerRepository.findValidAttributes();
         Assertions.assertEquals(3, validEntities.size(), "Expected 3 valid entities.");
@@ -136,8 +135,8 @@ public class HeaderRepositoryIT {
     public void testFindValidAttributesWithNoValidRecords() {
         HeaderEntity e1 = new HeaderEntity("ID-009", 10, -5);
         HeaderEntity e2 = new HeaderEntity("ID-010", 20, -15);
-        headerRepository.save(e1);
-        headerRepository.save(e2);
+        headerRepository.create(e1);
+        headerRepository.create(e2);
 
         List<HeaderEntity> validEntities = headerRepository.findValidAttributes()
                 .stream()

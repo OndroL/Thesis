@@ -1,15 +1,16 @@
 package cz.inspire.sport.repository;
 
+import cz.inspire.repository.BaseRepository;
+import cz.inspire.repository.annotations.Limit;
+import cz.inspire.repository.annotations.Offset;
 import cz.inspire.sport.entity.SportKategorieEntity;
-import jakarta.data.Limit;
-import jakarta.data.repository.CrudRepository;
-import jakarta.data.repository.Query;
-import jakarta.data.repository.Repository;
+import cz.inspire.repository.annotations.Repository;
+import cz.inspire.repository.annotations.Query;
 
 import java.util.List;
 
 @Repository
-public interface SportKategorieRepository extends CrudRepository<SportKategorieEntity, String> {
+public interface SportKategorieRepository extends BaseRepository<SportKategorieEntity, String> {
 
     @Query("""
         SELECT s FROM SportKategorieEntity s
@@ -29,7 +30,7 @@ public interface SportKategorieRepository extends CrudRepository<SportKategorieE
     @Query("""
         SELECT s FROM SportKategorieEntity s
         JOIN s.localeData loc
-        WHERE s.nadrazenaKategorie.id = ?1
+        WHERE s.nadrazenaKategorie.id = :nadrazenaKategorieId
         ORDER BY loc.nazev
     """)
     List<SportKategorieEntity> findAllByNadrazenaKategorie(String nadrazenaKategorieId);
@@ -39,12 +40,12 @@ public interface SportKategorieRepository extends CrudRepository<SportKategorieE
         JOIN s.localeData loc
         ORDER BY loc.nazev
     """)
-    List<SportKategorieEntity> findAll(Limit limit);
+    List<SportKategorieEntity> findAll(@Limit int count, @Offset int offset);
 
     @Query("""
         SELECT s FROM SportKategorieEntity s
         JOIN s.localeData loc
-        WHERE s.multiSportFacilityId = ?1
+        WHERE s.multiSportFacilityId = :multisportFacilityId
         ORDER BY loc.nazev
     """)
     List<SportKategorieEntity> findAllByMultisportFacilityId(String multisportFacilityId);
@@ -62,7 +63,7 @@ public interface SportKategorieRepository extends CrudRepository<SportKategorieE
 
     @Query("""
         SELECT COUNT(s.id) FROM SportKategorieEntity s
-        WHERE s.nadrazenaKategorie.id = ?1
+        WHERE s.nadrazenaKategorie.id = :nadrazenaKategorieId
     """)
     Long countByNadrazenaKategorie(String nadrazenaKategorieId);
 }

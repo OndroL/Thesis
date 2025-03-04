@@ -1,10 +1,10 @@
 package cz.inspire.sport.repository;
 
+import cz.inspire.repository.BaseRepository;
+import cz.inspire.repository.annotations.Repository;
 import cz.inspire.sport.entity.SportKategorieLocEntity;
-import jakarta.data.repository.CrudRepository;
-import jakarta.data.repository.Repository;
 
 
 @Repository
-public interface SportKategorieLocRepository extends CrudRepository<SportKategorieLocEntity, String> {
+public interface SportKategorieLocRepository extends BaseRepository<SportKategorieLocEntity, String> {
 }

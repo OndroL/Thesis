@@ -1,21 +1,19 @@
 package cz.inspire.sport.repository;
 
+import cz.inspire.repository.BaseRepository;
+import cz.inspire.repository.annotations.Query;
+import cz.inspire.repository.annotations.Repository;
 import cz.inspire.sport.entity.ObjektSportEntity;
 import cz.inspire.sport.entity.ObjektSportPK;
-import jakarta.data.repository.CrudRepository;
-import jakarta.data.repository.Param;
-import jakarta.data.repository.Query;
-import jakarta.data.repository.Repository;
 
 import java.util.List;
-import java.util.Optional;
 
 @Repository
-public interface ObjektSportRepository extends CrudRepository<ObjektSportEntity, ObjektSportPK> {
+public interface ObjektSportRepository extends BaseRepository<ObjektSportEntity, ObjektSportPK> {
 
     @Query("""
         SELECT o FROM ObjektSportEntity o
-        WHERE o.objekt.id = ?1
+        WHERE o.objekt.id = :objektId
     """)
     List<ObjektSportEntity> findByObjekt(String objektId);
 
@@ -29,20 +27,19 @@ public interface ObjektSportRepository extends CrudRepository<ObjektSportEntity,
      * Without explicitly defining these methods, Spring Data will throw an error stating that it cannot find
      * a matching field named `id(this)` for the inherited methods.
      */
-    @Override
-    @Query("""
-        SELECT o
-        FROM ObjektSportEntity o
-        WHERE o.embeddedId = :pk
-    """)
-    Optional<ObjektSportEntity> findById(@Param("pk") ObjektSportPK pk);
-
-    @Override
-    @Query("""
-        DELETE
-        FROM ObjektSportEntity o
-        WHERE o.embeddedId = :pk
-    """)
-    void deleteById(@Param("pk") ObjektSportPK pk);
+//    @Override
+//    @Query("""
+//        SELECT o
+//        FROM ObjektSportEntity o
+//        WHERE o.embeddedId = :pk
+//    """)
+//    ObjektSportEntity findById(@Param("pk") ObjektSportPK pk);
+//
+//    @Query("""
+//        DELETE
+//        FROM ObjektSportEntity o
+//        WHERE o.embeddedId = :pk
+//    """)
+//    void deleteById(@Param("pk") ObjektSportPK pk);
 
 }

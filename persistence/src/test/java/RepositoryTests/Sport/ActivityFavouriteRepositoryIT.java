@@ -3,7 +3,6 @@ package RepositoryTests.Sport;
 import cz.inspire.sport.entity.ActivityFavouriteEntity;
 import cz.inspire.sport.repository.ActivityFavouriteRepository;
 import io.quarkus.test.junit.QuarkusTest;
-import jakarta.data.Limit;
 import jakarta.enterprise.context.control.ActivateRequestContext;
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
@@ -38,36 +37,36 @@ public class ActivityFavouriteRepositoryIT {
     @Test
     public void testSaveAndFindById() {
         ActivityFavouriteEntity entity = new ActivityFavouriteEntity("ID-001", "ZK-001", "ACT-001", 5, LocalDateTime.now());
-        activityFavouriteRepository.save(entity);
+        activityFavouriteRepository.create(entity);
 
-        Optional<ActivityFavouriteEntity> retrieved = activityFavouriteRepository.findById("ID-001");
-        Assertions.assertTrue(retrieved.isPresent(), "Entity should be present in repository.");
-        Assertions.assertEquals("ZK-001", retrieved.get().getZakaznikId(), "Zakaznik ID should match.");
-        Assertions.assertEquals("ACT-001", retrieved.get().getActivityId(), "Activity ID should match.");
-        Assertions.assertEquals(5, retrieved.get().getPocet(), "Pocet should match.");
+        ActivityFavouriteEntity retrieved = activityFavouriteRepository.findById("ID-001");
+        Assertions.assertNotNull(retrieved, "Entity should be present in repository.");
+        Assertions.assertEquals("ZK-001", retrieved.getZakaznikId(), "Zakaznik ID should match.");
+        Assertions.assertEquals("ACT-001", retrieved.getActivityId(), "Activity ID should match.");
+        Assertions.assertEquals(5, retrieved.getPocet(), "Pocet should match.");
     }
 
     @Test
     public void testUpdateEntity() {
         ActivityFavouriteEntity entity = new ActivityFavouriteEntity("ID-002", "ZK-002", "ACT-002", 3, LocalDateTime.now());
-        activityFavouriteRepository.save(entity);
+        activityFavouriteRepository.create(entity);
 
         entity.setPocet(10);
-        activityFavouriteRepository.save(entity);
+        activityFavouriteRepository.create(entity);
 
-        Optional<ActivityFavouriteEntity> updated = activityFavouriteRepository.findById("ID-002");
-        Assertions.assertTrue(updated.isPresent(), "Entity should be present after update.");
-        Assertions.assertEquals(10, updated.get().getPocet(), "Updated pocet value should be 10.");
+        ActivityFavouriteEntity updated = activityFavouriteRepository.findById("ID-002");
+        Assertions.assertNotNull(updated, "Entity should be present after update.");
+        Assertions.assertEquals(10, updated.getPocet(), "Updated pocet value should be 10.");
     }
 
     @Test
     public void testDeleteEntity() {
         ActivityFavouriteEntity entity = new ActivityFavouriteEntity("ID-003", "ZK-003", "ACT-003", 7, LocalDateTime.now());
-        activityFavouriteRepository.save(entity);
+        activityFavouriteRepository.create(entity);
 
         activityFavouriteRepository.deleteById("ID-003");
-        Optional<ActivityFavouriteEntity> deleted = activityFavouriteRepository.findById("ID-003");
-        Assertions.assertFalse(deleted.isPresent(), "Entity should be deleted from repository.");
+        ActivityFavouriteEntity deleted = activityFavouriteRepository.findById("ID-003");
+        Assertions.assertNull(deleted, "Entity should be deleted from repository.");
     }
 
     @Test
@@ -76,11 +75,11 @@ public class ActivityFavouriteRepositoryIT {
         ActivityFavouriteEntity e2 = new ActivityFavouriteEntity("ID-005", "ZK-004", "ACT-005", 6, LocalDateTime.now());
         ActivityFavouriteEntity e3 = new ActivityFavouriteEntity("ID-006", "ZK-004", "ACT-006", 2, LocalDateTime.now());
 
-        activityFavouriteRepository.save(e1);
-        activityFavouriteRepository.save(e2);
-        activityFavouriteRepository.save(e3);
+        activityFavouriteRepository.create(e1);
+        activityFavouriteRepository.create(e2);
+        activityFavouriteRepository.create(e3);
 
-        List<ActivityFavouriteEntity> results = activityFavouriteRepository.findByZakaznik("ZK-004", Limit.of(10));
+        List<ActivityFavouriteEntity> results = activityFavouriteRepository.findByZakaznik("ZK-004", 10, 0);
         Assertions.assertEquals(3, results.size(), "Expected 3 activities for the zakaznik.");
         Assertions.assertEquals("ACT-005", results.getFirst().getActivityId(), "First entity should have the highest pocet.");
     }
@@ -88,7 +87,7 @@ public class ActivityFavouriteRepositoryIT {
     @Test
     public void testFindByZakaznikAktivita() {
         ActivityFavouriteEntity entity = new ActivityFavouriteEntity("ID-007", "ZK-005", "ACT-007", 8, LocalDateTime.now());
-        activityFavouriteRepository.save(entity);
+        activityFavouriteRepository.create(entity);
 
         Optional<ActivityFavouriteEntity> found = activityFavouriteRepository.findByZakaznikAktivita("ZK-005", "ACT-007");
         Assertions.assertTrue(found.isPresent(), "Expected to find entity with given zakaznik and activity.");

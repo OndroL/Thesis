@@ -23,7 +23,7 @@ public class ActivityFavouriteService extends BaseService<ActivityFavouriteEntit
 
     public List<ActivityFavouriteEntity> findByZakaznik(String zakaznikId, int offset, int count) throws FinderException {
         return wrapDBException(
-                () -> repository.findByZakaznik(zakaznikId, Limit.range(offset + 1, count)),
+                () -> repository.findByZakaznik(zakaznikId, count, offset),
                 "Error retrieving ActivityFavouriteEntity records for zakaznikId = " + zakaznikId +
                         " with pagination (offset + 1 = " + offset + ", count = " + count + ")"
         );

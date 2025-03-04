@@ -1,19 +1,26 @@
 package RepositoryTests.Sport;
 
 import RepositoryTests.DatabaseCleaner;
-import cz.inspire.sport.entity.*;
+import cz.inspire.sport.entity.ObjektEntity;
+import cz.inspire.sport.entity.ObjektSportEntity;
+import cz.inspire.sport.entity.ObjektSportPK;
+import cz.inspire.sport.entity.SportEntity;
 import cz.inspire.sport.repository.ObjektSportRepository;
 import io.quarkus.test.junit.QuarkusTest;
 import jakarta.enterprise.context.control.ActivateRequestContext;
 import jakarta.inject.Inject;
 import jakarta.persistence.EntityManager;
 import jakarta.transaction.Transactional;
-import org.junit.jupiter.api.*;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Order;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInstance;
 
 import java.util.List;
-import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
 @Transactional
 @QuarkusTest
@@ -63,10 +70,10 @@ public class ObjektSportRepositoryIT {
         em.persist(entity);
         em.flush();
 
-        Optional<ObjektSportEntity> result = objektSportRepository.findById(new ObjektSportPK(entity.getEmbeddedId().getId(), 1));
+        ObjektSportEntity result = objektSportRepository.findById(new ObjektSportPK(entity.getEmbeddedId().getId(), 1));
 
-        assertTrue(result.isPresent());
-        assertEquals(sport.getId(), result.get().getSport().getId());
+        assertNotNull(result);
+        assertEquals(sport.getId(), result.getSport().getId());
     }
 
     @Test
@@ -103,13 +110,13 @@ public class ObjektSportRepositoryIT {
         em.persist(entity);
         em.flush();
 
-        Optional<ObjektSportEntity> result = objektSportRepository.findById(new ObjektSportPK(entity.getEmbeddedId().getId(), 1));
-        assertTrue(result.isPresent());
+        ObjektSportEntity result = objektSportRepository.findById(new ObjektSportPK(entity.getEmbeddedId().getId(), 1));
+        assertNotNull(result);
 
         em.remove(entity);
         em.flush();
 
         result = objektSportRepository.findById(new ObjektSportPK(entity.getEmbeddedId().getId(), 1));
-        assertFalse(result.isPresent());
+        assertNull(result);
     }
 }

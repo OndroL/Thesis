@@ -3,7 +3,6 @@ package cz.inspire.sport.service;
 import cz.inspire.common.service.BaseService;
 import cz.inspire.sport.entity.PodminkaRezervaceEntity;
 import cz.inspire.sport.repository.PodminkaRezervaceRepository;
-import jakarta.data.Limit;
 import jakarta.ejb.FinderException;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
@@ -32,16 +31,16 @@ public class PodminkaRezervaceService extends BaseService<PodminkaRezervaceEntit
 
     public List<PodminkaRezervaceEntity> findAll(int offset, int count) throws FinderException {
         return wrapDBException(
-                () -> repository.findAll(Limit.range(offset + 1, count)),
-                "Error retrieving paginated PodminkaRezervaceEntity records (offset + 1 = " + offset + ", count = " + count + ")"
+                () -> repository.findAll(count, offset),
+                "Error retrieving paginated PodminkaRezervaceEntity records (offset = " + offset + ", count = " + count + ")"
         );
     }
 
     public List<PodminkaRezervaceEntity> findByObjekt(String objektId, int offset, int count) throws FinderException {
         return wrapDBException(
-                () -> repository.findByObjekt(objektId, Limit.range(offset + 1, count)),
+                () -> repository.findByObjekt(objektId, count, offset),
                 "Error retrieving PodminkaRezervaceEntity records for objektId = " + objektId +
-                " with pagination (offset + 1 = " + offset + ", count = " + count + ")"
+                " with pagination (offset = " + offset + ", count = " + count + ")"
         );
     }
 

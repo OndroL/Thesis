@@ -44,16 +44,16 @@ public class OtviraciDobaObjektuService extends BaseService<OtviraciDobaObjektuE
 
     public List<OtviraciDobaObjektuEntity> findByObjekt(String objektId, int offset, int count) throws FinderException {
         return wrapDBException(
-                () -> repository.findByObjektWithLimit(objektId, Limit.range(offset + 1, count)),
+                () -> repository.findByObjektWithLimit(objektId, count, offset),
                 "Error retrieving OtviraciDobaObjektuEntity records for objektId = " + objektId +
-                        " with pagination (offset + 1 = " + offset + ", count = " + count + ")"
+                        " with pagination (offset = " + offset + ", count = " + count + ")"
         );
     }
 
     public OtviraciDobaObjektuEntity findCurrent(String objektId, Date day) throws FinderException {
         LocalDateTime localDateTime = LocalDateTime.ofInstant(day.toInstant(), ZoneOffset.UTC);
         return wrapDBException(
-                () -> repository.findCurrent(objektId, localDateTime, Limit.range(1,1)).orElseThrow(() -> new NoResultException("No OtviraciDobaObjektuEntity found" +
+                () -> repository.findCurrent(objektId, localDateTime, 1).orElseThrow(() -> new NoResultException("No OtviraciDobaObjektuEntity found" +
                         " for objektId = " + objektId + " and date = " + localDateTime)),
                 "Error retrieving current OtviraciDobaObjektuEntity record for objektId = " + objektId + ", date = " + localDateTime
         );

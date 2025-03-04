@@ -3,7 +3,6 @@ package cz.inspire.sport.service;
 import cz.inspire.common.service.BaseService;
 import cz.inspire.sport.entity.SportKategorieEntity;
 import cz.inspire.sport.repository.SportKategorieRepository;
-import jakarta.data.Limit;
 import jakarta.ejb.FinderException;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
@@ -46,8 +45,8 @@ public class SportKategorieService extends BaseService<SportKategorieEntity, Str
 
     public List<SportKategorieEntity> findAll(int offset, int count) throws FinderException {
         return wrapDBException(
-                () -> repository.findAll(Limit.range(offset + 1, count)),
-                "Error retrieving paginated SportKategorieEntity records (offset + 1 = " + offset + ", count = " + count + ")"
+                () -> repository.findAll(count, offset),
+                "Error retrieving paginated SportKategorieEntity records (offset = " + offset + ", count = " + count + ")"
         );
     }
 

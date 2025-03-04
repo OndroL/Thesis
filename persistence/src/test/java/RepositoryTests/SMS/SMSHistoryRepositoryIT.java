@@ -48,15 +48,15 @@ public class SMSHistoryRepositoryIT {
                 true
         );
 
-        smsHistoryRepository.save(entity);
+        smsHistoryRepository.create(entity);
 
-        Optional<SMSHistoryEntity> retrieved = smsHistoryRepository.findById("SMS-001");
-        Assertions.assertTrue(retrieved.isPresent(), "Entity should be present in repository.");
-        Assertions.assertEquals("Test message", retrieved.get().getMessage(), "Message should match.");
-        Assertions.assertEquals(2, retrieved.get().getGroups().size(), "Groups count should match.");
-        Assertions.assertEquals(2, retrieved.get().getRecipients().size(), "Recipients count should match.");
-        Assertions.assertEquals(1, retrieved.get().getMoreRecipients().size(), "MoreRecipients count should match.");
-        Assertions.assertTrue(retrieved.get().getAutomatic(), "Automatic flag should match.");
+        SMSHistoryEntity retrieved = smsHistoryRepository.findById("SMS-001");
+        Assertions.assertNotNull(retrieved, "Entity should be present in repository.");
+        Assertions.assertEquals("Test message", retrieved.getMessage(), "Message should match.");
+        Assertions.assertEquals(2, retrieved.getGroups().size(), "Groups count should match.");
+        Assertions.assertEquals(2, retrieved.getRecipients().size(), "Recipients count should match.");
+        Assertions.assertEquals(1, retrieved.getMoreRecipients().size(), "MoreRecipients count should match.");
+        Assertions.assertTrue(retrieved.getAutomatic(), "Automatic flag should match.");
     }
 
     /**
@@ -72,9 +72,9 @@ public class SMSHistoryRepositoryIT {
         SMSHistoryEntity entity2 = new SMSHistoryEntity("SMS-002", now, "Current message", Arrays.asList(), Arrays.asList(), Arrays.asList(), false);
         SMSHistoryEntity entity3 = new SMSHistoryEntity("SMS-003", future, "Future message", Arrays.asList(), Arrays.asList(), Arrays.asList(), true);
 
-        smsHistoryRepository.save(entity1);
-        smsHistoryRepository.save(entity2);
-        smsHistoryRepository.save(entity3);
+        smsHistoryRepository.create(entity1);
+        smsHistoryRepository.create(entity2);
+        smsHistoryRepository.create(entity3);
 
         List<SMSHistoryEntity> results = smsHistoryRepository.findByDate(new Timestamp(past.getTime()), new Timestamp(future.getTime()));
 
@@ -94,9 +94,9 @@ public class SMSHistoryRepositoryIT {
         SMSHistoryEntity entity2 = new SMSHistoryEntity("SMS-002", now, "Current message", Arrays.asList(), Arrays.asList(), Arrays.asList(), false);
         SMSHistoryEntity entity3 = new SMSHistoryEntity("SMS-003", future, "Future message", Arrays.asList(), Arrays.asList(), Arrays.asList(), true);
 
-        smsHistoryRepository.save(entity1);
-        smsHistoryRepository.save(entity2);
-        smsHistoryRepository.save(entity3);
+        smsHistoryRepository.create(entity1);
+        smsHistoryRepository.create(entity2);
+        smsHistoryRepository.create(entity3);
 
         List<SMSHistoryEntity> results = smsHistoryRepository.findByDateAutomatic(
                 new Timestamp(past.getTime()), new Timestamp(future.getTime()), true);
@@ -116,19 +116,19 @@ public class SMSHistoryRepositoryIT {
                 Arrays.asList("extra@example.com"),
                 false
         );
-        smsHistoryRepository.save(entity);
+        smsHistoryRepository.create(entity);
 
         // Update message and recipients
         entity.setMessage("Updated message");
         entity.setRecipients(Arrays.asList("updated@example.com"));
         entity.setAutomatic(true);
-        smsHistoryRepository.save(entity);
+        smsHistoryRepository.create(entity);
 
-        Optional<SMSHistoryEntity> updated = smsHistoryRepository.findById("SMS-004");
-        Assertions.assertTrue(updated.isPresent(), "Entity should still exist after update.");
-        Assertions.assertEquals("Updated message", updated.get().getMessage(), "Updated message should match.");
-        Assertions.assertEquals(1, updated.get().getRecipients().size(), "Updated recipients count should match.");
-        Assertions.assertTrue(updated.get().getAutomatic(), "Updated automatic flag should be true.");
+        SMSHistoryEntity updated = smsHistoryRepository.findById("SMS-004");
+        Assertions.assertNotNull(updated, "Entity should still exist after update.");
+        Assertions.assertEquals("Updated message", updated.getMessage(), "Updated message should match.");
+        Assertions.assertEquals(1, updated.getRecipients().size(), "Updated recipients count should match.");
+        Assertions.assertTrue(updated.getAutomatic(), "Updated automatic flag should be true.");
     }
 
     /**
@@ -143,11 +143,11 @@ public class SMSHistoryRepositoryIT {
                 Arrays.asList("extra@example.com"),
                 true
         );
-        smsHistoryRepository.save(entity);
+        smsHistoryRepository.create(entity);
 
         smsHistoryRepository.deleteById("SMS-005");
-        Optional<SMSHistoryEntity> deleted = smsHistoryRepository.findById("SMS-005");
-        Assertions.assertFalse(deleted.isPresent(), "Entity should be deleted from repository.");
+        SMSHistoryEntity deleted = smsHistoryRepository.findById("SMS-005");
+        Assertions.assertNull(deleted, "Entity should be deleted from repository.");
     }
 
     /**
@@ -155,7 +155,7 @@ public class SMSHistoryRepositoryIT {
      */
     @Test
     public void testFindNonExistentEntity() {
-        Optional<SMSHistoryEntity> retrieved = smsHistoryRepository.findById("SMS-999");
-        Assertions.assertFalse(retrieved.isPresent(), "Should return empty for non-existent entity.");
+        SMSHistoryEntity retrieved = smsHistoryRepository.findById("SMS-999");
+        Assertions.assertNull(retrieved, "Should return empty for non-existent entity.");
     }
 }

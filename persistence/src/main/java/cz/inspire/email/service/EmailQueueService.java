@@ -33,14 +33,14 @@ public class EmailQueueService extends BaseService<EmailQueueEntity, String, Ema
 
     public List<EmailQueueEntity> findAll(int offset, int count) throws FinderException {
         return wrapDBException(
-                () -> repository.findAll(new Limit(count, offset + 1)),
+                () -> repository.findAll(count, offset),
                 "Error retrieving paginated EmailQueueEntity records (offset = " + offset + ", count = " + count + ")"
         );
     }
 
     public Optional<EmailQueueEntity> findFirstMail() throws FinderException {
         return wrapDBException(
-                () -> repository.findFirstMail(Limit.of(1)),
+                () -> repository.findFirstMail(1),
                 "Error retrieving the first email from EmailQueueEntity"
         );
     }

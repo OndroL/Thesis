@@ -7,10 +7,15 @@ import io.quarkus.test.junit.QuarkusTest;
 import jakarta.enterprise.context.control.ActivateRequestContext;
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
-import org.junit.jupiter.api.*;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.MethodOrderer;
+import org.junit.jupiter.api.Order;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInstance;
+import org.junit.jupiter.api.TestMethodOrder;
 
 import java.util.List;
-import java.util.Optional;
 
 @Transactional
 @QuarkusTest
@@ -34,11 +39,11 @@ public class ObjektLocRepositoryIT {
     @Test
     public void testSaveAndFindById() {
         ObjektLocEntity entity = new ObjektLocEntity("LOC-001", "cz", "Main building", "123 Street", "A");
-        objektLocRepository.save(entity);
+        objektLocRepository.create(entity);
 
-        Optional<ObjektLocEntity> retrieved = objektLocRepository.findById("LOC-001");
-        Assertions.assertTrue(retrieved.isPresent(), "Entity should be present in repository.");
-        Assertions.assertEquals("Main building", retrieved.get().getNazev(), "Name should match.");
+        ObjektLocEntity retrieved = objektLocRepository.findById("LOC-001");
+        Assertions.assertNotNull(retrieved, "Entity should be present in repository.");
+        Assertions.assertEquals("Main building", retrieved.getNazev(), "Name should match.");
     }
 
     @Order(2)
@@ -47,10 +52,10 @@ public class ObjektLocRepositoryIT {
         ObjektLocEntity loc1 = new ObjektLocEntity("LOC-002", "Building B", "Secondary building", "456 Street", "B");
         ObjektLocEntity loc2 = new ObjektLocEntity("LOC-003", "Building C", "Tertiary building", "789 Street", "C");
 
-        objektLocRepository.save(loc1);
-        objektLocRepository.save(loc2);
+        objektLocRepository.create(loc1);
+        objektLocRepository.create(loc2);
 
-        List<ObjektLocEntity> results = objektLocRepository.findAll().toList();
+        List<ObjektLocEntity> results = objektLocRepository.findAll();
         Assertions.assertEquals(3, results.size(), "Expected 3 locations in repository.");
     }
 
@@ -58,10 +63,10 @@ public class ObjektLocRepositoryIT {
     @Test
     public void testDeleteById() {
         ObjektLocEntity entity = new ObjektLocEntity("LOC-004", "Building D", "To be deleted", "101 Street","D");
-        objektLocRepository.save(entity);
+        objektLocRepository.create(entity);
         objektLocRepository.deleteById("LOC-004");
 
-        Optional<ObjektLocEntity> deleted = objektLocRepository.findById("LOC-004");
-        Assertions.assertFalse(deleted.isPresent(), "Location should be deleted from repository.");
+        ObjektLocEntity deleted = objektLocRepository.findById("LOC-004");
+        Assertions.assertNull(deleted, "Location should be deleted from repository.");
     }
 }

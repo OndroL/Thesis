@@ -47,7 +47,7 @@ public class ObjektService extends BaseService<ObjektEntity, String, ObjektRepos
 
     public List<ObjektEntity> findByAreal(String arealId, String jazyk, int offset, int count) throws FinderException {
         return wrapDBException(
-                () -> repository.findByArealWithLimit(arealId, jazyk, Limit.range(offset + 1, count)),
+                () -> repository.findByArealWithLimit(arealId, jazyk, count, offset),
                 "Error retrieving ObjektEntity records for arealId = " + arealId + ", jazyk = " + jazyk +
                         " with pagination (offset + 1 = " + offset + ", count = " + count + ")"
         );
@@ -62,7 +62,7 @@ public class ObjektService extends BaseService<ObjektEntity, String, ObjektRepos
 
     public List<ObjektEntity> findBaseByAreal(String arealId, String jazyk, int offset, int count) throws FinderException {
         return wrapDBException(
-                () -> repository.findBaseByArealWithLimit(arealId, jazyk, Limit.range(offset + 1, count)),
+                () -> repository.findBaseByArealWithLimit(arealId, jazyk, count, offset),
                 "Error retrieving base ObjektEntity records for arealId = " + arealId + ", jazyk = " + jazyk +
                         " with pagination (offset + 1 = " + offset + ", count = " + count + ")"
         );
@@ -84,7 +84,7 @@ public class ObjektService extends BaseService<ObjektEntity, String, ObjektRepos
 
     public List<ObjektEntity> findByPrimyVstup(String jazyk, int offset, int count, boolean primyVstup) throws FinderException {
         return wrapDBException(
-                () -> repository.findByPrimyVstupWithLimit(jazyk, Limit.range(offset + 1, count), primyVstup),
+                () -> repository.findByPrimyVstupWithLimit(jazyk, count, offset, primyVstup),
                 "Error retrieving ObjektEntity records for jazyk = " + jazyk + ", primyVstup = " + primyVstup +
                         " with pagination (offset + 1 = " + offset + ", count = " + count + ")"
         );

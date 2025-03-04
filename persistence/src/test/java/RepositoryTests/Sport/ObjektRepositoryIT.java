@@ -1,22 +1,33 @@
 package RepositoryTests.Sport;
 
 import RepositoryTests.DatabaseCleaner;
-import cz.inspire.sport.entity.*;
+import cz.inspire.sport.entity.ArealEntity;
+import cz.inspire.sport.entity.ObjektEntity;
+import cz.inspire.sport.entity.ObjektLocEntity;
+import cz.inspire.sport.entity.ObjektSportEntity;
+import cz.inspire.sport.entity.ObjektSportPK;
+import cz.inspire.sport.entity.OvladacObjektuEntity;
+import cz.inspire.sport.entity.PodminkaRezervaceEntity;
+import cz.inspire.sport.entity.SportEntity;
 import cz.inspire.sport.repository.ObjektRepository;
 import io.quarkus.test.junit.QuarkusTest;
-import jakarta.data.Limit;
 import jakarta.enterprise.context.control.ActivateRequestContext;
 import jakarta.inject.Inject;
 import jakarta.persistence.EntityManager;
 import jakarta.transaction.Transactional;
-import org.junit.jupiter.api.*;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Order;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInstance;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.Random;
 import java.util.stream.Collectors;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @Transactional
 @QuarkusTest
@@ -142,7 +153,7 @@ public class ObjektRepositoryIT {
         em.persist(objekt3);
         em.flush();
 
-        List<ObjektEntity> result = objektRepository.findByArealWithLimit(areal.getId(), "cs", Limit.of(2));
+        List<ObjektEntity> result = objektRepository.findByArealWithLimit(areal.getId(), "cs", 2, 0);
 
         assertNotNull(result);
         assertEquals(2, result.size());
@@ -197,7 +208,7 @@ public class ObjektRepositoryIT {
         em.persist(objekt3);
         em.flush();
 
-        List<ObjektEntity> result = objektRepository.findBaseByArealWithLimit(areal.getId(), "cs", Limit.of(2));
+        List<ObjektEntity> result = objektRepository.findBaseByArealWithLimit(areal.getId(), "cs", 2, 0);
 
         assertNotNull(result);
         assertEquals(2, result.size());
@@ -338,8 +349,7 @@ public class ObjektRepositoryIT {
         em.persist(objekt4);
         em.flush();
 
-        Limit limit = Limit.of(2);
-        List<ObjektEntity> result = objektRepository.findByPrimyVstupWithLimit("ger", limit, true);
+        List<ObjektEntity> result = objektRepository.findByPrimyVstupWithLimit("ger", 2, 0, true);
 
         assertNotNull(result);
         assertEquals(2, result.size());
@@ -380,13 +390,13 @@ public class ObjektRepositoryIT {
         em.persist(objekt);
         em.flush();
 
-        Optional<ObjektEntity> result = objektRepository.findById(objekt.getId());
-        assertTrue(result.isPresent());
+        ObjektEntity result = objektRepository.findById(objekt.getId());
+        assertNotNull(result);
 
         em.remove(objekt);
         em.flush();
 
         result = objektRepository.findById(objekt.getId());
-        assertFalse(result.isPresent(), "Objekt should be deleted");
+        assertNull(result, "Objekt should be deleted");
     }
 }

@@ -3,7 +3,6 @@ package cz.inspire.sequence.service;
 import cz.inspire.common.service.BaseService;
 import cz.inspire.sequence.entity.SequenceEntity;
 import cz.inspire.sequence.repository.SequenceRepository;
-import jakarta.data.Limit;
 import jakarta.ejb.FinderException;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
@@ -46,10 +45,10 @@ public class SequenceService extends BaseService<SequenceEntity, String, Sequenc
         );
     }
 */
-    public List<SequenceEntity> findByType(int type, int offset, int limit) throws FinderException {
+    public List<SequenceEntity> findByType(int type, int offset, int count) throws FinderException {
         return wrapDBException(
-                () -> repository.findByType(type, new Limit(limit, offset + 1)),
-                "Error retrieving SequenceEntity by type (type = " + type + ", offset = " + offset + ", limit = " + limit + ")"
+                () -> repository.findByType(type, count, offset),
+                "Error retrieving SequenceEntity by type (type = " + type + ", offset = " + offset + ", limit = " + count + ")"
         );
     }
 }

@@ -1,9 +1,9 @@
 package cz.inspire.common.repository;
 
 import cz.inspire.common.entity.NastaveniJsonEntity;
-import jakarta.data.repository.CrudRepository;
-import jakarta.data.repository.Repository;
+import cz.inspire.repository.BaseRepository;
+import cz.inspire.repository.annotations.Repository;
 
 @Repository
-public interface NastaveniJsonRepository extends CrudRepository<NastaveniJsonEntity, String> {
+public interface NastaveniJsonRepository extends BaseRepository<NastaveniJsonEntity, String> {
 }
