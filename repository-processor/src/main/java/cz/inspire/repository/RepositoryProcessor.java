@@ -11,6 +11,9 @@ import cz.inspire.repository.annotations.Offset;
 import cz.inspire.repository.annotations.Query;
 import cz.inspire.repository.annotations.Repository;
 
+import jakarta.persistence.Id;
+import jakarta.persistence.EmbeddedId;
+
 import javax.annotation.processing.AbstractProcessor;
 import javax.annotation.processing.ProcessingEnvironment;
 import javax.annotation.processing.RoundEnvironment;
@@ -186,14 +189,14 @@ public class RepositoryProcessor extends AbstractProcessor {
 
             // Extract expected parameter names from the query using a regex.
             java.util.regex.Pattern pattern = java.util.regex.Pattern.compile(":(\\w+)");
-            java.util.regex.Matcher matcher = pattern.matcher(jpql);
-            Set<String> expectedParams = new java.util.HashSet<>();
+            Matcher matcher = pattern.matcher(jpql);
+            Set<String> expectedParams = new HashSet<>();
             while (matcher.find()) {
                 expectedParams.add(matcher.group(1));
             }
 
             // Build a set of parameter names provided in the method.
-            Set<String> providedParams = new java.util.HashSet<>();
+            Set<String> providedParams = new HashSet<>();
             for (VariableElement param : method.getParameters()) {
                 if (param.getAnnotation(Limit.class) != null || param.getAnnotation(Offset.class) != null) {
                     continue;
@@ -276,6 +279,31 @@ public class RepositoryProcessor extends AbstractProcessor {
                             .addStatement("return $N", pName);
                     break;
                 }
+                case "createAll": {
+                    VariableElement param = method.getParameters().getFirst();
+                    String pName = param.getSimpleName().toString();
+                    // Extract the element type from List<E>
+                    TypeMirror elementType = null;
+                    if (param.asType() instanceof DeclaredType dt) {
+                        List<? extends TypeMirror> args = dt.getTypeArguments();
+                        if (!args.isEmpty()) {
+                            elementType = substituteType(args.getFirst(), typeMap);
+                        }
+                    }
+                    if (elementType == null) {
+                        processingEnv.getMessager().printMessage(Diagnostic.Kind.ERROR,
+                                "Could not determine element type for createAll parameter.");
+                        return null;
+                    }
+                    // Iterate over the list of entities (of type E)
+                    builder.beginControlFlow("for($T entity : $N)",
+                            TypeName.get(elementType), pName);
+                    builder.addStatement("em.persist(entity)");
+                    builder.endControlFlow();
+                    builder.addStatement("em.flush()");
+                    builder.addStatement("return $N", pName);
+                    break;
+                }
                 case "update": {
                     VariableElement param = method.getParameters().getFirst();
                     String pName = param.getSimpleName().toString();
@@ -288,13 +316,72 @@ public class RepositoryProcessor extends AbstractProcessor {
                 case "delete": {
                     VariableElement param = method.getParameters().getFirst();
                     String pName = param.getSimpleName().toString();
-                    // Assume that every entity class has a method "getId()" to obtain its identifier.
-                    builder.addStatement("$T managed = em.getReference($T.class, $N.getId())",
-                                    TypeName.get(substituteType(param.asType(), typeMap)),
-                                    TypeName.get(substituteType(param.asType(), typeMap)),
-                                    pName)
-                            .addStatement("em.remove(managed)")
-                            .addStatement("em.flush()");
+                    TypeElement entityEl = (TypeElement) typeUtils.asElement(substituteType(param.asType(), typeMap));
+                    // Get the primary-key accessor for the entity (e.g. "getEmbeddedId" or "getName")
+                    String pkAccessor = getPrimaryKeyAccessor(entityEl);
+                    builder.addStatement("$T managed = em.getReference($T.class, $N.$L())",
+                            TypeName.get(substituteType(param.asType(), typeMap)),
+                            TypeName.get(substituteType(param.asType(), typeMap)),
+                            pName,
+                            pkAccessor);
+                    builder.addStatement("em.remove(managed)");
+                    builder.addStatement("em.flush()");
+                    break;
+                }
+                case "deleteAll": {
+                    VariableElement param = method.getParameters().getFirst();
+                    String pName = param.getSimpleName().toString();
+                    // Extract the element type from List<E>
+                    TypeMirror elementType = null;
+                    if (param.asType() instanceof DeclaredType dt) {
+                        List<? extends TypeMirror> args = dt.getTypeArguments();
+                        if (!args.isEmpty()) {
+                            elementType = substituteType(args.getFirst(), typeMap);
+                        }
+                    }
+                    if (elementType == null) {
+                        processingEnv.getMessager().printMessage(Diagnostic.Kind.ERROR,
+                                "Could not determine element type for deleteAll parameter.");
+                        return null;
+                    }
+                    // Resolve the entity element to use for the PK accessor.
+                    TypeElement entityEl = (TypeElement) typeUtils.asElement(elementType);
+                    String pkAccessor = getPrimaryKeyAccessor(entityEl);
+                    builder.beginControlFlow("for($T entity : $N)",
+                            TypeName.get(elementType), pName);
+                    builder.addStatement("$T managed = em.getReference($T.class, entity.$L())",
+                            TypeName.get(elementType),
+                            TypeName.get(elementType),
+                            pkAccessor);
+                    builder.addStatement("em.remove(managed)");
+                    builder.endControlFlow();
+                    builder.addStatement("em.flush()");
+                    break;
+                }
+                case "deleteById": {
+                    // Here the method parameter is the primary key.
+                    VariableElement param = method.getParameters().getFirst();
+                    String pName = param.getSimpleName().toString();
+                    // Resolve the entity type via BaseRepository's type mapping.
+                    String typeParamName = "E";
+                    TypeMirror entityType = null;
+                    for (Map.Entry<? extends TypeParameterElement, ? extends TypeMirror> entry : typeMap.entrySet()) {
+                        if (entry.getKey().getSimpleName().contentEquals(typeParamName)) {
+                            entityType = entry.getValue();
+                            break;
+                        }
+                    }
+                    if (entityType == null) {
+                        processingEnv.getMessager().printMessage(Diagnostic.Kind.ERROR,
+                                "Could not resolve entity type for repository " + repoInterface.getSimpleName());
+                        return null;
+                    }
+                    TypeElement entityElById = (TypeElement) typeUtils.asElement(entityType);
+                    ClassName inferred = ClassName.get(entityElById);
+                    builder.addStatement("$T managed = em.getReference($T.class, $N)",
+                            inferred, inferred, pName);
+                    builder.addStatement("em.remove(managed)");
+                    builder.addStatement("em.flush()");
                     break;
                 }
                 case "findById": {
@@ -306,10 +393,26 @@ public class RepositoryProcessor extends AbstractProcessor {
                     break;
                 }
                 case "findAll": {
-                    // Determine the entity type from the return type (List<E>).
-                    TypeParameterElement entityTypeParam = baseRepo.getTypeParameters().getFirst();
-                    TypeMirror entityType = typeMap.get(entityTypeParam);
+                    // Look up the entry whose key's simple name is "E"
+                    String typeParamName = "E";
+                    TypeMirror entityType = null;
+                    for (Map.Entry<? extends TypeParameterElement, ? extends TypeMirror> entry : typeMap.entrySet()) {
+                        if (entry.getKey().getSimpleName().contentEquals(typeParamName)) {
+                            entityType = entry.getValue();
+                            break;
+                        }
+                    }
+                    if (entityType == null) {
+                        processingEnv.getMessager().printMessage(Diagnostic.Kind.ERROR,
+                                "Could not resolve entity type for repository " + repoInterface.getSimpleName());
+                        return null;
+                    }
                     TypeElement entityEl = (TypeElement) typeUtils.asElement(entityType);
+                    if (entityEl == null) {
+                        processingEnv.getMessager().printMessage(Diagnostic.Kind.ERROR,
+                                "Could not resolve TypeElement for entity type " + entityType.toString());
+                        return null;
+                    }
                     ClassName inferred = ClassName.get(entityEl);
                     String jpql = "SELECT e FROM " + entityEl.getSimpleName() + " e";
                     builder.addStatement("$T query = em.createQuery($S, $T.class)",
@@ -351,39 +454,57 @@ public class RepositoryProcessor extends AbstractProcessor {
         return type;
     }
 
-    // Custom helper to obtain a mapping from BaseRepository's type parameters to concrete types.
+    // New helper: obtain a mapping from BaseRepository's type parameters to concrete types.
     private Map<TypeParameterElement, TypeMirror> getTypeArguments(TypeElement sub, TypeElement sup) {
         Map<TypeParameterElement, TypeMirror> mapping = new HashMap<>();
-        if (typeUtils.isSameType(typeUtils.erasure(sub.asType()), typeUtils.erasure(sup.asType()))) {
-            DeclaredType declared = (DeclaredType) sub.asType();
-            List<? extends TypeMirror> actuals = declared.getTypeArguments();
-            List<? extends TypeParameterElement> formals = sup.getTypeParameters();
-            for (int i = 0; i < formals.size(); i++) {
-                mapping.put(formals.get(i), actuals.get(i));
+        // First, check direct interfaces
+        for (TypeMirror iface : sub.getInterfaces()) {
+            DeclaredType dt = (DeclaredType) iface;
+            Element e = dt.asElement();
+            if (e instanceof TypeElement) {
+                TypeElement te = (TypeElement) e;
+                if (te.getQualifiedName().contentEquals(sup.getQualifiedName())) {
+                    List<? extends TypeMirror> actuals = dt.getTypeArguments();
+                    List<? extends TypeParameterElement> formals = sup.getTypeParameters();
+                    for (int i = 0; i < formals.size(); i++) {
+                        mapping.put(formals.get(i), actuals.get(i));
+                    }
+                    return mapping;
+                }
             }
-            return mapping;
         }
+        // If not found directly, try recursive search among supertypes.
         for (TypeMirror t : typeUtils.directSupertypes(sub.asType())) {
             Element e = typeUtils.asElement(t);
-            if (!(e instanceof TypeElement superElem)) continue;
-            Map<TypeParameterElement, TypeMirror> result = getTypeArguments(superElem, sup);
+            if (!(e instanceof TypeElement))
+                continue;
+            Map<TypeParameterElement, TypeMirror> result = getTypeArguments((TypeElement) e, sup);
             if (!result.isEmpty()) {
-                if (t instanceof DeclaredType dt) {
-                    List<? extends TypeMirror> actuals = dt.getTypeArguments();
-                    List<? extends TypeParameterElement> formals = superElem.getTypeParameters();
-                    Map<TypeParameterElement, TypeMirror> current = new HashMap<>();
-                    for (int i = 0; i < formals.size(); i++) {
-                        current.put(formals.get(i), actuals.get(i));
-                    }
-                    Map<TypeParameterElement, TypeMirror> substituted = new HashMap<>();
-                    for (Map.Entry<TypeParameterElement, TypeMirror> entry : result.entrySet()) {
-                        substituted.put(entry.getKey(), substituteType(entry.getValue(), current));
-                    }
-                    return substituted;
-                }
                 return result;
             }
         }
         return mapping;
+    }
+
+
+
+    private String getPrimaryKeyAccessor(TypeElement entityEl) {
+        // Look for a method first
+        for (Element member : elementUtils.getAllMembers(entityEl)) {
+            if ((member.getAnnotation(Id.class) != null || member.getAnnotation(EmbeddedId.class) != null)
+                    && member.getKind() == ElementKind.METHOD) {
+                return member.getSimpleName().toString();
+            }
+        }
+        // If no method was found, look for a field and compute the getter name.
+        for (Element member : elementUtils.getAllMembers(entityEl)) {
+            if ((member.getAnnotation(Id.class) != null || member.getAnnotation(EmbeddedId.class) != null)
+                    && member.getKind().isField()) {
+                String fieldName = member.getSimpleName().toString();
+                return "get" + Character.toUpperCase(fieldName.charAt(0)) + fieldName.substring(1);
+            }
+        }
+        // Fallback to "getId" if nothing found (you might also choose to report an error)
+        return "getId";
     }
 }

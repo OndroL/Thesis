@@ -235,6 +235,7 @@
     </dependencies>
 
     <build>
+        <testSourceDirectory>src/test/java</testSourceDirectory>
         <plugins>
             <plugin>
                 <groupId>io.quarkus</groupId>
@@ -296,6 +297,10 @@
                 <version>${maven-surefire-plugin.version}</version>
                 <configuration>
                     <skipTests>true</skipTests>
+                    <includes>
+                        <include>**/*Test.java</include>
+                        <include>**/*IT.java</include>
+                    </includes>
                     <systemPropertyVariables>
                         <java.util.logging.manager>org.jboss.logmanager.LogManager</java.util.logging.manager>
                     </systemPropertyVariables>
@@ -308,6 +313,7 @@
                 <version>3.5.0</version>
                 <configuration>
                     <mainClass>cz.inspire.Main</mainClass>
+                    <testSourceRoot>src/test/java</testSourceRoot>
                 </configuration>
             </plugin>
         </plugins>
