@@ -6,13 +6,13 @@ import cz.inspire.sport.repository.SportLocRepository;
 import io.quarkus.test.junit.QuarkusTest;
 import jakarta.enterprise.context.control.ActivateRequestContext;
 import jakarta.inject.Inject;
-import jakarta.persistence.EntityManager;
 import jakarta.transaction.Transactional;
-import org.junit.jupiter.api.*;
-
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Order;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInstance;
 
 import java.util.List;
-import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -25,9 +25,6 @@ public class SportLocRepositoryIT {
     SportLocRepository sportLocRepository;
 
     @Inject
-    EntityManager em;
-
-    @Inject
     DatabaseCleaner databaseCleaner;
 
     @BeforeAll
@@ -38,79 +35,75 @@ public class SportLocRepositoryIT {
 
     private SportLocEntity createSportLoc(String id, String jazyk, String nazev, String popis) {
         SportLocEntity sportLoc = new SportLocEntity();
-        sportLoc.setId(id);
+        sportLoc.setId(id); // We'll pass null to have it generated.
         sportLoc.setJazyk(jazyk);
         sportLoc.setNazev(nazev);
         sportLoc.setPopis(popis);
         return sportLoc;
     }
 
-    @Test
     @Order(1)
+    @Test
     void testCreateSportLoc() {
+        // Use repository.create() instead of em.persist()/flush()
         SportLocEntity sportLoc = createSportLoc(null, "cs", "Fotbal", "Popis fotbalu");
-        em.persist(sportLoc);
-        em.flush();
+        sportLoc = sportLocRepository.create(sportLoc);
 
-        SportLocEntity result = em.find(SportLocEntity.class, sportLoc.getId());
-        assertNotNull(result);
-        assertEquals("Fotbal", result.getNazev());
+        SportLocEntity result = sportLocRepository.findById(sportLoc.getId());
+        assertNotNull(result, "Entity should be present.");
+        assertEquals("Fotbal", result.getNazev(), "Name should match.");
     }
 
-    @Test
     @Order(2)
+    @Test
     void testFindById() {
         SportLocEntity sportLoc = createSportLoc(null, "en", "Basketball", "Basketball description");
-        em.persist(sportLoc);
-        em.flush();
+        sportLoc = sportLocRepository.create(sportLoc);
 
-        SportLocEntity result = sportLocRepository.findById(sportLoc.getId()).orElse(null);
-        assertNotNull(result);
-        assertEquals("Basketball", result.getNazev());
+        SportLocEntity result = sportLocRepository.findById(sportLoc.getId());
+        assertNotNull(result, "Entity should be found.");
+        assertEquals("Basketball", result.getNazev(), "Name should match.");
     }
 
-    @Test
     @Order(3)
+    @Test
     void testFindAll() {
         SportLocEntity sportLoc1 = createSportLoc(null, "cs", "Hokej", "Popis hokeje");
         SportLocEntity sportLoc2 = createSportLoc(null, "cs", "Tenis", "Popis tenisu");
-        em.persist(sportLoc1);
-        em.persist(sportLoc2);
-        em.flush();
 
-        List<SportLocEntity> result = sportLocRepository.findAll().toList();
-        assertNotNull(result);
-        assertEquals(2, result.size());
+        sportLoc1 = sportLocRepository.create(sportLoc1);
+        sportLoc2 = sportLocRepository.create(sportLoc2);
+
+        List<SportLocEntity> result = sportLocRepository.findAll();
+        assertNotNull(result, "Result should not be null.");
+        assertEquals(2, result.size(), "Expected 2 entries.");
     }
 
-    @Test
     @Order(4)
+    @Test
     void testDeleteById() {
         SportLocEntity sportLoc = createSportLoc(null, "cs", "Plavání", "Popis plavání");
-        em.persist(sportLoc);
-        em.flush();
+        sportLoc = sportLocRepository.create(sportLoc);
 
-        em.remove(sportLoc);
-        em.flush();
+        sportLocRepository.deleteById(sportLoc.getId());
 
-        Optional<SportLocEntity> result = sportLocRepository.findById(sportLoc.getId());
-        assertFalse(result.isPresent());
+        SportLocEntity result = sportLocRepository.findById(sportLoc.getId());
+        assertNull(result, "Entity should be deleted.");
     }
 
-    @Test
     @Order(5)
+    @Test
     void testUpdateSportLoc() {
         SportLocEntity sportLoc = createSportLoc(null, "cs", "Volejbal", "Popis volejbalu");
-        em.persist(sportLoc);
-        em.flush();
+        sportLoc = sportLocRepository.create(sportLoc);
 
-        SportLocEntity updated = em.find(SportLocEntity.class, sportLoc.getId());
+        // Retrieve, update, and persist again via repository.create()
+        SportLocEntity updated = sportLocRepository.findById(sportLoc.getId());
         updated.setNazev("Beach Volejbal");
-        em.merge(updated);
-        em.flush();
+        updated = sportLocRepository.create(updated);
 
-        SportLocEntity result = em.find(SportLocEntity.class, sportLoc.getId());
-        assertNotNull(result);
-        assertEquals("Beach Volejbal", result.getNazev());
+        SportLocEntity result = sportLocRepository.findById(sportLoc.getId());
+        assertNotNull(result, "Updated entity should be present.");
+        assertEquals("Beach Volejbal", result.getNazev(), "Updated name should match.");
     }
 }

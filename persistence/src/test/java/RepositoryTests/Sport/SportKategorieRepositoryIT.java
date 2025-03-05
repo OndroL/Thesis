@@ -1,15 +1,17 @@
 package RepositoryTests.Sport;
 
 import RepositoryTests.DatabaseCleaner;
-import cz.inspire.sport.entity.*;
+import cz.inspire.sport.entity.SportKategorieEntity;
+import cz.inspire.sport.entity.SportKategorieLocEntity;
 import cz.inspire.sport.repository.SportKategorieRepository;
 import io.quarkus.test.junit.QuarkusTest;
 import jakarta.enterprise.context.control.ActivateRequestContext;
 import jakarta.inject.Inject;
-import jakarta.persistence.EntityManager;
 import jakarta.transaction.Transactional;
-import jakarta.data.Limit;
-import org.junit.jupiter.api.*;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Order;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInstance;
 
 import java.util.List;
 
@@ -26,9 +28,6 @@ public class SportKategorieRepositoryIT {
     @Inject
     DatabaseCleaner databaseCleaner;
 
-    @Inject
-    EntityManager em;
-
     @BeforeAll
     @ActivateRequestContext
     public void clearDatabase() {
@@ -36,7 +35,9 @@ public class SportKategorieRepositoryIT {
         databaseCleaner.clearTable(SportKategorieLocEntity.class, true);
     }
 
+    // Helper method: pass null for ID so that it is generated.
     private SportKategorieEntity createSportKategorie(String id, String name, SportKategorieEntity parent) {
+        // Create a SportKategorieEntity with null ID to trigger automatic generation.
         SportKategorieEntity kategorie = new SportKategorieEntity(id, "Facility-001", "Service-001", parent, null, null, null);
         SportKategorieLocEntity locale = new SportKategorieLocEntity(id, "cs", name, "Description " + name);
         kategorie.setLocaleData(List.of(locale));
@@ -48,28 +49,28 @@ public class SportKategorieRepositoryIT {
     void testFindAllOrdered() {
         SportKategorieEntity category1 = createSportKategorie(null, "Football", null);
         SportKategorieEntity category2 = createSportKategorie(null, "Basketball", null);
-        em.persist(category1);
-        em.persist(category2);
-        em.flush();
+        category1 = sportKategorieRepository.create(category1);
+        category2 = sportKategorieRepository.create(category2);
 
         List<SportKategorieEntity> result = sportKategorieRepository.findAllOrdered();
 
         assertNotNull(result);
         assertEquals(2, result.size());
-        assertEquals("Basketball", result.getFirst().getLocaleData().getFirst().getNazev());
+        // Assuming that ordering is based on locale data name ascending.
+        assertEquals("Basketball", result.get(0).getLocaleData().get(0).getNazev());
     }
 
     @Test
     @Order(2)
     void testFindRoot() {
         SportKategorieEntity category = createSportKategorie(null, "Tennis", null);
-        em.persist(category);
-        em.flush();
+        category = sportKategorieRepository.create(category);
 
         List<SportKategorieEntity> result = sportKategorieRepository.findRoot();
 
         assertNotNull(result);
-        assertTrue(result.stream().anyMatch(c -> c.getId().equals(category.getId())));
+        SportKategorieEntity finalCategory = category;
+        assertTrue(result.stream().anyMatch(c -> c.getId().equals(finalCategory.getId())));
     }
 
     @Test
@@ -77,15 +78,14 @@ public class SportKategorieRepositoryIT {
     void testFindAllByNadrazenaKategorie() {
         SportKategorieEntity parent = createSportKategorie(null, "Main Category", null);
         SportKategorieEntity child = createSportKategorie(null, "Sub Category", parent);
-        em.persist(parent);
-        em.persist(child);
-        em.flush();
+        parent = sportKategorieRepository.create(parent);
+        child = sportKategorieRepository.create(child);
 
         List<SportKategorieEntity> result = sportKategorieRepository.findAllByNadrazenaKategorie(parent.getId());
 
         assertNotNull(result);
         assertEquals(1, result.size());
-        assertEquals(child.getId(), result.getFirst().getId());
+        assertEquals(child.getId(), result.get(0).getId());
     }
 
     @Test
@@ -93,12 +93,10 @@ public class SportKategorieRepositoryIT {
     void testFindAllWithLimit() {
         SportKategorieEntity category1 = createSportKategorie(null, "Swimming", null);
         SportKategorieEntity category2 = createSportKategorie(null, "Running", null);
-        em.persist(category1);
-        em.persist(category2);
-        em.flush();
+        category1 = sportKategorieRepository.create(category1);
+        category2 = sportKategorieRepository.create(category2);
 
-        List<SportKategorieEntity> result = sportKategorieRepository.findAll(Limit.of(1));
-
+        List<SportKategorieEntity> result = sportKategorieRepository.findAll(1, 0);
         assertNotNull(result);
         assertEquals(1, result.size());
     }
@@ -108,8 +106,7 @@ public class SportKategorieRepositoryIT {
     void testFindAllByMultisportFacilityId() {
         int initialCount = sportKategorieRepository.findAllByMultisportFacilityId("Facility-001").size();
         SportKategorieEntity category = createSportKategorie(null, "Yoga", null);
-        em.persist(category);
-        em.flush();
+        category = sportKategorieRepository.create(category);
 
         List<SportKategorieEntity> result = sportKategorieRepository.findAllByMultisportFacilityId("Facility-001");
 
@@ -122,8 +119,7 @@ public class SportKategorieRepositoryIT {
     void testCount() {
         Long initialCount = sportKategorieRepository.count();
         SportKategorieEntity category = createSportKategorie(null, "Golf", null);
-        em.persist(category);
-        em.flush();
+        category = sportKategorieRepository.create(category);
 
         Long newCount = sportKategorieRepository.count();
         assertEquals(initialCount + 1, newCount);
@@ -134,8 +130,7 @@ public class SportKategorieRepositoryIT {
     void testCountRoot() {
         Long initialCount = sportKategorieRepository.countRoot();
         SportKategorieEntity category = createSportKategorie(null, "Badminton", null);
-        em.persist(category);
-        em.flush();
+        category = sportKategorieRepository.create(category);
 
         Long newCount = sportKategorieRepository.countRoot();
         assertEquals(initialCount + 1, newCount);
@@ -146,12 +141,10 @@ public class SportKategorieRepositoryIT {
     void testCountByNadrazenaKategorie() {
         SportKategorieEntity parent = createSportKategorie(null, "Main Category 2", null);
         SportKategorieEntity child = createSportKategorie(null, "Sub Category 2", parent);
-        em.persist(parent);
-        em.persist(child);
-        em.flush();
+        parent = sportKategorieRepository.create(parent);
+        child = sportKategorieRepository.create(child);
 
         Long count = sportKategorieRepository.countByNadrazenaKategorie(parent.getId());
-
         assertEquals(1, count);
     }
 }

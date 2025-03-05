@@ -10,7 +10,6 @@ import cz.inspire.sport.entity.OtviraciDobaObjektuPK;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Optional;
 
 @Repository
 public interface OtviraciDobaObjektuRepository extends BaseRepository<OtviraciDobaObjektuEntity, OtviraciDobaObjektuPK> {
@@ -37,7 +36,7 @@ public interface OtviraciDobaObjektuRepository extends BaseRepository<OtviraciDo
         WHERE o.embeddedId.objektId = :objektId AND o.embeddedId.platnostOd <= :day
         ORDER BY o.embeddedId.platnostOd DESC
     """)
-    Optional<OtviraciDobaObjektuEntity> findCurrent(String objektId, LocalDateTime day, @Limit int count);
+    OtviraciDobaObjektuEntity findCurrent(String objektId, LocalDateTime day, @Limit int count);
 
     @Query("""
         SELECT o FROM OtviraciDobaObjektuEntity o

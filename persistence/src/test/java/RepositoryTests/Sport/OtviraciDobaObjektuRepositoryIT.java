@@ -8,14 +8,14 @@ import cz.inspire.sport.utils.OtviraciDoba;
 import io.quarkus.test.junit.QuarkusTest;
 import jakarta.enterprise.context.control.ActivateRequestContext;
 import jakarta.inject.Inject;
-import jakarta.persistence.EntityManager;
 import jakarta.transaction.Transactional;
-import jakarta.data.Limit;
-import org.junit.jupiter.api.*;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Order;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInstance;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -31,7 +31,7 @@ public class OtviraciDobaObjektuRepositoryIT {
     DatabaseCleaner databaseCleaner;
 
     @Inject
-    EntityManager em;
+    jakarta.persistence.EntityManager em;
 
     @BeforeAll
     @ActivateRequestContext
@@ -43,109 +43,96 @@ public class OtviraciDobaObjektuRepositoryIT {
         return new OtviraciDobaObjektuEntity(new OtviraciDobaObjektuPK(objektId, platnostOd), otviraciDoba);
     }
 
-    @Test
     @Order(1)
+    @Test
     void testFindByObjekt() {
         LocalDateTime now = LocalDateTime.now();
+        // Supply composite key parts (not null) as these are required
         OtviraciDobaObjektuEntity entity = createOtviraciDobaObjektu("OBJ-001", now, null);
-        em.persist(entity);
-        em.flush();
+        entity = otviraciDobaObjektuRepository.create(entity);
 
         List<OtviraciDobaObjektuEntity> result = otviraciDobaObjektuRepository.findByObjekt("OBJ-001");
-
-        assertNotNull(result);
-        assertEquals(1, result.size());
+        assertNotNull(result, "Result should not be null");
+        assertEquals(1, result.size(), "Expected one entity");
     }
 
-    @Test
     @Order(2)
+    @Test
     void testFindByObjektWithLimit() {
         LocalDateTime now = LocalDateTime.now();
         OtviraciDobaObjektuEntity entity1 = createOtviraciDobaObjektu("OBJ-002", now.minusDays(1), null);
         OtviraciDobaObjektuEntity entity2 = createOtviraciDobaObjektu("OBJ-002", now, null);
 
-        em.persist(entity1);
-        em.persist(entity2);
-        em.flush();
+        entity1 = otviraciDobaObjektuRepository.create(entity1);
+        entity2 = otviraciDobaObjektuRepository.create(entity2);
 
-        List<OtviraciDobaObjektuEntity> result = otviraciDobaObjektuRepository.findByObjektWithLimit("OBJ-002", Limit.of(1));
-
-        assertNotNull(result);
-        assertEquals(1, result.size());
+        List<OtviraciDobaObjektuEntity> result = otviraciDobaObjektuRepository.findByObjektWithLimit("OBJ-002", 1, 0);
+        assertNotNull(result, "Result should not be null");
+        assertEquals(1, result.size(), "Expected only one result due to limit");
     }
 
-    @Test
     @Order(3)
+    @Test
     void testFindCurrent() {
         LocalDateTime now = LocalDateTime.now();
         OtviraciDobaObjektuEntity entity = createOtviraciDobaObjektu("OBJ-003", now.minusDays(1), null);
-        em.persist(entity);
-        em.flush();
+        entity = otviraciDobaObjektuRepository.create(entity);
 
-        Optional<OtviraciDobaObjektuEntity> result = otviraciDobaObjektuRepository.findCurrent("OBJ-003", now, Limit.range(1,1));
-
-        assertTrue(result.isPresent());
-        assertEquals("OBJ-003", result.get().getEmbeddedId().getObjektId());
+        // Assume repository.findCurrent now returns the entity directly (or null)
+        OtviraciDobaObjektuEntity result = otviraciDobaObjektuRepository.findCurrent("OBJ-003", now, 1);
+        assertNotNull(result, "Expected to find current entity");
+        assertEquals("OBJ-003", result.getEmbeddedId().getObjektId(), "Objekt ID should match");
     }
 
-    @Test
     @Order(4)
+    @Test
     void testFindAfter() {
         LocalDateTime now = LocalDateTime.now();
         OtviraciDobaObjektuEntity entity = createOtviraciDobaObjektu("OBJ-004", now.plusDays(1), null);
-        em.persist(entity);
-        em.flush();
+        entity = otviraciDobaObjektuRepository.create(entity);
 
         List<OtviraciDobaObjektuEntity> result = otviraciDobaObjektuRepository.findAfter("OBJ-004", now);
-
-        assertNotNull(result);
-        assertEquals(1, result.size());
+        assertNotNull(result, "Result should not be null");
+        assertEquals(1, result.size(), "Expected one entity");
     }
 
-    @Test
     @Order(5)
+    @Test
     void testGetCurrentIdsByObjectAndDay() {
         LocalDateTime now = LocalDateTime.now();
         OtviraciDobaObjektuEntity entity = createOtviraciDobaObjektu("OBJ-005", now.minusDays(2), null);
-        em.persist(entity);
-        em.flush();
+        entity = otviraciDobaObjektuRepository.create(entity);
 
         List<LocalDateTime> result = otviraciDobaObjektuRepository.getCurrentIdsByObjectAndDay("OBJ-005", now);
-
-        assertNotNull(result);
-        assertEquals(1, result.size());
+        assertNotNull(result, "Result should not be null");
+        assertEquals(1, result.size(), "Expected one ID");
     }
 
-    @Test
     @Order(6)
+    @Test
     void testFindById() {
         LocalDateTime now = LocalDateTime.now();
-        OtviraciDobaObjektuPK pk = new OtviraciDobaObjektuPK("OBJ-006", now);
-        OtviraciDobaObjektuEntity entity = new OtviraciDobaObjektuEntity(pk, null);
-        em.persist(entity);
-        em.flush();
+        // Create composite key manually
+        OtviraciDobaObjektuEntity entity = createOtviraciDobaObjektu("OBJ-006", now, null);
+        entity = otviraciDobaObjektuRepository.create(entity);
 
-        Optional<OtviraciDobaObjektuEntity> result = otviraciDobaObjektuRepository.findById(pk);
-
-        assertTrue(result.isPresent());
+        OtviraciDobaObjektuEntity result = otviraciDobaObjektuRepository.findById(entity.getEmbeddedId());
+        assertNotNull(result, "Entity should be found by composite key");
     }
 
-    @Test
     @Order(7)
+    @Test
     void testDeleteById() {
         LocalDateTime now = LocalDateTime.now();
-        OtviraciDobaObjektuPK pk = new OtviraciDobaObjektuPK("OBJ-007", now);
-        OtviraciDobaObjektuEntity entity = new OtviraciDobaObjektuEntity(pk, null);
-        em.persist(entity);
-        em.flush();
+        OtviraciDobaObjektuEntity entity = createOtviraciDobaObjektu("OBJ-007", now, null);
+        entity = otviraciDobaObjektuRepository.create(entity);
 
-        Optional<OtviraciDobaObjektuEntity> result = otviraciDobaObjektuRepository.findById(pk);
-        assertTrue(result.isPresent());
+        OtviraciDobaObjektuEntity result = otviraciDobaObjektuRepository.findById(entity.getEmbeddedId());
+        assertNotNull(result, "Entity should exist before deletion");
 
-        otviraciDobaObjektuRepository.deleteById(pk);
-        em.flush();
+        otviraciDobaObjektuRepository.deleteById(entity.getEmbeddedId());
 
-        result = otviraciDobaObjektuRepository.findById(pk);
-        assertFalse(result.isPresent());
+        result = otviraciDobaObjektuRepository.findById(entity.getEmbeddedId());
+        assertNull(result, "Entity should be deleted");
     }
 }

@@ -6,11 +6,11 @@ import cz.inspire.sport.repository.SportKategorieLocRepository;
 import io.quarkus.test.junit.QuarkusTest;
 import jakarta.enterprise.context.control.ActivateRequestContext;
 import jakarta.inject.Inject;
-import jakarta.persistence.EntityManager;
 import jakarta.transaction.Transactional;
-import org.junit.jupiter.api.*;
-
-import java.util.Optional;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Order;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInstance;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -25,9 +25,6 @@ public class SportKategorieLocRepositoryIT {
     @Inject
     DatabaseCleaner databaseCleaner;
 
-    @Inject
-    EntityManager em;
-
     @BeforeAll
     @ActivateRequestContext
     public void clearDatabase() {
@@ -41,30 +38,28 @@ public class SportKategorieLocRepositoryIT {
     @Test
     @Order(1)
     void testSaveAndFindById() {
+        // Create entity with null ID to allow automatic generation.
         SportKategorieLocEntity entity = createSportKategorieLoc(null, "cs", "Fotbal", "Popis fotbalu");
-        em.persist(entity);
-        em.flush();
+        entity = sportKategorieLocRepository.create(entity);
 
-        Optional<SportKategorieLocEntity> result = sportKategorieLocRepository.findById(entity.getId());
-
-        assertTrue(result.isPresent());
-        assertEquals("Fotbal", result.get().getNazev());
+        SportKategorieLocEntity result = sportKategorieLocRepository.findById(entity.getId());
+        assertNotNull(result, "Entity should be present in repository.");
+        assertEquals("Fotbal", result.getNazev(), "Name should match.");
     }
 
     @Test
     @Order(2)
     void testDeleteEntity() {
+        // Create entity with null ID so that it is generated.
         SportKategorieLocEntity entity = createSportKategorieLoc(null, "en", "Basketball", "Description of basketball");
-        em.persist(entity);
-        em.flush();
+        entity = sportKategorieLocRepository.create(entity);
 
-        Optional<SportKategorieLocEntity> result = sportKategorieLocRepository.findById(entity.getId());
-        assertTrue(result.isPresent());
+        SportKategorieLocEntity result = sportKategorieLocRepository.findById(entity.getId());
+        assertNotNull(result, "Entity should be present in repository.");
 
-        em.remove(entity);
-        em.flush();
+        sportKategorieLocRepository.deleteById(entity.getId());
 
-        result = sportKategorieLocRepository.findById("SKL-002");
-        assertFalse(result.isPresent());
+        result = sportKategorieLocRepository.findById(entity.getId());
+        assertNull(result, "Entity should be deleted from repository.");
     }
 }

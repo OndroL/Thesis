@@ -4,21 +4,36 @@ import RepositoryTests.DatabaseCleaner;
 import cz.inspire.sport.entity.OmezeniRezervaciEntity;
 import cz.inspire.sport.entity.SportEntity;
 import cz.inspire.sport.repository.OmezeniRezervaciRepository;
-import cz.inspire.utils.*;
+import cz.inspire.utils.PeriodOfTime;
+import cz.inspire.utils.RozsirenaTydenniOtviraciDoba;
+import cz.inspire.utils.TimeOfDay;
+import cz.inspire.utils.TydeniOtviraciDoba;
 import io.quarkus.test.junit.QuarkusTest;
 import jakarta.enterprise.context.control.ActivateRequestContext;
 import jakarta.inject.Inject;
 import jakarta.persistence.EntityManager;
 import jakarta.transaction.Transactional;
-import org.junit.jupiter.api.*;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.MethodOrderer.OrderAnnotation;
+import org.junit.jupiter.api.Order;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInstance;
+import org.junit.jupiter.api.TestMethodOrder;
 
-import java.util.*;
+import java.util.Calendar;
+import java.util.List;
+import java.util.SortedMap;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @Transactional
 @QuarkusTest
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
+@TestMethodOrder(OrderAnnotation.class)
 public class OmezeniRezervaciRepositoryIT {
 
     @Inject
@@ -37,27 +52,25 @@ public class OmezeniRezervaciRepositoryIT {
         databaseCleaner.clearTable(SportEntity.class, true);
     }
 
-
-    @Test
     @Order(1)
+    @Test
     void testSaveAndRetrieve_TydeniOtviraciDoba() {
         TydeniOtviraciDoba otviraciDoba = new TydeniOtviraciDoba();
 
         SportEntity sport = new SportEntity(null, 1, "ZB-008", "SK-008", 180, true, 90, true, 20, null, 45, 200, true, 30, null, null, true, true, 15, 120, 3, 7, 40, null, null, null, null, null, null, null, null, null);
         em.persist(sport);
 
+        // Create two identical periods for Monday
         PeriodOfTime period = new PeriodOfTime(new TimeOfDay(9, 0), new TimeOfDay(12, 0));
         otviraciDoba.addOtevreno(period, Calendar.MONDAY, sport.getId());
-
-        PeriodOfTime period2 = new PeriodOfTime(new TimeOfDay(9, 0), new TimeOfDay(12, 0));
+        // Adding the same period a second time; depending on your implementation this might update or be ignored.
         otviraciDoba.addOtevreno(period, Calendar.MONDAY, sport.getId());
 
-        OmezeniRezervaciEntity entity = new OmezeniRezervaciEntity("OBJ-008", otviraciDoba);
-        em.persist(entity);
-        em.flush();
+        // Create OmezeniRezervaciEntity with null ID so it is generated.
+        OmezeniRezervaciEntity entity = new OmezeniRezervaciEntity(null, otviraciDoba);
+        entity = omezeniRezervaciRepository.create(entity);
 
-        OmezeniRezervaciEntity result = omezeniRezervaciRepository.findById("OBJ-008");
-
+        OmezeniRezervaciEntity result = omezeniRezervaciRepository.findById(entity.getObjektId());
         assertNotNull(result);
         TydeniOtviraciDoba retrievedDoba = (TydeniOtviraciDoba) result.getOmezeni();
         assertNotNull(retrievedDoba);
@@ -68,8 +81,8 @@ public class OmezeniRezervaciRepositoryIT {
         assertEquals(sport.getId(), retrievedMap.get(period));
     }
 
-    @Test
     @Order(2)
+    @Test
     void testDelete_TydeniOtviraciDoba() {
         TydeniOtviraciDoba otviraciDoba = new TydeniOtviraciDoba();
 
@@ -79,22 +92,21 @@ public class OmezeniRezervaciRepositoryIT {
         PeriodOfTime period = new PeriodOfTime(new TimeOfDay(10, 0), new TimeOfDay(13, 0));
         otviraciDoba.addOtevreno(period, Calendar.TUESDAY, sport.getId());
 
-        OmezeniRezervaciEntity entity = new OmezeniRezervaciEntity("OBJ-009", otviraciDoba);
-        em.persist(entity);
-        em.flush();
+        OmezeniRezervaciEntity entity = new OmezeniRezervaciEntity(null, otviraciDoba);
+        entity = omezeniRezervaciRepository.create(entity);
 
-        OmezeniRezervaciEntity result = omezeniRezervaciRepository.findById("OBJ-009");
+        OmezeniRezervaciEntity result = omezeniRezervaciRepository.findById(entity.getObjektId());
         assertNotNull(result);
 
-        em.remove(entity);
-        em.flush();
+        // Delete using repository
+        omezeniRezervaciRepository.deleteById(entity.getObjektId());
 
-        result = omezeniRezervaciRepository.findById("OBJ-009");
+        result = omezeniRezervaciRepository.findById(entity.getObjektId());
         assertNull(result);
     }
 
-    @Test
     @Order(3)
+    @Test
     void testSaveMultipleEntriesForSameDay() {
         TydeniOtviraciDoba otviraciDoba = new TydeniOtviraciDoba();
 
@@ -109,12 +121,10 @@ public class OmezeniRezervaciRepositoryIT {
         otviraciDoba.addOtevreno(period1, Calendar.WEDNESDAY, sport1.getId());
         otviraciDoba.addOtevreno(period2, Calendar.WEDNESDAY, sport2.getId());
 
-        OmezeniRezervaciEntity entity = new OmezeniRezervaciEntity("OBJ-010", otviraciDoba);
-        em.persist(entity);
-        em.flush();
+        OmezeniRezervaciEntity entity = new OmezeniRezervaciEntity(null, otviraciDoba);
+        entity = omezeniRezervaciRepository.create(entity);
 
-        OmezeniRezervaciEntity result = omezeniRezervaciRepository.findById("OBJ-010");
-
+        OmezeniRezervaciEntity result = omezeniRezervaciRepository.findById(entity.getObjektId());
         assertNotNull(result);
         TydeniOtviraciDoba retrievedDoba = (TydeniOtviraciDoba) result.getOmezeni();
         assertNotNull(retrievedDoba);
@@ -127,10 +137,9 @@ public class OmezeniRezervaciRepositoryIT {
         assertEquals(sport2.getId(), retrievedMap.get(period2));
     }
 
-    @Test
     @Order(4)
+    @Test
     void testUpdateOpeningHours() {
-
         SportEntity sport = new SportEntity(null, 1, "ZB-012", "SK-012", 220, true, 95, true, 40, null, 80, 240, true, 50, null, null, true, true, 25, 170, 6, 11, 65, null, null, null, null, null, null, null, null, null);
         em.persist(sport);
         TydeniOtviraciDoba otviraciDoba = new TydeniOtviraciDoba(sport.getClass());
@@ -140,26 +149,23 @@ public class OmezeniRezervaciRepositoryIT {
 
         otviraciDoba.addOtevreno(oldPeriod, 1, sport.getId());
 
-        OmezeniRezervaciEntity entity = new OmezeniRezervaciEntity("OBJ-012", otviraciDoba);
-        em.persist(entity);
-        em.flush();
+        OmezeniRezervaciEntity entity = new OmezeniRezervaciEntity(null, otviraciDoba);
+        entity = omezeniRezervaciRepository.create(entity);
 
         // Retrieve and update the opening hours
-        OmezeniRezervaciEntity result = omezeniRezervaciRepository.findById("OBJ-012");
+        OmezeniRezervaciEntity result = omezeniRezervaciRepository.findById(entity.getObjektId());
         assertNotNull(result);
 
         TydeniOtviraciDoba retrievedDoba = (TydeniOtviraciDoba) result.getOmezeni();
         assertNotNull(retrievedDoba);
 
         retrievedDoba.updateOtevreno(oldPeriod, newPeriod, 1, sport.getId());
-
         entity.setOmezeni(retrievedDoba);
 
-        em.merge(entity);
-        em.flush();
+        entity = omezeniRezervaciRepository.create(entity);
 
         // Retrieve again and verify update
-        result = omezeniRezervaciRepository.findById("OBJ-012");
+        result = omezeniRezervaciRepository.findById(entity.getObjektId());
         assertNotNull(result);
 
         retrievedDoba = (TydeniOtviraciDoba) result.getOmezeni();
@@ -168,40 +174,37 @@ public class OmezeniRezervaciRepositoryIT {
         SortedMap<PeriodOfTime, String> retrievedMap = retrievedDoba.getOtevreno(1);
         assertNotNull(retrievedMap);
         assertFalse(retrievedMap.containsKey(oldPeriod));
-
         assertTrue(retrievedMap.containsKey(newPeriod));
         assertEquals(sport.getId(), retrievedMap.get(newPeriod));
     }
 
-    @Test
     @Order(5)
+    @Test
     void testRemoveOpeningHourEntry() {
         SportEntity sport = new SportEntity(null, 1, "ZB-013", "SK-013", 230, true, 100, true, 50, null, 90, 250, true, 55, null, null, true, true, 28, 180, 7, 12, 70, null, null, null, null, null, null, null, null, null);
         em.persist(sport);
 
         TydeniOtviraciDoba otviraciDoba = new TydeniOtviraciDoba(sport.getClass());
-
         PeriodOfTime period = new PeriodOfTime(new TimeOfDay(8, 0), new TimeOfDay(11, 0));
         otviraciDoba.addOtevreno(period, 4, sport.getId());
 
-        OmezeniRezervaciEntity entity = new OmezeniRezervaciEntity("OBJ-013", otviraciDoba);
-        em.persist(entity);
-        em.flush();
+        OmezeniRezervaciEntity entity = new OmezeniRezervaciEntity(null, otviraciDoba);
+        entity = omezeniRezervaciRepository.create(entity);
 
         // Retrieve and delete the opening hours
-        OmezeniRezervaciEntity result = omezeniRezervaciRepository.findById("OBJ-013");
+        OmezeniRezervaciEntity result = omezeniRezervaciRepository.findById(entity.getObjektId());
         assertNotNull(result);
 
         TydeniOtviraciDoba retrievedDoba = (TydeniOtviraciDoba) result.getOmezeni();
         assertNotNull(retrievedDoba);
 
         retrievedDoba.removeOtevreno(period, 4);
+        entity.setOmezeni(retrievedDoba);
 
-        em.merge(entity);
-        em.flush();
+        entity = omezeniRezervaciRepository.create(entity);
 
         // Retrieve again and verify deletion
-        result = omezeniRezervaciRepository.findById("OBJ-013");
+        result = omezeniRezervaciRepository.findById(entity.getObjektId());
         assertNotNull(result);
 
         retrievedDoba = (TydeniOtviraciDoba) result.getOmezeni();
@@ -209,11 +212,11 @@ public class OmezeniRezervaciRepositoryIT {
 
         SortedMap<PeriodOfTime, String> retrievedMap = retrievedDoba.getOtevreno(Calendar.FRIDAY);
         assertNotNull(retrievedMap);
-        assertFalse(retrievedMap.containsKey(period)); // Verify it was removed
+        assertFalse(retrievedMap.containsKey(period));
     }
 
-    @Test
     @Order(6)
+    @Test
     void testSaveMultipleSportsForSameTimeSlot() {
         RozsirenaTydenniOtviraciDoba otviraciDoba = new RozsirenaTydenniOtviraciDoba();
 
@@ -232,16 +235,15 @@ public class OmezeniRezervaciRepositoryIT {
         otviraciDoba.addOtevreno(period, 2, sport2.getId());
         otviraciDoba.addOtevreno(period, 3, sport1.getId());
 
-        OmezeniRezervaciEntity entity = new OmezeniRezervaciEntity("OBJ-015", otviraciDoba);
-        em.persist(entity);
-        em.flush();
+        OmezeniRezervaciEntity entity = new OmezeniRezervaciEntity(null, otviraciDoba);
+        entity = omezeniRezervaciRepository.create(entity);
 
-        OmezeniRezervaciEntity result = omezeniRezervaciRepository.findById("OBJ-015");
-
+        OmezeniRezervaciEntity result = omezeniRezervaciRepository.findById(entity.getObjektId());
         assertNotNull(result);
         RozsirenaTydenniOtviraciDoba retrievedDoba = (RozsirenaTydenniOtviraciDoba) result.getOmezeni();
         assertNotNull(retrievedDoba);
 
+        // Retrieve the list of sport IDs for index 0
         SortedMap<PeriodOfTime, List<String>> retrievedMap = retrievedDoba.getOtevreno(0);
         assertNotNull(retrievedMap);
         assertTrue(retrievedMap.containsKey(period));
@@ -252,8 +254,8 @@ public class OmezeniRezervaciRepositoryIT {
         assertTrue(retrievedIds.contains(sport2.getId()));
     }
 
-    @Test
     @Order(7)
+    @Test
     void testSaveAndRetrieve_PeriodOfTime() {
         SportEntity sport = new SportEntity(null, 1, "ZB-016", "SK-016", 180, true, 90, true, 20, null, 45, 200, true, 30, null, null, true, true, 15, 120, 3, 7, 40, null, null, null, null, null, null, null, null, null);
         em.persist(sport);
@@ -262,11 +264,10 @@ public class OmezeniRezervaciRepositoryIT {
         PeriodOfTime period = new PeriodOfTime(new TimeOfDay(9, 0), new TimeOfDay(12, 0));
         otviraciDoba.addOtevreno(period, 1, sport.getId());
 
-        OmezeniRezervaciEntity entity = new OmezeniRezervaciEntity("OBJ-016", otviraciDoba);
-        em.persist(entity);
-        em.flush();
+        OmezeniRezervaciEntity entity = new OmezeniRezervaciEntity(null, otviraciDoba);
+        entity = omezeniRezervaciRepository.create(entity);
 
-        OmezeniRezervaciEntity result = omezeniRezervaciRepository.findById("OBJ-016");
+        OmezeniRezervaciEntity result = omezeniRezervaciRepository.findById(entity.getObjektId());
         assertNotNull(result);
 
         TydeniOtviraciDoba retrievedDoba = (TydeniOtviraciDoba) result.getOmezeni();

@@ -29,26 +29,29 @@ public class LicenseRepositoryIT {
     @BeforeAll
     @ActivateRequestContext
     public void clearDatabase() {
-        List<LicenseEntity> allEntities = new ArrayList<>();
-        licenseRepository.findAll().forEach(allEntities::add);
+        List<LicenseEntity> allEntities = new ArrayList<>(licenseRepository.findAll());
         if (!allEntities.isEmpty()) {
             licenseRepository.deleteAll(allEntities);
         }
     }
 
     /**
-     * Tests saving and retrieving a LicenseEntity by ID.
+     * Tests saving and retrieving a LicenseEntity by generated ID.
      */
     @Test
     @Transactional
     public void testSaveAndFindById() {
-        LicenseEntity entity = new LicenseEntity("LIC-001", "Customer A", true, true, new Date(), true,
+        // Pass null instead of "LIC-001" to let the provider generate the ID.
+        LicenseEntity entity = new LicenseEntity(
+                null, "Customer A", true, true, new Date(), true,
                 new Date(), true, 100, 10, 50, 5, 3, 2, 1, 500, true, 1024L,
-                "hashValue", new Date(), new Date(), 1);
+                "hashValue", new Date(), new Date(), 1
+        );
+        entity = licenseRepository.create(entity);
+        String generatedId = entity.getId();
+        Assertions.assertNotNull(generatedId, "Generated ID should not be null");
 
-        licenseRepository.create(entity);
-
-        LicenseEntity retrieved = licenseRepository.findById("LIC-001");
+        LicenseEntity retrieved = licenseRepository.findById(generatedId);
         Assertions.assertNotNull(retrieved, "Entity should be present in repository.");
         Assertions.assertEquals("Customer A", retrieved.getCustomer(), "Customer name should match.");
         Assertions.assertEquals(100, retrieved.getActivityLimit(), "Activity limit should match.");
@@ -57,25 +60,30 @@ public class LicenseRepositoryIT {
 
     /**
      * Tests retrieving all licenses in order using findAllOrdered().
+     * Instead of expecting fixed IDs, we verify that the ordering follows the date order.
      */
     @Test
     @Transactional
     public void testFindAllOrdered() throws InterruptedException {
-        LicenseEntity entity1 = new LicenseEntity("LIC-001", "Customer A", true, true, new Date(), true,
+        LicenseEntity entity1 = new LicenseEntity(
+                null, "Customer A", true, true, new Date(), true,
                 new Date(), true, 100, 10, 50, 5, 3, 2, 1, 500, true, 1024L,
-                "hashValue", new Date(System.currentTimeMillis() - 10000), new Date(), 1);
-
-        LicenseEntity entity2 = new LicenseEntity("LIC-002", "Customer B", true, true, new Date(), true,
+                "hashValue", new Date(System.currentTimeMillis() - 10000), new Date(), 1
+        );
+        LicenseEntity entity2 = new LicenseEntity(
+                null, "Customer B", true, true, new Date(), true,
                 new Date(), true, 200, 20, 100, 10, 6, 4, 2, 1000, false, 2048L,
-                "hashValue2", new Date(System.currentTimeMillis()), new Date(), 2);
+                "hashValue2", new Date(System.currentTimeMillis()), new Date(), 2
+        );
 
-        licenseRepository.create(entity1);
-        licenseRepository.create(entity2);
+        entity1 = licenseRepository.create(entity1);
+        entity2 = licenseRepository.create(entity2);
 
         List<LicenseEntity> results = licenseRepository.findAllOrdered();
         Assertions.assertEquals(2, results.size(), "Expected 2 licenses in repository.");
-        Assertions.assertEquals("LIC-001", results.get(0).getId(), "Expected LIC-001 to be first.");
-        Assertions.assertEquals("LIC-002", results.get(1).getId(), "Expected LIC-002 to be second.");
+        // Verify that the first returned license has an earlier (or equal) date than the second.
+        Assertions.assertTrue(results.get(0).getValidFrom().compareTo(results.get(1).getValidFrom()) <= 0,
+                "Licenses should be ordered by start date ascending.");
     }
 
     /**
@@ -84,10 +92,14 @@ public class LicenseRepositoryIT {
     @Test
     @Transactional
     public void testUpdateEntity() {
-        LicenseEntity entity = new LicenseEntity("LIC-003", "Customer C", true, true, new Date(), true,
+        LicenseEntity entity = new LicenseEntity(
+                null, "Customer C", true, true, new Date(), true,
                 new Date(), true, 300, 30, 150, 15, 9, 6, 3, 1500, false, 4096L,
-                "hashValue3", new Date(), new Date(), 3);
-        licenseRepository.create(entity);
+                "hashValue3", new Date(), new Date(), 3
+        );
+        entity = licenseRepository.create(entity);
+        String generatedId = entity.getId();
+        Assertions.assertNotNull(generatedId, "Generated ID should not be null");
 
         // Update customer name and limits
         entity.setCustomer("Customer C Updated");
@@ -95,7 +107,7 @@ public class LicenseRepositoryIT {
         entity.setModules(8192L);
         licenseRepository.create(entity);
 
-        LicenseEntity updated = licenseRepository.findById("LIC-003");
+        LicenseEntity updated = licenseRepository.findById(generatedId);
         Assertions.assertNotNull(updated, "Entity should still exist after update.");
         Assertions.assertEquals("Customer C Updated", updated.getCustomer(), "Updated customer name should match.");
         Assertions.assertEquals(350, updated.getActivityLimit(), "Updated activity limit should match.");
@@ -108,13 +120,17 @@ public class LicenseRepositoryIT {
     @Test
     @Transactional
     public void testDeleteEntity() {
-        LicenseEntity entity = new LicenseEntity("LIC-004", "Customer D", true, true, new Date(), true,
+        LicenseEntity entity = new LicenseEntity(
+                null, "Customer D", true, true, new Date(), true,
                 new Date(), true, 400, 40, 200, 20, 12, 8, 4, 2000, true, 16384L,
-                "hashValue4", new Date(), new Date(), 4);
-        licenseRepository.create(entity);
+                "hashValue4", new Date(), new Date(), 4
+        );
+        entity = licenseRepository.create(entity);
+        String generatedId = entity.getId();
+        Assertions.assertNotNull(generatedId, "Generated ID should not be null");
 
-        licenseRepository.deleteById("LIC-004");
-        LicenseEntity deleted = licenseRepository.findById("LIC-004");
+        licenseRepository.deleteById(generatedId);
+        LicenseEntity deleted = licenseRepository.findById(generatedId);
         Assertions.assertNull(deleted, "Entity should be deleted from repository.");
     }
 

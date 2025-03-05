@@ -18,9 +18,7 @@ import org.junit.jupiter.api.TestInstance;
 
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.*;
 
 @Transactional
 @QuarkusTest
@@ -63,17 +61,16 @@ public class ObjektSportRepositoryIT {
     void testSaveAndFindById() {
         ObjektEntity objekt = createObjekt(null);
         SportEntity sport = createSport(null);
-        ObjektSportEntity entity = createObjektSport(null, 1, objekt, sport);
-
         em.persist(objekt);
         em.persist(sport);
-        em.persist(entity);
-        em.flush();
+
+        // Use repository.create for ObjektSportEntity
+        ObjektSportEntity entity = createObjektSport(null, 1, objekt, sport);
+        entity = objektSportRepository.create(entity);
 
         ObjektSportEntity result = objektSportRepository.findById(new ObjektSportPK(entity.getEmbeddedId().getId(), 1));
-
-        assertNotNull(result);
-        assertEquals(sport.getId(), result.getSport().getId());
+        assertNotNull(result, "Entity should be found.");
+        assertEquals(sport.getId(), result.getSport().getId(), "Sport ID should match.");
     }
 
     @Test
@@ -82,20 +79,18 @@ public class ObjektSportRepositoryIT {
         ObjektEntity objekt = createObjekt(null);
         SportEntity sport1 = createSport(null);
         SportEntity sport2 = createSport(null);
-        ObjektSportEntity entity1 = createObjektSport(null, 1, objekt, sport1);
-        ObjektSportEntity entity2 = createObjektSport(null, 2, objekt, sport2);
-
         em.persist(objekt);
         em.persist(sport1);
         em.persist(sport2);
-        em.persist(entity1);
-        em.persist(entity2);
-        em.flush();
+
+        ObjektSportEntity entity1 = createObjektSport(null, 1, objekt, sport1);
+        ObjektSportEntity entity2 = createObjektSport(null, 2, objekt, sport2);
+        entity1 = objektSportRepository.create(entity1);
+        entity2 = objektSportRepository.create(entity2);
 
         List<ObjektSportEntity> result = objektSportRepository.findByObjekt(objekt.getId());
-
-        assertNotNull(result);
-        assertEquals(2, result.size());
+        assertNotNull(result, "Result should not be null.");
+        assertEquals(2, result.size(), "Expected 2 results.");
     }
 
     @Test
@@ -103,20 +98,19 @@ public class ObjektSportRepositoryIT {
     void testDeleteById() {
         ObjektEntity objekt = createObjekt(null);
         SportEntity sport = createSport(null);
-        ObjektSportEntity entity = createObjektSport(null, 1, objekt, sport);
-
         em.persist(objekt);
         em.persist(sport);
-        em.persist(entity);
-        em.flush();
+
+        ObjektSportEntity entity = createObjektSport(null, 1, objekt, sport);
+        entity = objektSportRepository.create(entity);
 
         ObjektSportEntity result = objektSportRepository.findById(new ObjektSportPK(entity.getEmbeddedId().getId(), 1));
-        assertNotNull(result);
+        assertNotNull(result, "Entity should exist before deletion.");
 
-        em.remove(entity);
-        em.flush();
+        // Use repository.deleteById instead of em.remove.
+        objektSportRepository.deleteById(new ObjektSportPK(entity.getEmbeddedId().getId(), 1));
 
-        result = objektSportRepository.findById(new ObjektSportPK(entity.getEmbeddedId().getId(), 1));
-        assertNull(result);
+        ObjektSportEntity deleted = objektSportRepository.findById(new ObjektSportPK(entity.getEmbeddedId().getId(), 1));
+        assertNull(deleted, "Entity should be deleted.");
     }
 }

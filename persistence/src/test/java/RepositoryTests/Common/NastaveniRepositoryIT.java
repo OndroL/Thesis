@@ -35,20 +35,22 @@ public class NastaveniRepositoryIT {
     public void clearDatabase() {
         List<NastaveniEntity> allEntities = new ArrayList<>(nastaveniRepository.findAll());
         if (!allEntities.isEmpty()) {
-           nastaveniRepository.deleteAll(allEntities);
+            nastaveniRepository.deleteAll(allEntities);
         }
     }
 
     /**
-     * Tests saving and retrieving a NastaveniEntity by key.
+     * Tests saving and retrieving a NastaveniEntity by generated key.
      */
     @Test
     public void testSaveAndFindByKey() {
         JsonNode jsonNode = NastaveniMapper.serializableToJsonNode("This is a string");
-        NastaveniEntity entity = new NastaveniEntity("setting-1", jsonNode);
-        nastaveniRepository.create(entity);
+        // Create entity with null key so that the key is generated.
+        NastaveniEntity entity = new NastaveniEntity(null, jsonNode);
+        entity = nastaveniRepository.create(entity);
+        String generatedKey = entity.getKey();
 
-        NastaveniEntity retrieved = nastaveniRepository.findById("setting-1");
+        NastaveniEntity retrieved = nastaveniRepository.findById(generatedKey);
         Assertions.assertNotNull(retrieved, "Entity should be present in repository.");
         Assertions.assertEquals("This is a string",
                 NastaveniMapper.jsonNodeToSerializable(retrieved.getValue()),
@@ -64,17 +66,17 @@ public class NastaveniRepositoryIT {
         JsonNode jsonNodeInteger = NastaveniMapper.serializableToJsonNode(12345);
         JsonNode jsonNodeBoolean = NastaveniMapper.serializableToJsonNode(true);
 
-        NastaveniEntity entityString = new NastaveniEntity("str-setting", jsonNodeString);
-        NastaveniEntity entityInteger = new NastaveniEntity("int-setting", jsonNodeInteger);
-        NastaveniEntity entityBoolean = new NastaveniEntity("bool-setting", jsonNodeBoolean);
+        NastaveniEntity entityString = new NastaveniEntity(null, jsonNodeString);
+        NastaveniEntity entityInteger = new NastaveniEntity(null, jsonNodeInteger);
+        NastaveniEntity entityBoolean = new NastaveniEntity(null, jsonNodeBoolean);
 
-        nastaveniRepository.create(entityString);
-        nastaveniRepository.create(entityInteger);
-        nastaveniRepository.create(entityBoolean);
+        entityString = nastaveniRepository.create(entityString);
+        entityInteger = nastaveniRepository.create(entityInteger);
+        entityBoolean = nastaveniRepository.create(entityBoolean);
 
-        NastaveniEntity retrievedStr = nastaveniRepository.findById("str-setting");
-        NastaveniEntity retrievedInt = nastaveniRepository.findById("int-setting");
-        NastaveniEntity retrievedBool = nastaveniRepository.findById("bool-setting");
+        NastaveniEntity retrievedStr = nastaveniRepository.findById(entityString.getKey());
+        NastaveniEntity retrievedInt = nastaveniRepository.findById(entityInteger.getKey());
+        NastaveniEntity retrievedBool = nastaveniRepository.findById(entityBoolean.getKey());
 
         Assertions.assertEquals("Test String",
                 NastaveniMapper.jsonNodeToSerializable(retrievedStr.getValue()),
@@ -93,16 +95,18 @@ public class NastaveniRepositoryIT {
     @Test
     public void testUpdateEntity() {
         JsonNode initialValue = NastaveniMapper.serializableToJsonNode(10);
-        NastaveniEntity entity = new NastaveniEntity("setting-2", initialValue);
-        nastaveniRepository.create(entity);
+        NastaveniEntity entity = new NastaveniEntity(null, initialValue);
+        entity = nastaveniRepository.create(entity);
+        String generatedKey = entity.getKey();
 
         // Update the value
         JsonNode updatedValue = NastaveniMapper.serializableToJsonNode("Updated Value");
         entity.setValue(updatedValue);
-        nastaveniRepository.create(entity);
+        // Update the entity (using create() as update mechanism in your repository)
+        entity = nastaveniRepository.create(entity);
 
-        NastaveniEntity updated = nastaveniRepository.findById("setting-2");
-        Assertions.assertNull(updated, "Entity should still exist after update.");
+        NastaveniEntity updated = nastaveniRepository.findById(generatedKey);
+        Assertions.assertNotNull(updated, "Entity should still exist after update.");
         Assertions.assertEquals("Updated Value",
                 NastaveniMapper.jsonNodeToSerializable(updated.getValue()),
                 "Updated value should match.");
@@ -114,11 +118,12 @@ public class NastaveniRepositoryIT {
     @Test
     public void testDeleteEntity() {
         JsonNode jsonNode = NastaveniMapper.serializableToJsonNode(false);
-        NastaveniEntity entity = new NastaveniEntity("setting-3", jsonNode);
-        nastaveniRepository.create(entity);
+        NastaveniEntity entity = new NastaveniEntity(null, jsonNode);
+        entity = nastaveniRepository.create(entity);
+        String generatedKey = entity.getKey();
 
-        nastaveniRepository.deleteById("setting-3");
-        NastaveniEntity deleted = nastaveniRepository.findById("setting-3");
+        nastaveniRepository.deleteById(generatedKey);
+        NastaveniEntity deleted = nastaveniRepository.findById(generatedKey);
         Assertions.assertNull(deleted, "Entity should be deleted from repository.");
     }
 
@@ -132,7 +137,7 @@ public class NastaveniRepositoryIT {
     }
 
     /**
-     * Tests that stores class as value and retrieves it.
+     * Tests storing a class as value and retrieving it.
      */
     @Test
     public void testStoreAndRetrieveMenaEntity() {
@@ -140,16 +145,17 @@ public class NastaveniRepositoryIT {
 
         JsonNode jsonNode = NastaveniMapper.serializableToJsonNode(menaDto);
 
-        NastaveniEntity nastaveniEntity = new NastaveniEntity("mena-setting", jsonNode);
-        nastaveniRepository.create(nastaveniEntity);
+        NastaveniEntity nastaveniEntity = new NastaveniEntity(null, jsonNode);
+        nastaveniEntity = nastaveniRepository.create(nastaveniEntity);
+        String generatedKey = nastaveniEntity.getKey();
 
         // Retrieve it from the database
-        NastaveniEntity retrievedEntity = nastaveniRepository.findById("mena-setting");
-        Assertions.assertNull(retrievedEntity, "Entity should be present in repository.");
+        NastaveniEntity retrievedEntity = nastaveniRepository.findById(generatedKey);
+        Assertions.assertNotNull(retrievedEntity, "Entity should be present in repository.");
 
-        // Convert JsonNode back to MenaEntity
+        // Convert JsonNode back to MenaDto
         Serializable retrievedObject = NastaveniMapper.jsonNodeToSerializable(retrievedEntity.getValue());
-        Assertions.assertTrue(retrievedObject instanceof MenaDto, "Expected retrieved object to be a MenaEntity");
+        Assertions.assertTrue(retrievedObject instanceof MenaDto, "Expected retrieved object to be a MenaDto");
 
         // Verify all attributes match
         MenaDto retrievedMena = (MenaDto) retrievedObject;
@@ -160,5 +166,4 @@ public class NastaveniRepositoryIT {
         Assertions.assertEquals(menaDto.getZaokrouhleniHotovost(), retrievedMena.getZaokrouhleniHotovost(), "ZaokrouhleniHotovost should match");
         Assertions.assertEquals(menaDto.getZaokrouhleniKarta(), retrievedMena.getZaokrouhleniKarta(), "ZaokrouhleniKarta should match");
     }
-
 }

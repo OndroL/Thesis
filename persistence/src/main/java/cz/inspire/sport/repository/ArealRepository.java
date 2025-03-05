@@ -8,7 +8,6 @@ import cz.inspire.repository.annotations.Repository;
 import cz.inspire.sport.entity.ArealEntity;
 
 import java.util.List;
-import java.util.Optional;
 
 @Repository
 public interface ArealRepository extends BaseRepository<ArealEntity, String> {
@@ -50,9 +49,9 @@ public interface ArealRepository extends BaseRepository<ArealEntity, String> {
 
     @Query("""
         SELECT a FROM ArealEntity a
-        WHERE a.id = ?1 AND FUNCTION('areal_isChild', :parentId, :childId) = TRUE
+        WHERE a.id = :childId AND FUNCTION('areal_isChild', :parentId, :childId) = TRUE
     """)
-    Optional<ArealEntity> findIfChild(String childId, String parentId);
+    ArealEntity findIfChild(String childId, String parentId);
 
     @Query("SELECT a.id FROM ArealEntity a WHERE a.nadrazenyAreal.id = :arealId")
     List<String> getArealIdsByParent(String arealId);

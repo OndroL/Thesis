@@ -28,22 +28,22 @@ public class MenaRepositoryIT {
     @BeforeAll
     @ActivateRequestContext
     public void clearDatabase() {
-        List<MenaEntity> allEntities = new ArrayList<>();
-        menaRepository.findAll().forEach(allEntities::add);
+        List<MenaEntity> allEntities = new ArrayList<>(menaRepository.findAll());
         if (!allEntities.isEmpty()) {
             menaRepository.deleteAll(allEntities);
         }
     }
 
     /**
-     * Tests saving and retrieving a MenaEntity by ID.
+     * Tests saving and retrieving a MenaEntity by generated ID.
      */
     @Test
     public void testSaveAndFindById() {
-        MenaEntity entity = new MenaEntity("ID-001", "EUR", "Euro", 978, 0, 0);
-        menaRepository.create(entity);
+        // Create entity with a null ID so it will be generated
+        MenaEntity entity = new MenaEntity(null, "EUR", "Euro", 978, 0, 0);
+        entity = menaRepository.create(entity);
 
-        MenaEntity retrieved = menaRepository.findById("ID-001");
+        MenaEntity retrieved = menaRepository.findById(entity.getId());
         Assertions.assertNotNull(retrieved, "Entity should be present in repository.");
         Assertions.assertEquals("EUR", retrieved.getKod(), "Kod should match.");
         Assertions.assertEquals("Euro", retrieved.getVycetka(), "Vycetka should match.");
@@ -57,8 +57,9 @@ public class MenaRepositoryIT {
      */
     @Test
     public void testUpdateEntity() {
-        MenaEntity entity = new MenaEntity("ID-002", "USD", "US Dollar", 840, 1, 1);
-        menaRepository.create(entity);
+        // Create a new entity with a null ID so that an ID is generated
+        MenaEntity entity = new MenaEntity(null, "USD", "US Dollar", 840, 1, 1);
+        entity = menaRepository.create(entity);
 
         // Modify values
         entity.setKod("GBP");
@@ -66,9 +67,10 @@ public class MenaRepositoryIT {
         entity.setKodNum(826);
         entity.setZaokrouhleniHotovost(2);
         entity.setZaokrouhleniKarta(2);
-        menaRepository.create(entity);
+        // Reattach/update the entity (using create() as your update mechanism)
+        entity = menaRepository.create(entity);
 
-        MenaEntity updated = menaRepository.findById("ID-002");
+        MenaEntity updated = menaRepository.findById(entity.getId());
         Assertions.assertNotNull(updated, "Entity should still exist after update.");
         Assertions.assertEquals("GBP", updated.getKod(), "Updated kod should be GBP.");
         Assertions.assertEquals("British Pound", updated.getVycetka(), "Updated vycetka should be British Pound.");
@@ -82,11 +84,11 @@ public class MenaRepositoryIT {
      */
     @Test
     public void testDeleteEntity() {
-        MenaEntity entity = new MenaEntity("ID-003", "JPY", "Japanese Yen", 392, 0, 0);
-        menaRepository.create(entity);
+        MenaEntity entity = new MenaEntity(null, "JPY", "Japanese Yen", 392, 0, 0);
+        entity = menaRepository.create(entity);
 
-        menaRepository.deleteById("ID-003");
-        MenaEntity deleted = menaRepository.findById("ID-003");
+        menaRepository.deleteById(entity.getId());
+        MenaEntity deleted = menaRepository.findById(entity.getId());
         Assertions.assertNull(deleted, "Entity should be deleted from repository.");
     }
 
@@ -95,13 +97,13 @@ public class MenaRepositoryIT {
      */
     @Test
     public void testFindByCode() {
-        MenaEntity e1 = new MenaEntity("ID-004", "CZK", "Czech Koruna", 203, 1, 1);
-        MenaEntity e2 = new MenaEntity("ID-005", "CZK", "Czech Koruna", 203, 0, 0);
-        MenaEntity e3 = new MenaEntity("ID-006", "EUR", "Euro", 978, 0, 0);
+        MenaEntity e1 = new MenaEntity(null, "CZK", "Czech Koruna", 203, 1, 1);
+        MenaEntity e2 = new MenaEntity(null, "CZK", "Czech Koruna", 203, 0, 0);
+        MenaEntity e3 = new MenaEntity(null, "EUR", "Euro", 978, 0, 0);
 
-        menaRepository.create(e1);
-        menaRepository.create(e2);
-        menaRepository.create(e3);
+        e1 = menaRepository.create(e1);
+        e2 = menaRepository.create(e2);
+        e3 = menaRepository.create(e3);
 
         List<MenaEntity> czkEntities = menaRepository.findByCode("CZK");
         Assertions.assertEquals(2, czkEntities.size(), "Expected 2 CZK entities.");
@@ -113,13 +115,13 @@ public class MenaRepositoryIT {
      */
     @Test
     public void testFindByCodeNum() {
-        MenaEntity e1 = new MenaEntity("ID-007", "USD", "US Dollar", 840, 1, 1);
-        MenaEntity e2 = new MenaEntity("ID-008", "USD", "US Dollar", 840, 0, 0);
-        MenaEntity e3 = new MenaEntity("ID-009", "GBP", "British Pound", 826, 2, 2);
+        MenaEntity e1 = new MenaEntity(null, "USD", "US Dollar", 840, 1, 1);
+        MenaEntity e2 = new MenaEntity(null, "USD", "US Dollar", 840, 0, 0);
+        MenaEntity e3 = new MenaEntity(null, "GBP", "British Pound", 826, 2, 2);
 
-        menaRepository.create(e1);
-        menaRepository.create(e2);
-        menaRepository.create(e3);
+        e1 = menaRepository.create(e1);
+        e2 = menaRepository.create(e2);
+        e3 = menaRepository.create(e3);
 
         List<MenaEntity> usdEntities = menaRepository.findByCodeNum(840);
         Assertions.assertEquals(2, usdEntities.size(), "Expected 2 USD entities.");
@@ -127,7 +129,7 @@ public class MenaRepositoryIT {
     }
 
     /**
-     * Tests that the custom queries return an empty list if no matching records exist.
+     * Tests that the custom query returns an empty list if no matching records exist.
      */
     @Test
     public void testFindByCodeNoResults() {

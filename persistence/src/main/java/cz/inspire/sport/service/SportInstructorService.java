@@ -6,7 +6,6 @@ import cz.inspire.sport.repository.SportInstructorRepository;
 import jakarta.ejb.FinderException;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
-import jakarta.persistence.NoResultException;
 
 import java.util.List;
 
@@ -39,16 +38,14 @@ public class SportInstructorService extends BaseService<SportInstructorEntity, S
 
     public SportInstructorEntity findBySportAndInstructor(String sportId, String instructorId) throws FinderException {
         return wrapDBException(
-                () -> repository.findBySportAndInstructor(sportId, instructorId).orElseThrow(() -> new NoResultException("No SportInstructorEntity found" +
-                        " for sportId = " + sportId + " and instructorId = " + instructorId)),
+                () -> repository.findBySportAndInstructor(sportId, instructorId),
                 "Error retrieving SportInstructorEntity record for sportId = " + sportId + ", instructorId = " + instructorId
         );
     }
 
     public SportInstructorEntity findBySportWithoutInstructor(String sportId) throws FinderException {
         return wrapDBException(
-                () -> repository.findBySportWithoutInstructor(sportId).orElseThrow(() -> new NoResultException("No SportInstructorEntity found" +
-                        " for sportId = " + sportId + " without instructor")),
+                () -> repository.findBySportWithoutInstructor(sportId),
                 "Error retrieving SportInstructorEntity record for sportId = " + sportId + " without instructor"
         );
     }

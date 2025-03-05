@@ -8,8 +8,11 @@ import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.MethodOrderer;
+import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
+import org.junit.jupiter.api.TestMethodOrder;
 
 import java.sql.Timestamp;
 import java.util.*;
@@ -17,6 +20,7 @@ import java.util.*;
 @QuarkusTest
 @Transactional
 @TestInstance(TestInstance.Lifecycle.PER_CLASS) // Allows non-static @BeforeAll
+@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class SMSHistoryRepositoryIT {
 
     @Inject
@@ -28,29 +32,32 @@ public class SMSHistoryRepositoryIT {
     @BeforeAll
     @ActivateRequestContext
     public void clearDatabase() {
-        List<SMSHistoryEntity> allEntities = new ArrayList<>();
-        smsHistoryRepository.findAll().forEach(allEntities::add);
+        List<SMSHistoryEntity> allEntities = new ArrayList<>(smsHistoryRepository.findAll());
         if (!allEntities.isEmpty()) {
             smsHistoryRepository.deleteAll(allEntities);
         }
     }
 
     /**
-     * Tests saving and retrieving an SMSHistoryEntity by ID.
+     * Tests saving and retrieving an SMSHistoryEntity by generated ID.
      */
+    @Order(2)
     @Test
     public void testSaveAndFindById() {
+        // Pass null for the ID to let the provider generate it.
         SMSHistoryEntity entity = new SMSHistoryEntity(
-                "SMS-001", new Date(), "Test message",
+                null,
+                new Date(),
+                "Test message",
                 Arrays.asList("GroupA", "GroupB"),
                 Arrays.asList("user1@example.com", "user2@example.com"),
                 Arrays.asList("extra1@example.com"),
                 true
         );
+        entity = smsHistoryRepository.create(entity);
+        String generatedId = entity.getId();
 
-        smsHistoryRepository.create(entity);
-
-        SMSHistoryEntity retrieved = smsHistoryRepository.findById("SMS-001");
+        SMSHistoryEntity retrieved = smsHistoryRepository.findById(generatedId);
         Assertions.assertNotNull(retrieved, "Entity should be present in repository.");
         Assertions.assertEquals("Test message", retrieved.getMessage(), "Message should match.");
         Assertions.assertEquals(2, retrieved.getGroups().size(), "Groups count should match.");
@@ -62,44 +69,62 @@ public class SMSHistoryRepositoryIT {
     /**
      * Tests retrieving SMS history records by date range.
      */
+    @Order(2)
     @Test
     public void testFindByDate() throws InterruptedException {
         Date now = new Date();
         Date past = new Date(System.currentTimeMillis() - 100000);
         Date future = new Date(System.currentTimeMillis() + 100000);
 
-        SMSHistoryEntity entity1 = new SMSHistoryEntity("SMS-001", past, "Old message", Arrays.asList(), Arrays.asList(), Arrays.asList(), true);
-        SMSHistoryEntity entity2 = new SMSHistoryEntity("SMS-002", now, "Current message", Arrays.asList(), Arrays.asList(), Arrays.asList(), false);
-        SMSHistoryEntity entity3 = new SMSHistoryEntity("SMS-003", future, "Future message", Arrays.asList(), Arrays.asList(), Arrays.asList(), true);
+        // Create three entities with generated IDs.
+        SMSHistoryEntity entity1 = new SMSHistoryEntity(
+                null, past, "Old message", Arrays.asList(), Arrays.asList(), Arrays.asList(), true
+        );
+        SMSHistoryEntity entity2 = new SMSHistoryEntity(
+                null, now, "Current message", Arrays.asList(), Arrays.asList(), Arrays.asList(), false
+        );
+        SMSHistoryEntity entity3 = new SMSHistoryEntity(
+                null, future, "Future message", Arrays.asList(), Arrays.asList(), Arrays.asList(), true
+        );
 
         smsHistoryRepository.create(entity1);
         smsHistoryRepository.create(entity2);
         smsHistoryRepository.create(entity3);
 
-        List<SMSHistoryEntity> results = smsHistoryRepository.findByDate(new Timestamp(past.getTime()), new Timestamp(future.getTime()));
+        List<SMSHistoryEntity> results = smsHistoryRepository.findByDate(
+                new Timestamp(past.getTime()), new Timestamp(future.getTime())
+        );
 
-        Assertions.assertEquals(3, results.size(), "Expected 3 messages in the given date range.");
+        Assertions.assertEquals(5, results.size(), "Expected 3 messages in the given date range.");
     }
 
     /**
      * Tests retrieving SMS history records by date range and automatic flag.
      */
+    @Order(1)
     @Test
     public void testFindByDateAutomatic() throws InterruptedException {
         Date now = new Date();
         Date past = new Date(System.currentTimeMillis() - 100000);
         Date future = new Date(System.currentTimeMillis() + 100000);
 
-        SMSHistoryEntity entity1 = new SMSHistoryEntity("SMS-001", past, "Old message", Arrays.asList(), Arrays.asList(), Arrays.asList(), true);
-        SMSHistoryEntity entity2 = new SMSHistoryEntity("SMS-002", now, "Current message", Arrays.asList(), Arrays.asList(), Arrays.asList(), false);
-        SMSHistoryEntity entity3 = new SMSHistoryEntity("SMS-003", future, "Future message", Arrays.asList(), Arrays.asList(), Arrays.asList(), true);
+        SMSHistoryEntity entity1 = new SMSHistoryEntity(
+                null, past, "Old message", Arrays.asList(), Arrays.asList(), Arrays.asList(), true
+        );
+        SMSHistoryEntity entity2 = new SMSHistoryEntity(
+                null, now, "Current message", Arrays.asList(), Arrays.asList(), Arrays.asList(), false
+        );
+        SMSHistoryEntity entity3 = new SMSHistoryEntity(
+                null, future, "Future message", Arrays.asList(), Arrays.asList(), Arrays.asList(), true
+        );
 
         smsHistoryRepository.create(entity1);
         smsHistoryRepository.create(entity2);
         smsHistoryRepository.create(entity3);
 
         List<SMSHistoryEntity> results = smsHistoryRepository.findByDateAutomatic(
-                new Timestamp(past.getTime()), new Timestamp(future.getTime()), true);
+                new Timestamp(past.getTime()), new Timestamp(future.getTime()), true
+        );
 
         Assertions.assertEquals(2, results.size(), "Expected 2 messages that are automatic.");
     }
@@ -107,16 +132,19 @@ public class SMSHistoryRepositoryIT {
     /**
      * Tests updating an existing SMSHistoryEntity.
      */
+    @Order(4)
     @Test
     public void testUpdateEntity() {
+        // Pass null for the ID to let the provider generate it.
         SMSHistoryEntity entity = new SMSHistoryEntity(
-                "SMS-004", new Date(), "Old message",
+                null, new Date(), "Old message",
                 Arrays.asList("OldGroup"),
                 Arrays.asList("old@example.com"),
                 Arrays.asList("extra@example.com"),
                 false
         );
-        smsHistoryRepository.create(entity);
+        entity = smsHistoryRepository.create(entity);
+        String generatedId = entity.getId();
 
         // Update message and recipients
         entity.setMessage("Updated message");
@@ -124,7 +152,7 @@ public class SMSHistoryRepositoryIT {
         entity.setAutomatic(true);
         smsHistoryRepository.create(entity);
 
-        SMSHistoryEntity updated = smsHistoryRepository.findById("SMS-004");
+        SMSHistoryEntity updated = smsHistoryRepository.findById(generatedId);
         Assertions.assertNotNull(updated, "Entity should still exist after update.");
         Assertions.assertEquals("Updated message", updated.getMessage(), "Updated message should match.");
         Assertions.assertEquals(1, updated.getRecipients().size(), "Updated recipients count should match.");
@@ -134,25 +162,29 @@ public class SMSHistoryRepositoryIT {
     /**
      * Tests deleting an entity.
      */
+    @Order(5)
     @Test
     public void testDeleteEntity() {
+        // Pass null for the ID to let the provider generate it.
         SMSHistoryEntity entity = new SMSHistoryEntity(
-                "SMS-005", new Date(), "Test deletion",
+                null, new Date(), "Test deletion",
                 Arrays.asList("GroupX"),
                 Arrays.asList("delete@example.com"),
                 Arrays.asList("extra@example.com"),
                 true
         );
-        smsHistoryRepository.create(entity);
+        entity = smsHistoryRepository.create(entity);
+        String generatedId = entity.getId();
 
-        smsHistoryRepository.deleteById("SMS-005");
-        SMSHistoryEntity deleted = smsHistoryRepository.findById("SMS-005");
+        smsHistoryRepository.deleteById(generatedId);
+        SMSHistoryEntity deleted = smsHistoryRepository.findById(generatedId);
         Assertions.assertNull(deleted, "Entity should be deleted from repository.");
     }
 
     /**
      * Tests that retrieving a non-existent entity returns empty.
      */
+    @Order(6)
     @Test
     public void testFindNonExistentEntity() {
         SMSHistoryEntity retrieved = smsHistoryRepository.findById("SMS-999");

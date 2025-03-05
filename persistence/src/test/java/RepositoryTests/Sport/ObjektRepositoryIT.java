@@ -58,7 +58,6 @@ public class ObjektRepositoryIT {
 
     private ObjektEntity createObjekt(ArealEntity areal, Boolean primyVstup, int typRezervace) {
         Random rand = new Random();
-
         ObjektEntity objekt = new ObjektEntity();
         objekt.setKapacita(rand.nextInt(200));
         objekt.setCasovaJednotka(rand.nextInt(100));
@@ -70,7 +69,6 @@ public class ObjektRepositoryIT {
 
     private ArealEntity createAreal() {
         Random rand = new Random();
-
         ArealEntity areal = new ArealEntity();
         areal.setPocetNavazujucichRez(rand.nextInt(10));
         return areal;
@@ -86,22 +84,17 @@ public class ObjektRepositoryIT {
         ObjektEntity objekt2 = createObjekt(areal, false, 1);
         ObjektEntity objekt3 = createObjekt(areal, false, 1);
 
-        em.persist(objekt1);
-        em.persist(objekt2);
-        em.persist(objekt3);
-        em.flush();
+        objekt1 = objektRepository.create(objekt1);
+        objekt2 = objektRepository.create(objekt2);
+        objekt3 = objektRepository.create(objekt3);
 
         List<ObjektEntity> result = objektRepository.findAllOrdered();
-
         assertNotNull(result);
         assertEquals(3, result.size());
 
         List<String> actualIds = result.stream().map(ObjektEntity::getId).collect(Collectors.toList());
         List<String> expectedSortedIds = List.of(objekt1.getId(), objekt2.getId(), objekt3.getId())
-                .stream()
-                .sorted()
-                .collect(Collectors.toList());
-
+                .stream().sorted().collect(Collectors.toList());
         assertEquals(expectedSortedIds, actualIds, "Should be sorted by ID ascending");
     }
 
@@ -114,18 +107,17 @@ public class ObjektRepositoryIT {
         ObjektEntity objekt1 = createObjekt(areal, false, 1);
         ObjektEntity objekt2 = createObjekt(areal, false, 1);
 
+        // Create locale data objects with null IDs for generation.
         ObjektLocEntity loc1 = new ObjektLocEntity(null, "cs", "Objekt 014", "Desc 014", "Short 014");
         ObjektLocEntity loc2 = new ObjektLocEntity(null, "cs", "Objekt 015", "Desc 015", "Short 015");
 
         objekt1.setLocaleData(List.of(loc1));
         objekt2.setLocaleData(List.of(loc2));
 
-        em.persist(objekt1);
-        em.persist(objekt2);
-        em.flush();
+        objekt1 = objektRepository.create(objekt1);
+        objekt2 = objektRepository.create(objekt2);
 
         List<ObjektEntity> result = objektRepository.findByAreal(areal.getId(), "cs");
-
         assertNotNull(result);
         assertEquals(2, result.size());
     }
@@ -148,13 +140,11 @@ public class ObjektRepositoryIT {
         objekt2.setLocaleData(List.of(loc2));
         objekt3.setLocaleData(List.of(loc3));
 
-        em.persist(objekt1);
-        em.persist(objekt2);
-        em.persist(objekt3);
-        em.flush();
+        objekt1 = objektRepository.create(objekt1);
+        objekt2 = objektRepository.create(objekt2);
+        objekt3 = objektRepository.create(objekt3);
 
         List<ObjektEntity> result = objektRepository.findByArealWithLimit(areal.getId(), "cs", 2, 0);
-
         assertNotNull(result);
         assertEquals(2, result.size());
     }
@@ -175,12 +165,10 @@ public class ObjektRepositoryIT {
         objekt1.setLocaleData(List.of(loc1, loc3));
         objekt2.setLocaleData(List.of(loc2));
 
-        em.persist(objekt1);
-        em.persist(objekt2);
-        em.flush();
+        objekt1 = objektRepository.create(objekt1);
+        objekt2 = objektRepository.create(objekt2);
 
         List<ObjektEntity> result = objektRepository.findBaseByAreal(areal.getId(), "cs");
-
         assertNotNull(result);
         assertEquals(2, result.size());
     }
@@ -203,13 +191,11 @@ public class ObjektRepositoryIT {
         objekt2.setLocaleData(List.of(loc2));
         objekt3.setLocaleData(List.of(loc3));
 
-        em.persist(objekt1);
-        em.persist(objekt2);
-        em.persist(objekt3);
-        em.flush();
+        objekt1 = objektRepository.create(objekt1);
+        objekt2 = objektRepository.create(objekt2);
+        objekt3 = objektRepository.create(objekt3);
 
         List<ObjektEntity> result = objektRepository.findBaseByArealWithLimit(areal.getId(), "cs", 2, 0);
-
         assertNotNull(result);
         assertEquals(2, result.size());
     }
@@ -232,13 +218,11 @@ public class ObjektRepositoryIT {
         objekt2.setLocaleData(List.of(loc2));
         objekt3.setLocaleData(List.of(loc3));
 
-        em.persist(objekt1);
-        em.persist(objekt2);
-        em.persist(objekt3);
-        em.flush();
+        objekt1 = objektRepository.create(objekt1);
+        objekt2 = objektRepository.create(objekt2);
+        objekt3 = objektRepository.create(objekt3);
 
         List<ObjektEntity> result = objektRepository.findByTypRezervace(5, "cs");
-
         assertNotNull(result);
         assertEquals(2, result.size());
     }
@@ -247,7 +231,6 @@ public class ObjektRepositoryIT {
     @Order(8)
     void testFindBySport() {
         SportEntity sport = new SportEntity(null, 1, "ZB-001", "SK-001", 100, true, 60, true, 10, null, 30, 120, true, 15, null, null, true, true, 10, 90, 1, 5, 20, null, null, null, null, null, null, null, null, null);
-
         em.persist(sport);
 
         ObjektEntity objekt1 = new ObjektEntity();
@@ -261,12 +244,14 @@ public class ObjektRepositoryIT {
         objekt1.setLocaleData(List.of(loc1));
         objekt2.setLocaleData(List.of(loc2));
 
-        em.persist(objekt1);
-        em.persist(objekt2);
+        objekt1 = objektRepository.create(objekt1);
+        objekt2 = objektRepository.create(objekt2);
 
         ObjektSportPK key1 = new ObjektSportPK();
         key1.setIndex(1);
 
+        // Persisting ObjektSportEntity using em.persist since it might not be managed by ObjektRepository.
+        // (If you have a repository for it, you could use that instead.)
         ObjektSportEntity objektSport1 = new ObjektSportEntity(key1, sport, objekt1);
         em.persist(objektSport1);
 
@@ -276,19 +261,18 @@ public class ObjektRepositoryIT {
         ObjektSportEntity objektSport2 = new ObjektSportEntity(key2, sport, objekt2);
         em.persist(objektSport2);
 
-
         objekt1.setObjektSports(List.of(objektSport1));
         objekt2.setObjektSports(List.of(objektSport2));
 
         em.flush();
 
         List<ObjektEntity> objects = objektRepository.findBySport(sport.getId(), "en");
-
         assertNotNull(objects);
         assertEquals(2, objects.size());
-
-        assertTrue(objects.stream().anyMatch(o -> o.getId().equals(objekt1.getId())));
-        assertTrue(objects.stream().anyMatch(o -> o.getId().equals(objekt2.getId())));
+        ObjektEntity finalObjekt = objekt1;
+        assertTrue(objects.stream().anyMatch(o -> o.getId().equals(finalObjekt.getId())));
+        ObjektEntity finalObjekt1 = objekt2;
+        assertTrue(objects.stream().anyMatch(o -> o.getId().equals(finalObjekt1.getId())));
     }
 
     @Test
@@ -306,20 +290,19 @@ public class ObjektRepositoryIT {
         objekt1.setLocaleData(List.of(loc1));
         objekt2.setLocaleData(List.of(loc2));
 
-        em.persist(objekt1);
-        em.persist(objekt2);
-        em.flush();
+        objekt1 = objektRepository.create(objekt1);
+        objekt2 = objektRepository.create(objekt2);
 
         List<ObjektEntity> primyVstupObjects = objektRepository.findByPrimyVstup("jp", true);
         List<ObjektEntity> nonPrimyVstupObjects = objektRepository.findByPrimyVstup("jp", false);
 
         assertNotNull(primyVstupObjects);
         assertEquals(1, primyVstupObjects.size());
-        assertEquals(objekt1.getId(), primyVstupObjects.getFirst().getId());
+        assertEquals(objekt1.getId(), primyVstupObjects.get(0).getId());
 
         assertNotNull(nonPrimyVstupObjects);
         assertEquals(1, nonPrimyVstupObjects.size());
-        assertEquals(objekt2.getId(), nonPrimyVstupObjects.getFirst().getId());
+        assertEquals(objekt2.getId(), nonPrimyVstupObjects.get(0).getId());
     }
 
     @Test
@@ -343,14 +326,12 @@ public class ObjektRepositoryIT {
         objekt3.setLocaleData(List.of(loc3));
         objekt4.setLocaleData(List.of(loc4));
 
-        em.persist(objekt1);
-        em.persist(objekt2);
-        em.persist(objekt3);
-        em.persist(objekt4);
-        em.flush();
+        objekt1 = objektRepository.create(objekt1);
+        objekt2 = objektRepository.create(objekt2);
+        objekt3 = objektRepository.create(objekt3);
+        objekt4 = objektRepository.create(objekt4);
 
         List<ObjektEntity> result = objektRepository.findByPrimyVstupWithLimit("ger", 2, 0, true);
-
         assertNotNull(result);
         assertEquals(2, result.size());
         assertTrue(result.stream().allMatch(ObjektEntity::isPrimyVstup));
@@ -366,13 +347,11 @@ public class ObjektRepositoryIT {
         ObjektEntity objekt2 = createObjekt(areal, false, 2);
         ObjektEntity objekt3 = createObjekt(areal, true, 1);
 
-        em.persist(objekt1);
-        em.persist(objekt2);
-        em.persist(objekt3);
-        em.flush();
+        objekt1 = objektRepository.create(objekt1);
+        objekt2 = objektRepository.create(objekt2);
+        objekt3 = objektRepository.create(objekt3);
 
         List<String> result = objektRepository.findObjektIdsOfAreal(areal.getId());
-
         assertNotNull(result);
         assertEquals(3, result.size());
         assertTrue(result.contains(objekt1.getId()));
@@ -382,19 +361,18 @@ public class ObjektRepositoryIT {
 
     @Test
     @Order(12)
-    public void testDeleteObjekt() {
+    void testDeleteObjekt() {
         ArealEntity areal = createAreal();
         em.persist(areal);
 
         ObjektEntity objekt = createObjekt(areal, true, 9);
-        em.persist(objekt);
-        em.flush();
+        objekt = objektRepository.create(objekt);
 
         ObjektEntity result = objektRepository.findById(objekt.getId());
         assertNotNull(result);
 
-        em.remove(objekt);
-        em.flush();
+        // Instead of calling em.remove, use repository.deleteById.
+        objektRepository.deleteById(objekt.getId());
 
         result = objektRepository.findById(objekt.getId());
         assertNull(result, "Objekt should be deleted");

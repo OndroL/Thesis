@@ -3,11 +3,9 @@ package cz.inspire.sport.service;
 import cz.inspire.common.service.BaseService;
 import cz.inspire.sport.entity.ArealEntity;
 import cz.inspire.sport.repository.ArealRepository;
-import jakarta.data.Limit;
 import jakarta.ejb.FinderException;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
-import jakarta.persistence.NoResultException;
 
 import java.util.List;
 
@@ -47,7 +45,7 @@ public class ArealService extends BaseService<ArealEntity, String, ArealReposito
         return wrapDBException(
                 () -> repository.findByParentWithLimit(parentId, jazyk, count, offset),
                 "Error retrieving ArealEntity records by parentId = " + parentId + ", jazyk = " + jazyk +
-                        " with pagination (offset + 1 = " + offset + ", count = " + count + ")"
+                        " with pagination (offset = " + offset + ", count = " + count + ")"
         );
     }
 
@@ -55,14 +53,13 @@ public class ArealService extends BaseService<ArealEntity, String, ArealReposito
         return wrapDBException(
                 () -> repository.findRootWithLimit(jazyk, count, offset),
                 "Error retrieving root ArealEntity records for jazyk = " + jazyk +
-                        " with pagination (offset + 1 = " + offset + ", count = " + count + ")"
+                        " with pagination (offset = " + offset + ", count = " + count + ")"
         );
     }
 
     public ArealEntity findIfChild(String childId, String parentId) throws FinderException {
         return wrapDBException(
-                () -> repository.findIfChild(childId, parentId).orElseThrow(() -> new NoResultException("No ArealEntity found" +
-                        " with childId = " + childId + " is a child of parentId = " + parentId)),
+                () -> repository.findIfChild(childId, parentId),
                 "Error checking if ArealEntity with childId = " + childId + " is a child of parentId = " + parentId
         );
     }

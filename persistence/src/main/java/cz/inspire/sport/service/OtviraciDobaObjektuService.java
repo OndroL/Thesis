@@ -53,8 +53,7 @@ public class OtviraciDobaObjektuService extends BaseService<OtviraciDobaObjektuE
     public OtviraciDobaObjektuEntity findCurrent(String objektId, Date day) throws FinderException {
         LocalDateTime localDateTime = LocalDateTime.ofInstant(day.toInstant(), ZoneOffset.UTC);
         return wrapDBException(
-                () -> repository.findCurrent(objektId, localDateTime, 1).orElseThrow(() -> new NoResultException("No OtviraciDobaObjektuEntity found" +
-                        " for objektId = " + objektId + " and date = " + localDateTime)),
+                () -> repository.findCurrent(objektId, localDateTime, 1),
                 "Error retrieving current OtviraciDobaObjektuEntity record for objektId = " + objektId + ", date = " + localDateTime
         );
     }

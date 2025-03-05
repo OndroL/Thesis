@@ -1,7 +1,6 @@
 package RepositoryTests.Sport;
 
 import RepositoryTests.DatabaseCleaner;
-import cz.inspire.sport.entity.ActivityEntity;
 import cz.inspire.sport.entity.InstructorEntity;
 import cz.inspire.sport.repository.InstructorRepository;
 import cz.inspire.sport.service.InstructorService;
@@ -11,19 +10,19 @@ import jakarta.enterprise.context.control.ActivateRequestContext;
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
 import org.junit.jupiter.api.*;
+import org.junit.jupiter.api.MethodOrderer.OrderAnnotation;
 
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.HashSet;
-import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+@TestMethodOrder(OrderAnnotation.class)
 @QuarkusTest
 @Transactional
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class InstructorPhotoIT {
 
     @Inject
@@ -35,7 +34,7 @@ public class InstructorPhotoIT {
     @Inject
     DatabaseCleaner databaseCleaner;
 
-    private static final String DEFAULT_PHOTO_PATH = "FILE_SYSTEM/default-avatar.png";
+    private static final String DEFAULT_PHOTO_PATH = "../FILE_SYSTEM/default-avatar.png";
 
     private byte[] defaultPhoto;
 
@@ -44,7 +43,6 @@ public class InstructorPhotoIT {
     public void setUp() throws IOException {
         defaultPhoto = Files.readAllBytes(Paths.get(DEFAULT_PHOTO_PATH));
         databaseCleaner.clearTable(InstructorEntity.class, true);
-        databaseCleaner.clearTable(ActivityEntity.class, true);
     }
 
     @Order(1)
@@ -54,30 +52,27 @@ public class InstructorPhotoIT {
         assertNotNull(savedFile, "Saved FileAttributes should not be null");
 
         InstructorEntity instructor = new InstructorEntity(
-                "INS-100", "John", "Doe", 1, "john@example.com", "+1", "123456789",
+                null, "John", "Doe", 1, "john@example.com", "+1", "123456789",
                 "john.internal@example.com", "+1", "987654321", "Trainer", "blue",
                 savedFile, false, "calendar100", true, 15, new HashSet<>(), new HashSet<>(), null
         );
 
-        instructorRepository.save(instructor);
+        instructorRepository.create(instructor);
 
-        Optional<InstructorEntity> retrieved = instructorRepository.findById("INS-100");
-
-        assertTrue(retrieved.isPresent(), "Instructor should be present in repository.");
-        assertNotNull(retrieved.get().getPhoto(), "Photo should not be null in the retrieved entity.");
-        assertEquals(savedFile.getFilePath(), retrieved.get().getPhoto().getFilePath(), "Photo path should match.");
+        InstructorEntity retrieved = instructorRepository.findById("INS-100");
+        assertNotNull(retrieved, "Instructor should be present in repository.");
+        assertNotNull(retrieved.getPhoto(), "Photo should not be null in the retrieved entity.");
+        assertEquals(savedFile.getFilePath(), retrieved.getPhoto().getFilePath(), "Photo path should match.");
     }
 
     @Order(2)
     @Test
     public void testRetrieveInstructorPhoto() throws IOException {
-        Optional<InstructorEntity> retrieved = instructorRepository.findById("INS-100");
+        InstructorEntity retrieved = instructorRepository.findById("INS-100");
+        assertNotNull(retrieved, "Instructor should be present.");
+        assertNotNull(retrieved.getPhoto(), "Instructor should have a photo.");
 
-        assertTrue(retrieved.isPresent(), "Instructor should be present.");
-        assertNotNull(retrieved.get().getPhoto(), "Instructor should have a photo.");
-
-        byte[] retrievedPhoto = instructorService.readFile(retrieved.get().getPhoto().getFilePath());
-
+        byte[] retrievedPhoto = instructorService.readFile(retrieved.getPhoto().getFilePath());
         assertNotNull(retrievedPhoto, "Retrieved photo data should not be null.");
         assertArrayEquals(defaultPhoto, retrievedPhoto, "Retrieved photo data should match the original file.");
     }

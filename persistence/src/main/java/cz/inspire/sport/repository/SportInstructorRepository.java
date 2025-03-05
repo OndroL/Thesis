@@ -1,12 +1,11 @@
 package cz.inspire.sport.repository;
 
 import cz.inspire.repository.BaseRepository;
-import cz.inspire.sport.entity.SportInstructorEntity;
-import cz.inspire.repository.annotations.Repository;
 import cz.inspire.repository.annotations.Query;
+import cz.inspire.repository.annotations.Repository;
+import cz.inspire.sport.entity.SportInstructorEntity;
 
 import java.util.List;
-import java.util.Optional;
 
 @Repository
 public interface SportInstructorRepository extends BaseRepository<SportInstructorEntity, String> {
@@ -27,13 +26,13 @@ public interface SportInstructorRepository extends BaseRepository<SportInstructo
         SELECT s FROM SportInstructorEntity s
         WHERE s.sport.id = :sportId AND s.instructor.id = :instructorId AND s.deleted = FALSE
     """)
-    Optional<SportInstructorEntity> findBySportAndInstructor(String sportId, String instructorId);
+    SportInstructorEntity findBySportAndInstructor(String sportId, String instructorId);
 
     @Query("""
         SELECT s FROM SportInstructorEntity s
         WHERE s.sport.id = :sportId AND s.instructor IS NULL AND s.deleted = FALSE
     """)
-    Optional<SportInstructorEntity> findBySportWithoutInstructor(String sportId);
+    SportInstructorEntity findBySportWithoutInstructor(String sportId);
 
     @Query("""
         SELECT s FROM SportInstructorEntity s

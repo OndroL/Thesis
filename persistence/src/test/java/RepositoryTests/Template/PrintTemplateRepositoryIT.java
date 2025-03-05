@@ -13,7 +13,6 @@ import org.junit.jupiter.api.TestInstance;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 @QuarkusTest
 @Transactional
@@ -29,24 +28,26 @@ public class PrintTemplateRepositoryIT {
     @BeforeAll
     @ActivateRequestContext
     public  void clearDatabase() {
-        List<PrintTemplateEntity> allEntities = new ArrayList<>();
-        printTemplateRepository.findAll().forEach(allEntities::add);
+        List<PrintTemplateEntity> allEntities = new ArrayList<>(printTemplateRepository.findAll());
         if (!allEntities.isEmpty()) {
             printTemplateRepository.deleteAll(allEntities);
         }
     }
 
     /**
-     * Tests saving and retrieving a PrintTemplateEntity by ID.
+     * Tests saving and retrieving a PrintTemplateEntity by generated ID.
      */
     @Test
     public void testSaveAndFindById() {
+        // Pass null for the ID so that it is generated automatically.
         PrintTemplateEntity entity = new PrintTemplateEntity(
-                "TEMPLATE-001", "<html>Sample Template</html>", 1, "Invoice", "invoice.html");
+                null, "<html>Sample Template</html>", 1, "Invoice", "invoice.html"
+        );
+        entity = printTemplateRepository.create(entity);
+        String generatedId = entity.getId();
+        Assertions.assertNotNull(generatedId, "Generated ID should not be null");
 
-        printTemplateRepository.create(entity);
-
-        PrintTemplateEntity retrieved = printTemplateRepository.findById("TEMPLATE-001");
+        PrintTemplateEntity retrieved = printTemplateRepository.findById(generatedId);
         Assertions.assertNotNull(retrieved, "Entity should be present in repository.");
         Assertions.assertEquals("Invoice", retrieved.getTemplateName(), "Template name should match.");
         Assertions.assertEquals("invoice.html", retrieved.getFileName(), "File name should match.");
@@ -59,16 +60,20 @@ public class PrintTemplateRepositoryIT {
      */
     @Test
     public void testUpdateEntity() {
+        // Pass null for the ID
         PrintTemplateEntity entity = new PrintTemplateEntity(
-                "TEMPLATE-002", "<html>Old Content</html>", 2, "Report", "report.html");
-        printTemplateRepository.create(entity);
+                null, "<html>Old Content</html>", 2, "Report", "report.html"
+        );
+        entity = printTemplateRepository.create(entity);
+        String generatedId = entity.getId();
+        Assertions.assertNotNull(generatedId, "Generated ID should not be null");
 
         // Update template content and name
         entity.setContent("<html>Updated Content</html>");
         entity.setTemplateName("Updated Report");
         printTemplateRepository.create(entity);
 
-        PrintTemplateEntity updated = printTemplateRepository.findById("TEMPLATE-002");
+        PrintTemplateEntity updated = printTemplateRepository.findById(generatedId);
         Assertions.assertNotNull(updated, "Entity should still exist after update.");
         Assertions.assertEquals("<html>Updated Content</html>", updated.getContent(), "Updated content should match.");
         Assertions.assertEquals("Updated Report", updated.getTemplateName(), "Updated template name should match.");
@@ -79,12 +84,16 @@ public class PrintTemplateRepositoryIT {
      */
     @Test
     public void testDeleteEntity() {
+        // Pass null for the ID
         PrintTemplateEntity entity = new PrintTemplateEntity(
-                "TEMPLATE-003", "<html>Template to Delete</html>", 3, "ToDelete", "delete.html");
-        printTemplateRepository.create(entity);
+                null, "<html>Template to Delete</html>", 3, "ToDelete", "delete.html"
+        );
+        entity = printTemplateRepository.create(entity);
+        String generatedId = entity.getId();
+        Assertions.assertNotNull(generatedId, "Generated ID should not be null");
 
-        printTemplateRepository.deleteById("TEMPLATE-003");
-        PrintTemplateEntity deleted = printTemplateRepository.findById("TEMPLATE-003");
+        printTemplateRepository.deleteById(generatedId);
+        PrintTemplateEntity deleted = printTemplateRepository.findById(generatedId);
         Assertions.assertNull(deleted, "Entity should be deleted from repository.");
     }
 
