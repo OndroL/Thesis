@@ -36,7 +36,7 @@ public class ActivityRepositoryIT {
         entity = activityRepository.create(entity);
         String generatedId = entity.getId();
 
-        ActivityEntity retrieved = activityRepository.findById(generatedId);
+        ActivityEntity retrieved = activityRepository.findByPrimaryKey(generatedId);
         Assertions.assertNotNull(retrieved, "Entity should be present in repository.");
         Assertions.assertEquals("Yoga", retrieved.getName(), "Name should match.");
         Assertions.assertEquals("Relaxing yoga session", retrieved.getDescription(), "Description should match.");
@@ -52,7 +52,7 @@ public class ActivityRepositoryIT {
         entity.setDescription("Full-body workout");
         activityRepository.create(entity);
 
-        ActivityEntity updated = activityRepository.findById(generatedId);
+        ActivityEntity updated = activityRepository.findByPrimaryKey(generatedId);
         Assertions.assertNotNull(updated, "Entity should be present after update.");
         Assertions.assertEquals("Full-body workout", updated.getDescription(), "Updated description should be correct.");
     }
@@ -64,8 +64,8 @@ public class ActivityRepositoryIT {
         entity = activityRepository.create(entity);
         String generatedId = entity.getId();
 
-        activityRepository.deleteById(generatedId);
-        ActivityEntity deleted = activityRepository.findById(generatedId);
+        activityRepository.deleteByPrimaryKey(generatedId);
+        ActivityEntity deleted = activityRepository.findByPrimaryKey(generatedId);
         Assertions.assertNull(deleted, "Entity should be deleted from repository.");
     }
 

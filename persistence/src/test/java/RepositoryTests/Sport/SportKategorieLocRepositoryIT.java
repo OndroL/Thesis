@@ -42,7 +42,7 @@ public class SportKategorieLocRepositoryIT {
         SportKategorieLocEntity entity = createSportKategorieLoc(null, "cs", "Fotbal", "Popis fotbalu");
         entity = sportKategorieLocRepository.create(entity);
 
-        SportKategorieLocEntity result = sportKategorieLocRepository.findById(entity.getId());
+        SportKategorieLocEntity result = sportKategorieLocRepository.findByPrimaryKey(entity.getId());
         assertNotNull(result, "Entity should be present in repository.");
         assertEquals("Fotbal", result.getNazev(), "Name should match.");
     }
@@ -54,12 +54,12 @@ public class SportKategorieLocRepositoryIT {
         SportKategorieLocEntity entity = createSportKategorieLoc(null, "en", "Basketball", "Description of basketball");
         entity = sportKategorieLocRepository.create(entity);
 
-        SportKategorieLocEntity result = sportKategorieLocRepository.findById(entity.getId());
+        SportKategorieLocEntity result = sportKategorieLocRepository.findByPrimaryKey(entity.getId());
         assertNotNull(result, "Entity should be present in repository.");
 
-        sportKategorieLocRepository.deleteById(entity.getId());
+        sportKategorieLocRepository.deleteByPrimaryKey(entity.getId());
 
-        result = sportKategorieLocRepository.findById(entity.getId());
+        result = sportKategorieLocRepository.findByPrimaryKey(entity.getId());
         assertNull(result, "Entity should be deleted from repository.");
     }
 }

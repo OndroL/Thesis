@@ -49,7 +49,7 @@ public class SportLocRepositoryIT {
         SportLocEntity sportLoc = createSportLoc(null, "cs", "Fotbal", "Popis fotbalu");
         sportLoc = sportLocRepository.create(sportLoc);
 
-        SportLocEntity result = sportLocRepository.findById(sportLoc.getId());
+        SportLocEntity result = sportLocRepository.findByPrimaryKey(sportLoc.getId());
         assertNotNull(result, "Entity should be present.");
         assertEquals("Fotbal", result.getNazev(), "Name should match.");
     }
@@ -60,7 +60,7 @@ public class SportLocRepositoryIT {
         SportLocEntity sportLoc = createSportLoc(null, "en", "Basketball", "Basketball description");
         sportLoc = sportLocRepository.create(sportLoc);
 
-        SportLocEntity result = sportLocRepository.findById(sportLoc.getId());
+        SportLocEntity result = sportLocRepository.findByPrimaryKey(sportLoc.getId());
         assertNotNull(result, "Entity should be found.");
         assertEquals("Basketball", result.getNazev(), "Name should match.");
     }
@@ -85,9 +85,9 @@ public class SportLocRepositoryIT {
         SportLocEntity sportLoc = createSportLoc(null, "cs", "Plavání", "Popis plavání");
         sportLoc = sportLocRepository.create(sportLoc);
 
-        sportLocRepository.deleteById(sportLoc.getId());
+        sportLocRepository.deleteByPrimaryKey(sportLoc.getId());
 
-        SportLocEntity result = sportLocRepository.findById(sportLoc.getId());
+        SportLocEntity result = sportLocRepository.findByPrimaryKey(sportLoc.getId());
         assertNull(result, "Entity should be deleted.");
     }
 
@@ -98,11 +98,11 @@ public class SportLocRepositoryIT {
         sportLoc = sportLocRepository.create(sportLoc);
 
         // Retrieve, update, and persist again via repository.create()
-        SportLocEntity updated = sportLocRepository.findById(sportLoc.getId());
+        SportLocEntity updated = sportLocRepository.findByPrimaryKey(sportLoc.getId());
         updated.setNazev("Beach Volejbal");
         updated = sportLocRepository.create(updated);
 
-        SportLocEntity result = sportLocRepository.findById(sportLoc.getId());
+        SportLocEntity result = sportLocRepository.findByPrimaryKey(sportLoc.getId());
         assertNotNull(result, "Updated entity should be present.");
         assertEquals("Beach Volejbal", result.getNazev(), "Updated name should match.");
     }

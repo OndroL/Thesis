@@ -83,7 +83,7 @@ public class EmailHistoryService extends BaseService<EmailHistoryEntity, String,
     public List<EmailHistoryEntity> findAll(int offset, int count) throws FinderException {
         return wrapDBException(
                 () -> repository.findAll(count, offset),
-                "Error retrieving paginated EmailHistoryEntity records (offset =" + offset + ", count=" + count + ")"
+                "Error retrieving paginated EmailHistoryEntity records (offset =" + offset + ", count =" + count + ")"
         );
     }
 
@@ -92,7 +92,7 @@ public class EmailHistoryService extends BaseService<EmailHistoryEntity, String,
                 () -> repository.findByDate(
                         new Timestamp(dateFrom.getTime()), new Timestamp(dateTo.getTime()), count, offset
                 ),
-                "Error retrieving EmailHistoryEntity records by date range (from=" + dateFrom + ", to=" + dateTo + ", offset =" + offset + ", count=" + count + ")"
+                "Error retrieving EmailHistoryEntity records by date range (from =" + dateFrom + ", to =" + dateTo + ", offset =" + offset + ", count =" + count + ")"
         );
     }
 }

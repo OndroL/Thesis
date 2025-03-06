@@ -51,10 +51,9 @@ public class ActivityFacade {
         List<InstructorDto> instructors = dto.getInstructors();
         if (instructors != null && !instructors.isEmpty()) {
             try {
-                Set<InstructorEntity> instructorSet = new HashSet<InstructorEntity>();
+                Set<InstructorEntity> instructorSet = new HashSet<>();
                 for (InstructorDto instructorDetails : instructors) {
-                    InstructorEntity instructor = instructorService.findById(instructorDetails.getId())
-                            .orElseThrow(() -> new CreateException("Instructor entity not found for ID: " + instructorDetails.getId()));
+                    InstructorEntity instructor = instructorService.findByPrimaryKey(instructorDetails.getId());
                     instructorSet.add(instructor);
                 }
                 entity.setInstructors(instructorSet.stream().toList());

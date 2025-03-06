@@ -75,7 +75,7 @@ public class ObjektMapperIT {
         objektService.create(mainEntity);
 
         //ObjektDto fromDb = objektMapper.toDto(objektService.findByPrimaryKey(mainEntity.getId()));
-        ObjektEntity fromDb = objektService.findByIdWithEntityManager(mainEntity.getId());
+        ObjektEntity fromDb = objektService.findByPrimaryKey(mainEntity.getId());
         //Hibernate.initialize(fromDb.getNadObjekty());
         id = mainEntity.getId();
 
@@ -93,7 +93,7 @@ public class ObjektMapperIT {
     public void testToEntity_withNadObjektyOnlyRetriveOnly() throws CreateException, FinderException, SystemException {
 
         //ObjektDto fromDb = objektMapper.toDto(objektService.findByPrimaryKey(mainEntity.getId()));
-        ObjektEntity fromDb = objektService.findByIdWithEntityManager(id);
+        ObjektEntity fromDb = objektService.findByPrimaryKey(id);
         //Hibernate.initialize(fromDb.getNadObjekty());
 
 
@@ -123,7 +123,7 @@ public class ObjektMapperIT {
 
         objektService.create(objektEntity);
 
-        ObjektDto fromDb = objektMapper.toDto(objektService.findByIdWithEntityManager(objektEntity.getId()));
+        ObjektDto fromDb = objektMapper.toDto(objektService.findByPrimaryKey(objektEntity.getId()));
         //Hibernate.initialize(fromDb.getSports());
         int size = fromDb.getSports().size();
 

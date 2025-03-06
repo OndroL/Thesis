@@ -15,7 +15,6 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 
 import java.io.Serializable;
-import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -50,7 +49,7 @@ public class NastaveniRepositoryIT {
         entity = nastaveniRepository.create(entity);
         String generatedKey = entity.getKey();
 
-        NastaveniEntity retrieved = nastaveniRepository.findById(generatedKey);
+        NastaveniEntity retrieved = nastaveniRepository.findByPrimaryKey(generatedKey);
         Assertions.assertNotNull(retrieved, "Entity should be present in repository.");
         Assertions.assertEquals("This is a string",
                 NastaveniMapper.jsonNodeToSerializable(retrieved.getValue()),
@@ -74,9 +73,9 @@ public class NastaveniRepositoryIT {
         entityInteger = nastaveniRepository.create(entityInteger);
         entityBoolean = nastaveniRepository.create(entityBoolean);
 
-        NastaveniEntity retrievedStr = nastaveniRepository.findById(entityString.getKey());
-        NastaveniEntity retrievedInt = nastaveniRepository.findById(entityInteger.getKey());
-        NastaveniEntity retrievedBool = nastaveniRepository.findById(entityBoolean.getKey());
+        NastaveniEntity retrievedStr = nastaveniRepository.findByPrimaryKey(entityString.getKey());
+        NastaveniEntity retrievedInt = nastaveniRepository.findByPrimaryKey(entityInteger.getKey());
+        NastaveniEntity retrievedBool = nastaveniRepository.findByPrimaryKey(entityBoolean.getKey());
 
         Assertions.assertEquals("Test String",
                 NastaveniMapper.jsonNodeToSerializable(retrievedStr.getValue()),
@@ -105,7 +104,7 @@ public class NastaveniRepositoryIT {
         // Update the entity (using create() as update mechanism in your repository)
         entity = nastaveniRepository.create(entity);
 
-        NastaveniEntity updated = nastaveniRepository.findById(generatedKey);
+        NastaveniEntity updated = nastaveniRepository.findByPrimaryKey(generatedKey);
         Assertions.assertNotNull(updated, "Entity should still exist after update.");
         Assertions.assertEquals("Updated Value",
                 NastaveniMapper.jsonNodeToSerializable(updated.getValue()),
@@ -122,8 +121,8 @@ public class NastaveniRepositoryIT {
         entity = nastaveniRepository.create(entity);
         String generatedKey = entity.getKey();
 
-        nastaveniRepository.deleteById(generatedKey);
-        NastaveniEntity deleted = nastaveniRepository.findById(generatedKey);
+        nastaveniRepository.deleteByPrimaryKey(generatedKey);
+        NastaveniEntity deleted = nastaveniRepository.findByPrimaryKey(generatedKey);
         Assertions.assertNull(deleted, "Entity should be deleted from repository.");
     }
 
@@ -132,7 +131,7 @@ public class NastaveniRepositoryIT {
      */
     @Test
     public void testFindNonExistentEntity() {
-        NastaveniEntity retrieved = nastaveniRepository.findById("non-existent");
+        NastaveniEntity retrieved = nastaveniRepository.findByPrimaryKey("non-existent");
         Assertions.assertNull(retrieved, "Should return empty for non-existent entity.");
     }
 
@@ -141,7 +140,7 @@ public class NastaveniRepositoryIT {
      */
     @Test
     public void testStoreAndRetrieveMenaEntity() {
-        MenaDto menaDto = new MenaDto("ID-001", "EUR", "Euro", 978, 0, 0, new ArrayList<BigDecimal>());
+        MenaDto menaDto = new MenaDto("ID-001", "EUR", "Euro", 978, 0, 0, new ArrayList<>());
 
         JsonNode jsonNode = NastaveniMapper.serializableToJsonNode(menaDto);
 
@@ -150,12 +149,12 @@ public class NastaveniRepositoryIT {
         String generatedKey = nastaveniEntity.getKey();
 
         // Retrieve it from the database
-        NastaveniEntity retrievedEntity = nastaveniRepository.findById(generatedKey);
+        NastaveniEntity retrievedEntity = nastaveniRepository.findByPrimaryKey(generatedKey);
         Assertions.assertNotNull(retrievedEntity, "Entity should be present in repository.");
 
         // Convert JsonNode back to MenaDto
         Serializable retrievedObject = NastaveniMapper.jsonNodeToSerializable(retrievedEntity.getValue());
-        Assertions.assertTrue(retrievedObject instanceof MenaDto, "Expected retrieved object to be a MenaDto");
+        Assertions.assertInstanceOf(MenaDto.class, retrievedObject, "Expected retrieved object to be a MenaDto");
 
         // Verify all attributes match
         MenaDto retrievedMena = (MenaDto) retrievedObject;

@@ -73,15 +73,15 @@ public class EmailHistoryRepositoryIT {
         entity = emailHistoryRepository.create(entity);
         String generatedId = entity.getId();
 
-        EmailHistoryEntity retrieved = emailHistoryRepository.findById(generatedId);
+        EmailHistoryEntity retrieved = emailHistoryRepository.findByPrimaryKey(generatedId);
         Assertions.assertNotNull(retrieved, "Entity should be present in repository.");
         Assertions.assertEquals("Test Subject", retrieved.getSubject(), "Subject should match.");
         Assertions.assertEquals(2, retrieved.getGroups().size(), "Groups count should match.");
         Assertions.assertEquals(1, retrieved.getMoreRecipients().size(), "MoreRecipients count should match.");
         Assertions.assertTrue(retrieved.getSent(), "Sent status should match.");
         Assertions.assertEquals(1, retrieved.getAttachments().size(), "Files count should match.");
-        Assertions.assertEquals("attachment.pdf", retrieved.getAttachments().get(0).getFileName(), "First file name should match.");
-        Assertions.assertEquals("FILE_SYSTEM/attachments/68057fc4-91a4-46bd-8229-7f770530a644", retrieved.getAttachments().get(0).getFilePath(), "First file path should match.");
+        Assertions.assertEquals("attachment.pdf", retrieved.getAttachments().getFirst().getFileName(), "First file name should match.");
+        Assertions.assertEquals("FILE_SYSTEM/attachments/68057fc4-91a4-46bd-8229-7f770530a644", retrieved.getAttachments().getFirst().getFilePath(), "First file path should match.");
     }
 
     /**
@@ -228,14 +228,14 @@ public class EmailHistoryRepositoryIT {
         // Update the entity (using create() as update mechanism in your repository)
         entity = emailHistoryRepository.create(entity);
 
-        EmailHistoryEntity updated = emailHistoryRepository.findById(generatedId);
+        EmailHistoryEntity updated = emailHistoryRepository.findByPrimaryKey(generatedId);
         Assertions.assertNotNull(updated, "Entity should still exist after update.");
         Assertions.assertEquals("Updated content", updated.getText(), "Updated content should match.");
         Assertions.assertEquals("Updated Subject", updated.getSubject(), "Updated subject should match.");
         Assertions.assertTrue(updated.getSent(), "Updated sent status should be true.");
         Assertions.assertEquals(1, updated.getAttachments().size(), "Files count should match.");
-        Assertions.assertEquals("updated.pdf", updated.getAttachments().get(0).getFileName(), "Updated file name should match.");
-        Assertions.assertEquals("http://example.com/updated.pdf", updated.getAttachments().get(0).getFilePath(), "Updated file path should match.");
+        Assertions.assertEquals("updated.pdf", updated.getAttachments().getFirst().getFileName(), "Updated file name should match.");
+        Assertions.assertEquals("http://example.com/updated.pdf", updated.getAttachments().getFirst().getFilePath(), "Updated file path should match.");
     }
 
     /**
@@ -261,8 +261,8 @@ public class EmailHistoryRepositoryIT {
         entity = emailHistoryRepository.create(entity);
         String generatedId = entity.getId();
 
-        emailHistoryRepository.deleteById(generatedId);
-        EmailHistoryEntity deleted = emailHistoryRepository.findById(generatedId);
+        emailHistoryRepository.deleteByPrimaryKey(generatedId);
+        EmailHistoryEntity deleted = emailHistoryRepository.findByPrimaryKey(generatedId);
         Assertions.assertNull(deleted, "Entity should be deleted from repository.");
     }
 
@@ -289,13 +289,13 @@ public class EmailHistoryRepositoryIT {
         entity = emailHistoryRepository.create(entity);
         String generatedId = entity.getId();
 
-        EmailHistoryEntity retrieved = emailHistoryRepository.findById(generatedId);
+        EmailHistoryEntity retrieved = emailHistoryRepository.findByPrimaryKey(generatedId);
         Assertions.assertNotNull(retrieved, "Entity should be present in repository.");
         Assertions.assertNotNull(retrieved.getAttachments(), "Files should not be null.");
 
         List<FileAttributes> retrievedFileAttributes = retrieved.getAttachments();
         Assertions.assertEquals(2, retrievedFileAttributes.size(), "Files count should match.");
-        Assertions.assertEquals("photo1.jpg", retrievedFileAttributes.get(0).getFileName(), "First file name should match.");
-        Assertions.assertEquals("FILE_SYSTEM/photos/1234-5678", retrievedFileAttributes.get(0).getFilePath(), "First file path should match.");
+        Assertions.assertEquals("photo1.jpg", retrievedFileAttributes.getFirst().getFileName(), "First file name should match.");
+        Assertions.assertEquals("FILE_SYSTEM/photos/1234-5678", retrievedFileAttributes.getFirst().getFilePath(), "First file path should match.");
     }
 }

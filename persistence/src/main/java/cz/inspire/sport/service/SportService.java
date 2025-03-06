@@ -3,7 +3,6 @@ package cz.inspire.sport.service;
 import cz.inspire.common.service.BaseService;
 import cz.inspire.sport.entity.SportEntity;
 import cz.inspire.sport.repository.SportRepository;
-import jakarta.data.Limit;
 import jakarta.ejb.FinderException;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
@@ -41,7 +40,7 @@ public class SportService extends BaseService<SportEntity, String, SportReposito
         return wrapDBException(
                 () -> repository.findByParentWithLimit(parentId, jazyk, count, offset),
                 "Error retrieving SportEntity records for parentId = " + parentId + ", jazyk = " + jazyk +
-                " with pagination (offset + 1 = " + offset + ", count = " + count + ")"
+                " with pagination (offset = " + offset + ", count = " + count + ")"
         );
     }
 
@@ -49,7 +48,7 @@ public class SportService extends BaseService<SportEntity, String, SportReposito
         return wrapDBException(
                 () -> repository.findByCategory(kategorieId, count, offset),
                 "Error retrieving SportEntity records for kategorieId = " + kategorieId +
-                " with pagination (offset + 1 = " + offset + ", count = " + count + ")"
+                " with pagination (offset = " + offset + ", count = " + count + ")"
         );
     }
 
@@ -57,7 +56,7 @@ public class SportService extends BaseService<SportEntity, String, SportReposito
         return wrapDBException(
                 () -> repository.findByZbozi(zboziId, count, offset),
                 "Error retrieving SportEntity records for zboziId = " + zboziId +
-                " with pagination (offset + 1 = " + offset + ", count = " + count + ")"
+                " with pagination (offset = " + offset + ", count = " + count + ")"
         );
     }
 
@@ -72,7 +71,7 @@ public class SportService extends BaseService<SportEntity, String, SportReposito
         return wrapDBException(
                 () -> repository.findRootWithLimit(jazyk, count, offset),
                 "Error retrieving root SportEntity records for jazyk = " + jazyk +
-                " with pagination (offset + 1 = " + offset + ", count = " + count + ")"
+                " with pagination (offset = " + offset + ", count = " + count + ")"
         );
     }
 
@@ -80,7 +79,7 @@ public class SportService extends BaseService<SportEntity, String, SportReposito
         return wrapDBException(
                 () -> repository.findCategoryRoot(count, offset),
                 "Error retrieving root category SportEntity records" +
-                " with pagination (offset + 1 = " + offset + ", count = " + count + ")"
+                " with pagination (offset = " + offset + ", count = " + count + ")"
         );
     }
 

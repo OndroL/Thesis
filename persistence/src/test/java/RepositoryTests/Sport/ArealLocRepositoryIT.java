@@ -39,7 +39,7 @@ public class ArealLocRepositoryIT {
         String generatedId = entity.getId();
         Assertions.assertNotNull(generatedId, "Generated ID should not be null");
 
-        ArealLocEntity retrieved = arealLocRepository.findById(generatedId);
+        ArealLocEntity retrieved = arealLocRepository.findByPrimaryKey(generatedId);
         Assertions.assertNotNull(retrieved, "Entity should be present in repository.");
         Assertions.assertEquals("en", retrieved.getJazyk(), "Language should match.");
         Assertions.assertEquals("Sports Area", retrieved.getNazev(), "Name should match.");
@@ -57,7 +57,7 @@ public class ArealLocRepositoryIT {
         entity.setPopis("Updated description");
         arealLocRepository.create(entity);
 
-        ArealLocEntity updated = arealLocRepository.findById(generatedId);
+        ArealLocEntity updated = arealLocRepository.findByPrimaryKey(generatedId);
         Assertions.assertNotNull(updated, "Updated entity should be found.");
         Assertions.assertEquals("Updated Sportovní areál", updated.getNazev(), "Name should be updated.");
         Assertions.assertEquals("Updated description", updated.getPopis(), "Description should be updated.");
@@ -70,8 +70,8 @@ public class ArealLocRepositoryIT {
         String generatedId = entity.getId();
         Assertions.assertNotNull(generatedId, "Generated ID should not be null");
 
-        arealLocRepository.deleteById(generatedId);
-        ArealLocEntity deleted = arealLocRepository.findById(generatedId);
+        arealLocRepository.deleteByPrimaryKey(generatedId);
+        ArealLocEntity deleted = arealLocRepository.findByPrimaryKey(generatedId);
         Assertions.assertNull(deleted, "Entity should be deleted from repository.");
     }
 }

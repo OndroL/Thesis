@@ -46,5 +46,4 @@ public class MenaFacade {
     public MenaDto findByPrimaryKey(String menaId) throws FinderException {
         return menaMapper.toDto(menaService.findByPrimaryKey(menaId));
     }
-
 }

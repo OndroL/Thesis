@@ -1,9 +1,12 @@
 package RepositoryTests.Sport;
 
 import RepositoryTests.DatabaseCleaner;
+import cz.inspire.sport.entity.ObjektEntity;
 import cz.inspire.sport.entity.OmezeniRezervaciEntity;
 import cz.inspire.sport.entity.SportEntity;
+import cz.inspire.sport.repository.ObjektRepository;
 import cz.inspire.sport.repository.OmezeniRezervaciRepository;
+import cz.inspire.sport.repository.SportRepository;
 import cz.inspire.utils.PeriodOfTime;
 import cz.inspire.utils.RozsirenaTydenniOtviraciDoba;
 import cz.inspire.utils.TimeOfDay;
@@ -11,7 +14,6 @@ import cz.inspire.utils.TydeniOtviraciDoba;
 import io.quarkus.test.junit.QuarkusTest;
 import jakarta.enterprise.context.control.ActivateRequestContext;
 import jakarta.inject.Inject;
-import jakarta.persistence.EntityManager;
 import jakarta.transaction.Transactional;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.MethodOrderer.OrderAnnotation;
@@ -40,16 +42,20 @@ public class OmezeniRezervaciRepositoryIT {
     OmezeniRezervaciRepository omezeniRezervaciRepository;
 
     @Inject
-    DatabaseCleaner databaseCleaner;
+    ObjektRepository objektRepository;
 
     @Inject
-    EntityManager em;
+    SportRepository sportRepository;
+
+    @Inject
+    DatabaseCleaner databaseCleaner;
 
     @BeforeAll
     @ActivateRequestContext
     public void clearDatabase() {
         databaseCleaner.clearTable(OmezeniRezervaciEntity.class, true);
         databaseCleaner.clearTable(SportEntity.class, true);
+        databaseCleaner.clearTable(ObjektEntity.class, true);
     }
 
     @Order(1)
@@ -58,7 +64,7 @@ public class OmezeniRezervaciRepositoryIT {
         TydeniOtviraciDoba otviraciDoba = new TydeniOtviraciDoba();
 
         SportEntity sport = new SportEntity(null, 1, "ZB-008", "SK-008", 180, true, 90, true, 20, null, 45, 200, true, 30, null, null, true, true, 15, 120, 3, 7, 40, null, null, null, null, null, null, null, null, null);
-        em.persist(sport);
+        sportRepository.create(sport);
 
         // Create two identical periods for Monday
         PeriodOfTime period = new PeriodOfTime(new TimeOfDay(9, 0), new TimeOfDay(12, 0));
@@ -66,11 +72,15 @@ public class OmezeniRezervaciRepositoryIT {
         // Adding the same period a second time; depending on your implementation this might update or be ignored.
         otviraciDoba.addOtevreno(period, Calendar.MONDAY, sport.getId());
 
+        ObjektEntity objekt = new ObjektEntity();
+
+        objekt = objektRepository.create(objekt);
+
         // Create OmezeniRezervaciEntity with null ID so it is generated.
-        OmezeniRezervaciEntity entity = new OmezeniRezervaciEntity(null, otviraciDoba);
+        OmezeniRezervaciEntity entity = new OmezeniRezervaciEntity(objekt.getId(), otviraciDoba);
         entity = omezeniRezervaciRepository.create(entity);
 
-        OmezeniRezervaciEntity result = omezeniRezervaciRepository.findById(entity.getObjektId());
+        OmezeniRezervaciEntity result = omezeniRezervaciRepository.findByPrimaryKey(entity.getObjektId());
         assertNotNull(result);
         TydeniOtviraciDoba retrievedDoba = (TydeniOtviraciDoba) result.getOmezeni();
         assertNotNull(retrievedDoba);
@@ -87,21 +97,25 @@ public class OmezeniRezervaciRepositoryIT {
         TydeniOtviraciDoba otviraciDoba = new TydeniOtviraciDoba();
 
         SportEntity sport = new SportEntity(null, 1, "ZB-009", "SK-009", 190, true, 100, true, 25, null, 50, 210, true, 35, null, null, true, true, 18, 130, 3, 8, 50, null, null, null, null, null, null, null, null, null);
-        em.persist(sport);
+        sportRepository.create(sport);
 
         PeriodOfTime period = new PeriodOfTime(new TimeOfDay(10, 0), new TimeOfDay(13, 0));
         otviraciDoba.addOtevreno(period, Calendar.TUESDAY, sport.getId());
 
-        OmezeniRezervaciEntity entity = new OmezeniRezervaciEntity(null, otviraciDoba);
+        ObjektEntity objekt = new ObjektEntity();
+
+        objekt = objektRepository.create(objekt);
+
+        OmezeniRezervaciEntity entity = new OmezeniRezervaciEntity(objekt.getId(), otviraciDoba);
         entity = omezeniRezervaciRepository.create(entity);
 
-        OmezeniRezervaciEntity result = omezeniRezervaciRepository.findById(entity.getObjektId());
+        OmezeniRezervaciEntity result = omezeniRezervaciRepository.findByPrimaryKey(entity.getObjektId());
         assertNotNull(result);
 
         // Delete using repository
-        omezeniRezervaciRepository.deleteById(entity.getObjektId());
+        omezeniRezervaciRepository.deleteByPrimaryKey(entity.getObjektId());
 
-        result = omezeniRezervaciRepository.findById(entity.getObjektId());
+        result = omezeniRezervaciRepository.findByPrimaryKey(entity.getObjektId());
         assertNull(result);
     }
 
@@ -112,8 +126,8 @@ public class OmezeniRezervaciRepositoryIT {
 
         SportEntity sport1 = new SportEntity(null, 1, "ZB-010", "SK-010", 200, true, 80, true, 30, null, 60, 220, true, 40, null, null, true, true, 20, 150, 4, 9, 55, null, null, null, null, null, null, null, null, null);
         SportEntity sport2 = new SportEntity(null, 1, "ZB-011", "SK-011", 210, true, 85, true, 35, null, 70, 230, true, 45, null, null, true, true, 22, 160, 5, 10, 60, null, null, null, null, null, null, null, null, null);
-        em.persist(sport1);
-        em.persist(sport2);
+        sportRepository.create(sport1);
+        sportRepository.create(sport2);
 
         PeriodOfTime period1 = new PeriodOfTime(new TimeOfDay(8, 0), new TimeOfDay(10, 0));
         PeriodOfTime period2 = new PeriodOfTime(new TimeOfDay(14, 0), new TimeOfDay(16, 0));
@@ -121,10 +135,14 @@ public class OmezeniRezervaciRepositoryIT {
         otviraciDoba.addOtevreno(period1, Calendar.WEDNESDAY, sport1.getId());
         otviraciDoba.addOtevreno(period2, Calendar.WEDNESDAY, sport2.getId());
 
-        OmezeniRezervaciEntity entity = new OmezeniRezervaciEntity(null, otviraciDoba);
+        ObjektEntity objekt = new ObjektEntity();
+
+        objekt = objektRepository.create(objekt);
+
+        OmezeniRezervaciEntity entity = new OmezeniRezervaciEntity(objekt.getId(), otviraciDoba);
         entity = omezeniRezervaciRepository.create(entity);
 
-        OmezeniRezervaciEntity result = omezeniRezervaciRepository.findById(entity.getObjektId());
+        OmezeniRezervaciEntity result = omezeniRezervaciRepository.findByPrimaryKey(entity.getObjektId());
         assertNotNull(result);
         TydeniOtviraciDoba retrievedDoba = (TydeniOtviraciDoba) result.getOmezeni();
         assertNotNull(retrievedDoba);
@@ -141,7 +159,7 @@ public class OmezeniRezervaciRepositoryIT {
     @Test
     void testUpdateOpeningHours() {
         SportEntity sport = new SportEntity(null, 1, "ZB-012", "SK-012", 220, true, 95, true, 40, null, 80, 240, true, 50, null, null, true, true, 25, 170, 6, 11, 65, null, null, null, null, null, null, null, null, null);
-        em.persist(sport);
+        sportRepository.create(sport);
         TydeniOtviraciDoba otviraciDoba = new TydeniOtviraciDoba(sport.getClass());
 
         PeriodOfTime oldPeriod = new PeriodOfTime(new TimeOfDay(7, 0), new TimeOfDay(9, 0));
@@ -149,11 +167,15 @@ public class OmezeniRezervaciRepositoryIT {
 
         otviraciDoba.addOtevreno(oldPeriod, 1, sport.getId());
 
-        OmezeniRezervaciEntity entity = new OmezeniRezervaciEntity(null, otviraciDoba);
+        ObjektEntity objekt = new ObjektEntity();
+
+        objekt = objektRepository.create(objekt);
+
+        OmezeniRezervaciEntity entity = new OmezeniRezervaciEntity(objekt.getId(), otviraciDoba);
         entity = omezeniRezervaciRepository.create(entity);
 
         // Retrieve and update the opening hours
-        OmezeniRezervaciEntity result = omezeniRezervaciRepository.findById(entity.getObjektId());
+        OmezeniRezervaciEntity result = omezeniRezervaciRepository.findByPrimaryKey(entity.getObjektId());
         assertNotNull(result);
 
         TydeniOtviraciDoba retrievedDoba = (TydeniOtviraciDoba) result.getOmezeni();
@@ -165,7 +187,7 @@ public class OmezeniRezervaciRepositoryIT {
         entity = omezeniRezervaciRepository.create(entity);
 
         // Retrieve again and verify update
-        result = omezeniRezervaciRepository.findById(entity.getObjektId());
+        result = omezeniRezervaciRepository.findByPrimaryKey(entity.getObjektId());
         assertNotNull(result);
 
         retrievedDoba = (TydeniOtviraciDoba) result.getOmezeni();
@@ -182,17 +204,20 @@ public class OmezeniRezervaciRepositoryIT {
     @Test
     void testRemoveOpeningHourEntry() {
         SportEntity sport = new SportEntity(null, 1, "ZB-013", "SK-013", 230, true, 100, true, 50, null, 90, 250, true, 55, null, null, true, true, 28, 180, 7, 12, 70, null, null, null, null, null, null, null, null, null);
-        em.persist(sport);
+        sportRepository.create(sport);
 
         TydeniOtviraciDoba otviraciDoba = new TydeniOtviraciDoba(sport.getClass());
         PeriodOfTime period = new PeriodOfTime(new TimeOfDay(8, 0), new TimeOfDay(11, 0));
         otviraciDoba.addOtevreno(period, 4, sport.getId());
 
-        OmezeniRezervaciEntity entity = new OmezeniRezervaciEntity(null, otviraciDoba);
+        ObjektEntity objekt = new ObjektEntity();
+        objekt = objektRepository.create(objekt);
+
+        OmezeniRezervaciEntity entity = new OmezeniRezervaciEntity(objekt.getId(), otviraciDoba);
         entity = omezeniRezervaciRepository.create(entity);
 
         // Retrieve and delete the opening hours
-        OmezeniRezervaciEntity result = omezeniRezervaciRepository.findById(entity.getObjektId());
+        OmezeniRezervaciEntity result = omezeniRezervaciRepository.findByPrimaryKey(entity.getObjektId());
         assertNotNull(result);
 
         TydeniOtviraciDoba retrievedDoba = (TydeniOtviraciDoba) result.getOmezeni();
@@ -204,7 +229,7 @@ public class OmezeniRezervaciRepositoryIT {
         entity = omezeniRezervaciRepository.create(entity);
 
         // Retrieve again and verify deletion
-        result = omezeniRezervaciRepository.findById(entity.getObjektId());
+        result = omezeniRezervaciRepository.findByPrimaryKey(entity.getObjektId());
         assertNotNull(result);
 
         retrievedDoba = (TydeniOtviraciDoba) result.getOmezeni();
@@ -222,8 +247,8 @@ public class OmezeniRezervaciRepositoryIT {
 
         SportEntity sport1 = new SportEntity(null, 1, "ZB-014", "SK-014", 260, true, 120, true, 70, null, 110, 280, true, 75, null, null, true, true, 35, 200, 9, 14, 85, null, null, null, null, null, null, null, null, null);
         SportEntity sport2 = new SportEntity(null, 1, "ZB-015", "SK-015", 270, true, 125, true, 75, null, 115, 290, true, 80, null, null, true, true, 38, 210, 10, 15, 90, null, null, null, null, null, null, null, null, null);
-        em.persist(sport1);
-        em.persist(sport2);
+        sportRepository.create(sport1);
+        sportRepository.create(sport2);
 
         PeriodOfTime period = new PeriodOfTime(new TimeOfDay(9, 0), new TimeOfDay(12, 0));
 
@@ -235,10 +260,13 @@ public class OmezeniRezervaciRepositoryIT {
         otviraciDoba.addOtevreno(period, 2, sport2.getId());
         otviraciDoba.addOtevreno(period, 3, sport1.getId());
 
-        OmezeniRezervaciEntity entity = new OmezeniRezervaciEntity(null, otviraciDoba);
+        ObjektEntity objekt = new ObjektEntity();
+        objekt = objektRepository.create(objekt);
+
+        OmezeniRezervaciEntity entity = new OmezeniRezervaciEntity(objekt.getId(), otviraciDoba);
         entity = omezeniRezervaciRepository.create(entity);
 
-        OmezeniRezervaciEntity result = omezeniRezervaciRepository.findById(entity.getObjektId());
+        OmezeniRezervaciEntity result = omezeniRezervaciRepository.findByPrimaryKey(entity.getObjektId());
         assertNotNull(result);
         RozsirenaTydenniOtviraciDoba retrievedDoba = (RozsirenaTydenniOtviraciDoba) result.getOmezeni();
         assertNotNull(retrievedDoba);
@@ -258,16 +286,19 @@ public class OmezeniRezervaciRepositoryIT {
     @Test
     void testSaveAndRetrieve_PeriodOfTime() {
         SportEntity sport = new SportEntity(null, 1, "ZB-016", "SK-016", 180, true, 90, true, 20, null, 45, 200, true, 30, null, null, true, true, 15, 120, 3, 7, 40, null, null, null, null, null, null, null, null, null);
-        em.persist(sport);
+        sportRepository.create(sport);
 
         TydeniOtviraciDoba otviraciDoba = new TydeniOtviraciDoba();
         PeriodOfTime period = new PeriodOfTime(new TimeOfDay(9, 0), new TimeOfDay(12, 0));
         otviraciDoba.addOtevreno(period, 1, sport.getId());
 
-        OmezeniRezervaciEntity entity = new OmezeniRezervaciEntity(null, otviraciDoba);
+        ObjektEntity objekt = new ObjektEntity();
+        objekt = objektRepository.create(objekt);
+
+        OmezeniRezervaciEntity entity = new OmezeniRezervaciEntity(objekt.getId(), otviraciDoba);
         entity = omezeniRezervaciRepository.create(entity);
 
-        OmezeniRezervaciEntity result = omezeniRezervaciRepository.findById(entity.getObjektId());
+        OmezeniRezervaciEntity result = omezeniRezervaciRepository.findByPrimaryKey(entity.getObjektId());
         assertNotNull(result);
 
         TydeniOtviraciDoba retrievedDoba = (TydeniOtviraciDoba) result.getOmezeni();

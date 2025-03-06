@@ -35,20 +35,6 @@ public class HeaderRepositoryIT {
     }
 
     /**
-     * Verifies that an entity can be saved and then retrieved by its ID.
-     */
-    @Test
-    public void testSaveAndFindById() {
-        HeaderEntity entity = new HeaderEntity(null, 456, 20);
-        entity = headerRepository.create(entity);
-
-        HeaderEntity retrieved = headerRepository.findById(entity.getId());
-        Assertions.assertNotNull(retrieved, "Entity should be present in repository.");
-        Assertions.assertEquals(456, retrieved.getField(), "Field value should match.");
-        Assertions.assertEquals(20, retrieved.getLocation(), "Location value should match.");
-    }
-
-    /**
      * Verifies that updating an existing entity changes its values.
      */
     @Test
@@ -61,7 +47,7 @@ public class HeaderRepositoryIT {
 
         entity = headerRepository.create(entity);
 
-        HeaderEntity updated = headerRepository.findById(entity.getId());
+        HeaderEntity updated = headerRepository.findByPrimaryKey(entity.getId());
         Assertions.assertNotNull(updated, "Entity should be present after update.");
         Assertions.assertEquals(111, updated.getField(), "Updated field value should be 111.");
         Assertions.assertEquals(40, updated.getLocation(), "Updated location value should be 40.");
@@ -75,8 +61,8 @@ public class HeaderRepositoryIT {
         HeaderEntity entity = new HeaderEntity(null, 222, 50);
         entity = headerRepository.create(entity);
 
-        headerRepository.deleteById(entity.getId());
-        HeaderEntity deleted = headerRepository.findById(entity.getId());
+        headerRepository.deleteByPrimaryKey(entity.getId());
+        HeaderEntity deleted = headerRepository.findByPrimaryKey(entity.getId());
         Assertions.assertNull(deleted, "Entity should be deleted from repository.");
     }
 

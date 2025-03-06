@@ -358,7 +358,7 @@ public class RepositoryProcessor extends AbstractProcessor {
                     builder.addStatement("em.flush()");
                     break;
                 }
-                case "deleteById": {
+                case "deleteByPrimaryKey": {
                     // Here the method parameter is the primary key.
                     VariableElement param = method.getParameters().getFirst();
                     String pName = param.getSimpleName().toString();
@@ -384,7 +384,7 @@ public class RepositoryProcessor extends AbstractProcessor {
                     builder.addStatement("em.flush()");
                     break;
                 }
-                case "findById": {
+                case "findByPrimaryKey": {
                     VariableElement param = method.getParameters().getFirst();
                     String pName = param.getSimpleName().toString();
                     TypeElement entityEl = (TypeElement) typeUtils.asElement(substituteType(method.getReturnType(), typeMap));
@@ -410,7 +410,7 @@ public class RepositoryProcessor extends AbstractProcessor {
                     TypeElement entityEl = (TypeElement) typeUtils.asElement(entityType);
                     if (entityEl == null) {
                         processingEnv.getMessager().printMessage(Diagnostic.Kind.ERROR,
-                                "Could not resolve TypeElement for entity type " + entityType.toString());
+                                "Could not resolve TypeElement for entity type " + entityType);
                         return null;
                     }
                     ClassName inferred = ClassName.get(entityEl);

@@ -31,8 +31,7 @@ public class ActivityFavouriteRepositoryIT {
     @BeforeAll
     @ActivateRequestContext
     public void clearDatabase() {
-        List<ActivityFavouriteEntity> allEntities = new ArrayList<>();
-        activityFavouriteRepository.findAll().forEach(allEntities::add);
+        List<ActivityFavouriteEntity> allEntities = new ArrayList<>(activityFavouriteRepository.findAll());
         if (!allEntities.isEmpty()) {
             activityFavouriteRepository.deleteAll(allEntities);
         }
@@ -48,7 +47,7 @@ public class ActivityFavouriteRepositoryIT {
         entity = activityFavouriteRepository.create(entity);
         String generatedId = entity.getId();
 
-        ActivityFavouriteEntity retrieved = activityFavouriteRepository.findById(generatedId);
+        ActivityFavouriteEntity retrieved = activityFavouriteRepository.findByPrimaryKey(generatedId);
         Assertions.assertNotNull(retrieved, "Entity should be present in repository.");
         Assertions.assertEquals("ZK-001", retrieved.getZakaznikId(), "Zakaznik ID should match.");
         Assertions.assertEquals("ACT-001", retrieved.getActivityId(), "Activity ID should match.");
@@ -68,7 +67,7 @@ public class ActivityFavouriteRepositoryIT {
         entity.setPocet(10);
         activityFavouriteRepository.create(entity);
 
-        ActivityFavouriteEntity updated = activityFavouriteRepository.findById(generatedId);
+        ActivityFavouriteEntity updated = activityFavouriteRepository.findByPrimaryKey(generatedId);
         Assertions.assertNotNull(updated, "Entity should be present after update.");
         Assertions.assertEquals(10, updated.getPocet(), "Updated pocet value should be 10.");
     }
@@ -83,8 +82,8 @@ public class ActivityFavouriteRepositoryIT {
         entity = activityFavouriteRepository.create(entity);
         String generatedId = entity.getId();
 
-        activityFavouriteRepository.deleteById(generatedId);
-        ActivityFavouriteEntity deleted = activityFavouriteRepository.findById(generatedId);
+        activityFavouriteRepository.deleteByPrimaryKey(generatedId);
+        ActivityFavouriteEntity deleted = activityFavouriteRepository.findByPrimaryKey(generatedId);
         Assertions.assertNull(deleted, "Entity should be deleted from repository.");
     }
 

@@ -30,9 +30,6 @@ public class OtviraciDobaObjektuRepositoryIT {
     @Inject
     DatabaseCleaner databaseCleaner;
 
-    @Inject
-    jakarta.persistence.EntityManager em;
-
     @BeforeAll
     @ActivateRequestContext
     public void clearDatabase() {
@@ -116,7 +113,7 @@ public class OtviraciDobaObjektuRepositoryIT {
         OtviraciDobaObjektuEntity entity = createOtviraciDobaObjektu("OBJ-006", now, null);
         entity = otviraciDobaObjektuRepository.create(entity);
 
-        OtviraciDobaObjektuEntity result = otviraciDobaObjektuRepository.findById(entity.getEmbeddedId());
+        OtviraciDobaObjektuEntity result = otviraciDobaObjektuRepository.findByPrimaryKey(entity.getEmbeddedId());
         assertNotNull(result, "Entity should be found by composite key");
     }
 
@@ -127,12 +124,12 @@ public class OtviraciDobaObjektuRepositoryIT {
         OtviraciDobaObjektuEntity entity = createOtviraciDobaObjektu("OBJ-007", now, null);
         entity = otviraciDobaObjektuRepository.create(entity);
 
-        OtviraciDobaObjektuEntity result = otviraciDobaObjektuRepository.findById(entity.getEmbeddedId());
+        OtviraciDobaObjektuEntity result = otviraciDobaObjektuRepository.findByPrimaryKey(entity.getEmbeddedId());
         assertNotNull(result, "Entity should exist before deletion");
 
-        otviraciDobaObjektuRepository.deleteById(entity.getEmbeddedId());
+        otviraciDobaObjektuRepository.deleteByPrimaryKey(entity.getEmbeddedId());
 
-        result = otviraciDobaObjektuRepository.findById(entity.getEmbeddedId());
+        result = otviraciDobaObjektuRepository.findByPrimaryKey(entity.getEmbeddedId());
         assertNull(result, "Entity should be deleted");
     }
 }

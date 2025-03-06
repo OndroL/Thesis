@@ -14,9 +14,9 @@ public interface BaseRepository<E, PK extends Serializable> {
 
     void deleteAll(List<E> entities);
 
-    void deleteById(PK id);
+    void deleteByPrimaryKey(PK id);
 
-    E findById(PK id);
+    E findByPrimaryKey(PK id);
 
     List<E> findAll();
 }

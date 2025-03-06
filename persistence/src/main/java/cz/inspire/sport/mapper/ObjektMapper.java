@@ -89,7 +89,7 @@ public abstract class ObjektMapper {
             Set<ObjektEntity> nadObjekty = new HashSet<>();
             for (String objektId : dto.getNadObjekty()) {
                 try {
-                    ObjektEntity nadObj = objektRepository.findById(objektId);
+                    ObjektEntity nadObj = objektRepository.findByPrimaryKey(objektId);
                             //.orElseThrow(() -> new FinderException("Failed to find nadObjekt with id : " + objektId));
                     Hibernate.initialize(entity.getNadObjekty());
                     if (Hibernate.isInitialized(entity.getNadObjekty())) {
@@ -108,7 +108,7 @@ public abstract class ObjektMapper {
             Set<ObjektEntity> podObjekty = new HashSet<>();
             for (String objektId : dto.getPodObjekty()) {
                 try {
-                    ObjektEntity podObj = objektRepository.findById(objektId);
+                    ObjektEntity podObj = objektRepository.findByPrimaryKey(objektId);
                             //.orElseThrow(() -> new FinderException("Failed to find podObjekt with id : " + objektId));
                     Hibernate.initialize(entity.getPodObjekty());
                     if (Hibernate.isInitialized(entity.getPodObjekty())) {

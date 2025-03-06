@@ -43,7 +43,7 @@ public class ObjektLocRepositoryIT {
         entity = objektLocRepository.create(entity);
         String generatedId = entity.getId();
 
-        ObjektLocEntity retrieved = objektLocRepository.findById(generatedId);
+        ObjektLocEntity retrieved = objektLocRepository.findByPrimaryKey(generatedId);
         Assertions.assertNotNull(retrieved, "Entity should be present in repository.");
         Assertions.assertEquals("Main building", retrieved.getNazev(), "Name should match.");
     }
@@ -71,9 +71,9 @@ public class ObjektLocRepositoryIT {
         entity = objektLocRepository.create(entity);
         String generatedId = entity.getId();
 
-        objektLocRepository.deleteById(generatedId);
+        objektLocRepository.deleteByPrimaryKey(generatedId);
 
-        ObjektLocEntity deleted = objektLocRepository.findById(generatedId);
+        ObjektLocEntity deleted = objektLocRepository.findByPrimaryKey(generatedId);
         Assertions.assertNull(deleted, "Location should be deleted from repository.");
     }
 }

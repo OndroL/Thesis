@@ -50,7 +50,7 @@ public class EmailQueueRepositoryIT {
         entity = emailQueueRepository.create(entity);
         String generatedId = entity.getId();
 
-        EmailQueueEntity retrieved = emailQueueRepository.findById(generatedId);
+        EmailQueueEntity retrieved = emailQueueRepository.findByPrimaryKey(generatedId);
         Assertions.assertNotNull(retrieved, "Entity should be present.");
         Assertions.assertEquals("EMAIL-124", retrieved.getEmailHistory(), "Email history should match.");
         Assertions.assertEquals("user@example.com", retrieved.getRecipient(), "Recipient should match.");
@@ -159,7 +159,7 @@ public class EmailQueueRepositoryIT {
         entity.setRemoveEmailHistory(true);
         emailQueueRepository.create(entity);
 
-        EmailQueueEntity updated = emailQueueRepository.findById(generatedId);
+        EmailQueueEntity updated = emailQueueRepository.findByPrimaryKey(generatedId);
         Assertions.assertNotNull(updated, "Entity should exist after update.");
         Assertions.assertEquals("updated@example.com", updated.getRecipient(), "Updated recipient should match.");
         Assertions.assertEquals(2, updated.getPriority(), "Updated priority should match.");
@@ -175,9 +175,9 @@ public class EmailQueueRepositoryIT {
         entity = emailQueueRepository.create(entity);
         String generatedId = entity.getId();
 
-        emailQueueRepository.deleteById(generatedId);
+        emailQueueRepository.deleteByPrimaryKey(generatedId);
 
-        EmailQueueEntity deleted = emailQueueRepository.findById(generatedId);
+        EmailQueueEntity deleted = emailQueueRepository.findByPrimaryKey(generatedId);
         Assertions.assertNull(deleted, "Entity should be deleted.");
     }
 }

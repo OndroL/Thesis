@@ -64,7 +64,7 @@ public class GeneratedAttachmentRepositoryIT {
         entity = generatedAttachmentRepository.create(entity);
         String generatedId = entity.getId();
 
-        GeneratedAttachmentEntity retrieved = generatedAttachmentRepository.findById(generatedId);
+        GeneratedAttachmentEntity retrieved = generatedAttachmentRepository.findByPrimaryKey(generatedId);
         Assertions.assertNotNull(retrieved, "Entity should be present.");
         Assertions.assertEquals("user@example.com", retrieved.getEmail(), "Email should match.");
         Assertions.assertEquals(emailHistory.getId(), retrieved.getEmailHistory().getId(), "Email history ID should match.");
@@ -95,7 +95,7 @@ public class GeneratedAttachmentRepositoryIT {
                 emailHistory.getId(), "user@example.com", printTemplate.getId()
         );
         Assertions.assertEquals(1, results.size(), "Expected 1 matching attachment.");
-        Assertions.assertEquals(entity.getId(), results.get(0).getId(), "Expected generated ID to match.");
+        Assertions.assertEquals(entity.getId(), results.getFirst().getId(), "Expected generated ID to match.");
     }
 
     @Test
@@ -122,7 +122,7 @@ public class GeneratedAttachmentRepositoryIT {
         entity.setAttributes(Map.of("field", "new"));
         generatedAttachmentRepository.create(entity);
 
-        GeneratedAttachmentEntity updated = generatedAttachmentRepository.findById(generatedId);
+        GeneratedAttachmentEntity updated = generatedAttachmentRepository.findByPrimaryKey(generatedId);
         Assertions.assertNotNull(updated, "Entity should exist after update.");
         Assertions.assertEquals("updated@example.com", updated.getEmail(), "Updated email should match.");
         Assertions.assertEquals("new", updated.getAttributes().get("field"), "Updated attribute should match.");
@@ -141,9 +141,9 @@ public class GeneratedAttachmentRepositoryIT {
         entity = generatedAttachmentRepository.create(entity);
         String generatedId = entity.getId();
 
-        generatedAttachmentRepository.deleteById(generatedId);
+        generatedAttachmentRepository.deleteByPrimaryKey(generatedId);
 
-        GeneratedAttachmentEntity deleted = generatedAttachmentRepository.findById(generatedId);
+        GeneratedAttachmentEntity deleted = generatedAttachmentRepository.findByPrimaryKey(generatedId);
         Assertions.assertNull(deleted, "Entity should be deleted.");
     }
 }

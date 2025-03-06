@@ -23,6 +23,7 @@ import org.junit.jupiter.api.TestInstance;
 import java.util.List;
 import java.util.Random;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -93,8 +94,7 @@ public class ObjektRepositoryIT {
         assertEquals(3, result.size());
 
         List<String> actualIds = result.stream().map(ObjektEntity::getId).collect(Collectors.toList());
-        List<String> expectedSortedIds = List.of(objekt1.getId(), objekt2.getId(), objekt3.getId())
-                .stream().sorted().collect(Collectors.toList());
+        List<String> expectedSortedIds = Stream.of(objekt1.getId(), objekt2.getId(), objekt3.getId()).sorted().collect(Collectors.toList());
         assertEquals(expectedSortedIds, actualIds, "Should be sorted by ID ascending");
     }
 
@@ -298,11 +298,11 @@ public class ObjektRepositoryIT {
 
         assertNotNull(primyVstupObjects);
         assertEquals(1, primyVstupObjects.size());
-        assertEquals(objekt1.getId(), primyVstupObjects.get(0).getId());
+        assertEquals(objekt1.getId(), primyVstupObjects.getFirst().getId());
 
         assertNotNull(nonPrimyVstupObjects);
         assertEquals(1, nonPrimyVstupObjects.size());
-        assertEquals(objekt2.getId(), nonPrimyVstupObjects.get(0).getId());
+        assertEquals(objekt2.getId(), nonPrimyVstupObjects.getFirst().getId());
     }
 
     @Test
@@ -368,13 +368,13 @@ public class ObjektRepositoryIT {
         ObjektEntity objekt = createObjekt(areal, true, 9);
         objekt = objektRepository.create(objekt);
 
-        ObjektEntity result = objektRepository.findById(objekt.getId());
+        ObjektEntity result = objektRepository.findByPrimaryKey(objekt.getId());
         assertNotNull(result);
 
         // Instead of calling em.remove, use repository.deleteById.
-        objektRepository.deleteById(objekt.getId());
+        objektRepository.deleteByPrimaryKey(objekt.getId());
 
-        result = objektRepository.findById(objekt.getId());
+        result = objektRepository.findByPrimaryKey(objekt.getId());
         assertNull(result, "Objekt should be deleted");
     }
 }

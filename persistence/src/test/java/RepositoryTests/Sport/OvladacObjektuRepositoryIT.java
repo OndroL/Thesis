@@ -46,7 +46,7 @@ public class OvladacObjektuRepositoryIT {
         OvladacObjektuEntity entity = createOvladacObjektu(null, "OVL-001", "OBJ-001");
         entity = ovladacObjektuRepository.create(entity);
 
-        OvladacObjektuEntity result = ovladacObjektuRepository.findById(entity.getId());
+        OvladacObjektuEntity result = ovladacObjektuRepository.findByPrimaryKey(entity.getId());
         assertNotNull(result, "Entity should be found.");
         assertEquals("OVL-001", result.getIdOvladace(), "idOvladace should match.");
     }
@@ -82,12 +82,12 @@ public class OvladacObjektuRepositoryIT {
         OvladacObjektuEntity entity = createOvladacObjektu(null, "OVL-004", "OBJ-005");
         entity = ovladacObjektuRepository.create(entity);
 
-        OvladacObjektuEntity result = ovladacObjektuRepository.findById(entity.getId());
+        OvladacObjektuEntity result = ovladacObjektuRepository.findByPrimaryKey(entity.getId());
         assertNotNull(result, "Entity should exist before deletion.");
 
-        ovladacObjektuRepository.deleteById(entity.getId());
+        ovladacObjektuRepository.deleteByPrimaryKey(entity.getId());
 
-        result = ovladacObjektuRepository.findById(entity.getId());
+        result = ovladacObjektuRepository.findByPrimaryKey(entity.getId());
         assertNull(result, "Entity should be deleted.");
     }
 }

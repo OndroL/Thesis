@@ -51,7 +51,7 @@ public class ArealRepositoryIT {
         );
         entity = arealRepository.create(entity);
 
-        ArealEntity retrieved = arealRepository.findById(entity.getId());
+        ArealEntity retrieved = arealRepository.findByPrimaryKey(entity.getId());
         Assertions.assertNotNull(retrieved, "Entity should be present in repository.");
         Assertions.assertEquals(5, retrieved.getPocetNavazujucichRez(), "PocetNavazujucichRez should match.");
         Assertions.assertEquals("en", retrieved.getLocaleData().get(0).getJazyk(), "LocaleData should contain expected language.");
@@ -144,9 +144,9 @@ public class ArealRepositoryIT {
         entity = arealRepository.create(entity);
 
         String generatedId = entity.getId();
-        arealRepository.deleteById(generatedId);
+        arealRepository.deleteByPrimaryKey(generatedId);
 
-        ArealEntity deleted = arealRepository.findById(generatedId);
+        ArealEntity deleted = arealRepository.findByPrimaryKey(generatedId);
         Assertions.assertNull(deleted, "Entity should be deleted from repository.");
     }
 

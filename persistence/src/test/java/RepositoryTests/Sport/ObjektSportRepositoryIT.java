@@ -68,7 +68,7 @@ public class ObjektSportRepositoryIT {
         ObjektSportEntity entity = createObjektSport(null, 1, objekt, sport);
         entity = objektSportRepository.create(entity);
 
-        ObjektSportEntity result = objektSportRepository.findById(new ObjektSportPK(entity.getEmbeddedId().getId(), 1));
+        ObjektSportEntity result = objektSportRepository.findByPrimaryKey(new ObjektSportPK(entity.getEmbeddedId().getId(), 1));
         assertNotNull(result, "Entity should be found.");
         assertEquals(sport.getId(), result.getSport().getId(), "Sport ID should match.");
     }
@@ -104,13 +104,13 @@ public class ObjektSportRepositoryIT {
         ObjektSportEntity entity = createObjektSport(null, 1, objekt, sport);
         entity = objektSportRepository.create(entity);
 
-        ObjektSportEntity result = objektSportRepository.findById(new ObjektSportPK(entity.getEmbeddedId().getId(), 1));
+        ObjektSportEntity result = objektSportRepository.findByPrimaryKey(new ObjektSportPK(entity.getEmbeddedId().getId(), 1));
         assertNotNull(result, "Entity should exist before deletion.");
 
         // Use repository.deleteById instead of em.remove.
-        objektSportRepository.deleteById(new ObjektSportPK(entity.getEmbeddedId().getId(), 1));
+        objektSportRepository.deleteByPrimaryKey(new ObjektSportPK(entity.getEmbeddedId().getId(), 1));
 
-        ObjektSportEntity deleted = objektSportRepository.findById(new ObjektSportPK(entity.getEmbeddedId().getId(), 1));
+        ObjektSportEntity deleted = objektSportRepository.findByPrimaryKey(new ObjektSportPK(entity.getEmbeddedId().getId(), 1));
         assertNull(deleted, "Entity should be deleted.");
     }
 }

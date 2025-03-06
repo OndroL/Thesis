@@ -51,7 +51,7 @@ public class LicenseRepositoryIT {
         String generatedId = entity.getId();
         Assertions.assertNotNull(generatedId, "Generated ID should not be null");
 
-        LicenseEntity retrieved = licenseRepository.findById(generatedId);
+        LicenseEntity retrieved = licenseRepository.findByPrimaryKey(generatedId);
         Assertions.assertNotNull(retrieved, "Entity should be present in repository.");
         Assertions.assertEquals("Customer A", retrieved.getCustomer(), "Customer name should match.");
         Assertions.assertEquals(100, retrieved.getActivityLimit(), "Activity limit should match.");
@@ -107,7 +107,7 @@ public class LicenseRepositoryIT {
         entity.setModules(8192L);
         licenseRepository.create(entity);
 
-        LicenseEntity updated = licenseRepository.findById(generatedId);
+        LicenseEntity updated = licenseRepository.findByPrimaryKey(generatedId);
         Assertions.assertNotNull(updated, "Entity should still exist after update.");
         Assertions.assertEquals("Customer C Updated", updated.getCustomer(), "Updated customer name should match.");
         Assertions.assertEquals(350, updated.getActivityLimit(), "Updated activity limit should match.");
@@ -129,8 +129,8 @@ public class LicenseRepositoryIT {
         String generatedId = entity.getId();
         Assertions.assertNotNull(generatedId, "Generated ID should not be null");
 
-        licenseRepository.deleteById(generatedId);
-        LicenseEntity deleted = licenseRepository.findById(generatedId);
+        licenseRepository.deleteByPrimaryKey(generatedId);
+        LicenseEntity deleted = licenseRepository.findByPrimaryKey(generatedId);
         Assertions.assertNull(deleted, "Entity should be deleted from repository.");
     }
 
@@ -140,7 +140,7 @@ public class LicenseRepositoryIT {
     @Test
     @Transactional
     public void testFindNonExistentEntity() {
-        LicenseEntity retrieved = licenseRepository.findById("LIC-999");
+        LicenseEntity retrieved = licenseRepository.findByPrimaryKey("LIC-999");
         Assertions.assertNull(retrieved, "Should return empty for non-existent entity.");
     }
 }

@@ -26,7 +26,7 @@ public class MenaService extends BaseService<MenaEntity, String, MenaRepository>
     }
 
     public List<MenaEntity> findByCodeNum(int codeNum) throws FinderException {
-        return wrapDBException(() ->repository.findByCodeNum(codeNum), "Failed to find MenaEntity by KodNum = " + codeNum);
+        return wrapDBException(() ->repository.findByCodeNum(codeNum), "Failed to find MenaEntity by CodeNum = " + codeNum);
     }
 
 }

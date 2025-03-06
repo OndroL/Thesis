@@ -43,7 +43,7 @@ public class MenaRepositoryIT {
         MenaEntity entity = new MenaEntity(null, "EUR", "Euro", 978, 0, 0);
         entity = menaRepository.create(entity);
 
-        MenaEntity retrieved = menaRepository.findById(entity.getId());
+        MenaEntity retrieved = menaRepository.findByPrimaryKey(entity.getId());
         Assertions.assertNotNull(retrieved, "Entity should be present in repository.");
         Assertions.assertEquals("EUR", retrieved.getKod(), "Kod should match.");
         Assertions.assertEquals("Euro", retrieved.getVycetka(), "Vycetka should match.");
@@ -70,7 +70,7 @@ public class MenaRepositoryIT {
         // Reattach/update the entity (using create() as your update mechanism)
         entity = menaRepository.create(entity);
 
-        MenaEntity updated = menaRepository.findById(entity.getId());
+        MenaEntity updated = menaRepository.findByPrimaryKey(entity.getId());
         Assertions.assertNotNull(updated, "Entity should still exist after update.");
         Assertions.assertEquals("GBP", updated.getKod(), "Updated kod should be GBP.");
         Assertions.assertEquals("British Pound", updated.getVycetka(), "Updated vycetka should be British Pound.");
@@ -87,8 +87,8 @@ public class MenaRepositoryIT {
         MenaEntity entity = new MenaEntity(null, "JPY", "Japanese Yen", 392, 0, 0);
         entity = menaRepository.create(entity);
 
-        menaRepository.deleteById(entity.getId());
-        MenaEntity deleted = menaRepository.findById(entity.getId());
+        menaRepository.deleteByPrimaryKey(entity.getId());
+        MenaEntity deleted = menaRepository.findByPrimaryKey(entity.getId());
         Assertions.assertNull(deleted, "Entity should be deleted from repository.");
     }
 

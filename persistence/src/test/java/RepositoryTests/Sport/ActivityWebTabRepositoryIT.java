@@ -29,8 +29,7 @@ public class ActivityWebTabRepositoryIT {
     @BeforeAll
     @ActivateRequestContext
     public void clearDatabase() {
-        List<ActivityWebTabEntity> allEntities = new ArrayList<>();
-        activityWebTabRepository.findAll().forEach(allEntities::add);
+        List<ActivityWebTabEntity> allEntities = new ArrayList<>(activityWebTabRepository.findAll());
         if (!allEntities.isEmpty()) {
             activityWebTabRepository.deleteAll(allEntities);
         }
@@ -43,7 +42,7 @@ public class ActivityWebTabRepositoryIT {
         activityWebTabRepository.create(entity);
         String generatedId = entity.getId();
 
-        ActivityWebTabEntity retrieved = activityWebTabRepository.findById(generatedId);
+        ActivityWebTabEntity retrieved = activityWebTabRepository.findByPrimaryKey(generatedId);
         Assertions.assertNotNull(retrieved, "Entity should be present in repository.");
         Assertions.assertEquals("sport-1", retrieved.getSportId(), "Sport ID should match.");
         Assertions.assertEquals("activity-1", retrieved.getActivityId(), "Activity ID should match.");
@@ -91,8 +90,8 @@ public class ActivityWebTabRepositoryIT {
         activityWebTabRepository.create(entity);
         String generatedId = entity.getId();
 
-        activityWebTabRepository.deleteById(generatedId);
-        ActivityWebTabEntity deleted = activityWebTabRepository.findById(generatedId);
+        activityWebTabRepository.deleteByPrimaryKey(generatedId);
+        ActivityWebTabEntity deleted = activityWebTabRepository.findByPrimaryKey(generatedId);
         Assertions.assertNull(deleted, "Entity should be deleted from repository.");
     }
 }

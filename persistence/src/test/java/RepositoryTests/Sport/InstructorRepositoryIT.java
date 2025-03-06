@@ -55,7 +55,7 @@ public class InstructorRepositoryIT {
         );
         entity = instructorRepository.create(entity);
 
-        InstructorEntity retrieved = instructorRepository.findById(entity.getId());
+        InstructorEntity retrieved = instructorRepository.findByPrimaryKey(entity.getId());
         Assertions.assertNotNull(retrieved, "Entity should be present in repository.");
         Assertions.assertEquals("John", retrieved.getFirstName(), "First name should match.");
         Assertions.assertEquals("Doe", retrieved.getLastName(), "Last name should match.");
@@ -85,7 +85,7 @@ public class InstructorRepositoryIT {
         // Total instructors expected: at least 3
         Assertions.assertTrue(results.size() >= 3, "Expected at least 3 instructors in ordered list.");
         // Verify that the first instructor is the one created in testSaveAndFindById.
-        Assertions.assertEquals("John", results.get(0).getFirstName(), "First instructor should be John.");
+        Assertions.assertEquals("John", results.getFirst().getFirstName(), "First instructor should be John.");
     }
 
     @Order(3)
@@ -132,7 +132,7 @@ public class InstructorRepositoryIT {
 
         List<InstructorEntity> results = instructorRepository.findAllByActivity(activity.getId(),2,0, false);
         Assertions.assertEquals(1, results.size(), "Expected 1 instructor linked to activity ACT-001.");
-        Assertions.assertEquals(i1.getId(), results.get(0).getId(), "Expected instructor with matching ID.");
+        Assertions.assertEquals(i1.getId(), results.getFirst().getId(), "Expected instructor with matching ID.");
     }
 
     @Order(5)
@@ -173,9 +173,9 @@ public class InstructorRepositoryIT {
         entity = instructorRepository.create(entity);
 
         String generatedId = entity.getId();
-        instructorRepository.deleteById(generatedId);
+        instructorRepository.deleteByPrimaryKey(generatedId);
 
-        InstructorEntity deleted = instructorRepository.findById(generatedId);
+        InstructorEntity deleted = instructorRepository.findByPrimaryKey(generatedId);
         Assertions.assertNull(deleted, "Instructor should be deleted from repository.");
     }
 }

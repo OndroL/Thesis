@@ -38,6 +38,8 @@ public class InstructorPhotoIT {
 
     private byte[] defaultPhoto;
 
+    private String instructorId;
+
     @BeforeAll
     @ActivateRequestContext
     public void setUp() throws IOException {
@@ -57,9 +59,11 @@ public class InstructorPhotoIT {
                 savedFile, false, "calendar100", true, 15, new HashSet<>(), new HashSet<>(), null
         );
 
-        instructorRepository.create(instructor);
+        instructor = instructorRepository.create(instructor);
 
-        InstructorEntity retrieved = instructorRepository.findById("INS-100");
+        instructorId = instructor.getId();
+
+        InstructorEntity retrieved = instructorRepository.findByPrimaryKey(instructorId);
         assertNotNull(retrieved, "Instructor should be present in repository.");
         assertNotNull(retrieved.getPhoto(), "Photo should not be null in the retrieved entity.");
         assertEquals(savedFile.getFilePath(), retrieved.getPhoto().getFilePath(), "Photo path should match.");
@@ -68,7 +72,9 @@ public class InstructorPhotoIT {
     @Order(2)
     @Test
     public void testRetrieveInstructorPhoto() throws IOException {
-        InstructorEntity retrieved = instructorRepository.findById("INS-100");
+
+
+        InstructorEntity retrieved = instructorRepository.findByPrimaryKey(instructorId);
         assertNotNull(retrieved, "Instructor should be present.");
         assertNotNull(retrieved.getPhoto(), "Instructor should have a photo.");
 
