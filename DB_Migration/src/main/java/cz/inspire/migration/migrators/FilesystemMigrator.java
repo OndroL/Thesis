@@ -112,12 +112,12 @@ public class FilesystemMigrator implements Migrator {
                     return "[]"; // Return empty list in JSON format
                 }
             }
-            // For "photo", we might get a raw byte[] (PNG) instead of a Map.
+            // For "photo", we get a raw byte[] (PNG) instead of a Map.
             else if (Objects.equals(originalColumnName, "photo")) {
                 if (obj instanceof byte[]) {
                     // Wrap the raw PNG bytes into a Map for uniform processing.
                     Map<String, byte[]> photoMap = new HashMap<>();
-                    photoMap.put("instructorID : " + key, (byte[]) obj);
+                    photoMap.put(null, (byte[]) obj);
                     obj = photoMap;
                 } else if (obj == null) {
                     return "{}"; // Return an empty JSON object as fallback
