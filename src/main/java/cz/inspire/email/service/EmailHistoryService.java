@@ -59,6 +59,7 @@ public class EmailHistoryService extends BaseService<EmailHistoryEntity, String,
         return fileStorageUtil.readFile(filePath); // Delegate to FileStorageUtil
     }
 
+
     // Brainstorm naming pattern for vouchers, because with this implementation which is identical
     // to controller implementation, problem with same names for 2 different voucher can occur.
     // E.g. two vouchers created in same day for same EmailHistory will be returned as only one in EmailHistoryDto
