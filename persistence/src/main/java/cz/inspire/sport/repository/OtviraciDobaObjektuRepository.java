@@ -51,29 +51,4 @@ public interface OtviraciDobaObjektuRepository extends BaseRepository<OtviraciDo
         ORDER BY o.embeddedId.platnostOd DESC
     """)
     List<LocalDateTime> getCurrentIdsByObjectAndDay(String objektId, LocalDateTime day);
-
-    /**
-     * These method overrides are necessary because the entity uses an embedded primary key (`@EmbeddedId`).
-     * <p>
-     * The default `findById` and `deleteById` methods inherited from `CrudRepository` expect a simple
-     * primary key field named `id`. However, in `ObjektSportEntity`, the primary key is an **embedded key**
-     * (`@EmbeddedId OtviraciDobaObjektuEntity embeddedId`), which Spring Data/Jakarta Data does not automatically recognize.
-     * <p>
-     * Without explicitly defining these methods, Spring Data will throw an error stating that it cannot find
-     * a matching field named `id(this)` for the inherited methods.
-     */
-//    @Override
-//    @Query("""
-//        SELECT o
-//        FROM OtviraciDobaObjektuEntity o
-//        WHERE o.embeddedId = :pk
-//    """)
-//    OtviraciDobaObjektuEntity findById(@Param("pk") OtviraciDobaObjektuPK pk);
-//
-//    @Query("""
-//        DELETE
-//        FROM OtviraciDobaObjektuEntity o
-//        WHERE o.embeddedId = :pk
-//    """)
-//    void deleteById(@Param("pk") OtviraciDobaObjektuPK pk);
 }

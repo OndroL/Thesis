@@ -121,7 +121,7 @@ public class ActivityFavouriteRepositoryIT {
         );
         activityFavouriteRepository.create(entity);
 
-        Optional<ActivityFavouriteEntity> found = activityFavouriteRepository.findByZakaznikAktivita("ZK-005", "ACT-007");
-        Assertions.assertTrue(found.isPresent(), "Expected to find entity with given zakaznik and activity.");
+        ActivityFavouriteEntity found = activityFavouriteRepository.findByZakaznikAktivita("ZK-005", "ACT-007");
+        Assertions.assertNotNull(found, "Expected to find entity with given zakaznik and activity.");
     }
 }

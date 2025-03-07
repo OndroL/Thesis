@@ -32,18 +32,18 @@ public class MenaFacade {
 
 
     public List<MenaDto> findByCode(String code) throws FinderException {
-        return menaService.findByCode(code).stream().map(menaMapper::toDto).toList();
+        return menaService.findByCode(code).stream().map(this::mapToDto).toList();
     }
 
     public List<MenaDto> findByCodeNum(int codeNum) throws FinderException {
-        return menaService.findByCodeNum(codeNum).stream().map(menaMapper::toDto).toList();
+        return menaService.findByCodeNum(codeNum).stream().map(this::mapToDto).toList();
     }
 
     public List<MenaDto> findAll() throws FinderException {
-        return menaService.findAll().stream().map(menaMapper::toDto).toList();
+        return menaService.findAll().stream().map(this::mapToDto).toList();
     }
     
     public MenaDto findByPrimaryKey(String menaId) throws FinderException {
-        return menaMapper.toDto(menaService.findByPrimaryKey(menaId));
+        return mapToDto(menaService.findByPrimaryKey(menaId));
     }
 }

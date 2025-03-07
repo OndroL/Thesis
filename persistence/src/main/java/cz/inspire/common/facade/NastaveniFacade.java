@@ -34,6 +34,6 @@ public class NastaveniFacade {
     }
     
     public NastaveniDto findByPrimaryKey(String nastaveniId) throws FinderException {
-        return nastaveniMapper.toDto(nastaveniService.findByPrimaryKey(nastaveniId));
+        return mapToDto(nastaveniService.findByPrimaryKey(nastaveniId));
     }
 }

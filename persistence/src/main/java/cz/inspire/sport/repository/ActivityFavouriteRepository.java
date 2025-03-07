@@ -3,12 +3,11 @@ package cz.inspire.sport.repository;
 import cz.inspire.repository.BaseRepository;
 import cz.inspire.repository.annotations.Limit;
 import cz.inspire.repository.annotations.Offset;
-import cz.inspire.sport.entity.ActivityFavouriteEntity;
-import cz.inspire.repository.annotations.Repository;
 import cz.inspire.repository.annotations.Query;
+import cz.inspire.repository.annotations.Repository;
+import cz.inspire.sport.entity.ActivityFavouriteEntity;
 
 import java.util.List;
-import java.util.Optional;
 
 @Repository
 public interface ActivityFavouriteRepository extends BaseRepository<ActivityFavouriteEntity, String> {
@@ -24,5 +23,5 @@ public interface ActivityFavouriteRepository extends BaseRepository<ActivityFavo
         SELECT af FROM ActivityFavouriteEntity af
         WHERE af.zakaznikId = :zakaznikId AND af.activityId = :activityId
     """)
-    Optional<ActivityFavouriteEntity> findByZakaznikAktivita(String zakaznikId, String activityId);
+    ActivityFavouriteEntity findByZakaznikAktivita(String zakaznikId, String activityId);
 }

@@ -14,10 +14,19 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.*;
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.Mockito.anyInt;
+import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.doThrow;
+import static org.mockito.Mockito.eq;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 public class ActivityFavouriteServiceTest {
@@ -69,7 +78,7 @@ public class ActivityFavouriteServiceTest {
         String activityId = "activity456";
         ActivityFavouriteEntity entity = new ActivityFavouriteEntity("1", zakaznikId, activityId, 2, LocalDateTime.now());
 
-        when(activityFavouriteRepository.findByZakaznikAktivita(zakaznikId, activityId)).thenReturn(Optional.of(entity));
+        when(activityFavouriteRepository.findByZakaznikAktivita(zakaznikId, activityId)).thenReturn(entity);
 
         ActivityFavouriteEntity result = activityFavouriteService.findByZakaznikAktivita(zakaznikId, activityId);
 
@@ -83,7 +92,7 @@ public class ActivityFavouriteServiceTest {
         String zakaznikId = "customer123";
         String activityId = "activity456";
 
-        when(activityFavouriteRepository.findByZakaznikAktivita(zakaznikId, activityId)).thenReturn(Optional.empty());
+        when(activityFavouriteRepository.findByZakaznikAktivita(zakaznikId, activityId)).thenReturn(null);
 
         assertThrows(Exception.class, () -> activityFavouriteService.findByZakaznikAktivita(zakaznikId, activityId));
         verify(activityFavouriteRepository, times(1)).findByZakaznikAktivita(zakaznikId, activityId);
