@@ -9,6 +9,7 @@ import jakarta.ejb.FinderException;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 
+import java.util.Date;
 import java.util.List;
 
 @ApplicationScoped
@@ -21,7 +22,7 @@ public class LicenseFacade {
     public String create(LicenseDto dto) throws CreateException {
         try {
             LicenseEntity entity = licenseMapper.toEntity(dto);
-
+            entity.setCreatedDate(new Date());
             entity = licenseService.create(entity);
 
             return entity.getId();

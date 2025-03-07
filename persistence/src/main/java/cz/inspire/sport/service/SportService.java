@@ -22,6 +22,7 @@ public class SportService extends BaseService<SportEntity, String, SportReposito
         super(repository);
     }
 
+
     public List<SportEntity> findAll() throws FinderException {
         return wrapDBException(
                 () -> repository.findAllOrdered(),

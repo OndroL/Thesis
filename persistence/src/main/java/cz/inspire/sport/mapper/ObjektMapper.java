@@ -90,7 +90,6 @@ public abstract class ObjektMapper {
             for (String objektId : dto.getNadObjekty()) {
                 try {
                     ObjektEntity nadObj = objektRepository.findByPrimaryKey(objektId);
-                            //.orElseThrow(() -> new FinderException("Failed to find nadObjekt with id : " + objektId));
                     Hibernate.initialize(entity.getNadObjekty());
                     if (Hibernate.isInitialized(entity.getNadObjekty())) {
                         nadObjekty.add(nadObj);

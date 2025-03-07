@@ -1,11 +1,15 @@
 package cz.inspire.sport.service;
 
 import cz.inspire.common.service.BaseService;
+import cz.inspire.sport.entity.SportEntity;
 import cz.inspire.sport.entity.SportInstructorEntity;
 import cz.inspire.sport.repository.SportInstructorRepository;
+import jakarta.ejb.CreateException;
 import jakarta.ejb.FinderException;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.util.List;
 
@@ -14,7 +18,27 @@ import static cz.inspire.common.utils.ExceptionHandler.wrapDBException;
 @ApplicationScoped
 public class SportInstructorService extends BaseService<SportInstructorEntity, String, SportInstructorRepository> {
 
+    Logger logger = LogManager.getLogger(SportInstructorService.class);
+
     public SportInstructorService() {
+    }
+
+    public void checkSportWithoutInstructor(SportEntity entity) {
+        try {
+            Long instructorCount = countSportInstructors(entity.getId());
+            if (instructorCount == null || instructorCount == 0) {
+                SportInstructorEntity sid = new SportInstructorEntity();
+                sid.setActivityId(entity.getActivity().getId());
+                sid.setDeleted(false);
+                sid.setInstructor(null);
+                sid.setSport(entity);
+                create(sid);
+            }
+        } catch (CreateException ex) {
+            logger.error("Unable to create SportInstructorEntity without instructor for sport " + entity.getId(), ex);
+        } catch (Exception ex) {
+            logger.error("Nepodarilo sa zistit pocet instruktorov sportu " + entity.getId(), ex);
+        }
     }
 
     @Inject

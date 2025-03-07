@@ -1,5 +1,6 @@
 package cz.inspire.sport.facade;
 
+import cz.inspire.exception.SystemException;
 import cz.inspire.sport.dto.ActivityFavouriteDto;
 import cz.inspire.sport.entity.ActivityFavouriteEntity;
 import cz.inspire.sport.mapper.ActivityFavouriteMapper;
@@ -31,6 +32,10 @@ public class ActivityFavouriteFacade {
         } catch (Exception e) {
             throw new CreateException("Failed to create ActivityFavourite entity : " + e);
         }
+    }
+
+    public void update(ActivityFavouriteDto dto) throws SystemException {
+        activityFavouriteService.update(activityFavouriteMapper.toEntity(dto));
     }
 
     public ActivityFavouriteDto mapToDto(ActivityFavouriteEntity entity) {

@@ -1,17 +1,18 @@
 package cz.inspire.email.entity;
 
 import cz.inspire.utils.FileAttributes;
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
-import jakarta.persistence.OneToMany;
 import jakarta.persistence.FetchType;
-import jakarta.persistence.GenerationType;
 import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
-import lombok.NoArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.type.SqlTypes;
 
@@ -63,6 +64,7 @@ public class EmailHistoryEntity {
     @Column
     private Boolean sent;
 
-    @OneToMany(mappedBy = "emailHistory", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "emailHistory", fetch = FetchType.LAZY,
+            cascade = {CascadeType.PERSIST, CascadeType.MERGE}, orphanRemoval = true)
     private List<GeneratedAttachmentEntity> generatedAttachments;
 }

@@ -139,8 +139,6 @@ public class ActivityWebTabFacade {
         }
     }
 
-
-
     public void delete(ActivityWebTabEntity entity) throws RemoveException {
         activityWebTabService.delete(entity);
     }

@@ -12,7 +12,6 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.util.List;
-import java.util.Optional;
 
 @ApplicationScoped
 public class EmailQueueFacade {
@@ -49,8 +48,8 @@ public class EmailQueueFacade {
                 .map(this::mapToDto).toList();
     }
 
-    public Optional<EmailQueueDto> findFirstMail() throws FinderException {
-        return emailQueueService.findFirstMail().map(this::mapToDto);
+    public EmailQueueDto findFirstMail() throws FinderException {
+        return mapToDto(emailQueueService.findFirstMail());
     }
 
     public List<EmailQueueDto> findByHistory(String historyId) throws FinderException {

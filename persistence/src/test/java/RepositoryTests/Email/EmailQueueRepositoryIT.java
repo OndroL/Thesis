@@ -17,7 +17,6 @@ import org.junit.jupiter.api.TestMethodOrder;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.Optional;
 
 @QuarkusTest
 @Transactional
@@ -59,7 +58,7 @@ public class EmailQueueRepositoryIT {
 
     @Order(2)
     @Test
-    public void testFindAllOrdered() {
+    public void testFindAll() {
         // Create two entities with different dates (ID passed as null)
         EmailQueueEntity oldEmail = new EmailQueueEntity(
                 null, new Date(System.currentTimeMillis() - 10000), "EMAIL-231", "old@example.com", 2, false, null
@@ -71,7 +70,7 @@ public class EmailQueueRepositoryIT {
         oldEmail = emailQueueRepository.create(oldEmail);
         newEmail = emailQueueRepository.create(newEmail);
 
-        List<EmailQueueEntity> results = emailQueueRepository.findAllOrdered();
+        List<EmailQueueEntity> results = emailQueueRepository.findAll();
         Assertions.assertEquals(3, results.size(), "Expected 2 queued emails.");
         // Instead of comparing hard-coded IDs, check that the newest (by date) is first.
         Assertions.assertTrue(results.get(0).getCreated().after(results.get(1).getCreated()),
@@ -104,10 +103,10 @@ public class EmailQueueRepositoryIT {
         lowPriority = emailQueueRepository.create(lowPriority);
         highPriority = emailQueueRepository.create(highPriority);
 
-        Optional<EmailQueueEntity> firstMail = emailQueueRepository.findFirstMail(1);
-        Assertions.assertTrue(firstMail.isPresent(), "There should be at least one email.");
+        EmailQueueEntity firstMail = emailQueueRepository.findFirstMail(1);
+        Assertions.assertNotNull(firstMail, "There should be at least one email.");
         // Verify that the highest priority (5) email is retrieved.
-        EmailQueueEntity retrieved = firstMail.get();
+        EmailQueueEntity retrieved = firstMail;
         Assertions.assertEquals("high@example.com", retrieved.getRecipient(), "Highest priority email should be retrieved.");
         Assertions.assertEquals(5, retrieved.getPriority(), "Highest priority value should be 5.");
     }

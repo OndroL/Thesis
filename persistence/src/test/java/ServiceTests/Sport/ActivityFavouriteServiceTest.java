@@ -92,7 +92,7 @@ public class ActivityFavouriteServiceTest {
         String zakaznikId = "customer123";
         String activityId = "activity456";
 
-        when(activityFavouriteRepository.findByZakaznikAktivita(zakaznikId, activityId)).thenReturn(null);
+        when(activityFavouriteRepository.findByZakaznikAktivita(zakaznikId, activityId)).thenThrow(new RuntimeException("DB error"));
 
         assertThrows(Exception.class, () -> activityFavouriteService.findByZakaznikAktivita(zakaznikId, activityId));
         verify(activityFavouriteRepository, times(1)).findByZakaznikAktivita(zakaznikId, activityId);

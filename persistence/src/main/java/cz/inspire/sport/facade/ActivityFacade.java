@@ -1,20 +1,22 @@
 package cz.inspire.sport.facade;
 
+import cz.inspire.exception.ApplicationException;
+import cz.inspire.exception.SystemException;
 import cz.inspire.sport.dto.ActivityDto;
-import cz.inspire.sport.dto.InstructorDto;
 import cz.inspire.sport.entity.ActivityEntity;
 import cz.inspire.sport.entity.ActivityWebTabEntity;
 import cz.inspire.sport.entity.InstructorEntity;
 import cz.inspire.sport.entity.SportEntity;
+import cz.inspire.sport.entity.SportInstructorEntity;
 import cz.inspire.sport.mapper.ActivityMapper;
 import cz.inspire.sport.service.ActivityService;
 import cz.inspire.sport.service.ActivityWebTabService;
-import cz.inspire.sport.service.InstructorService;
+import cz.inspire.sport.service.SportInstructorService;
+import cz.inspire.sport.service.SportService;
 import jakarta.ejb.CreateException;
 import jakarta.ejb.FinderException;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
-import cz.inspire.exception.ApplicationException;
 
 import java.util.HashSet;
 import java.util.List;
@@ -28,9 +30,11 @@ public class ActivityFacade {
     @Inject
     ActivityMapper activityMapper;
     @Inject
-    InstructorService instructorService;
-    @Inject
     ActivityWebTabService activityWebTabService;
+    @Inject
+    SportInstructorService sportInstructorService;
+    @Inject
+    SportService sportService;
 
     public ActivityDto create(ActivityDto dto) throws CreateException {
         try {
@@ -38,29 +42,9 @@ public class ActivityFacade {
 
             activityService.create(entity);
 
-            //postCreate
-            setInstructors(entity, dto);
-
             return mapToDto(entity);
         } catch (Exception e) {
             throw new CreateException("Failed to create Activity entity : " + e);
-        }
-    }
-
-    private void setInstructors(ActivityEntity entity, ActivityDto dto) throws CreateException {
-        List<InstructorDto> instructors = dto.getInstructors();
-        if (instructors != null && !instructors.isEmpty()) {
-            try {
-                Set<InstructorEntity> instructorSet = new HashSet<>();
-                for (InstructorDto instructorDetails : instructors) {
-                    InstructorEntity instructor = instructorService.findByPrimaryKey(instructorDetails.getId());
-                    instructorSet.add(instructor);
-                }
-                entity.setInstructors(instructorSet.stream().toList());
-                activityService.update(entity);
-            } catch (Exception ex) {
-                throw new CreateException("Failed to associate instructors with activity id : " + entity.getId() + " : " + ex.getMessage() + ex);
-            }
         }
     }
 
@@ -69,20 +53,41 @@ public class ActivityFacade {
         try {
             ActivityEntity entity = activityService.findByPrimaryKey(dto.getId());
 
-            Set<InstructorEntity> instructors = new HashSet<>();
-            if (entity.getInstructors() != null) {
-                instructors.addAll(entity.getInstructors());
-            }
+            Set<InstructorEntity> instructors = new HashSet<>(entity.getInstructors());
+            Set<InstructorEntity> oldInstructors = new HashSet<>(entity.getInstructors());
+
             entity = activityService.update(activityMapper.toEntity(dto));
+
+
             if (entity.getInstructors() != null) {
+                entity.getInstructors().forEach(oldInstructors::remove);
                 instructors.addAll(entity.getInstructors());
             }
+
+            updateSportInstructor(entity, oldInstructors);
+
+
             return instructors;
 
         } catch (FinderException e) {
             throw new FinderException("Failed to update ActivityEntity. " + e);
         }catch (Exception e) {
             throw new Exception("Failed to update ActivityEntity with id : " + dto.getId(), e);
+        }
+    }
+
+
+    private void updateSportInstructor(ActivityEntity entity, Set<InstructorEntity> oldInstructors)
+            throws SystemException, FinderException {
+        for (SportEntity sport : entity.getSports()) {
+            for (SportInstructorEntity sportInstructor :  sport.getSportInstructors()) {
+                if (sportInstructor.getInstructor() != null
+                        && oldInstructors.contains(sportInstructor.getInstructor())) {
+                    sportInstructor.setDeleted(true);
+                    sportInstructorService.update(sportInstructor);
+                }
+            }
+            sportInstructorService.checkSportWithoutInstructor(sport);
         }
     }
 
@@ -113,9 +118,6 @@ public class ActivityFacade {
 
     // ActivityDetails getActivity(String id) -> use return ActivityFacade.findById(String id) in tryCatch block
     // same for rest of finders/getters
-
-
-
 
 
     public ActivityDto mapToDto(ActivityEntity entity) {

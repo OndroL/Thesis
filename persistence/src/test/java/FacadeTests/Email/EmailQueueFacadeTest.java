@@ -7,16 +7,24 @@ import cz.inspire.email.mapper.EmailQueueMapper;
 import cz.inspire.email.service.EmailQueueService;
 import jakarta.ejb.CreateException;
 import jakarta.ejb.FinderException;
+import jakarta.persistence.NoResultException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.*;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
 
 import java.util.List;
-import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.Mockito.any;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @ExtendWith(org.mockito.junit.jupiter.MockitoExtension.class)
 public class EmailQueueFacadeTest {
@@ -113,13 +121,13 @@ public class EmailQueueFacadeTest {
         EmailQueueDto dto = new EmailQueueDto();
         dto.setId("queue123");
 
-        when(emailQueueService.findFirstMail()).thenReturn(Optional.of(entity));
+        when(emailQueueService.findFirstMail()).thenReturn(entity);
         when(emailQueueMapper.toDto(entity)).thenReturn(dto);
 
-        Optional<EmailQueueDto> result = emailQueueFacade.findFirstMail();
+        EmailQueueDto result = emailQueueFacade.findFirstMail();
 
-        assertTrue(result.isPresent());
-        assertEquals("queue123", result.get().getId());
+        assertNotNull(result);
+        assertEquals("queue123", result.getId());
 
         verify(emailQueueService, times(1)).findFirstMail();
         verify(emailQueueMapper, times(1)).toDto(entity);
@@ -127,11 +135,10 @@ public class EmailQueueFacadeTest {
 
     @Test
     void testFindFirstMail_NotFound() throws FinderException {
-        when(emailQueueService.findFirstMail()).thenReturn(Optional.empty());
+        when(emailQueueService.findFirstMail()).thenThrow(new NoResultException("Nothing found"));
 
-        Optional<EmailQueueDto> result = emailQueueFacade.findFirstMail();
 
-        assertTrue(result.isEmpty());
+        assertThrows(NoResultException.class, () -> emailQueueFacade.findFirstMail());
 
         verify(emailQueueService, times(1)).findFirstMail();
         verify(emailQueueMapper, never()).toDto(any());

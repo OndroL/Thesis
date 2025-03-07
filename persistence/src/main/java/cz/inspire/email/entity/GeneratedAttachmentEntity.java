@@ -1,7 +1,6 @@
 package cz.inspire.email.entity;
 
 import cz.inspire.template.entity.PrintTemplateEntity;
-import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -36,11 +35,11 @@ public class GeneratedAttachmentEntity {
     @Column(columnDefinition = "jsonb")
     private Map<String, Object> attributes;
 
-    @ManyToOne(cascade = CascadeType.REMOVE, fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "email_history", referencedColumnName = "id")
     private EmailHistoryEntity emailHistory;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "print_template", referencedColumnName = "id")
     private PrintTemplateEntity printTemplate;
 }

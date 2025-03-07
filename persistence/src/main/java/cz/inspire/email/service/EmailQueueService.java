@@ -3,13 +3,11 @@ package cz.inspire.email.service;
 import cz.inspire.common.service.BaseService;
 import cz.inspire.email.entity.EmailQueueEntity;
 import cz.inspire.email.repository.EmailQueueRepository;
-import jakarta.data.Limit;
 import jakarta.ejb.FinderException;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 
 import java.util.List;
-import java.util.Optional;
 
 import static cz.inspire.common.utils.ExceptionHandler.wrapDBException;
 
@@ -26,7 +24,7 @@ public class EmailQueueService extends BaseService<EmailQueueEntity, String, Ema
 
     public List<EmailQueueEntity> findAll() throws FinderException {
         return wrapDBException(
-                () -> repository.findAllOrdered(),
+                () -> repository.findAll(),
                 "Error retrieving all EmailQueueEntity records, Ordered by created"
         );
     }
@@ -38,7 +36,7 @@ public class EmailQueueService extends BaseService<EmailQueueEntity, String, Ema
         );
     }
 
-    public Optional<EmailQueueEntity> findFirstMail() throws FinderException {
+    public EmailQueueEntity findFirstMail() throws FinderException {
         return wrapDBException(
                 () -> repository.findFirstMail(1),
                 "Error retrieving the first email from EmailQueueEntity"

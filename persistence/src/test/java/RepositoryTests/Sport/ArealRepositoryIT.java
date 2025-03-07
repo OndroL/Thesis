@@ -90,7 +90,7 @@ public class ArealRepositoryIT {
     }
 
     @Test
-    public void testFindByParentWithLimit() {
+    public void testFindByParent() {
         ArealEntity parent = new ArealEntity(null, 1, createLocaleData(null, "en", "Limited Parent Area", "Main area"), null, new ArrayList<>(), new ArrayList<>());
         ArealEntity child1 = new ArealEntity(null, 1, createLocaleData(null, "en", "Limited Child 1", "Limited sub area 1"), parent, new ArrayList<>(), new ArrayList<>());
         ArealEntity child2 = new ArealEntity(null, 1, createLocaleData(null, "en", "Limited Child 2", "Limited sub area 2"), parent, new ArrayList<>(), new ArrayList<>());
@@ -99,7 +99,7 @@ public class ArealRepositoryIT {
         child1 = arealRepository.create(child1);
         child2 = arealRepository.create(child2);
 
-        List<ArealEntity> results = arealRepository.findByParentWithLimit(parent.getId(), "en", 1, 0);
+        List<ArealEntity> results = arealRepository.findByParent(parent.getId(), "en", 1, 0);
         Assertions.assertEquals(1, results.size(), "Expected only 1 result due to limit.");
     }
 
@@ -151,7 +151,7 @@ public class ArealRepositoryIT {
     }
 
     @Test
-    public void testFindRootWithLimit() {
+    public void testFindRoot() {
         ArealEntity root1 = new ArealEntity(null, 1, createLocaleData(null, "en", "Root Limited 1", "Top-level area"), null, new ArrayList<>(), new ArrayList<>());
         ArealEntity root2 = new ArealEntity(null, 1, createLocaleData(null, "en", "Root Limited 2", "Top-level area"), null, new ArrayList<>(), new ArrayList<>());
         ArealEntity root3 = new ArealEntity(null, 1, createLocaleData(null, "en", "Root Limited 3", "Top-level area"), null, new ArrayList<>(), new ArrayList<>());
@@ -160,7 +160,7 @@ public class ArealRepositoryIT {
         root2 = arealRepository.create(root2);
         root3 = arealRepository.create(root3);
 
-        List<ArealEntity> results = arealRepository.findRootWithLimit("en", 2, 0);
+        List<ArealEntity> results = arealRepository.findRoot("en", 2, 0);
         Assertions.assertEquals(2, results.size(), "Expected only 2 root areas due to limit.");
     }
 

@@ -16,10 +16,15 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.Date;
 import java.util.List;
-import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.doThrow;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 public class EmailQueueServiceTest {
@@ -125,13 +130,13 @@ public class EmailQueueServiceTest {
                 new EmailQueueEntity("2", new Date(), "history2", "recipient2@example.com", 2, true, "depHistory2")
         );
 
-        when(emailQueueRepository.findAllOrdered()).thenReturn(entities);
+        when(emailQueueRepository.findAll()).thenReturn(entities);
 
         List<EmailQueueEntity> result = emailQueueService.findAll();
 
         assertNotNull(result);
         assertEquals(2, result.size());
-        verify(emailQueueRepository, times(1)).findAllOrdered();
+        verify(emailQueueRepository, times(1)).findAll();
     }
 
     @Test
@@ -152,12 +157,12 @@ public class EmailQueueServiceTest {
     @Test
     void testFindFirstMail_Success() throws FinderException {
         EmailQueueEntity entity = new EmailQueueEntity("1", new Date(), "history1", "recipient@example.com", 1, false, "depHistory1");
-        when(emailQueueRepository.findFirstMail(1)).thenReturn(Optional.of(entity));
+        when(emailQueueRepository.findFirstMail(1)).thenReturn(entity);
 
-        Optional<EmailQueueEntity> result = emailQueueService.findFirstMail();
+        EmailQueueEntity result = emailQueueService.findFirstMail();
 
-        assertTrue(result.isPresent());
-        assertEquals("1", result.get().getId());
+        assertNotNull(result);
+        assertEquals("1", result.getId());
         verify(emailQueueRepository, times(1)).findFirstMail(1);
     }
 
