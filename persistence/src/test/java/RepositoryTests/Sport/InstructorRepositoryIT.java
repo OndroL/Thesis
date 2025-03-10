@@ -64,7 +64,7 @@ public class InstructorRepositoryIT {
 
     @Order(2)
     @Test
-    public void testFindAllOrdered() {
+    public void testFindAll() {
         InstructorEntity i1 = new InstructorEntity(
                 null, "Alice", "Smith", 2, "alice@example.com", "+1", "234567890",
                 "alice.internal@example.com", "+1", "987654322", "Skilled trainer", "red",
@@ -81,7 +81,7 @@ public class InstructorRepositoryIT {
         i1 = instructorRepository.create(i1);
         i2 = instructorRepository.create(i2);
 
-        List<InstructorEntity> results = instructorRepository.findAllOrdered();
+        List<InstructorEntity> results = instructorRepository.findAll();
         // Total instructors expected: at least 3
         Assertions.assertTrue(results.size() >= 3, "Expected at least 3 instructors in ordered list.");
         // Verify that the first instructor is the one created in testSaveAndFindById.

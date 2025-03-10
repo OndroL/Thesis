@@ -10,6 +10,7 @@ import jakarta.ejb.FinderException;
 import jakarta.ejb.RemoveException;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
+import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.util.List;
@@ -24,13 +25,10 @@ public class ActivityWebTabFacade {
     ActivityWebTabMapper activityWebTabMapper;
     @Inject
     ObjektService objektService;
-    @Inject
 
+    static final Logger logger = LogManager.getLogger(ActivityWebTabFacade.class);
 
-    private Logger logger;
-
-    public ActivityWebTabFacade(Logger logger) {
-        this.logger = logger;
+    public ActivityWebTabFacade() {
     }
 
 

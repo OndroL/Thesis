@@ -41,23 +41,23 @@ public class InstructorServiceTest {
                         "jane.internal@example.com", "420", "123456789", "More Info", "Red", null,
                         false, "googleId2", true, 10, null, null, null)
         );
-        when(instructorRepository.findAllOrdered()).thenReturn(expectedEntities);
+        when(instructorRepository.findAll()).thenReturn(expectedEntities);
 
         List<InstructorEntity> result = instructorService.findAll();
 
         assertNotNull(result);
         assertEquals(2, result.size());
-        verify(instructorRepository, times(1)).findAllOrdered();
+        verify(instructorRepository, times(1)).findAll();
     }
 
     @Test
     void testFindAll_Failure() {
-        when(instructorRepository.findAllOrdered()).thenThrow(new RuntimeException("Database error"));
+        when(instructorRepository.findAll()).thenThrow(new RuntimeException("Database error"));
 
         FinderException exception = assertThrows(FinderException.class, () -> instructorService.findAll());
         assertTrue(exception.getMessage().contains("Error retrieving all InstructorEntity records"));
 
-        verify(instructorRepository, times(1)).findAllOrdered();
+        verify(instructorRepository, times(1)).findAll();
     }
 
     @Test
@@ -141,9 +141,9 @@ public class InstructorServiceTest {
         FileAttributes expectedFile = new FileAttributes(id + ".png", "FILE_SYSTEM/photos/" + id + ".png");
 
         InstructorService spyService = spy(instructorService);
-        doReturn(expectedFile).when(spyService).savePhoto(photoData, id);
+        doReturn(expectedFile).when(spyService).savePhoto(photoData);
 
-        FileAttributes result = spyService.savePhoto(photoData, id);
+        FileAttributes result = spyService.savePhoto(photoData);
 
         assertNotNull(result);
         assertEquals(expectedFile.getFilePath(), result.getFilePath());
@@ -156,9 +156,9 @@ public class InstructorServiceTest {
 
         InstructorService spyService = spy(instructorService);
         try {
-            doThrow(new IOException("File save error")).when(spyService).savePhoto(photoData, id);
+            doThrow(new IOException("File save error")).when(spyService).savePhoto(photoData);
 
-            IOException exception = assertThrows(IOException.class, () -> spyService.savePhoto(photoData, id));
+            IOException exception = assertThrows(IOException.class, () -> spyService.savePhoto(photoData));
             assertTrue(exception.getMessage().contains("File save error"));
         } catch (IOException e) {
             fail("Unexpected IOException");

@@ -46,7 +46,7 @@ public class ObjektService extends BaseService<ObjektEntity, String, ObjektRepos
         return wrapDBException(
                 () -> repository.findByArealWithLimit(arealId, jazyk, count, offset),
                 "Error retrieving ObjektEntity records for arealId = " + arealId + ", jazyk = " + jazyk +
-                        " with pagination (offset + 1 = " + offset + ", count = " + count + ")"
+                        " with pagination (offset = " + offset + ", count = " + count + ")"
         );
     }
 
@@ -61,7 +61,7 @@ public class ObjektService extends BaseService<ObjektEntity, String, ObjektRepos
         return wrapDBException(
                 () -> repository.findBaseByArealWithLimit(arealId, jazyk, count, offset),
                 "Error retrieving base ObjektEntity records for arealId = " + arealId + ", jazyk = " + jazyk +
-                        " with pagination (offset + 1 = " + offset + ", count = " + count + ")"
+                        " with pagination (offset  = " + offset + ", count = " + count + ")"
         );
     }
 
@@ -83,7 +83,7 @@ public class ObjektService extends BaseService<ObjektEntity, String, ObjektRepos
         return wrapDBException(
                 () -> repository.findByPrimyVstupWithLimit(jazyk, count, offset, primyVstup),
                 "Error retrieving ObjektEntity records for jazyk = " + jazyk + ", primyVstup = " + primyVstup +
-                        " with pagination (offset + 1 = " + offset + ", count = " + count + ")"
+                        " with pagination (offset = " + offset + ", count = " + count + ")"
         );
     }
 }

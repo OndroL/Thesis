@@ -32,7 +32,7 @@ public class SportInstructorService extends BaseService<SportInstructorEntity, S
                 sid.setDeleted(false);
                 sid.setInstructor(null);
                 sid.setSport(entity);
-                create(sid);
+                this.create(sid);
             }
         } catch (CreateException ex) {
             logger.error("Unable to create SportInstructorEntity without instructor for sport " + entity.getId(), ex);

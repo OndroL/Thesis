@@ -5,10 +5,10 @@ import cz.inspire.sport.entity.InstructorEntity;
 import cz.inspire.sport.repository.InstructorRepository;
 import cz.inspire.utils.FileAttributes;
 import cz.inspire.utils.FileStorageUtil;
-import jakarta.data.Limit;
 import jakarta.ejb.FinderException;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
+import org.jboss.logging.Logger;
 
 import java.io.IOException;
 import java.util.List;
@@ -21,31 +21,38 @@ public class InstructorService extends BaseService<InstructorEntity, String, Ins
     private final FileStorageUtil fileStorageUtil = new FileStorageUtil("FILE_SYSTEM");
     // Rename this to some number, which will not be easily recognised
     private static final String ATTACHMENTS_DIRECTORY = "photos";
+    private Logger logger;
 
     public InstructorService() {
     }
 
-    public FileAttributes savePhoto(byte[] photo, String id) throws IOException {
+    @Inject
+    public InstructorService(InstructorRepository repository, Logger logger) {
+        super(repository);
+        this.logger = logger;
+    }
+
+    public FileAttributes savePhoto(byte[] photo) throws IOException {
         if (photo == null || photo.length == 0) {
             /// We can use here some default profile photo, if it's not handled in FrontEnd,
             /// but it is probably more efficient to do it on side of FrontEnd than in BackEnd
             return null;
         }
-        return fileStorageUtil.saveFile(photo, "instructorID : " + id, ATTACHMENTS_DIRECTORY);
+        return fileStorageUtil.saveFile(photo, null, ATTACHMENTS_DIRECTORY);
     }
 
     public byte[] readFile(String filePath) throws IOException {
         return fileStorageUtil.readFile(filePath);
     }
 
-    @Inject
-    public InstructorService(InstructorRepository repository) {
-        super(repository);
+    public void deleteFile(String filePath) throws IOException {
+        fileStorageUtil.removeFile(filePath);
     }
+
 
     public List<InstructorEntity> findAll() throws FinderException {
         return wrapDBException(
-                () -> repository.findAllOrdered(),
+                () -> repository.findAll(),
                 "Error retrieving all InstructorEntity records, Ordered by index"
         );
     }

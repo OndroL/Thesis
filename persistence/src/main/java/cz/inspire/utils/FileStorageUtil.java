@@ -34,4 +34,8 @@ public class FileStorageUtil {
     public byte[] readFile(String filePath) throws IOException {
         return Files.readAllBytes(Paths.get(filePath)); // Read file as bytes
     }
+
+    public void removeFile(String filePath) throws IOException {
+        Files.deleteIfExists(Paths.get(filePath)); // Delete the file if it exists
+    }
 }

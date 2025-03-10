@@ -33,6 +33,7 @@ public class ActivityFacade {
     @Inject
     SportInstructorService sportInstructorService;
 
+
     public ActivityDto create(ActivityDto dto) throws CreateException {
         try {
             ActivityEntity entity = activityMapper.toEntity(dto);

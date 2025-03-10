@@ -13,7 +13,7 @@ import java.util.List;
 public interface InstructorRepository extends BaseRepository<InstructorEntity, String> {
 
     @Query("SELECT i FROM InstructorEntity i ORDER BY i.index ASC")
-    List<InstructorEntity> findAllOrdered();
+    List<InstructorEntity> findAll();
 
     @Query("SELECT i FROM InstructorEntity i WHERE i.deleted = :deleted ORDER BY i.index ASC")
     List<InstructorEntity> findAll(@Limit int count, @Offset int offset, boolean deleted);
