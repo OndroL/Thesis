@@ -37,23 +37,23 @@ public class OtviraciDobaObjektuServiceTest {
                 new OtviraciDobaObjektuEntity(new OtviraciDobaObjektuPK("objekt1", LocalDateTime.now()), null),
                 new OtviraciDobaObjektuEntity(new OtviraciDobaObjektuPK("objekt2", LocalDateTime.now()), null)
         );
-        when(repository.findAllOrdered()).thenReturn(expectedEntities);
+        when(repository.findAll()).thenReturn(expectedEntities);
 
         List<OtviraciDobaObjektuEntity> result = service.findAll();
 
         assertNotNull(result);
         assertEquals(2, result.size());
-        verify(repository, times(1)).findAllOrdered();
+        verify(repository, times(1)).findAll();
     }
 
     @Test
     void testFindAll_Failure() {
-        when(repository.findAllOrdered()).thenThrow(new RuntimeException("Database error"));
+        when(repository.findAll()).thenThrow(new RuntimeException("Database error"));
 
         FinderException exception = assertThrows(FinderException.class, () -> service.findAll());
         assertTrue(exception.getMessage().contains("Error retrieving all OtviraciDobaObjektuEntity records"));
 
-        verify(repository, times(1)).findAllOrdered();
+        verify(repository, times(1)).findAll();
     }
 
     @Test

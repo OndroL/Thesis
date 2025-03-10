@@ -4,11 +4,9 @@ import cz.inspire.common.service.BaseService;
 import cz.inspire.sport.entity.OtviraciDobaObjektuEntity;
 import cz.inspire.sport.entity.OtviraciDobaObjektuPK;
 import cz.inspire.sport.repository.OtviraciDobaObjektuRepository;
-import jakarta.data.Limit;
 import jakarta.ejb.FinderException;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
-import jakarta.persistence.NoResultException;
 
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
@@ -30,7 +28,7 @@ public class OtviraciDobaObjektuService extends BaseService<OtviraciDobaObjektuE
 
     public List<OtviraciDobaObjektuEntity> findAll() throws FinderException {
         return wrapDBException(
-                () -> repository.findAllOrdered(),
+                () -> repository.findAll(),
                 "Error retrieving all OtviraciDobaObjektuEntity records, Ordered by objektId in embeddedId"
         );
     }
@@ -44,7 +42,7 @@ public class OtviraciDobaObjektuService extends BaseService<OtviraciDobaObjektuE
 
     public List<OtviraciDobaObjektuEntity> findByObjekt(String objektId, int offset, int count) throws FinderException {
         return wrapDBException(
-                () -> repository.findByObjektWithLimit(objektId, count, offset),
+                () -> repository.findByObjekt(objektId, count, offset),
                 "Error retrieving OtviraciDobaObjektuEntity records for objektId = " + objektId +
                         " with pagination (offset = " + offset + ", count = " + count + ")"
         );

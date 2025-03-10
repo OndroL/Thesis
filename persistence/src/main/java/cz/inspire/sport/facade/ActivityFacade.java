@@ -12,7 +12,6 @@ import cz.inspire.sport.mapper.ActivityMapper;
 import cz.inspire.sport.service.ActivityService;
 import cz.inspire.sport.service.ActivityWebTabService;
 import cz.inspire.sport.service.SportInstructorService;
-import cz.inspire.sport.service.SportService;
 import jakarta.ejb.CreateException;
 import jakarta.ejb.FinderException;
 import jakarta.enterprise.context.ApplicationScoped;
@@ -33,8 +32,6 @@ public class ActivityFacade {
     ActivityWebTabService activityWebTabService;
     @Inject
     SportInstructorService sportInstructorService;
-    @Inject
-    SportService sportService;
 
     public ActivityDto create(ActivityDto dto) throws CreateException {
         try {
@@ -124,7 +121,8 @@ public class ActivityFacade {
         return activityMapper.toDto(entity);
     }
 
-    public ActivityDto findById(String id) throws FinderException {
+
+    public ActivityDto findByPrimaryKey(String id) throws FinderException {
         return mapToDto(activityService.findByPrimaryKey(id));
     }
 

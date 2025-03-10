@@ -7,10 +7,10 @@ import cz.inspire.sport.mapper.ArealMapper;
 import cz.inspire.sport.service.ArealService;
 import jakarta.ejb.CreateException;
 import jakarta.ejb.FinderException;
+import jakarta.ejb.RemoveException;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 
-import java.util.Collection;
 import java.util.List;
 
 @ApplicationScoped
@@ -34,8 +34,16 @@ public class ArealFacade {
         arealService.update(arealMapper.toEntity(dto));
     }
 
+    public void delete(ArealEntity areal) throws RemoveException {
+        arealService.delete(areal);
+    }
+
     public ArealDto mapToDto(ArealEntity entity) {
         return arealMapper.toDto(entity);
+    }
+
+    public ArealDto findByPrimaryKey(String id) throws FinderException {
+        return mapToDto(arealService.findByPrimaryKey(id));
     }
 
     public List<ArealDto> findAll() throws FinderException {
@@ -72,7 +80,7 @@ public class ArealFacade {
                 .toList();
     }
 
-    public Collection<String> getArealIdsByParent(String arealId) throws FinderException {
+    public List<String> getArealIdsByParent(String arealId) throws FinderException {
         return arealService.getArealIdsByParent(arealId);
     }
 

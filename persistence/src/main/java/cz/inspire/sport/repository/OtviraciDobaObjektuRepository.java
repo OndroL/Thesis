@@ -15,7 +15,7 @@ import java.util.List;
 public interface OtviraciDobaObjektuRepository extends BaseRepository<OtviraciDobaObjektuEntity, OtviraciDobaObjektuPK> {
 
     @Query("SELECT o FROM OtviraciDobaObjektuEntity o ORDER BY o.embeddedId.objektId")
-    List<OtviraciDobaObjektuEntity> findAllOrdered();
+    List<OtviraciDobaObjektuEntity> findAll();
 
     @Query("""
         SELECT o FROM OtviraciDobaObjektuEntity o
@@ -29,7 +29,7 @@ public interface OtviraciDobaObjektuRepository extends BaseRepository<OtviraciDo
         WHERE o.embeddedId.objektId = :objektId
         ORDER BY o.embeddedId.platnostOd DESC
     """)
-    List<OtviraciDobaObjektuEntity> findByObjektWithLimit(String objektId, @Limit int count, @Offset int offset);
+    List<OtviraciDobaObjektuEntity> findByObjekt(String objektId, @Limit int count, @Offset int offset);
 
     @Query("""
         SELECT o FROM OtviraciDobaObjektuEntity o

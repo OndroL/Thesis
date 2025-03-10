@@ -1,10 +1,12 @@
 package cz.inspire.sport.mapper;
 
 import cz.inspire.sport.dto.ObjektDto;
+import cz.inspire.sport.dto.PodminkaRezervaceDto;
 import cz.inspire.sport.dto.SportDto;
 import cz.inspire.sport.entity.ObjektEntity;
 import cz.inspire.sport.entity.ObjektSportEntity;
 import cz.inspire.sport.entity.ObjektSportPK;
+import cz.inspire.sport.entity.PodminkaRezervaceEntity;
 import cz.inspire.sport.entity.SportEntity;
 import cz.inspire.sport.repository.ObjektRepository;
 import jakarta.inject.Inject;
@@ -41,6 +43,9 @@ public abstract class ObjektMapper {
     @Inject
     protected ObjektRepository objektRepository;
 
+    @Inject
+    protected PodminkaRezervaceMapper podminkaRezervaceMapper;
+
     private static final Logger logger = LogManager.getLogger(ObjektMapper.class);
 
     // ======================================
@@ -50,12 +55,13 @@ public abstract class ObjektMapper {
     @Mapping(target = "nadObjekty", ignore = true)
     @Mapping(target = "podObjekty", ignore = true)
     @Mapping(target = "objektSports", ignore = true)
+    @Mapping(target = "podminkyRezervaci", ignore = true)
     @Mapping(target = "localeData", source = "localeData", qualifiedByName = "mapLocaleDataToList")
     public abstract ObjektEntity toEntity(ObjektDto dto);
 
 
     @AfterMapping
-    protected void afterToEntity_Sports(ObjektDto dto,
+    protected void mapSports(ObjektDto dto,
                                         @MappingTarget ObjektEntity entity)
     {
         if (dto.getSports() == null) {
@@ -82,7 +88,7 @@ public abstract class ObjektMapper {
     }
 
     @AfterMapping
-    protected void afterToEntity_NadPod(ObjektDto dto,
+    protected void mapNadPod(ObjektDto dto,
                                         @MappingTarget ObjektEntity entity) {
         // =========== NADOBJEKTY ===========
         if (dto.getNadObjekty() != null) {
@@ -108,7 +114,6 @@ public abstract class ObjektMapper {
             for (String objektId : dto.getPodObjekty()) {
                 try {
                     ObjektEntity podObj = objektRepository.findByPrimaryKey(objektId);
-                            //.orElseThrow(() -> new FinderException("Failed to find podObjekt with id : " + objektId));
                     Hibernate.initialize(entity.getPodObjekty());
                     if (Hibernate.isInitialized(entity.getPodObjekty())) {
                         podObjekty.add(podObj);
@@ -118,6 +123,22 @@ public abstract class ObjektMapper {
                 }
             }
             entity.setPodObjekty(podObjekty);
+        }
+    }
+
+    @AfterMapping
+    protected void mapPodminkaRezeravace(ObjektDto dto, @MappingTarget ObjektEntity entity) {
+        try {
+            if (dto.getPodminkyRezervaci() != null && !dto.getPodminkyRezervaci().isEmpty()) {
+                long priority = 0;
+                for (PodminkaRezervaceDto podm : dto.getPodminkyRezervaci()) {
+                    PodminkaRezervaceEntity newPodminka = podminkaRezervaceMapper.toEntity(podm);
+                    newPodminka.setPriorita(priority++);
+                    entity.getPodminkyRezervaci().add(newPodminka);
+                }
+            }
+        } catch (Exception e) {
+            logger.error("Cannot set reservation conditions for object while mapping", e);
         }
     }
 
@@ -151,7 +172,20 @@ public abstract class ObjektMapper {
                 .map(os -> sportMapper.toDto(os.getSport()))
                 .collect(Collectors.toList());
     }
+    @Named("mapPodminkaRezervace")
+    protected List<PodminkaRezervaceDto> mapPodminkaRezervace(List<PodminkaRezervaceEntity> podminkaRezervaceEntityList) {
+        if (podminkaRezervaceEntityList == null) {
+            return null;
+        }
+        return podminkaRezervaceEntityList.stream()
+                .sorted(PODMINKY_REZERVACI_COMPARATOR)
+                .map(podminka -> podminkaRezervaceMapper.toDto(podminka))
+                .collect(Collectors.toList());
+    }
 
     private static final Comparator<ObjektSportEntity> OBJEKT_SPORT_COMPARATOR =
             Comparator.comparingInt(entity -> entity.getEmbeddedId().getIndex());
+
+    private static final Comparator<PodminkaRezervaceEntity> PODMINKY_REZERVACI_COMPARATOR =
+            Comparator.comparing(PodminkaRezervaceEntity::getPriorita);
 }

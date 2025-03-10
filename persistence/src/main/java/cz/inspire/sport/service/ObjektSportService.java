@@ -26,7 +26,7 @@ public class ObjektSportService extends BaseService<ObjektSportEntity, ObjektSpo
     public List<ObjektSportEntity> findByObjekt(String objektId) throws FinderException {
         return wrapDBException(
                 () -> repository.findByObjekt(objektId),
-                "Error retrieving valid attributes from ObjektSportEntity"
+                "Error retrieving ObjektSportEntity by ObjektId = " + objektId
         );
     }
 }

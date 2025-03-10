@@ -141,7 +141,7 @@ public class ObjektEntity {
     @JoinColumn(name = "objektId")
     private List<OvladacObjektuEntity> ovladaceObjektu;
 
-    @OneToMany(mappedBy = "objekt")
+    @OneToMany(mappedBy = "objekt", orphanRemoval = true, fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
     private List<PodminkaRezervaceEntity> podminkyRezervaci;
 
     @ManyToMany

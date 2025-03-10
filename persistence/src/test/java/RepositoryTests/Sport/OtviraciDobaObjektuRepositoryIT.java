@@ -63,7 +63,7 @@ public class OtviraciDobaObjektuRepositoryIT {
         entity1 = otviraciDobaObjektuRepository.create(entity1);
         entity2 = otviraciDobaObjektuRepository.create(entity2);
 
-        List<OtviraciDobaObjektuEntity> result = otviraciDobaObjektuRepository.findByObjektWithLimit("OBJ-002", 1, 0);
+        List<OtviraciDobaObjektuEntity> result = otviraciDobaObjektuRepository.findByObjekt("OBJ-002", 1, 0);
         assertNotNull(result, "Result should not be null");
         assertEquals(1, result.size(), "Expected only one result due to limit");
     }

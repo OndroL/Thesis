@@ -46,6 +46,10 @@ public class ActivityWebTabFacade {
         }
     }
 
+    public void delete(ActivityWebTabEntity entity) throws RemoveException {
+        activityWebTabService.delete(entity);
+    }
+
 //    public void updateActivityForWeb(Map<Integer, List<String>> tabObjectsMap) {
 //        List<ActivityWebTabDto> newEntities = new ArrayList<ActivityWebTabDto>();
 //        for (Map.Entry<Integer, List<String>> entry : tabObjectsMap.entrySet()) {
@@ -122,7 +126,7 @@ public class ActivityWebTabFacade {
     private void deleteOldEntities(List<ActivityWebTabEntity> oldEntities) {
         for (ActivityWebTabEntity oldEntity : oldEntities) {
             try {
-                activityWebTabService.delete(oldEntity);
+                delete(oldEntity);
             } catch (Exception ex) {
                 logger.error("Nepodarilo se odstranit oblibenou zalozku!", ex);
             }
@@ -132,21 +136,16 @@ public class ActivityWebTabFacade {
     private void createNewEntities(List<ActivityWebTabDto> newEntities) {
         for (ActivityWebTabDto newEntity : newEntities) {
             try {
-                activityWebTabService.create(activityWebTabMapper.toEntity(newEntity));
+                create(newEntity);
             } catch (CreateException ex) {
                 logger.error("Nepodarilo se vytvorit");
             }
         }
     }
 
-    public void delete(ActivityWebTabEntity entity) throws RemoveException {
-        activityWebTabService.delete(entity);
-    }
-
     public ActivityWebTabDto mapToDto (ActivityWebTabEntity entity) {
         return activityWebTabMapper.toDto(entity);
     }
-
 
     public List<ActivityWebTabDto> findAll() throws FinderException {
         return activityWebTabService.findAll().stream()
