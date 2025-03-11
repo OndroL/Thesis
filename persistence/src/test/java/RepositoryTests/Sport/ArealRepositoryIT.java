@@ -90,7 +90,7 @@ public class ArealRepositoryIT {
     }
 
     @Test
-    public void testFindByParent() {
+    public void testFindByParentWithPagination() {
         ArealEntity parent = new ArealEntity(null, 1, createLocaleData(null, "en", "Limited Parent Area", "Main area"), null, new ArrayList<>(), new ArrayList<>());
         ArealEntity child1 = new ArealEntity(null, 1, createLocaleData(null, "en", "Limited Child 1", "Limited sub area 1"), parent, new ArrayList<>(), new ArrayList<>());
         ArealEntity child2 = new ArealEntity(null, 1, createLocaleData(null, "en", "Limited Child 2", "Limited sub area 2"), parent, new ArrayList<>(), new ArrayList<>());
@@ -151,7 +151,7 @@ public class ArealRepositoryIT {
     }
 
     @Test
-    public void testFindRoot() {
+    public void testFindRootWithPagination() {
         ArealEntity root1 = new ArealEntity(null, 1, createLocaleData(null, "en", "Root Limited 1", "Top-level area"), null, new ArrayList<>(), new ArrayList<>());
         ArealEntity root2 = new ArealEntity(null, 1, createLocaleData(null, "en", "Root Limited 2", "Top-level area"), null, new ArrayList<>(), new ArrayList<>());
         ArealEntity root3 = new ArealEntity(null, 1, createLocaleData(null, "en", "Root Limited 3", "Top-level area"), null, new ArrayList<>(), new ArrayList<>());

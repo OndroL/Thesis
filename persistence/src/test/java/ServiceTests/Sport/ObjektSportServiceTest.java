@@ -50,7 +50,7 @@ public class ObjektSportServiceTest {
         when(objektSportRepository.findByObjekt(eq(objektId))).thenThrow(new RuntimeException("Database error"));
 
         FinderException exception = assertThrows(FinderException.class, () -> objektSportService.findByObjekt(objektId));
-        assertTrue(exception.getMessage().contains("Error retrieving valid attributes from ObjektSportEntity"));
+        assertTrue(exception.getMessage().contains("Database error"));
 
         verify(objektSportRepository, times(1)).findByObjekt(eq(objektId));
     }

@@ -1,5 +1,6 @@
 package cz.inspire.sport.mapper;
 
+import cz.inspire.exception.InvalidParameterException;
 import cz.inspire.sport.dto.ObjektDto;
 import cz.inspire.sport.dto.PodminkaRezervaceDto;
 import cz.inspire.sport.dto.SportDto;
@@ -9,6 +10,7 @@ import cz.inspire.sport.entity.ObjektSportPK;
 import cz.inspire.sport.entity.PodminkaRezervaceEntity;
 import cz.inspire.sport.entity.SportEntity;
 import cz.inspire.sport.repository.ObjektRepository;
+import jakarta.ejb.CreateException;
 import jakarta.inject.Inject;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -57,13 +59,12 @@ public abstract class ObjektMapper {
     @Mapping(target = "objektSports", ignore = true)
     @Mapping(target = "podminkyRezervaci", ignore = true)
     @Mapping(target = "localeData", source = "localeData", qualifiedByName = "mapLocaleDataToList")
-    public abstract ObjektEntity toEntity(ObjektDto dto);
+    public abstract ObjektEntity toEntity(ObjektDto dto) throws CreateException, InvalidParameterException;
 
 
     @AfterMapping
     protected void mapSports(ObjektDto dto,
-                                        @MappingTarget ObjektEntity entity)
-    {
+                                        @MappingTarget ObjektEntity entity) throws CreateException, InvalidParameterException {
         if (dto.getSports() == null) {
             entity.setObjektSports(null);
             return;

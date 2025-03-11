@@ -1,5 +1,6 @@
 package cz.inspire.sport.facade;
 
+import cz.inspire.exception.InvalidParameterException;
 import cz.inspire.exception.SystemException;
 import cz.inspire.sport.dto.ObjektDto;
 import cz.inspire.sport.entity.ObjektEntity;
@@ -21,7 +22,7 @@ public class ObjektFacade {
     @Inject
     ObjektMapper objektMapper;
 
-    public ObjektEntity create(ObjektDto dto) throws CreateException {
+    public ObjektEntity create(ObjektDto dto) throws CreateException, InvalidParameterException {
         return  objektService.create(objektMapper.toEntity(dto));
     }
 

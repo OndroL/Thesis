@@ -30,7 +30,7 @@ public class ArealFacade {
         }
     }
 
-    public void update(ArealDto dto) throws SystemException {
+    public void update(ArealDto dto) throws SystemException, FinderException {
         arealService.update(arealMapper.toEntity(dto));
     }
 

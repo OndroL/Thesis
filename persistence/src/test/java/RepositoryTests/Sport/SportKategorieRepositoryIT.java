@@ -52,7 +52,7 @@ public class SportKategorieRepositoryIT {
         category1 = sportKategorieRepository.create(category1);
         category2 = sportKategorieRepository.create(category2);
 
-        List<SportKategorieEntity> result = sportKategorieRepository.findAllOrdered();
+        List<SportKategorieEntity> result = sportKategorieRepository.findAll();
 
         assertNotNull(result);
         assertEquals(2, result.size());

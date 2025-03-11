@@ -24,7 +24,7 @@ public class SportKategorieService extends BaseService<SportKategorieEntity, Str
 
     public List<SportKategorieEntity> findAll() throws FinderException {
         return wrapDBException(
-                () -> repository.findAllOrdered(),
+                () -> repository.findAll(),
                 "Error retrieving all SportKategorieEntity records, Ordered by SportKategorieLocNazev"
         );
     }

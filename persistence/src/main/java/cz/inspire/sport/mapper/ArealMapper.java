@@ -1,9 +1,9 @@
 package cz.inspire.sport.mapper;
 
-import cz.inspire.exception.ApplicationException;
 import cz.inspire.sport.dto.ArealDto;
 import cz.inspire.sport.entity.ArealEntity;
 import cz.inspire.sport.service.ArealService;
+import jakarta.ejb.FinderException;
 import jakarta.inject.Inject;
 import org.mapstruct.AfterMapping;
 import org.mapstruct.Mapper;
@@ -22,17 +22,16 @@ public abstract class ArealMapper {
     @Mapping(target = "podrazeneArealy", ignore = true)
     @Mapping(target = "objekty", ignore = true)
     @Mapping(target = "localeData", source = "localeData", qualifiedByName = "mapLocaleDataToList")
-    public abstract ArealEntity toEntity(ArealDto dto);
+    public abstract ArealEntity toEntity(ArealDto dto) throws FinderException;
 
     @AfterMapping
-    protected void mapNadrazenyAreal(ArealDto dto, @MappingTarget ArealEntity entity) throws ApplicationException {
+    protected void mapNadrazenyAreal(ArealDto dto, @MappingTarget ArealEntity entity) throws FinderException {
         if (dto.getNadrazenyArealId() != null) {
             try {
                 ArealEntity nadrazeny = arealService.findByPrimaryKey(dto.getNadrazenyArealId());
-                nadrazeny.getPodrazeneArealy().add(entity);
-                arealService.update(nadrazeny);
+                entity.setNadrazenyAreal(nadrazeny);
             } catch (Exception e) {
-                throw new ApplicationException("Unable to set nadrazeny areal during mapping", e);
+                throw new FinderException("Unable to set nadrazeny areal during mapping with NadrazenyArealId = " + dto.getNadrazenyArealId());
             }
         }
     }

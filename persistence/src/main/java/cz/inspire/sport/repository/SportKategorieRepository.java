@@ -17,7 +17,7 @@ public interface SportKategorieRepository extends BaseRepository<SportKategorieE
         JOIN s.localeData loc
         ORDER BY loc.nazev
     """)
-    List<SportKategorieEntity> findAllOrdered();
+    List<SportKategorieEntity> findAll();
 
     @Query("""
         SELECT s FROM SportKategorieEntity s

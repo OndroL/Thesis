@@ -23,7 +23,7 @@ public abstract class SportInstructorMapper {
     // Map DTO to Entity
     @Mapping(target = "sport", source = "sportId", ignore = true)
     @Mapping(target = "instructor", source = "instructorId", ignore = true)
-    public abstract SportInstructorEntity toEntity(SportInstructorDto dto);
+    public abstract SportInstructorEntity toEntity(SportInstructorDto dto) throws FinderException;
 
     @AfterMapping
     protected void mapSportAndInstructor(SportInstructorDto dto, @MappingTarget SportInstructorEntity entity) throws FinderException {

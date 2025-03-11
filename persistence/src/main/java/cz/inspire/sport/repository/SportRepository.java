@@ -16,7 +16,7 @@ public interface SportRepository extends BaseRepository<SportEntity, String> {
         SELECT s FROM SportEntity s
         ORDER BY s.id
     """)
-    List<SportEntity> findAllOrdered();
+    List<SportEntity> findAll();
 
     @Query("""
         SELECT s FROM SportEntity s
@@ -32,7 +32,7 @@ public interface SportRepository extends BaseRepository<SportEntity, String> {
         WHERE s.nadrazenySport.id = :parentId AND loc.jazyk = :jazyk
         ORDER BY loc.nazev
     """)
-    List<SportEntity> findByParentWithLimit(String parentId, String jazyk, @Limit int count, @Offset int offset);
+    List<SportEntity> findByParent(String parentId, String jazyk, @Limit int count, @Offset int offset);
 
     @Query("""
         SELECT s FROM SportEntity s
@@ -62,7 +62,7 @@ public interface SportRepository extends BaseRepository<SportEntity, String> {
         WHERE s.nadrazenySport IS NULL AND loc.jazyk = :jazyk
         ORDER BY loc.nazev
     """)
-    List<SportEntity> findRootWithLimit(String jazyk, @Limit int count, @Offset int offset);
+    List<SportEntity> findRoot(String jazyk, @Limit int count, @Offset int offset);
 
     @Query("""
         SELECT s FROM SportEntity s

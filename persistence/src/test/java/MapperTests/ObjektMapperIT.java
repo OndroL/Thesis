@@ -1,6 +1,7 @@
 package MapperTests;
 
 import RepositoryTests.DatabaseCleaner;
+import cz.inspire.exception.InvalidParameterException;
 import cz.inspire.sport.dto.ObjektDto;
 import cz.inspire.sport.dto.SportDto;
 import cz.inspire.sport.entity.ObjektEntity;
@@ -13,7 +14,6 @@ import jakarta.ejb.CreateException;
 import jakarta.ejb.FinderException;
 import jakarta.enterprise.context.control.ActivateRequestContext;
 import jakarta.inject.Inject;
-import jakarta.transaction.SystemException;
 import jakarta.transaction.Transactional;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
@@ -58,7 +58,7 @@ public class ObjektMapperIT {
     @Order(1)
     @Test
     @Transactional
-    public void testToEntity_withNadObjektyOnly() throws CreateException, FinderException, SystemException {
+    public void testToEntity_withNadObjektyOnly() throws CreateException, FinderException, InvalidParameterException {
 
         Set<String> nadObjekty = new HashSet<>();
         for(int i = 0; i < 5; i++) {
@@ -90,7 +90,7 @@ public class ObjektMapperIT {
     @Order(2)
     @Test
     @Transactional
-    public void testToEntity_withNadObjektyOnlyRetriveOnly() throws CreateException, FinderException, SystemException {
+    public void testToEntity_withNadObjektyOnlyRetriveOnly() throws FinderException {
 
         //ObjektDto fromDb = objektMapper.toDto(objektService.findByPrimaryKey(mainEntity.getId()));
         ObjektEntity fromDb = objektService.findByPrimaryKey(id);
@@ -107,7 +107,7 @@ public class ObjektMapperIT {
     @Order(3)
     @Test
     @Transactional
-    public void testToEntity_withSports() throws CreateException, FinderException {
+    public void testToEntity_withSports() throws CreateException, FinderException, InvalidParameterException {
 
         List<SportDto> sports = new ArrayList<>();
 

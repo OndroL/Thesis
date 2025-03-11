@@ -34,23 +34,23 @@ public class SportKategorieServiceTest {
                 new SportKategorieEntity("1", "multi1", "uuid1", null, null, null, null),
                 new SportKategorieEntity("2", "multi2", "uuid2", null, null, null, null)
         );
-        when(repository.findAllOrdered()).thenReturn(expectedEntities);
+        when(repository.findAll()).thenReturn(expectedEntities);
 
         List<SportKategorieEntity> result = service.findAll();
 
         assertNotNull(result);
         assertEquals(2, result.size());
-        verify(repository, times(1)).findAllOrdered();
+        verify(repository, times(1)).findAll();
     }
 
     @Test
     void testFindAll_Failure() {
-        when(repository.findAllOrdered()).thenThrow(new RuntimeException("Database error"));
+        when(repository.findAll()).thenThrow(new RuntimeException("Database error"));
 
         FinderException exception = assertThrows(FinderException.class, () -> service.findAll());
         assertTrue(exception.getMessage().contains("Error retrieving all SportKategorieEntity records"));
 
-        verify(repository, times(1)).findAllOrdered();
+        verify(repository, times(1)).findAll();
     }
 
     @Test

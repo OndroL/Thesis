@@ -35,23 +35,23 @@ public class SportServiceTest {
                 new SportEntity("sport1", 1, null, null, 10, false, null, false, 1, null, null, null, false, 0, null, null, null, false, 15, 0, 0, 0, 0, null, null, null, null, null, null, null, null, null),
                 new SportEntity("sport2", 2, null, null, 20, true, null, true, 2, null, null, null, true, 1, null, null, null, true, 30, 5, 5, 5, 5, null, null, null, null, null, null, null, null, null)
         );
-        when(repository.findAllOrdered()).thenReturn(expectedEntities);
+        when(repository.findAll()).thenReturn(expectedEntities);
 
         List<SportEntity> result = service.findAll();
 
         assertNotNull(result);
         assertEquals(2, result.size());
-        verify(repository, times(1)).findAllOrdered();
+        verify(repository, times(1)).findAll();
     }
 
     @Test
     void testFindAll_Failure() {
-        when(repository.findAllOrdered()).thenThrow(new RuntimeException("Database error"));
+        when(repository.findAll()).thenThrow(new RuntimeException("Database error"));
 
         FinderException exception = assertThrows(FinderException.class, () -> service.findAll());
         assertTrue(exception.getMessage().contains("Error retrieving all SportEntity records"));
 
-        verify(repository, times(1)).findAllOrdered();
+        verify(repository, times(1)).findAll();
     }
 
     @Test
@@ -90,13 +90,13 @@ public class SportServiceTest {
         List<SportEntity> expectedEntities = List.of(
                 new SportEntity("sport1", 1, null, null, 10, false, null, false, 1, null, null, null, false, 0, null, null, null, false, 15, 0, 0, 0, 0, null, null, null, null, null, null, null, null, null)
         );
-        when(repository.findByParentWithLimit(eq(parentId), eq(jazyk), eq(count), eq(offset))).thenReturn(expectedEntities);
+        when(repository.findByParent(eq(parentId), eq(jazyk), eq(count), eq(offset))).thenReturn(expectedEntities);
 
         List<SportEntity> result = service.findByParent(parentId, jazyk, offset, count);
 
         assertNotNull(result);
         assertEquals(1, result.size());
-        verify(repository, times(1)).findByParentWithLimit(eq(parentId), eq(jazyk), eq(count), eq(offset));
+        verify(repository, times(1)).findByParent(eq(parentId), eq(jazyk), eq(count), eq(offset));
     }
 
     @Test
@@ -186,13 +186,13 @@ public class SportServiceTest {
         List<SportEntity> expectedEntities = List.of(
                 new SportEntity("sport1", 1, null, null, 10, false, null, false, 1, null, null, null, false, 0, null, null, null, false, 15, 0, 0, 0, 0, null, null, null, null, null, null, null, null, null)
         );
-        when(repository.findRootWithLimit(eq(jazyk), eq(count), eq(offset))).thenReturn(expectedEntities);
+        when(repository.findRoot(eq(jazyk), eq(count), eq(offset))).thenReturn(expectedEntities);
 
         List<SportEntity> result = service.findRoot(jazyk, offset, count);
 
         assertNotNull(result);
         assertEquals(1, result.size());
-        verify(repository, times(1)).findRootWithLimit(eq(jazyk), eq(count), eq(offset));
+        verify(repository, times(1)).findRoot(eq(jazyk), eq(count), eq(offset));
     }
 
     @Test

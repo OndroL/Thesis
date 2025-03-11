@@ -58,7 +58,7 @@ public class SportRepositoryIT {
         sport1 = sportRepository.create(sport1);
         sport2 = sportRepository.create(sport2);
 
-        List<SportEntity> result = sportRepository.findAllOrdered();
+        List<SportEntity> result = sportRepository.findAll();
         assertNotNull(result);
         assertEquals(2, result.size());
     }
