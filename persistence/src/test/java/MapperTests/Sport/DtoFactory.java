@@ -1,6 +1,7 @@
-package MapperTests;
+package MapperTests.Sport;
 
 import cz.inspire.sport.dto.ActivityDto;
+import cz.inspire.sport.dto.ActivityFavouriteDto;
 import cz.inspire.sport.dto.ArealDto;
 import cz.inspire.sport.dto.ArealLocDto;
 import cz.inspire.sport.dto.InstructorDto;
@@ -16,6 +17,7 @@ import cz.inspire.sport.utils.SazbaStorna;
 
 import java.awt.*;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Random;
 
@@ -265,6 +267,18 @@ public class DtoFactory {
         dto.setIconId("icon-" + randomInt(1, 100));
         dto.setInstructors(null);
         dto.setSports(null);
+        return dto;
+    }
+
+    // --------------------------------------------------------------------------------
+    // ActivityFavouriteDto
+    // --------------------------------------------------------------------------------
+    public static ActivityFavouriteDto createActivityFavouriteDto() {
+        ActivityFavouriteDto dto = new ActivityFavouriteDto();
+        dto.setZakaznikId("ZAK-" + randomInt(100, 999));
+        dto.setActivityId("ACT-" + randomInt(100, 999));
+        dto.setPocet(randomInt(1, 10));
+        dto.setDatumPosledniZmeny(new Date());
         return dto;
     }
 

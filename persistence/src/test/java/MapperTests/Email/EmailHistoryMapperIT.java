@@ -40,7 +40,6 @@ public class EmailHistoryMapperIT {
     @BeforeAll
     @Transactional
     public void setup() {
-        // Clear the email_history table before tests
         databaseCleaner.clearTable(EmailHistoryEntity.class, true);
     }
 
@@ -48,39 +47,31 @@ public class EmailHistoryMapperIT {
     @Test
     @Transactional
     public void testPersistEmailHistoryWithGeneratedAttachments() throws CreateException {
-        // Create an EmailHistoryDto with basic properties
         EmailHistoryDto emailHistoryDto = new EmailHistoryDto();
         emailHistoryDto.setDate(new Date());
         emailHistoryDto.setText("Test email text");
         emailHistoryDto.setSubject("Test subject");
-        // Other properties can be set as needed
 
-        // Create a GeneratedAttachmentDto (without setting emailHistoryId)
         GeneratedAttachmentDto attachmentDto = new GeneratedAttachmentDto();
         attachmentDto.setEmail("attachment@example.com");
-        attachmentDto.setAttributes(null); // or provide a sample map of attributes
+        attachmentDto.setAttributes(null);
 
-        // Add the attachment DTO to the EmailHistoryDto
+
         List<GeneratedAttachmentDto> attachments = new ArrayList<>();
         attachments.add(attachmentDto);
         emailHistoryDto.setGeneratedAttachments(attachments);
 
-        // Map DTO to entity.
-        // The EmailHistoryMapper's @AfterMapping callback sets each GeneratedAttachmentEntity's emailHistory reference.
         EmailHistoryEntity emailHistoryEntity = emailHistoryMapper.toEntity(emailHistoryDto);
 
-        // Persist the EmailHistoryEntity (cascading should persist its attachments)
         emailHistoryService.create(emailHistoryEntity);
         emailHistoryId = emailHistoryEntity.getId();
 
-        // Verify that the EmailHistoryEntity got an id
         assertNotNull(emailHistoryEntity.getId(), "EmailHistoryEntity id should be generated");
-        // And that there is one generated attachment present
+
         assertNotNull(emailHistoryEntity.getGeneratedAttachments(), "Generated attachments list should not be null");
         assertEquals(1, emailHistoryEntity.getGeneratedAttachments().size(), "Should have one attachment");
 
-        // Verify that the attachment's back-reference is set properly
-        GeneratedAttachmentEntity attachmentEntity = emailHistoryEntity.getGeneratedAttachments().get(0);
+        GeneratedAttachmentEntity attachmentEntity = emailHistoryEntity.getGeneratedAttachments().getFirst();
         assertNotNull(attachmentEntity.getEmailHistory(), "Attachment's emailHistory should be set");
         assertEquals(emailHistoryEntity.getId(), attachmentEntity.getEmailHistory().getId(),
                 "Attachment should reference the parent's id");
@@ -90,7 +81,6 @@ public class EmailHistoryMapperIT {
     @Test
     @Transactional
     public void testRetrieveEmailHistoryWithGeneratedAttachments() throws FinderException {
-        // Retrieve the EmailHistoryEntity from the database using its id
         EmailHistoryEntity fromDb = emailHistoryService.findByPrimaryKey(emailHistoryId);
         assertNotNull(fromDb, "Retrieved EmailHistoryEntity should not be null");
 
@@ -98,8 +88,7 @@ public class EmailHistoryMapperIT {
         assertNotNull(attachments, "Generated attachments list should not be null");
         assertEquals(1, attachments.size(), "Should have one generated attachment");
 
-        // Verify the back-reference on the retrieved attachment
-        GeneratedAttachmentEntity attachmentEntity = attachments.get(0);
+        GeneratedAttachmentEntity attachmentEntity = attachments.getFirst();
         assertNotNull(attachmentEntity.getEmailHistory(), "Attachment's emailHistory should be set");
         assertEquals(emailHistoryId, attachmentEntity.getEmailHistory().getId(), "Attachment should reference the parent's id");
     }

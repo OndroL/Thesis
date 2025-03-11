@@ -1,4 +1,4 @@
-package MapperTests;
+package MapperTests.Sport;
 
 import RepositoryTests.DatabaseCleaner;
 import cz.inspire.exception.InvalidParameterException;
