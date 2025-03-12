@@ -110,7 +110,15 @@ public abstract class SportMapper {
     protected void mapNadrazenySport(SportDto dto, @MappingTarget SportEntity entity) throws CreateException, InvalidParameterException {
         try {
             if (dto.getNadrazenySportId() != null) {
-                entity.setNadrazenySport(sportService.findByPrimaryKey(dto.getNadrazenySportId()));
+                SportEntity nadrazenySport = sportService.findByPrimaryKey(dto.getNadrazenySportId());
+                entity.setNadrazenySport(nadrazenySport);
+                // This update for podSportyCount is subject to change
+                nadrazenySport.setPodSportyCount(nadrazenySport.getPodSportyCount() + 1);
+                // As something like this would be better, but not same as in old bean
+                // nadrazenySport.setPodSportyCount(nadrazenySport.getPodrazeneSporty().size() + 1);
+                // but we need to check if it's behaving correctly and when Hibernate updates podrazeneSporty list
+                // so nadrazenySport.getPodrazeneSporty().size() + 1 will produce correct number as podrazeneSporty is mapped by nadrazenySport
+                sportService.update(nadrazenySport);
             }
         } catch (Exception e) {
             if (dto.getId() != null) { // While updating SportEntity
@@ -208,7 +216,6 @@ public abstract class SportMapper {
     private void createInstructors(Set<String> instructorIds, SportDto dto, SportEntity entity, boolean throwOnError)
             throws CreateException {
 
-        // If no instructors => create 1 default (none) entry
         if (instructorIds.isEmpty()) {
             SportInstructorEntity sid = new SportInstructorEntity();
             sid.setActivityId(dto.getActivityId());
@@ -220,7 +227,6 @@ public abstract class SportMapper {
                 handleCreateException("Failed to create default (none) SportInstructor!", e, throwOnError);
             }
         }
-        // Otherwise, create one entry per instructorId
         else {
             for (String instructorId : instructorIds) {
                 SportInstructorEntity sid = new SportInstructorEntity();
@@ -228,7 +234,6 @@ public abstract class SportMapper {
                 sid.setDeleted(false);
                 sid.setSport(entity);
 
-                // If instructorId is not null => set the real instructor
                 if (instructorId != null) {
                     try {
                         sid.setInstructor(instructorService.findByPrimaryKey(instructorId));
@@ -239,7 +244,6 @@ public abstract class SportMapper {
                     }
                 }
 
-                // Finally create the record
                 try {
                     sportInstructorService.create(sid);
                 } catch (Exception e) {

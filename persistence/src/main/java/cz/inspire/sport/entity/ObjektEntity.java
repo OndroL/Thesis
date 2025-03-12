@@ -20,6 +20,8 @@ import lombok.Setter;
 import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.type.SqlTypes;
 
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -139,10 +141,10 @@ public class ObjektEntity {
 
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     @JoinColumn(name = "objektId")
-    private List<OvladacObjektuEntity> ovladaceObjektu;
+    private List<OvladacObjektuEntity> ovladaceObjektu = new ArrayList<>();
 
     @OneToMany(mappedBy = "objekt", orphanRemoval = true, fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
-    private List<PodminkaRezervaceEntity> podminkyRezervaci;
+    private List<PodminkaRezervaceEntity> podminkyRezervaci = new ArrayList<>();
 
     @ManyToMany
     @JoinTable(
@@ -150,8 +152,8 @@ public class ObjektEntity {
             joinColumns = @JoinColumn(name = "objekt"),
             inverseJoinColumns = @JoinColumn(name = "nadobjekt")
     )
-    private Set<ObjektEntity> nadObjekty;
+    private Set<ObjektEntity> nadObjekty = new HashSet<>();
 
     @ManyToMany(mappedBy = "nadObjekty")
-    private Set<ObjektEntity> podObjekty;
+    private Set<ObjektEntity> podObjekty = new HashSet<>();
 }

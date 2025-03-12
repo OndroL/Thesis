@@ -12,6 +12,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Data
@@ -37,8 +38,8 @@ public class ActivityEntity {
     private String iconId;
 
     @ManyToMany(mappedBy = "activities")
-    private List<InstructorEntity> instructors;
+    private List<InstructorEntity> instructors = new ArrayList<>();
 
     @OneToMany(mappedBy = "activity")
-    private List<SportEntity> sports;
+    private List<SportEntity> sports = new ArrayList<>();;
 }

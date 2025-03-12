@@ -1,13 +1,11 @@
 package cz.inspire.sport.facade;
 
 import cz.inspire.exception.ApplicationException;
-import cz.inspire.exception.SystemException;
 import cz.inspire.sport.dto.ActivityDto;
 import cz.inspire.sport.entity.ActivityEntity;
 import cz.inspire.sport.entity.ActivityWebTabEntity;
 import cz.inspire.sport.entity.InstructorEntity;
 import cz.inspire.sport.entity.SportEntity;
-import cz.inspire.sport.entity.SportInstructorEntity;
 import cz.inspire.sport.mapper.ActivityMapper;
 import cz.inspire.sport.service.ActivityService;
 import cz.inspire.sport.service.ActivityWebTabService;
@@ -52,18 +50,10 @@ public class ActivityFacade {
             ActivityEntity entity = activityService.findByPrimaryKey(dto.getId());
 
             Set<InstructorEntity> instructors = new HashSet<>(entity.getInstructors());
-            Set<InstructorEntity> oldInstructors = new HashSet<>(entity.getInstructors());
 
             entity = activityService.update(activityMapper.toEntity(dto));
 
-
-            if (entity.getInstructors() != null) {
-                entity.getInstructors().forEach(oldInstructors::remove);
-                instructors.addAll(entity.getInstructors());
-            }
-
-            updateSportInstructor(entity, oldInstructors);
-
+            instructors.addAll(entity.getInstructors());
 
             return instructors;
 
@@ -71,21 +61,6 @@ public class ActivityFacade {
             throw new FinderException("Failed to update ActivityEntity. " + e);
         }catch (Exception e) {
             throw new Exception("Failed to update ActivityEntity with id : " + dto.getId(), e);
-        }
-    }
-
-
-    private void updateSportInstructor(ActivityEntity entity, Set<InstructorEntity> oldInstructors)
-            throws SystemException, FinderException {
-        for (SportEntity sport : entity.getSports()) {
-            for (SportInstructorEntity sportInstructor :  sport.getSportInstructors()) {
-                if (sportInstructor.getInstructor() != null
-                        && oldInstructors.contains(sportInstructor.getInstructor())) {
-                    sportInstructor.setDeleted(true);
-                    sportInstructorService.update(sportInstructor);
-                }
-            }
-            sportInstructorService.checkSportWithoutInstructor(sport);
         }
     }
 

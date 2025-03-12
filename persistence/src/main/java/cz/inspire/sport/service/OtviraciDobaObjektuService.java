@@ -9,6 +9,7 @@ import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.time.ZoneOffset;
 import java.util.Date;
 import java.util.List;
@@ -49,7 +50,7 @@ public class OtviraciDobaObjektuService extends BaseService<OtviraciDobaObjektuE
     }
 
     public OtviraciDobaObjektuEntity findCurrent(String objektId, Date day) throws FinderException {
-        LocalDateTime localDateTime = LocalDateTime.ofInstant(day.toInstant(), ZoneOffset.UTC);
+        LocalDateTime localDateTime = LocalDateTime.ofInstant(day.toInstant(), ZoneId.systemDefault());
         return wrapDBException(
                 () -> repository.findCurrent(objektId, localDateTime, 1),
                 "Error retrieving current OtviraciDobaObjektuEntity record for objektId = " + objektId + ", date = " + localDateTime
@@ -57,7 +58,7 @@ public class OtviraciDobaObjektuService extends BaseService<OtviraciDobaObjektuE
     }
 
     public List<OtviraciDobaObjektuEntity> findAfter(String objektId, Date day) throws FinderException {
-        LocalDateTime localDateTime = LocalDateTime.ofInstant(day.toInstant(), ZoneOffset.UTC);
+        LocalDateTime localDateTime = LocalDateTime.ofInstant(day.toInstant(), ZoneId.systemDefault());
         return wrapDBException(
                 () -> repository.findAfter(objektId, localDateTime),
                 "Error retrieving OtviraciDobaObjektuEntity records after date = " + localDateTime + " for objektId = " + objektId
@@ -65,7 +66,7 @@ public class OtviraciDobaObjektuService extends BaseService<OtviraciDobaObjektuE
     }
 
     public List<LocalDateTime> getCurrentIdsByObjectAndDay(String objektId, Date day) throws FinderException {
-        LocalDateTime localDateTime = LocalDateTime.ofInstant(day.toInstant(), ZoneOffset.UTC);
+        LocalDateTime localDateTime = LocalDateTime.ofInstant(day.toInstant(), ZoneId.systemDefault());
         return wrapDBException(
                 () -> repository.getCurrentIdsByObjectAndDay(objektId, localDateTime),
                 "Error retrieving current OtviraciDobaObjektuEntity IDs for objektId = " + objektId + ", date = " + localDateTime

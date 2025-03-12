@@ -1,11 +1,11 @@
 package cz.inspire.sport.repository;
 
 import cz.inspire.repository.BaseRepository;
-import cz.inspire.repository.annotations.Offset;
-import cz.inspire.sport.entity.ActivityEntity;
 import cz.inspire.repository.annotations.Limit;
-import cz.inspire.repository.annotations.Repository;
+import cz.inspire.repository.annotations.Offset;
 import cz.inspire.repository.annotations.Query;
+import cz.inspire.repository.annotations.Repository;
+import cz.inspire.sport.entity.ActivityEntity;
 
 import java.util.List;
 

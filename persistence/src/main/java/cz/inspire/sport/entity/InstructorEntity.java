@@ -19,6 +19,7 @@ import lombok.NoArgsConstructor;
 import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.type.SqlTypes;
 
+import java.util.HashSet;
 import java.util.Set;
 
 @Data
@@ -81,7 +82,7 @@ public class InstructorEntity {
     private int googleCalendarNotificationBefore;
 
     @OneToMany(mappedBy = "instructor")
-    private Set<SportInstructorEntity> sportInstructors;
+    private Set<SportInstructorEntity> sportInstructors = new HashSet<>();
 
     @ManyToMany
     @JoinTable(
@@ -89,7 +90,7 @@ public class InstructorEntity {
             joinColumns = @JoinColumn(name = "instructor_id"),
             inverseJoinColumns = @JoinColumn(name = "activity_id")
     )
-    private Set<ActivityEntity> activities;
+    private Set<ActivityEntity> activities = new HashSet<>();
 
     @Transient
     private Set<SportDto> sportSet;

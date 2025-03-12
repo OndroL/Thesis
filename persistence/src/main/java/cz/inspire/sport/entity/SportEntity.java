@@ -20,6 +20,7 @@ import lombok.NoArgsConstructor;
 import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.type.SqlTypes;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
@@ -115,7 +116,7 @@ public class SportEntity {
     private SportEntity nadrazenySport;
 
     @OneToMany(mappedBy = "nadrazenySport")
-    private List<SportEntity> podrazeneSporty;
+    private List<SportEntity> podrazeneSporty = new ArrayList<>();
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "navazujici_sport", referencedColumnName = "id")
@@ -126,10 +127,10 @@ public class SportEntity {
     private ActivityEntity activity;
 
     @OneToMany(mappedBy = "sport")
-    private List<SportInstructorEntity> sportInstructors;
+    private List<SportInstructorEntity> sportInstructors = new ArrayList<>();
 
     @OneToMany(mappedBy = "sport", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<ObjektSportEntity> objekty;
+    private List<ObjektSportEntity> objekty = new ArrayList<>();
 
     @Transient
     private Set<InstructorDto> instructorSet;

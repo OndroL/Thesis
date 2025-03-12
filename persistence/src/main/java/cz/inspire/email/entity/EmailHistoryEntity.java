@@ -16,6 +16,7 @@ import lombok.NoArgsConstructor;
 import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.type.SqlTypes;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -66,5 +67,5 @@ public class EmailHistoryEntity {
 
     @OneToMany(mappedBy = "emailHistory", fetch = FetchType.LAZY,
             cascade = {CascadeType.PERSIST, CascadeType.MERGE}, orphanRemoval = true)
-    private List<GeneratedAttachmentEntity> generatedAttachments;
+    private List<GeneratedAttachmentEntity> generatedAttachments = new ArrayList<>();
 }

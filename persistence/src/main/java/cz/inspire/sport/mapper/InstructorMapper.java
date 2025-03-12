@@ -19,6 +19,7 @@ import org.mapstruct.Mapping;
 import org.mapstruct.MappingConstants;
 import org.mapstruct.MappingTarget;
 
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -79,11 +80,15 @@ public abstract class InstructorMapper {
         }
 
         //get new sports, each sport's activity has to be presented in instructor's activities
-        Set<String> activityIds = dto.getActivities()
-                .stream().map(ActivityDto::getId)
+        Set<String> activityIds = dto.getActivities() == null
+                ? Collections.emptySet()
+                : dto.getActivities().stream()
+                .map(ActivityDto::getId)
                 .collect(Collectors.toSet());
 
-        Set<String> newSportIds = dto.getSports().stream()
+        Set<String> newSportIds = dto.getSports() == null
+                ? Collections.emptySet()
+                : dto.getSports().stream()
                 .filter(sportDetails -> activityIds.contains(sportDetails.getActivityId()))
                 .map(SportDto::getId)
                 .collect(Collectors.toSet());

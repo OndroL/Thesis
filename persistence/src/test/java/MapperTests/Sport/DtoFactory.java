@@ -2,6 +2,7 @@ package MapperTests.Sport;
 
 import cz.inspire.sport.dto.ActivityDto;
 import cz.inspire.sport.dto.ActivityFavouriteDto;
+import cz.inspire.sport.dto.ActivityWebTabDto;
 import cz.inspire.sport.dto.ArealDto;
 import cz.inspire.sport.dto.ArealLocDto;
 import cz.inspire.sport.dto.InstructorDto;
@@ -105,9 +106,8 @@ public class DtoFactory {
         dto.setSazbaNaOsobu(RANDOM.nextBoolean());
         dto.setSazbaNaCas(randomInt(15, 120));
         dto.setUctovatZalohu(RANDOM.nextBoolean());
-        dto.setPodSportyCount(randomInt(0, 5));
+        dto.setPodSportyCount(0);
 
-        // Possibly create a small random list of SazbaStorna objects
         dto.setSazbyStorna(createRandomSazbaStornaList());
 
         dto.setMinDelkaRezervace(randomInt(10, 60));
@@ -115,7 +115,6 @@ public class DtoFactory {
         dto.setObjednavkaZaplniObjekt(RANDOM.nextBoolean());
         dto.setDelkaRezervaceNasobkem(randomInt(5, 30));
 
-        // Random "Color" for demonstration
         dto.setBarvaPopredi(new Color(RANDOM.nextInt(256), RANDOM.nextInt(256), RANDOM.nextInt(256)));
         dto.setBarvaPozadi(new Color(RANDOM.nextInt(256), RANDOM.nextInt(256), RANDOM.nextInt(256)));
 
@@ -222,7 +221,7 @@ public class DtoFactory {
         dto.setInfo("Some info");
         dto.setColor("blue");
         dto.setPhoto(null);
-        dto.setDeleted(RANDOM.nextBoolean());
+        dto.setDeleted(false);
         dto.setGoogleCalendarId(null);
         dto.setGoogleCalendarNotification(RANDOM.nextBoolean());
         dto.setGoogleCalendarNotificationBefore(randomInt(0, 30));
@@ -279,6 +278,18 @@ public class DtoFactory {
         dto.setActivityId("ACT-" + randomInt(100, 999));
         dto.setPocet(randomInt(1, 10));
         dto.setDatumPosledniZmeny(new Date());
+        return dto;
+    }
+
+    // --------------------------------------------------------------------------------
+    // ActivityWebTabDto
+    // --------------------------------------------------------------------------------
+    public static ActivityWebTabDto createActivityWebTabDto() {
+        ActivityWebTabDto dto = new ActivityWebTabDto();
+        dto.setSportId("SPORT-" + randomInt(100, 999));
+        dto.setActivityId("ACT-" + randomInt(100, 999));
+        dto.setObjectId("OBJ-" + randomInt(100, 999));
+        dto.setTabIndex(randomInt(0, 10));
         return dto;
     }
 

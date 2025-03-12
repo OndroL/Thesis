@@ -15,6 +15,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.ArrayList;
 import java.util.List;
 
 
@@ -39,13 +40,12 @@ public class SportKategorieEntity {
     private SportKategorieEntity nadrazenaKategorie;
 
     @OneToMany(mappedBy = "nadrazenaKategorie")
-    private List<SportKategorieEntity> podrazeneKategorie;
+    private List<SportKategorieEntity> podrazeneKategorie = new ArrayList<>();
 
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
     @JoinColumn(name = "sportKategorie")
     private List<SportKategorieLocEntity> localeData;
 
     @OneToMany(mappedBy = "sportKategorie")
-    private List<SportEntity> cinnosti;
-
+    private List<SportEntity> cinnosti = new ArrayList<>();
 }

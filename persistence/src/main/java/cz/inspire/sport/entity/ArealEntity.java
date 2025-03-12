@@ -15,6 +15,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Data
@@ -39,9 +40,9 @@ public class ArealEntity {
     private ArealEntity nadrazenyAreal;
 
     @OneToMany(mappedBy = "nadrazenyAreal")
-    private List<ArealEntity> podrazeneArealy;
+    private List<ArealEntity> podrazeneArealy = new ArrayList<>();
 
     @OneToMany(mappedBy = "areal")
-    private List<ObjektEntity> objekty;
+    private List<ObjektEntity> objekty = new ArrayList<>();
 }
 
