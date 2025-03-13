@@ -28,10 +28,10 @@ public abstract class SportInstructorMapper {
     @AfterMapping
     protected void mapSportAndInstructor(SportInstructorDto dto, @MappingTarget SportInstructorEntity entity) throws FinderException {
 
-        if (dto.getSportId() != null) {
-            entity.setSport(sportService.findByPrimaryKey(dto.getSportId()));
-            entity.setActivityId(entity.getSport().getActivity().getId());
-        }
+//        if (dto.getSportId() != null) {
+//            entity.setSport(sportService.findByPrimaryKey(dto.getSportId()));
+//            entity.setActivityId(entity.getSport().getActivity().getId());
+//        }
 
         if (dto.getInstructorId() != null) {
             entity.setInstructor(instructorService.findByPrimaryKey(dto.getInstructorId()));

@@ -2,8 +2,10 @@ package cz.inspire.sport.entity;
 
 import cz.inspire.sport.dto.SportDto;
 import cz.inspire.utils.FileAttributes;
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -81,7 +83,7 @@ public class InstructorEntity {
     @Column
     private int googleCalendarNotificationBefore;
 
-    @OneToMany(mappedBy = "instructor")
+    @OneToMany(mappedBy = "instructor", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, fetch = FetchType.LAZY)
     private Set<SportInstructorEntity> sportInstructors = new HashSet<>();
 
     @ManyToMany

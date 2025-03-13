@@ -16,6 +16,7 @@ import jakarta.persistence.Table;
 import jakarta.persistence.Transient;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.type.SqlTypes;
@@ -29,6 +30,7 @@ import java.util.Set;
 @NoArgsConstructor
 @Entity
 @Table(name="sport")
+@EqualsAndHashCode(exclude = {"sportInstructors", "podrazeneSporty", "objekty", "instructorSet"})
 public class SportEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
@@ -126,7 +128,7 @@ public class SportEntity {
     @JoinColumn(name = "activity_id", referencedColumnName = "id")
     private ActivityEntity activity;
 
-    @OneToMany(mappedBy = "sport")
+    @OneToMany(mappedBy = "sport", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, fetch = FetchType.LAZY)
     private List<SportInstructorEntity> sportInstructors = new ArrayList<>();
 
     @OneToMany(mappedBy = "sport", cascade = CascadeType.ALL, orphanRemoval = true)

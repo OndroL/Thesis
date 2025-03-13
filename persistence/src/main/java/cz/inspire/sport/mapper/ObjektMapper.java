@@ -5,6 +5,7 @@ import cz.inspire.sport.dto.ObjektDto;
 import cz.inspire.sport.dto.PodminkaRezervaceDto;
 import cz.inspire.sport.dto.SportDto;
 import cz.inspire.sport.entity.ObjektEntity;
+import cz.inspire.sport.entity.ObjektLocEntity;
 import cz.inspire.sport.entity.ObjektSportEntity;
 import cz.inspire.sport.entity.ObjektSportPK;
 import cz.inspire.sport.entity.PodminkaRezervaceEntity;
@@ -48,6 +49,9 @@ public abstract class ObjektMapper {
     @Inject
     protected PodminkaRezervaceMapper podminkaRezervaceMapper;
 
+    @Inject
+    protected ObjektLocMapper objektLocMapper;
+
     private static final Logger logger = LogManager.getLogger(ObjektMapper.class);
 
     // ======================================
@@ -58,9 +62,21 @@ public abstract class ObjektMapper {
     @Mapping(target = "podObjekty", ignore = true)
     @Mapping(target = "objektSports", ignore = true)
     @Mapping(target = "podminkyRezervaci", ignore = true)
-    @Mapping(target = "localeData", source = "localeData", qualifiedByName = "mapLocaleDataToList")
+    @Mapping(target = "localeData", ignore = true)
     public abstract ObjektEntity toEntity(ObjektDto dto) throws CreateException, InvalidParameterException;
 
+    @AfterMapping
+    protected void mapLocaleData(ObjektDto dto, @MappingTarget ObjektEntity entity) {
+        List<ObjektLocEntity> newLocaleData = objektLocMapper.mapLocaleDataToList(dto.getLocaleData());
+        if (entity.getLocaleData() == null) {
+            entity.setLocaleData(newLocaleData);
+        } else {
+            entity.getLocaleData().clear();
+            if (newLocaleData != null) {
+                entity.getLocaleData().addAll(newLocaleData);
+            }
+        }
+    }
 
     @AfterMapping
     protected void mapSports(ObjektDto dto,

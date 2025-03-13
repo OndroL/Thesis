@@ -8,6 +8,7 @@ import cz.inspire.sport.dto.SportDto;
 import cz.inspire.sport.entity.InstructorEntity;
 import cz.inspire.sport.entity.SportEntity;
 import cz.inspire.sport.entity.SportInstructorEntity;
+import cz.inspire.sport.entity.SportLocEntity;
 import cz.inspire.sport.service.ActivityService;
 import cz.inspire.sport.service.InstructorService;
 import cz.inspire.sport.service.SportInstructorService;
@@ -54,6 +55,9 @@ public abstract class SportMapper {
     @Inject
     InstructorService instructorService;
 
+    @Inject
+    SportLocMapper sportLocMapper;
+
     private static final Logger logger = LogManager.getLogger(SportMapper.class);
 
     ObjectMapper OBJECT_MAPPER = new ObjectMapper();
@@ -69,8 +73,21 @@ public abstract class SportMapper {
     @Mapping(target = "objekty", ignore = true)
     @Mapping(target = "barvaPopredi", source = "barvaPopredi", qualifiedByName = "colorToJson")
     @Mapping(target = "barvaPozadi",  source = "barvaPozadi",  qualifiedByName = "colorToJson")
-    @Mapping(target = "localeData", source = "localeData", qualifiedByName = "mapLocaleDataToList")
+    @Mapping(target = "localeData", ignore = true)
     public abstract SportEntity toEntity(SportDto dto) throws CreateException, InvalidParameterException;
+
+    @AfterMapping
+    protected void mapLocaleData(SportDto dto, @MappingTarget SportEntity entity) {
+        List<SportLocEntity> newLocaleData = sportLocMapper.mapLocaleDataToList(dto.getLocaleData());
+        if (entity.getLocaleData() == null) {
+            entity.setLocaleData(newLocaleData);
+        } else {
+            entity.getLocaleData().clear();
+            if (newLocaleData != null) {
+                entity.getLocaleData().addAll(newLocaleData);
+            }
+        }
+    }
 
     @AfterMapping
     protected void mapNavazujiciSport(SportDto dto, @MappingTarget SportEntity entity) throws CreateException, InvalidParameterException {
@@ -221,11 +238,14 @@ public abstract class SportMapper {
             sid.setActivityId(dto.getActivityId());
             sid.setDeleted(false);
             sid.setSport(entity);
-            try {
-                sportInstructorService.create(sid);
-            } catch (Exception e) {
-                handleCreateException("Failed to create default (none) SportInstructor!", e, throwOnError);
-            }
+
+            entity.getSportInstructors().add(sid);
+
+//            try {
+//                sportInstructorService.create(sid);
+//            } catch (Exception e) {
+//                handleCreateException("Failed to create default (none) SportInstructor!", e, throwOnError);
+//            }
         }
         else {
             for (String instructorId : instructorIds) {
@@ -237,6 +257,7 @@ public abstract class SportMapper {
                 if (instructorId != null) {
                     try {
                         sid.setInstructor(instructorService.findByPrimaryKey(instructorId));
+
                     } catch (Exception e) {
                         handleCreateException("Failed to find Instructor for ID=" + instructorId, e, throwOnError);
                         // If we do not throw, skip creation and continue
@@ -244,11 +265,13 @@ public abstract class SportMapper {
                     }
                 }
 
-                try {
-                    sportInstructorService.create(sid);
-                } catch (Exception e) {
-                    handleCreateException("Failed to create SportInstructor! ID=" + instructorId, e, throwOnError);
-                }
+                entity.getSportInstructors().add(sid);
+
+//                try {
+//                    sportInstructorService.create(sid);
+//                } catch (Exception e) {
+//                    handleCreateException("Failed to create SportInstructor! ID=" + instructorId, e, throwOnError);
+//                }
             }
         }
     }

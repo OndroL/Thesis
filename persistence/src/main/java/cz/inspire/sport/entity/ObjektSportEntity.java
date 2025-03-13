@@ -1,6 +1,5 @@
 package cz.inspire.sport.entity;
 
-import jakarta.persistence.CascadeType;
 import jakarta.persistence.EmbeddedId;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -20,11 +19,11 @@ public class ObjektSportEntity {
     @EmbeddedId
     private ObjektSportPK embeddedId;
 
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "sport", referencedColumnName = "id", nullable = false)
     private SportEntity sport;
 
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "objekt", referencedColumnName = "id", nullable = false)
     private ObjektEntity objekt;
 }
