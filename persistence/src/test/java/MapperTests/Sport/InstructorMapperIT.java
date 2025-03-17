@@ -1,12 +1,11 @@
 package MapperTests.Sport;
 
 import RepositoryTests.DatabaseCleaner;
-import cz.inspire.exception.InvalidParameterException;
+import cz.inspire.exception.ApplicationException;
 import cz.inspire.exception.SystemException;
 import cz.inspire.sport.dto.ActivityDto;
 import cz.inspire.sport.dto.InstructorDto;
 import cz.inspire.sport.dto.SportDto;
-import cz.inspire.sport.dto.SportInstructorDto;
 import cz.inspire.sport.entity.ActivityEntity;
 import cz.inspire.sport.entity.InstructorEntity;
 import cz.inspire.sport.entity.SportEntity;
@@ -73,9 +72,13 @@ public class InstructorMapperIT {
     private String instructorId2;
     private String activityId;
 
+    private String s1;
+    private String s2;
+    private String s3;
+
     @BeforeAll
     @Transactional
-    public void setup() throws CreateException, FinderException {
+    public void setup() throws CreateException, FinderException, ApplicationException {
         databaseCleaner.clearTable(ActivityEntity.class, true);
         databaseCleaner.clearTable(InstructorEntity.class, true);
 
@@ -140,7 +143,7 @@ public class InstructorMapperIT {
     @Order(3)
     @Test
     @Transactional
-    public void testMapSportInstructor_CreateBranch() throws FinderException, CreateException {
+    public void testMapSportInstructor_CreateBranch() throws FinderException, ApplicationException {
         // Create a new InstructorDto without an ID to simulate creation branch.
         InstructorDto createDto = DtoFactory.createInstructorDto();
         // Set activities and sports; these should not trigger update branch
@@ -163,7 +166,7 @@ public class InstructorMapperIT {
     @Order(4)
     @Test
     @Transactional
-    public void testMapSportInstructor_Update() throws CreateException, FinderException, SystemException, InvalidParameterException {
+    public void testMapSportInstructor_Update() throws CreateException, FinderException, SystemException, ApplicationException {
         // Prepopulate instructorId1 with two sport instructors.
         // First, create a valid ActivityEntity so that SportEntity has a non-null Activity.
         ActivityDto actDtoForSports = DtoFactory.createActivityDto();
@@ -173,26 +176,15 @@ public class InstructorMapperIT {
         // Create two SportEntities for S1 and S2 with the persisted Activity.
         SportDto sportDto1 = DtoFactory.createSportDto();
         sportDto1.setActivityId(activityForSportsId);
+        sportDto1.getInstructors().add(instructorMapper.toDto(instructorService.findByPrimaryKey(instructorId1)));
         SportEntity sportEntity1 = sportService.create(sportMapper.toEntity(sportDto1));
-        String s1 = sportEntity1.getId();
+        s1 = sportEntity1.getId();
 
         SportDto sportDto2 = DtoFactory.createSportDto();
         sportDto2.setActivityId(activityForSportsId);
+        sportDto2.getInstructors().add(instructorMapper.toDto(instructorService.findByPrimaryKey(instructorId1)));
         SportEntity sportEntity2 = sportService.create(sportMapper.toEntity(sportDto2));
-        String s2 = sportEntity2.getId();
-
-        // Create SportInstructorEntities for S1 and S2 for instructorId1.
-        SportInstructorDto siDto1 = new SportInstructorDto();
-        siDto1.setDeleted(false);
-        siDto1.setSportId(s1);
-        siDto1.setInstructorId(instructorId1);
-        sportInstructorService.create(sportInstructorMapper.toEntity(siDto1));
-
-        SportInstructorDto siDto2 = new SportInstructorDto();
-        siDto2.setDeleted(false);
-        siDto2.setSportId(s2);
-        siDto2.setInstructorId(instructorId1);
-        sportInstructorService.create(sportInstructorMapper.toEntity(siDto2));
+        s2 = sportEntity2.getId();
 
         // Verify initial state: instructorId1 should have at least 2 active sport instructors.
         InstructorEntity beforeUpdate = instructorService.findByPrimaryKey(instructorId1);
@@ -204,8 +196,9 @@ public class InstructorMapperIT {
         // Now prepare an update DTO for instructorId1: remove S1 and S2 and add new sport S3.
         SportDto newSportDto = DtoFactory.createSportDto();
         newSportDto.setActivityId(activityForSportsId);
+        newSportDto.getInstructors().add(instructorMapper.toDto(instructorService.findByPrimaryKey(instructorId1)));
         SportEntity sportEntity3 = sportService.create(sportMapper.toEntity(newSportDto));
-        String s3 = sportEntity3.getId();
+        s3 = sportEntity3.getId();
 
         InstructorDto updateDto = DtoFactory.createInstructorDto();
         updateDto.setId(instructorId1);
@@ -221,15 +214,22 @@ public class InstructorMapperIT {
         InstructorEntity updatedEntity = instructorMapper.toEntity(updateDto);
         instructorService.update(updatedEntity);
 
-        // Fetch updated instructor and verify changes.
-        InstructorEntity afterUpdate = instructorService.findByPrimaryKey(instructorId1);
         // SportInstructorEntities for S1 and S2 should be marked as deleted.
-        long deletedCount = afterUpdate.getSportInstructors().stream()
-                .filter(si -> (si.getSport().getId().equals(s1) || si.getSport().getId().equals(s2))
-                        && Boolean.TRUE.equals(si.getDeleted()))
-                .count();
-        assertEquals(2, deletedCount, "Sport instructors for S1 and S2 should be marked as deleted");
-        // There should be an active sport instructor for S3.
+        assertTrue(sportService.findByPrimaryKey(s1).getSportInstructors().getFirst().getDeleted().equals(true) ||
+                sportService.findByPrimaryKey(s1).getSportInstructors().getLast().getDeleted().equals(true), "Sport instructors for S1 should be marked as deleted");
+        assertTrue(sportService.findByPrimaryKey(s2).getSportInstructors().getFirst().getDeleted().equals(true) ||
+                sportService.findByPrimaryKey(s2).getSportInstructors().getLast().getDeleted().equals(true), "Sport instructors for S2 should be marked as deleted");
+    }
+
+    @Order(5)
+    @Test
+    @Transactional
+    public void testMapSportInstructor_Update_finalsChecks() throws FinderException {
+        // SportInstructorEntities for S1 and S2 should be marked as deleted.
+        assertEquals(2, sportService.findByPrimaryKey(s1).getSportInstructors().size(), "Sport should have two links to SportInstructors");
+        assertEquals(2, sportService.findByPrimaryKey(s2).getSportInstructors().size(), "Sport should have two links to SportInstructors");
+
+        InstructorEntity afterUpdate = instructorService.findByPrimaryKey(instructorId1);
         boolean hasS3 = afterUpdate.getSportInstructors().stream()
                 .anyMatch(si -> si.getSport().getId().equals(s3) && !si.getDeleted());
         assertTrue(hasS3, "There should be an active sport instructor for sport S3");

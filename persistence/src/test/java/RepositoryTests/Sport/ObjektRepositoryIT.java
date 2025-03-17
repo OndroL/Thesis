@@ -261,8 +261,8 @@ public class ObjektRepositoryIT {
         ObjektSportEntity objektSport2 = new ObjektSportEntity(key2, sport, objekt2);
         em.persist(objektSport2);
 
-        objekt1.setObjektSports(List.of(objektSport1));
-        objekt2.setObjektSports(List.of(objektSport2));
+        objekt1.getObjektSports().add(objektSport1);
+        objekt2.getObjektSports().add(objektSport2);
 
         em.flush();
 

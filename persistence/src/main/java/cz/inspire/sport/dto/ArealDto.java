@@ -5,6 +5,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.io.Serializable;
+import java.util.HashMap;
 import java.util.Map;
 
 @Data
@@ -13,6 +14,6 @@ import java.util.Map;
 public class ArealDto implements Serializable {
     private String id;
     private Integer pocetNavazujucichRez;
-    private Map<String, ArealLocDto> localeData;
+    private Map<String, ArealLocDto> localeData = new HashMap<>();
     private String nadrazenyArealId;
 }

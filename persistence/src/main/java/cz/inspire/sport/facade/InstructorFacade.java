@@ -1,5 +1,6 @@
 package cz.inspire.sport.facade;
 
+import cz.inspire.exception.ApplicationException;
 import cz.inspire.exception.SystemException;
 import cz.inspire.sport.dto.InstructorDto;
 import cz.inspire.sport.entity.InstructorEntity;
@@ -29,7 +30,7 @@ public class InstructorFacade {
 
     static final Logger logger = LogManager.getLogger(InstructorFacade.class);
 
-    public String create(InstructorDto dto) throws CreateException, IOException, FinderException {
+    public String create(InstructorDto dto) throws CreateException, IOException, FinderException, ApplicationException {
         InstructorEntity entity = instructorService.create(instructorMapper.toEntity(dto));
         if (dto.getPhoto() != null) {
             instructorService.savePhoto(dto.getPhoto());
@@ -66,7 +67,7 @@ public class InstructorFacade {
         }
     }
 
-    public void update(InstructorDto dto) throws SystemException, FinderException {
+    public void update(InstructorDto dto) throws SystemException, FinderException, ApplicationException {
         instructorService.update(instructorMapper.toEntity(dto));
     }
 

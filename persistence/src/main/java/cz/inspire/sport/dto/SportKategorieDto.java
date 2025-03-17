@@ -5,6 +5,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.io.Serializable;
+import java.util.HashMap;
 import java.util.Map;
 
 @Data
@@ -15,5 +16,5 @@ public class SportKategorieDto implements Serializable {
     private String multiSportFacilityId;
     private String multiSportServiceUUID;
     private String nadrazenaKategorieId;
-    private Map<String, SportKategorieLocDto> localeData;
+    private Map<String, SportKategorieLocDto> localeData = new HashMap<>();
 }

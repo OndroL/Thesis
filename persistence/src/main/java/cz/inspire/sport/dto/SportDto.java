@@ -7,6 +7,9 @@ import lombok.NoArgsConstructor;
 
 import java.awt.Color;
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -24,7 +27,7 @@ public class SportDto implements Serializable {
     private Integer sazbaNaCas;
     private Boolean uctovatZalohu;
     private int podSportyCount;
-    private List<SazbaStorna> sazbyStorna;
+    private List<SazbaStorna> sazbyStorna = new ArrayList<>();
     private Integer minDelkaRezervace;
     private Integer maxDelkaRezervace;
     private Boolean objednavkaZaplniObjekt;
@@ -38,9 +41,9 @@ public class SportDto implements Serializable {
     private Integer minimalniPocetOsob;
     private Integer minutyPredVyhodnocenimKapacity;
     private Integer maximalniPocetOsobNaZakaznika;
-    private Map<String, SportLocDto> localeData;
+    private Map<String, SportLocDto> localeData = new HashMap<>();
     private SportKategorieDto sportKategorie;
-    private Set<InstructorDto> instructors;
+    private Set<InstructorDto> instructors = new HashSet<>();
     private String nadrazenySportId;
     private String navazujiciSportId;
     private String activityId;

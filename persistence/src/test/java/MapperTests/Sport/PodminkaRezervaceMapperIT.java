@@ -52,7 +52,7 @@ public class PodminkaRezervaceMapperIT {
     @Order(1)
     @Test
     @Transactional
-    public void testPersistPodminkaRezervace() throws CreateException, InvalidParameterException {
+    public void testPersistPodminkaRezervace() throws CreateException, InvalidParameterException, FinderException {
         ObjektDto objDto = DtoFactory.createObjektDto();
 
         ObjektEntity mainEntity = objektMapper.toEntity(objDto);

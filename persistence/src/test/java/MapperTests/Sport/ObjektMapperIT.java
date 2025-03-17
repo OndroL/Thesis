@@ -148,7 +148,6 @@ public class ObjektMapperIT {
         String objId = createdEntity.getId();
         assertNotNull(objId);
 
-        // Now update: replace sports with 2 new sports.
         List<SportDto> newSports = new ArrayList<>();
         for (int i = 0; i < 2; i++) {
             SportDto sportDto = DtoFactory.createSportDto();

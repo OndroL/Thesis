@@ -33,7 +33,7 @@ public class ArealEntity {
 
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
     @JoinColumn(name = "areal")
-    private List<ArealLocEntity> localeData;
+    private List<ArealLocEntity> localeData = new ArrayList<>();
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "nadrazeny_areal", referencedColumnName = "id")

@@ -22,7 +22,7 @@ public class ObjektFacade {
     @Inject
     ObjektMapper objektMapper;
 
-    public ObjektEntity create(ObjektDto dto) throws CreateException, InvalidParameterException {
+    public ObjektEntity create(ObjektDto dto) throws CreateException, InvalidParameterException, FinderException {
         return  objektService.create(objektMapper.toEntity(dto));
     }
 

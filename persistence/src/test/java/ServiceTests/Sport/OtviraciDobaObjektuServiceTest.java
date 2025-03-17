@@ -11,6 +11,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.time.ZoneOffset;
 import java.util.Date;
 import java.util.List;
@@ -154,7 +155,7 @@ public class OtviraciDobaObjektuServiceTest {
     void testGetCurrentIdsByObjectAndDay_Success() throws FinderException {
         String objektId = "objekt123";
         Date day = new Date();
-        LocalDateTime localDateTime = LocalDateTime.ofInstant(day.toInstant(), ZoneOffset.UTC);
+        LocalDateTime localDateTime = LocalDateTime.ofInstant(day.toInstant(), ZoneId.systemDefault());
         List<LocalDateTime> expectedIds = List.of(localDateTime.plusHours(1), localDateTime.plusHours(2));
 
         when(repository.getCurrentIdsByObjectAndDay(eq(objektId), eq(localDateTime))).thenReturn(expectedIds);
@@ -170,7 +171,7 @@ public class OtviraciDobaObjektuServiceTest {
     void testGetCurrentIdsByObjectAndDay_Failure() {
         String objektId = "objekt123";
         Date day = new Date();
-        LocalDateTime localDateTime = LocalDateTime.ofInstant(day.toInstant(), ZoneOffset.UTC);
+        LocalDateTime localDateTime = LocalDateTime.ofInstant(day.toInstant(), ZoneId.systemDefault());
         when(repository.getCurrentIdsByObjectAndDay(eq(objektId), eq(localDateTime))).thenThrow(new RuntimeException("Database error"));
 
         FinderException exception = assertThrows(FinderException.class, () -> service.getCurrentIdsByObjectAndDay(objektId, day));

@@ -30,7 +30,7 @@ import java.util.Set;
 @NoArgsConstructor
 @Entity
 @Table(name="sport")
-@EqualsAndHashCode(exclude = {"sportInstructors", "podrazeneSporty", "objekty", "instructorSet"})
+@EqualsAndHashCode(exclude = {"podrazeneSporty", "objekty"})
 public class SportEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
@@ -107,7 +107,7 @@ public class SportEntity {
 
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
     @JoinColumn(name = "sport")
-    private List<SportLocEntity> localeData;
+    private List<SportLocEntity> localeData = new ArrayList<>();
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "sport_kategorie", referencedColumnName = "id")

@@ -44,7 +44,7 @@ public class SportKategorieEntity {
 
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
     @JoinColumn(name = "sportKategorie")
-    private List<SportKategorieLocEntity> localeData;
+    private List<SportKategorieLocEntity> localeData = new ArrayList<>();
 
     @OneToMany(mappedBy = "sportKategorie")
     private List<SportEntity> cinnosti = new ArrayList<>();

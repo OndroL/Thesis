@@ -12,6 +12,7 @@ import cz.inspire.sport.entity.PodminkaRezervaceEntity;
 import cz.inspire.sport.entity.SportEntity;
 import cz.inspire.sport.repository.ObjektRepository;
 import jakarta.ejb.CreateException;
+import jakarta.ejb.FinderException;
 import jakarta.inject.Inject;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -63,7 +64,7 @@ public abstract class ObjektMapper {
     @Mapping(target = "objektSports", ignore = true)
     @Mapping(target = "podminkyRezervaci", ignore = true)
     @Mapping(target = "localeData", ignore = true)
-    public abstract ObjektEntity toEntity(ObjektDto dto) throws CreateException, InvalidParameterException;
+    public abstract ObjektEntity toEntity(ObjektDto dto) throws CreateException, InvalidParameterException, FinderException;
 
     @AfterMapping
     protected void mapLocaleData(ObjektDto dto, @MappingTarget ObjektEntity entity) {
@@ -80,7 +81,7 @@ public abstract class ObjektMapper {
 
     @AfterMapping
     protected void mapSports(ObjektDto dto,
-                                        @MappingTarget ObjektEntity entity) throws CreateException, InvalidParameterException {
+                                        @MappingTarget ObjektEntity entity) throws CreateException, InvalidParameterException, FinderException {
         if (dto.getSports() == null) {
             entity.setObjektSports(null);
             return;

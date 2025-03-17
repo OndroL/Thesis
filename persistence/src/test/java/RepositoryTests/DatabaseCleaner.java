@@ -36,4 +36,11 @@ public class DatabaseCleaner {
         }
         return Optional.of(entityClass.getSimpleName()); // Default to class name if @Table is missing
     }
+    /**
+    * Clears Hibernate cache and refresh entity from DB.
+    */
+    public void clearHibernateCacheAndRefresh(Object entity) {
+        entityManager.flush();
+        entityManager.refresh(entity);
+    }
 }

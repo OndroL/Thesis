@@ -21,6 +21,7 @@ import org.mapstruct.MappingConstants;
 import org.mapstruct.MappingTarget;
 
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 @Mapper(componentModel = MappingConstants.ComponentModel.JAKARTA_CDI,
@@ -62,7 +63,8 @@ public abstract class ActivityMapper {
                     }
                 });
                 if (oldInstructors != null) { // Continuation of update branch - setting old Instructors as deleted
-                    updateSportInstructor(entity, oldInstructors);
+                    oldInstructors.removeAll(entity.getInstructors());
+                    updateSportInstructor(activityService.findByPrimaryKey(dto.getId()).getSports(), oldInstructors);
                 }
             } catch (Exception e) {
                 if (dto.getId() != null) { //Update branch
@@ -74,9 +76,9 @@ public abstract class ActivityMapper {
         }
     }
 
-    private void updateSportInstructor(ActivityEntity entity, Set<InstructorEntity> oldInstructors)
+    private void updateSportInstructor(List<SportEntity> sports, Set<InstructorEntity> oldInstructors)
             throws SystemException {
-        for (SportEntity sport : entity.getSports()) {
+        for (SportEntity sport : sports) {
             for (SportInstructorEntity sportInstructor :  sport.getSportInstructors()) {
                 if (sportInstructor.getInstructor() != null
                         && oldInstructors.contains(sportInstructor.getInstructor())) {

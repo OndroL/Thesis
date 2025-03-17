@@ -126,9 +126,6 @@ public class DtoFactory {
         dto.setMinutyPredVyhodnocenimKapacity(randomInt(5, 30));
         dto.setMaximalniPocetOsobNaZakaznika(randomInt(1, 10));
 
-        dto.setLocaleData(null);
-        dto.setSportKategorie(null);
-        dto.setInstructors(null);
         dto.setNadrazenySportId(null);
         dto.setNavazujiciSportId(null);
         dto.setActivityId(null);
@@ -186,8 +183,6 @@ public class DtoFactory {
         dto.setId(null);
         dto.setMultiSportFacilityId("FAC-" + randomInt(1, 999));
         dto.setMultiSportServiceUUID("UUID-" + randomInt(1, 9999));
-        dto.setNadrazenaKategorieId(null);
-        dto.setLocaleData(null);
         return dto;
     }
 

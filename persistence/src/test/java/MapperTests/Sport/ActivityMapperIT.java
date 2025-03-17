@@ -1,6 +1,7 @@
 package MapperTests.Sport;
 
 import RepositoryTests.DatabaseCleaner;
+import cz.inspire.exception.ApplicationException;
 import cz.inspire.exception.SystemException;
 import cz.inspire.sport.dto.ActivityDto;
 import cz.inspire.sport.dto.InstructorDto;
@@ -55,7 +56,7 @@ public class ActivityMapperIT {
 
     @BeforeAll
     @Transactional
-    public void setup() throws CreateException, FinderException {
+    public void setup() throws CreateException, FinderException, ApplicationException {
         databaseCleaner.clearTable(ActivityEntity.class, true);
         databaseCleaner.clearTable(InstructorEntity.class, true);
 

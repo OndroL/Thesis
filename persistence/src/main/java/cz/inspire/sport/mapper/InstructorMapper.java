@@ -1,5 +1,6 @@
 package cz.inspire.sport.mapper;
 
+import cz.inspire.exception.ApplicationException;
 import cz.inspire.sport.dto.ActivityDto;
 import cz.inspire.sport.dto.InstructorDto;
 import cz.inspire.sport.dto.SportDto;
@@ -21,6 +22,7 @@ import org.mapstruct.MappingTarget;
 
 import java.util.Collections;
 import java.util.HashSet;
+import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -46,7 +48,7 @@ public abstract class InstructorMapper {
     @Mapping(target = "sportInstructors", ignore = true)
     @Mapping(target = "activities", ignore = true)
     @Mapping(target = "sportSet", ignore = true)
-    public abstract InstructorEntity toEntity(InstructorDto dto) throws FinderException;
+    public abstract InstructorEntity toEntity(InstructorDto dto) throws FinderException, ApplicationException;
 
     @AfterMapping
     protected void mapActivities(InstructorDto dto, @MappingTarget InstructorEntity entity) {
@@ -66,32 +68,36 @@ public abstract class InstructorMapper {
         Set<String> oldSportIds = new HashSet<>();
         if (dto.getId() != null) {
             oldSportIds = instructorService.findByPrimaryKey(dto.getId())
-                    .getSportInstructors()
-                    .stream()
-                    .filter(sportInstructor
-                            -> !sportInstructor.getDeleted())
-                    .map(sportInstructor
-                            -> {
-                        String sportId = sportInstructor.getSport().getId();
+                    .getSportInstructors().stream()
+                    .filter(si -> Boolean.FALSE.equals(si.getDeleted()))
+                    .map(si -> {
+                        if (si.getSport() == null) {
+                            logger.info("SportInstructor has no associated Sport");
+                            return null;
+                        }
+                        String sportId = si.getSport().getId();
                         logger.info("old sportId: {}", sportId);
                         return sportId;
                     })
+                    .filter(Objects::nonNull)
                     .collect(Collectors.toSet());
         }
 
         //get new sports, each sport's activity has to be presented in instructor's activities
-        Set<String> activityIds = dto.getActivities() == null
+        Set<String> activityIds = dto.getActivities() == null || dto.getActivities().isEmpty()
                 ? Collections.emptySet()
                 : dto.getActivities().stream()
                 .map(ActivityDto::getId)
+                .filter(Objects::nonNull)
                 .collect(Collectors.toSet());
 
-        Set<String> newSportIds = dto.getSports() == null
+        Set<String> newSportIds = new HashSet<>(dto.getSports() == null || dto.getSports().isEmpty()
                 ? Collections.emptySet()
                 : dto.getSports().stream()
                 .filter(sportDetails -> activityIds.contains(sportDetails.getActivityId()))
                 .map(SportDto::getId)
-                .collect(Collectors.toSet());
+                .filter(Objects::nonNull)
+                .collect(Collectors.toSet()));
 
         Set<String> deleted = new HashSet<>(oldSportIds);
         deleted.removeAll(newSportIds);

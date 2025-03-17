@@ -134,10 +134,10 @@ public class ObjektEntity {
 
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
     @JoinColumn(name = "objekt")
-    private List<ObjektLocEntity> localeData;
+    private List<ObjektLocEntity> localeData = new ArrayList<>();
 
     @OneToMany(mappedBy = "objekt", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<ObjektSportEntity> objektSports;
+    private List<ObjektSportEntity> objektSports = new ArrayList<>();
 
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     @JoinColumn(name = "objektId")

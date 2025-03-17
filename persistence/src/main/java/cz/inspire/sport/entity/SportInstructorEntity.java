@@ -13,6 +13,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 @Data
 @AllArgsConstructor
@@ -20,6 +21,7 @@ import lombok.NoArgsConstructor;
 @Entity
 @Table(name="sport_instructor")
 @EqualsAndHashCode(exclude = {"sport", "instructor"})
+@ToString(exclude = {"sport", "instructor"})
 public class SportInstructorEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
@@ -34,7 +36,7 @@ public class SportInstructorEntity {
     @Column
     private Boolean deleted;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "sport_id")
     private SportEntity sport;
 

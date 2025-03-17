@@ -4,12 +4,17 @@ import cz.inspire.exception.InvalidParameterException;
 import cz.inspire.exception.SystemException;
 import cz.inspire.sport.dto.SportDto;
 import cz.inspire.sport.entity.SportEntity;
+import cz.inspire.sport.entity.SportInstructorEntity;
 import cz.inspire.sport.mapper.SportMapper;
+import cz.inspire.sport.service.SportInstructorService;
 import cz.inspire.sport.service.SportService;
 import jakarta.ejb.CreateException;
 import jakarta.ejb.FinderException;
+import jakarta.ejb.RemoveException;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.util.List;
 
@@ -17,8 +22,14 @@ import java.util.List;
 public class SportFacade {
     @Inject
     SportService sportService;
+
     @Inject
     SportMapper sportMapper;
+
+    @Inject
+    SportInstructorService sportInstructorService;
+
+    private static final Logger logger = LogManager.getLogger(SportFacade.class);
 
     public String create(SportDto dto) throws CreateException {
         try {
@@ -29,8 +40,21 @@ public class SportFacade {
         }
     }
 
-    public void update(SportDto dto) throws InvalidParameterException, CreateException, SystemException {
+    public void update(SportDto dto) throws InvalidParameterException, CreateException, SystemException, FinderException {
         sportService.update(sportMapper.toEntity(dto));
+    }
+
+    public void delete(SportDto dto) throws FinderException, RemoveException {
+        SportEntity entityToDelete = sportService.findByPrimaryKey(dto.getId());
+        try {
+            for(SportInstructorEntity sp : sportInstructorService.findBySport(dto.getId())) {
+                sp.setDeleted(true);
+                sportInstructorService.update(sp);
+            }
+        } catch (Exception e) {
+            logger.info(e.getMessage());
+        }
+        sportService.delete(entityToDelete);
     }
 
 

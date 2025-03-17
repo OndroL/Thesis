@@ -5,6 +5,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.io.Serializable;
+import java.util.HashSet;
 import java.util.Set;
 
 @Data
@@ -28,6 +29,6 @@ public class InstructorDto implements Serializable {
     private String googleCalendarId;
     private Boolean googleCalendarNotification;
     private int googleCalendarNotificationBefore;
-    private Set<ActivityDto> activities;
-    private Set<SportDto> sports;
+    private Set<ActivityDto> activities = new HashSet<>();
+    private Set<SportDto> sports = new HashSet<>();
 }

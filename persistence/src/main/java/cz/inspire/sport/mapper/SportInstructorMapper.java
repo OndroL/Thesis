@@ -1,5 +1,6 @@
 package cz.inspire.sport.mapper;
 
+import cz.inspire.exception.ApplicationException;
 import cz.inspire.sport.dto.SportInstructorDto;
 import cz.inspire.sport.entity.SportInstructorEntity;
 import cz.inspire.sport.service.InstructorService;
@@ -23,15 +24,18 @@ public abstract class SportInstructorMapper {
     // Map DTO to Entity
     @Mapping(target = "sport", source = "sportId", ignore = true)
     @Mapping(target = "instructor", source = "instructorId", ignore = true)
-    public abstract SportInstructorEntity toEntity(SportInstructorDto dto) throws FinderException;
+    public abstract SportInstructorEntity toEntity(SportInstructorDto dto) throws FinderException, ApplicationException;
 
     @AfterMapping
-    protected void mapSportAndInstructor(SportInstructorDto dto, @MappingTarget SportInstructorEntity entity) throws FinderException {
-
-//        if (dto.getSportId() != null) {
-//            entity.setSport(sportService.findByPrimaryKey(dto.getSportId()));
-//            entity.setActivityId(entity.getSport().getActivity().getId());
-//        }
+    protected void mapSportAndInstructor(SportInstructorDto dto, @MappingTarget SportInstructorEntity entity) throws ApplicationException, FinderException {
+        // Fallback setter, setting of Sport should happen before calling toEntity, usually when creating SportEntity
+        if (entity.getSport() == null) {
+            if (dto.getSportId() == null) {
+                throw new ApplicationException("Trying to create SportInstructorEntity without set Sport, we should never get to this point!");
+            }
+                entity.setSport(sportService.findByPrimaryKey(dto.getSportId()));
+                entity.setActivityId(entity.getSport().getActivity().getId());
+        }
 
         if (dto.getInstructorId() != null) {
             entity.setInstructor(instructorService.findByPrimaryKey(dto.getInstructorId()));

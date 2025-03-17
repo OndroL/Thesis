@@ -107,6 +107,11 @@
             <artifactId>mockito-junit-jupiter</artifactId>
             <scope>test</scope>
         </dependency>
+        <dependency>
+            <groupId>io.quarkus</groupId>
+            <artifactId>quarkus-transaction-annotations</artifactId>
+            <scope>test</scope>
+        </dependency>
 
 
     </dependencies>

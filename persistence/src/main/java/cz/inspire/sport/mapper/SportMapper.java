@@ -16,6 +16,7 @@ import cz.inspire.sport.service.SportKategorieService;
 import cz.inspire.sport.service.SportService;
 import cz.inspire.sport.utils.InstructorConstants;
 import jakarta.ejb.CreateException;
+import jakarta.ejb.FinderException;
 import jakarta.inject.Inject;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -74,7 +75,7 @@ public abstract class SportMapper {
     @Mapping(target = "barvaPopredi", source = "barvaPopredi", qualifiedByName = "colorToJson")
     @Mapping(target = "barvaPozadi",  source = "barvaPozadi",  qualifiedByName = "colorToJson")
     @Mapping(target = "localeData", ignore = true)
-    public abstract SportEntity toEntity(SportDto dto) throws CreateException, InvalidParameterException;
+    public abstract SportEntity toEntity(SportDto dto) throws CreateException, InvalidParameterException, FinderException;
 
     @AfterMapping
     protected void mapLocaleData(SportDto dto, @MappingTarget SportEntity entity) {
@@ -152,21 +153,21 @@ public abstract class SportMapper {
     protected void mapSportKategorie(SportDto dto, @MappingTarget SportEntity entity) throws InvalidParameterException, CreateException {
         if (dto.getSportKategorie() != null) {
             try {
-                entity.setSportKategorie(sportKategorieService.findByPrimaryKey(entity.getSportKategorie().getId()));
+                entity.setSportKategorie(sportKategorieService.findByPrimaryKey(dto.getSportKategorie().getId()));
             } catch (Exception e) {
                 if (dto.getId() != null) { // While updating SportEntity
                     throw new InvalidParameterException("Could not set SportKategorie with id = "
                             + dto.getSportKategorie() + ", while updating SportEntity", e);
                 } else { // While creating SportEntity
                     throw new CreateException("Sport entity could not be created, while setting SportKategorie with id = "
-                            + dto.getSportKategorie() + e.getMessage());
+                            + dto.getSportKategorie().getId() + e.getMessage());
                 }
             }
         }
     }
 
     @AfterMapping
-    protected void mapSportInstructors(SportDto dto, @MappingTarget SportEntity entity) throws CreateException {
+    protected void mapSportInstructors(SportDto dto, @MappingTarget SportEntity entity) throws CreateException, FinderException {
         boolean isCreate = (dto.getId() == null);
 
         Set<String> newInstructorIds = extractNewInstructorIds(dto);
@@ -175,7 +176,7 @@ public abstract class SportMapper {
             createInstructors(newInstructorIds, dto, entity, /*throwOnError=*/ true);
         }
         else {
-            Set<String> oldInstructorIds = extractOldInstructorIds(entity);
+            Set<String> oldInstructorIds = extractOldInstructorIds(entity.getId());
 
             Set<String> toDelete = new HashSet<>(oldInstructorIds);
             toDelete.removeAll(newInstructorIds);
@@ -183,6 +184,8 @@ public abstract class SportMapper {
             Set<String> toAdd = new HashSet<>(newInstructorIds);
             toAdd.removeAll(oldInstructorIds);
 
+            System.out.println("Call from mapSportInstructors in else branch before deleteInstructors with SportEntity with Id -> " + entity.getId());
+            System.out.println("OldInstructors to be deleted -> " + toDelete);
             deleteInstructors(toDelete, entity);
 
             createInstructors(toAdd, dto, entity, /*throwOnError=*/ false);
@@ -194,9 +197,10 @@ public abstract class SportMapper {
      * ZADNY_INSTRUKTOR_ID -> null.
      */
     private Set<String> extractNewInstructorIds(SportDto dto) {
-        if (dto.getInstructors() == null) {
+        if (dto.getInstructors() == null || dto.getInstructors().isEmpty()) {
             return new HashSet<>();
         }
+        System.out.println("Extracting Ids for Instructors, dto.getInstructors() -> " + dto.getInstructors());
         return dto.getInstructors().stream()
                 .map(instrDto -> InstructorConstants.ZADNY_INSTRUKTOR_ID.equals(instrDto.getId())
                         ? null
@@ -208,10 +212,11 @@ public abstract class SportMapper {
      * Extracts the existing non-deleted instructor IDs from the SportEntity.
      * If an Instructor is null, we store ZADNY_INSTRUKTOR_ID.
      */
-    private Set<String> extractOldInstructorIds(SportEntity entity) {
+    private Set<String> extractOldInstructorIds(String pk) throws FinderException {
         Set<String> oldIds = new HashSet<>();
-        if (entity.getSportInstructors() != null) {
-            for (SportInstructorEntity si : entity.getSportInstructors()) {
+        List<SportInstructorEntity> oldSportInstructorsFromDB = sportService.findByPrimaryKey(pk).getSportInstructors();
+        if (oldSportInstructorsFromDB != null) {
+            for (SportInstructorEntity si : oldSportInstructorsFromDB) {
                 if (!Boolean.TRUE.equals(si.getDeleted())) {
                     if (si.getInstructor() == null) {
                         oldIds.add(InstructorConstants.ZADNY_INSTRUKTOR_ID);
@@ -233,22 +238,22 @@ public abstract class SportMapper {
     private void createInstructors(Set<String> instructorIds, SportDto dto, SportEntity entity, boolean throwOnError)
             throws CreateException {
 
-        if (instructorIds.isEmpty()) {
+        System.out.println("Creating SportInstructors from sportMapper!");
+        System.out.println("Set of instructorsIds include : " + instructorIds);
+        if (instructorIds != null && instructorIds.isEmpty()) {
+            System.out.println("SportMapper in Creating SportInstructors - instructorsIds was empty");
             SportInstructorEntity sid = new SportInstructorEntity();
             sid.setActivityId(dto.getActivityId());
             sid.setDeleted(false);
             sid.setSport(entity);
 
+            // This will create SportInstructorEntity when SportEntity is persisted in DB thanks to cascade
             entity.getSportInstructors().add(sid);
-
-//            try {
-//                sportInstructorService.create(sid);
-//            } catch (Exception e) {
-//                handleCreateException("Failed to create default (none) SportInstructor!", e, throwOnError);
-//            }
         }
         else {
+            System.out.println("SportMapper in Creating SportInstructors - instructorsIds wasn't empty");
             for (String instructorId : instructorIds) {
+                System.out.println("SportMapper in Creating SportInstructors - creating SportInstructor with instructorId -> " + instructorId);
                 SportInstructorEntity sid = new SportInstructorEntity();
                 sid.setActivityId(dto.getActivityId());
                 sid.setDeleted(false);
@@ -264,14 +269,8 @@ public abstract class SportMapper {
                         continue;
                     }
                 }
-
+                // This will create SportInstructorEntity when SportEntity is persisted in DB thanks to cascade
                 entity.getSportInstructors().add(sid);
-
-//                try {
-//                    sportInstructorService.create(sid);
-//                } catch (Exception e) {
-//                    handleCreateException("Failed to create SportInstructor! ID=" + instructorId, e, throwOnError);
-//                }
             }
         }
     }
@@ -288,6 +287,7 @@ public abstract class SportMapper {
                 } else {
                     sportInstructor = sportInstructorService.findBySportAndInstructor(entity.getId(), instructorId);
                 }
+                System.out.println("Setting SportInstructor as deleted -> " + sportInstructor.getId());
                 sportInstructor.setDeleted(true);
                 sportInstructorService.update(sportInstructor);
             } catch (Exception ex) {

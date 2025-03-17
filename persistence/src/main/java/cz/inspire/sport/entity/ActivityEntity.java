@@ -41,5 +41,5 @@ public class ActivityEntity {
     private List<InstructorEntity> instructors = new ArrayList<>();
 
     @OneToMany(mappedBy = "activity")
-    private List<SportEntity> sports = new ArrayList<>();;
+    private List<SportEntity> sports = new ArrayList<>();
 }

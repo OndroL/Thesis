@@ -2,7 +2,6 @@ package cz.inspire.sport.entity;
 
 import cz.inspire.sport.dto.SportDto;
 import cz.inspire.utils.FileAttributes;
-import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -17,6 +16,7 @@ import jakarta.persistence.Table;
 import jakarta.persistence.Transient;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.type.SqlTypes;
@@ -29,6 +29,7 @@ import java.util.Set;
 @NoArgsConstructor
 @Entity
 @Table(name="instructor")
+@EqualsAndHashCode(exclude = {"sportInstructors", "activities"})
 public class InstructorEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
@@ -83,7 +84,7 @@ public class InstructorEntity {
     @Column
     private int googleCalendarNotificationBefore;
 
-    @OneToMany(mappedBy = "instructor", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "instructor", fetch = FetchType.LAZY)
     private Set<SportInstructorEntity> sportInstructors = new HashSet<>();
 
     @ManyToMany

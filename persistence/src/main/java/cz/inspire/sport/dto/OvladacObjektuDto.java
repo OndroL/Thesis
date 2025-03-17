@@ -5,6 +5,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 
 @Data
@@ -17,7 +18,7 @@ public class OvladacObjektuDto implements Serializable {
     private Boolean automat;
     private int delkaSepnutiPoKonci;
     private int zapnutiPredZacatkem;
-    private List<Integer> cislaZapojeniList;
+    private List<Integer> cislaZapojeniList = new ArrayList<>();
     private String objektId;
 }
 
