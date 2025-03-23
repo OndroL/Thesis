@@ -10,7 +10,7 @@ import cz.inspire.sport.entity.ObjektSportEntity;
 import cz.inspire.sport.entity.ObjektSportPK;
 import cz.inspire.sport.entity.PodminkaRezervaceEntity;
 import cz.inspire.sport.entity.SportEntity;
-import cz.inspire.sport.repository.ObjektRepository;
+import cz.inspire.sport.service.ObjektService;
 import jakarta.ejb.CreateException;
 import jakarta.ejb.FinderException;
 import jakarta.inject.Inject;
@@ -45,7 +45,7 @@ public abstract class ObjektMapper {
     protected SportMapper sportMapper;
 
     @Inject
-    protected ObjektRepository objektRepository;
+    protected ObjektService objektService;
 
     @Inject
     protected PodminkaRezervaceMapper podminkaRezervaceMapper;
@@ -113,7 +113,7 @@ public abstract class ObjektMapper {
             Set<ObjektEntity> nadObjekty = new HashSet<>();
             for (String objektId : dto.getNadObjekty()) {
                 try {
-                    ObjektEntity nadObj = objektRepository.findByPrimaryKey(objektId);
+                    ObjektEntity nadObj = objektService.findByPrimaryKey(objektId);
                     Hibernate.initialize(entity.getNadObjekty());
                     if (Hibernate.isInitialized(entity.getNadObjekty())) {
                         nadObjekty.add(nadObj);
@@ -131,7 +131,7 @@ public abstract class ObjektMapper {
             Set<ObjektEntity> podObjekty = new HashSet<>();
             for (String objektId : dto.getPodObjekty()) {
                 try {
-                    ObjektEntity podObj = objektRepository.findByPrimaryKey(objektId);
+                    ObjektEntity podObj = objektService.findByPrimaryKey(objektId);
                     Hibernate.initialize(entity.getPodObjekty());
                     if (Hibernate.isInitialized(entity.getPodObjekty())) {
                         podObjekty.add(podObj);
